@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, DollarSign, Users, UserCheck } from 'lucide-react';
-import { EditJobDialog } from './EditJobDialog';
+import { ویرایشJobDialog } from './ویرایشJobDialog';
 import { supabase } from '@/integrations/supabase/client';
 interface Job {
   id: string;
@@ -37,14 +37,14 @@ export function ViewJobDialog({
   onSuccess,
   hiredCount = 0
 }: ViewJobDialogProps) {
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [canEdit, setCanEdit] = useState(false);
+  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
+  const [canویرایش, setCanویرایش] = useState(false);
 
   useEffect(() => {
     const checkUserRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setCanEdit(false);
+        setCanویرایش(false);
         return;
       }
 
@@ -55,28 +55,28 @@ export function ViewJobDialog({
         .single();
 
       // Only job_admin and site_admin can edit
-      setCanEdit(roleData?.role === 'job_admin' || roleData?.role === 'site_admin');
+      setCanویرایش(roleData?.role === 'job_admin' || roleData?.role === 'site_admin');
     };
 
     if (open) {
       checkUserRole();
     }
   }, [open]);
-  const handleEditClick = () => {
-    setEditDialogOpen(true);
+  const handleویرایشClick = () => {
+    setویرایشDialogOpen(true);
   };
-  const handleEditSuccess = () => {
-    setEditDialogOpen(false);
+  const handleویرایشSuccess = () => {
+    setویرایشDialogOpen(false);
     onSuccess?.();
   };
   return <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-card">
           <DialogHeader className="flex flex-row items-center justify-between pr-12">
-            <DialogTitle className="text-2xl font-semibold">{job.title}</DialogTitle>
-            {canEdit && (
-              <Button onClick={handleEditClick} variant="outline" className="bg-foreground text-background hover:bg-foreground/90">
-                Edit Listing
+            <Dialogعنوان className="text-2xl font-semibold">{job.title}</Dialogعنوان>
+            {canویرایش && (
+              <Button onClick={handleویرایشClick} variant="outline" className="bg-foreground text-background hover:bg-foreground/90">
+                ویرایش Listing
               </Button>
             )}
           </DialogHeader>
@@ -143,6 +143,6 @@ export function ViewJobDialog({
         </DialogContent>
       </Dialog>
 
-      <EditJobDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} job={job} onSuccess={handleEditSuccess} />
+      <ویرایشJobDialog open={editDialogOpen} onOpenChange={setویرایشDialogOpen} job={job} onSuccess={handleویرایشSuccess} />
     </>;
 }

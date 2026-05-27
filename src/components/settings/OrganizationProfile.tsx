@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
-import { EditOrganizationDialog } from './EditOrganizationDialog';
+import { ویرایشOrganizationDialog } from './ویرایشOrganizationDialog';
 
 interface OrgSettings {
   company_email?: string;
@@ -16,8 +16,8 @@ interface OrgSettings {
 export const OrganizationProfile = () => {
   const [org, setOrg] = useState<any>(null);
   const [settings, setSettings] = useState<OrgSettings>({});
-  const [loading, setLoading] = useState(true);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [loading, setبارگذاری] = useState(true);
+  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -50,12 +50,12 @@ export const OrganizationProfile = () => {
       setSettings((data.settings_json as OrgSettings) || {});
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -73,7 +73,7 @@ export const OrganizationProfile = () => {
       toast({ title: 'Currency updated' });
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -105,9 +105,9 @@ export const OrganizationProfile = () => {
             </Avatar>
             <h2 className="text-2xl">{org?.name || 'Organization'}</h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setEditDialogOpen(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogOpen(true)}>
             <Pencil className="h-4 w-4 mr-2" />
-            Edit
+            ویرایش
           </Button>
         </div>
 
@@ -116,7 +116,7 @@ export const OrganizationProfile = () => {
           <div className="flex justify-between items-center py-3 border-b">
             <span className="text-sm text-muted-foreground">Company Email Address</span>
             <span className="text-sm font-medium text-primary">
-              {settings.company_email || 'Not set - click Edit to add'}
+              {settings.company_email || 'Not set - click ویرایش to add'}
             </span>
           </div>
 
@@ -163,9 +163,9 @@ export const OrganizationProfile = () => {
         </div>
       </div>
 
-      <EditOrganizationDialog 
+      <ویرایشOrganizationDialog 
         open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
+        onOpenChange={setویرایشDialogOpen}
         onSuccess={fetchOrganization}
       />
     </div>

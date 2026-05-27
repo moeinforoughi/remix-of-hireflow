@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { EditTaskDialog } from "./EditTaskDialog";
+import { ویرایشTaskDialog } from "./ویرایشTaskDialog";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogانصراف,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogعنوان,
 } from "@/components/ui/alert-dialog";
 
 interface Task {
@@ -27,14 +27,14 @@ interface Task {
   created_at: string;
 }
 
-interface TasksListProps {
+interface وظایفListProps {
   tasks: Task[];
-  onTasksChange: () => void;
+  onوظایفChange: () => void;
 }
 
-export function TasksList({ tasks, onTasksChange }: TasksListProps) {
-  const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
-  const [editTask, setEditTask] = useState<Task | null>(null);
+export function وظایفList({ tasks, onوظایفChange }: وظایفListProps) {
+  const [deleteTaskId, setحذفTaskId] = useState<string | null>(null);
+  const [editTask, setویرایشTask] = useState<Task | null>(null);
 
   const handleToggleStatus = async (task: Task) => {
     const newStatus = task.status === "pending" ? "completed" : "pending";
@@ -50,10 +50,10 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
     }
 
     toast.success(`Task marked as ${newStatus}`);
-    onTasksChange();
+    onوظایفChange();
   };
 
-  const handleDelete = async () => {
+  const handleحذف = async () => {
     if (!deleteTaskId) return;
 
     const { error } = await supabase.from("tasks").delete().eq("id", deleteTaskId);
@@ -65,8 +65,8 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
     }
 
     toast.success("Task deleted successfully");
-    setDeleteTaskId(null);
-    onTasksChange();
+    setحذفTaskId(null);
+    onوظایفChange();
   };
 
   if (tasks.length === 0) {
@@ -126,14 +126,14 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setEditTask(task)}
+                    onClick={() => setویرایشTask(task)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setDeleteTaskId(task.id)}
+                    onClick={() => setحذفTaskId(task.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -145,25 +145,25 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
       </div>
 
       {editTask && (
-        <EditTaskDialog
+        <ویرایشTaskDialog
           task={editTask}
           open={!!editTask}
-          onOpenChange={(open) => !open && setEditTask(null)}
-          onTaskUpdated={onTasksChange}
+          onOpenChange={(open) => !open && setویرایشTask(null)}
+          onTaskبه‌روزرسانیd={onوظایفChange}
         />
       )}
 
-      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setDeleteTaskId(null)}>
+      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setحذفTaskId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Task</AlertDialogTitle>
+            <AlertDialogعنوان>حذف Task</AlertDialogعنوان>
             <AlertDialogDescription>
               Are you sure you want to delete this task? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogانصراف>انصراف</AlertDialogانصراف>
+            <AlertDialogAction onClick={handleحذف}>حذف</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

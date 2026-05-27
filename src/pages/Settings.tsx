@@ -38,7 +38,7 @@ const Settings = () => {
     if (error) {
       toast.error('Failed to log out');
     } else {
-      toast.success('Logged out successfully');
+      toast.success('خروج موفق successfully');
       navigate('/auth/login');
     }
   };

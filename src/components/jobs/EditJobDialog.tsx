@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,15 +28,15 @@ interface Job {
   created_at: string;
 }
 
-interface EditJobDialogProps {
+interface ویرایشJobDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   job: Job;
   onSuccess?: () => void;
 }
 
-export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDialogProps) {
-  const [loading, setLoading] = useState(false);
+export function ویرایشJobDialog({ open, onOpenChange, job, onSuccess }: ویرایشJobDialogProps) {
+  const [loading, setبارگذاری] = useState(false);
   const [formData, setFormData] = useState({
     title: job.title || '',
     location: job.location || '',
@@ -53,9 +53,9 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
   });
   const [skillInput, setSkillInput] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleثبت = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setبارگذاری(true);
 
     try {
       const { error } = await supabase
@@ -66,7 +66,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Job listing updated successfully',
       });
 
@@ -74,12 +74,12 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -87,21 +87,21 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="flex flex-row items-start justify-between space-y-0 pb-6 pr-12">
-          <DialogTitle className="text-3xl font-semibold">Edit Listing</DialogTitle>
+          <Dialogعنوان className="text-3xl font-semibold">ویرایش Listing</Dialogعنوان>
           <Button
-            onClick={handleSubmit}
+            onClick={handleثبت}
             disabled={loading}
             className="bg-foreground text-background hover:bg-foreground/90 gap-2"
           >
             <Check className="h-4 w-4" />
-            Save Changes
+            ذخیره تغییرات
           </Button>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Job Title */}
+        <form onثبت={handleثبت} className="space-y-6">
+          {/* Job عنوان */}
           <fieldset className="border border-border rounded-lg p-4 relative">
-            <legend className="text-xs text-muted-foreground px-2 -ml-2">Job Title</legend>
+            <legend className="text-xs text-muted-foreground px-2 -ml-2">Job عنوان</legend>
             <Input
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -111,14 +111,14 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
             />
           </fieldset>
 
-          {/* Location, Employment Type, Compensation, Openings Row */}
+          {/* مکان, Employment Type, Compensation, Openings Row */}
           <div className="grid grid-cols-4 gap-4">
             <fieldset className="border border-border rounded-lg p-4 relative">
-              <legend className="text-xs text-muted-foreground px-2 -ml-2">Location</legend>
+              <legend className="text-xs text-muted-foreground px-2 -ml-2">مکان</legend>
               <Input
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="e.g., Remote, New York"
+                placeholder="e.g., دورکاری, New York"
                 className="border-0 p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0"
               />
             </fieldset>

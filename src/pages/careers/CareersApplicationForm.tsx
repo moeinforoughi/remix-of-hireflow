@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2, Upload, CheckCircle } from 'lucide-react';
-import { sendApplicationConfirmation } from '@/lib/email-notifications';
+import { sendApplicationتأییدation } from '@/lib/email-notifications';
 import { parseResume } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
 
@@ -53,8 +53,8 @@ const CareersApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
+  const [submitted, setثبتted] = useState(false);
   const [job, setJob] = useState<any>(null);
   const [orgId, setOrgId] = useState<string>('');
   const [customQuestions, setCustomQuestions] = useState<any[]>([]);
@@ -107,8 +107,8 @@ const CareersApplicationForm = () => {
     }
   };
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+  const onثبت = async (values: FormValues) => {
+    setبارگذاری(true);
     try {
       // Use new secure edge function for public applications
       const file = values.resume[0];
@@ -150,15 +150,15 @@ const CareersApplicationForm = () => {
         description: "We've received your application and will be in touch soon.",
       });
 
-      setSubmitted(true);
+      setثبتted(true);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message || 'Failed to submit application',
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -178,7 +178,7 @@ const CareersApplicationForm = () => {
             <div className="flex justify-center">
               <CheckCircle className="h-16 w-16 text-green-600" />
             </div>
-            <h2 className="text-2xl">Application Submitted!</h2>
+            <h2 className="text-2xl">Application ثبتted!</h2>
             <p className="text-muted-foreground">
               Thank you for applying to the <strong>{job.title}</strong> position. 
               We've received your application and will review it shortly.
@@ -195,7 +195,7 @@ const CareersApplicationForm = () => {
                 className="w-full"
                 onClick={() => window.location.reload()}
               >
-                Submit Another Application
+                ثبت Another Application
               </Button>
             </div>
           </CardContent>
@@ -213,19 +213,19 @@ const CareersApplicationForm = () => {
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to job
+          بازگشت to job
         </Button>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Apply for {job.title}</CardTitle>
+            <Cardعنوان className="text-2xl">Apply for {job.title}</Cardعنوان>
             <p className="text-muted-foreground">
               Fill out the form below to submit your application
             </p>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
                 <FormField
                   control={form.control}
                   name="full_name"
@@ -276,7 +276,7 @@ const CareersApplicationForm = () => {
                     name="location"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Location</FormLabel>
+                        <FormLabel>مکان</FormLabel>
                         <FormControl>
                           <Input placeholder="San Francisco, CA" {...field} />
                         </FormControl>
@@ -435,7 +435,7 @@ const CareersApplicationForm = () => {
 
                 <Button type="submit" disabled={loading} className="w-full" size="lg">
                   {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Submit Application
+                  ثبت Application
                 </Button>
               </form>
             </Form>

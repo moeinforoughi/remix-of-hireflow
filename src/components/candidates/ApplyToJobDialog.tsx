@@ -5,7 +5,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -40,7 +40,7 @@ export const ApplyToJobDialog = ({
 }: ApplyToJobDialogProps) => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string>('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -111,13 +111,13 @@ export const ApplyToJobDialog = ({
         }
       }
 
-      // Filter out jobs the candidate has already applied to
+      // فیلتر out jobs the candidate has already applied to
       availableJobs = availableJobs.filter(job => !existingJobIds.includes(job.id));
       setJobs(availableJobs);
     } catch (error: any) {
       console.error('Error fetching jobs:', error);
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to load available jobs',
         variant: 'destructive',
       });
@@ -129,14 +129,14 @@ export const ApplyToJobDialog = ({
   const handleApply = async () => {
     if (!selectedJobId) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Please select a job',
         variant: 'destructive',
       });
       return;
     }
 
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -156,7 +156,7 @@ export const ApplyToJobDialog = ({
         throw new Error('No pipeline stage found for this job');
       }
 
-      // Create the application
+      // ایجاد the application
       const { data: applicationData, error: applicationError } = await supabase
         .from('applications')
         .insert({
@@ -179,7 +179,7 @@ export const ApplyToJobDialog = ({
 
       const selectedJob = jobs.find(j => j.id === selectedJobId);
       toast({
-        title: 'Application Created',
+        title: 'Application ایجادd',
         description: `${candidateName} has been applied to ${selectedJob?.title}`,
       });
 
@@ -188,12 +188,12 @@ export const ApplyToJobDialog = ({
       onSuccess?.();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -201,10 +201,10 @@ export const ApplyToJobDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <Dialogعنوان className="flex items-center gap-2">
             <Briefcase className="h-5 w-5" />
             Apply to Job
-          </DialogTitle>
+          </Dialogعنوان>
           <DialogDescription>
             Select a job to apply {candidateName} to.
           </DialogDescription>
@@ -250,7 +250,7 @@ export const ApplyToJobDialog = ({
                   onClick={() => onOpenChange(false)}
                   disabled={loading}
                 >
-                  Cancel
+                  انصراف
                 </Button>
                 <Button
                   onClick={handleApply}

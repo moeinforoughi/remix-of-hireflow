@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -7,9 +7,9 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Trash2, Loader2 } from 'lucide-react';
-import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { تأییدDialog } from '@/components/shared/تأییدDialog';
 
-interface EditUserDialogProps {
+interface ویرایشUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user: {
@@ -18,16 +18,16 @@ interface EditUserDialogProps {
     email: string;
     department: string;
   } | null;
-  onUpdateSuccess: () => void;
+  onبه‌روزرسانیSuccess: () => void;
 }
 
-export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: EditUserDialogProps) => {
+export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌روزرسانیSuccess }: ویرایشUserDialogProps) => {
   const [department, setDepartment] = useState('');
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showحذفتأیید, setShowحذفتأیید] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const { toast } = useToast();
 
@@ -72,12 +72,12 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
     }
   };
 
-  const handleUpdate = async () => {
+  const handleبه‌روزرسانی = async () => {
     if (!user) return;
 
-    setLoading(true);
+    setبارگذاری(true);
     try {
-      // Update department
+      // به‌روزرسانی department
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ department: department || null })
@@ -85,7 +85,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
 
       if (profileError) throw profileError;
 
-      // Delete existing job assignments
+      // حذف existing job assignments
       const { error: deleteError } = await supabase
         .from('job_acl')
         .delete()
@@ -112,24 +112,24 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'User updated successfully',
       });
 
       onOpenChange(false);
-      onUpdateSuccess();
+      onبه‌روزرسانیSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
-  const handleDelete = async () => {
+  const handleحذف = async () => {
     if (!user) return;
 
     setDeleting(true);
@@ -142,16 +142,16 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
       if (data?.error) throw new Error(data.error);
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Team member removed successfully',
       });
 
-      setShowDeleteConfirm(false);
+      setShowحذفتأیید(false);
       onOpenChange(false);
-      onUpdateSuccess();
+      onبه‌روزرسانیSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -168,14 +168,14 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
     );
   };
 
-  const canDelete = user && user.id !== currentUserId && user.email !== 'demo@hireflow.app';
+  const canحذف = user && user.id !== currentUserId && user.email !== 'demo@hireflow.app';
 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-hidden flex flex-col gap-0 p-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b">
-            <DialogTitle className="text-xl">Edit Team Member</DialogTitle>
+            <Dialogعنوان className="text-xl">ویرایش Team Member</Dialogعنوان>
           </DialogHeader>
 
           <div className="overflow-y-auto flex-1 px-6 py-5">
@@ -264,7 +264,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
               </div>
 
               {/* Danger Zone */}
-              {canDelete && (
+              {canحذف && (
                 <div className="space-y-3 pt-4 border-t">
                   <h3 className="text-sm text-destructive uppercase tracking-wide">
                     Danger Zone
@@ -272,7 +272,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
                   <Button
                     variant="outline"
                     className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                    onClick={() => setShowDeleteConfirm(true)}
+                    onClick={() => setShowحذفتأیید(true)}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Remove from Team
@@ -285,22 +285,22 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
           {/* Footer */}
           <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
             <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
-              Cancel
+              انصراف
             </Button>
-            <Button onClick={handleUpdate} disabled={loading} className="flex-1">
-              {loading ? 'Updating...' : 'Update User'}
+            <Button onClick={handleبه‌روزرسانی} disabled={loading} className="flex-1">
+              {loading ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی User'}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      <ConfirmDialog
-        open={showDeleteConfirm}
-        onOpenChange={setShowDeleteConfirm}
+      <تأییدDialog
+        open={showحذفتأیید}
+        onOpenChange={setShowحذفتأیید}
         title="Remove Team Member"
         description={`Are you sure you want to remove ${user?.full_name} from your team? This action cannot be undone and will delete their account.`}
         confirmText={deleting ? 'Removing...' : 'Remove'}
-        onConfirm={handleDelete}
+        onتأیید={handleحذف}
         variant="destructive"
       />
     </>

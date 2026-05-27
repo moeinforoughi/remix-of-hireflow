@@ -1,12 +1,12 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogانصراف,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogعنوان,
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import {
@@ -22,7 +22,7 @@ import { useState } from 'react';
 interface BulkRejectDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (reason: string, note: string) => void;
+  onتأیید: (reason: string, note: string) => void;
   count: number;
 }
 
@@ -35,12 +35,12 @@ const REJECTION_REASONS = [
   'Other',
 ];
 
-export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkRejectDialogProps) => {
+export const BulkRejectDialog = ({ open, onOpenChange, onتأیید, count }: BulkRejectDialogProps) => {
   const [reason, setReason] = useState('');
   const [note, setNote] = useState('');
 
-  const handleConfirm = () => {
-    onConfirm(reason, note);
+  const handleتأیید = () => {
+    onتأیید(reason, note);
     setReason('');
     setNote('');
   };
@@ -49,7 +49,7 @@ export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkR
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Reject {count} Application{count > 1 ? 's' : ''}</AlertDialogTitle>
+          <AlertDialogعنوان>Reject {count} Application{count > 1 ? 's' : ''}</AlertDialogعنوان>
           <AlertDialogDescription>
             This will reject {count} selected application{count > 1 ? 's' : ''}. This action can be reversed later if needed.
           </AlertDialogDescription>
@@ -85,8 +85,8 @@ export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkR
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm} disabled={!reason}>
+          <AlertDialogانصراف>انصراف</AlertDialogانصراف>
+          <AlertDialogAction onClick={handleتأیید} disabled={!reason}>
             Reject {count} Application{count > 1 ? 's' : ''}
           </AlertDialogAction>
         </AlertDialogFooter>

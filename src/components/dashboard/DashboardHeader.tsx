@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DashboardHeader = () => {
+const داشبوردHeader = () => {
   const handleNewJobListing = () => {
     // Handle new job listing creation
     console.log('Creating new job listing...');
@@ -9,7 +9,7 @@ const DashboardHeader = () => {
   return (
     <header className="flex w-full items-stretch gap-5 flex-wrap justify-between max-md:max-w-full">
       <h1 className="text-foreground text-2xl font-[590] my-auto">
-        Dashboard
+        داشبورد
       </h1>
       <button
         onClick={handleNewJobListing}
@@ -21,11 +21,11 @@ const DashboardHeader = () => {
           alt="Add icon"
         />
         <span className="text-white self-stretch my-auto">
-          New Job Listing
+          ایجاد موقعیت جدید
         </span>
       </button>
     </header>
   );
 };
 
-export default DashboardHeader;
+export default داشبوردHeader;

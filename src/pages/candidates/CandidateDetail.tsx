@@ -15,12 +15,12 @@ import {
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogانصراف,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogعنوان,
 } from '@/components/ui/alert-dialog';
 import {
   Breadcrumb,
@@ -35,7 +35,7 @@ import { RatingsSection } from '@/components/candidates/RatingsSection';
 import { CommentsSection } from '@/components/candidates/CommentsSection';
 import { StatusDropdown } from '@/components/candidates/StatusDropdown';
 import { ResumeViewer } from '@/components/candidates/ResumeViewer';
-import { EditCandidateDialog } from '@/components/candidates/EditCandidateDialog';
+import { ویرایشCandidateDialog } from '@/components/candidates/ویرایشCandidateDialog';
 import { CandidateDetailSkeleton } from '@/components/candidates/CandidateDetailSkeleton';
 import { RejectDialog } from '@/components/applications/RejectDialog';
 import { WithdrawDialog } from '@/components/applications/WithdrawDialog';
@@ -80,11 +80,11 @@ const CandidateDetail = () => {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
   const [stages, setStages] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [showResumeDialog, setShowResumeDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showویرایشDialog, setShowویرایشDialog] = useState(false);
+  const [showحذفDialog, setShowحذفDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
   const [showApplyToJobDialog, setShowApplyToJobDialog] = useState(false);
@@ -96,7 +96,7 @@ const CandidateDetail = () => {
 
   const fetchData = async () => {
     if (!id) return;
-    setLoading(true);
+    setبارگذاری(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -196,12 +196,12 @@ const CandidateDetail = () => {
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -243,12 +243,12 @@ const CandidateDetail = () => {
     }
   };
 
-  const handleDeleteCandidate = async () => {
+  const handleحذفCandidate = async () => {
     if (!candidate) return;
     
     setIsDeleting(true);
     try {
-      // Delete associated applications first (cascade)
+      // حذف associated applications first (cascade)
       const { error: appError } = await supabase
         .from('applications')
         .delete()
@@ -256,7 +256,7 @@ const CandidateDetail = () => {
       
       if (appError) throw appError;
 
-      // Delete candidate
+      // حذف candidate
       const { error } = await supabase
         .from('candidates')
         .delete()
@@ -265,27 +265,27 @@ const CandidateDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Candidate Deleted',
+        title: 'Candidate حذفd',
         description: `${candidate.full_name} has been removed.`,
       });
       
       navigate('/candidates');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
       setIsDeleting(false);
-      setShowDeleteDialog(false);
+      setShowحذفDialog(false);
     }
   };
 
   const handleRejectCandidate = async (reason: string, note: string) => {
     if (!primaryApplication) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'No active application to reject',
         variant: 'destructive',
       });
@@ -298,7 +298,7 @@ const CandidateDetail = () => {
 
       if (!rejectedStage) {
         toast({
-          title: 'Error',
+          title: 'خطا',
           description: 'Rejected stage not found for this job',
           variant: 'destructive',
         });
@@ -327,7 +327,7 @@ const CandidateDetail = () => {
       await refetchApplications();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -337,7 +337,7 @@ const CandidateDetail = () => {
   const handleSendOffer = () => {
     if (!primaryApplication) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'No active application to send offer',
         variant: 'destructive',
       });
@@ -349,7 +349,7 @@ const CandidateDetail = () => {
   const handleWithdraw = async () => {
     if (!primaryApplication) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'No active application to withdraw',
         variant: 'destructive',
       });
@@ -373,7 +373,7 @@ const CandidateDetail = () => {
       await refetchApplications();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -388,7 +388,7 @@ const CandidateDetail = () => {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl mb-4">Candidate not found</h2>
-        <Button onClick={() => navigate('/candidates')}>Back to Candidates</Button>
+        <Button onClick={() => navigate('/candidates')}>بازگشت to Candidates</Button>
       </div>
     );
   }
@@ -467,14 +467,14 @@ const CandidateDetail = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background z-50">
-              <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                Edit Candidate
+              <DropdownMenuItem onClick={() => setShowویرایشDialog(true)}>
+                ویرایش Candidate
               </DropdownMenuItem>
               <DropdownMenuItem 
                 className="text-destructive"
-                onClick={() => setShowDeleteDialog(true)}
+                onClick={() => setShowحذفDialog(true)}
               >
-                Delete Candidate
+                حذف Candidate
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -563,31 +563,31 @@ const CandidateDetail = () => {
         candidateName={candidate.full_name}
       />
 
-      {/* Edit Candidate Dialog */}
-      <EditCandidateDialog
-        open={showEditDialog}
-        onOpenChange={setShowEditDialog}
+      {/* ویرایش Candidate Dialog */}
+      <ویرایشCandidateDialog
+        open={showویرایشDialog}
+        onOpenChange={setShowویرایشDialog}
         candidate={candidate}
-        onUpdateSuccess={fetchData}
+        onبه‌روزرسانیSuccess={fetchData}
       />
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      {/* حذف تأییدation Dialog */}
+      <AlertDialog open={showحذفDialog} onOpenChange={setShowحذفDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Candidate</AlertDialogTitle>
+            <AlertDialogعنوان>حذف Candidate</AlertDialogعنوان>
             <AlertDialogDescription>
               Are you sure you want to delete {candidate.full_name}? This will also remove all their applications and cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogانصراف disabled={isDeleting}>انصراف</AlertDialogانصراف>
             <AlertDialogAction
-              onClick={handleDeleteCandidate}
+              onClick={handleحذفCandidate}
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? 'در حال حذف...' : 'حذف'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -597,14 +597,14 @@ const CandidateDetail = () => {
       <RejectDialog
         open={showRejectDialog}
         onOpenChange={setShowRejectDialog}
-        onConfirm={handleRejectCandidate}
+        onتأیید={handleRejectCandidate}
       />
 
       {/* Withdraw Application Dialog */}
       <WithdrawDialog
         open={showWithdrawDialog}
         onOpenChange={setShowWithdrawDialog}
-        onConfirm={handleWithdraw}
+        onتأیید={handleWithdraw}
       />
 
       {/* Apply to Job Dialog */}

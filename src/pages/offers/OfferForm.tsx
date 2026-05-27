@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useجستجوParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,7 +17,7 @@ import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { sendOfferNotification } from '@/lib/email-notifications';
-import { notifyOfferCreated } from '@/lib/notifications';
+import { notifyOfferایجادd } from '@/lib/notifications';
 
 const formSchema = z.object({
   application_id: z.string().min(1, 'Please select an application'),
@@ -34,10 +34,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 const OfferForm = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams] = useجستجوParams();
   const applicationIdFromUrl = searchParams.get('application_id');
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
 
   const form = useForm<FormValues>({
@@ -85,10 +85,10 @@ const OfferForm = () => {
 
       if (offersError) throw offersError;
 
-      // Create a Set of application IDs that already have active offers
+      // ایجاد a Set of application IDs that already have active offers
       const appsWithActiveOffers = new Set(activeOffers?.map(o => o.application_id) || []);
 
-      // Filter out applications that already have an active offer
+      // فیلتر out applications that already have an active offer
       const availableApplications = (apps || []).filter(app => !appsWithActiveOffers.has(app.id));
 
       setApplications(availableApplications);
@@ -101,8 +101,8 @@ const OfferForm = () => {
     }
   };
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+  const onثبت = async (values: FormValues) => {
+    setبارگذاری(true);
     try {
       const { data: offer, error } = await supabase.from('offers').insert({
         application_id: values.application_id,
@@ -126,47 +126,47 @@ const OfferForm = () => {
         .update({ state: 'hired' })
         .eq('id', values.application_id);
 
-      // Create in-app notifications (email will be sent when offer is approved)
+      // ایجاد in-app notifications (email will be sent when offer is approved)
       try {
         const selectedApp = applications.find(a => a.id === values.application_id);
         if (selectedApp) {
-          await notifyOfferCreated(selectedApp.id, offer.id, selectedApp.candidate.full_name);
+          await notifyOfferایجادd(selectedApp.id, offer.id, selectedApp.candidate.full_name);
         }
       } catch (notifError) {
         console.error('Failed to create notifications:', notifError);
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Offer created successfully',
       });
 
       navigate('/offers');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl">Create Offer</h1>
-        <p className="text-muted-foreground">Create a new job offer for a candidate</p>
+        <h1 className="text-3xl">ایجاد Offer</h1>
+        <p className="text-muted-foreground">ایجاد a new job offer for a candidate</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Offer Details</CardTitle>
+          <Cardعنوان>Offer Details</Cardعنوان>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="application_id"
@@ -316,7 +316,7 @@ const OfferForm = () => {
                     <FormLabel>Benefits (Optional)</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="• Health, dental, vision insurance&#10;• 401(k) with match&#10;• Unlimited PTO&#10;• Remote work options"
+                        placeholder="• Health, dental, vision insurance&#10;• 401(k) with match&#10;• Unlimited PTO&#10;• دورکاری work options"
                         rows={6}
                         {...field}
                       />
@@ -353,10 +353,10 @@ const OfferForm = () => {
               <div className="flex gap-4">
                 <Button type="submit" disabled={loading}>
                   {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Create Offer
+                  ایجاد Offer
                 </Button>
                 <Button type="button" variant="outline" onClick={() => navigate('/offers')}>
-                  Cancel
+                  انصراف
                 </Button>
               </div>
             </form>

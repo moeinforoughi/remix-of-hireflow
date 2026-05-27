@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -24,7 +24,7 @@ const ScorecardForm = () => {
   const [recommendation, setRecommendation] = useState('');
   const [ratings, setRatings] = useState<Record<string, { score: number; comment: string }>>({});
   const [overallNotes, setOverallNotes] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setثبتting] = useState(false);
 
   const handleRatingChange = (category: string, score: number) => {
     setRatings((prev) => ({
@@ -40,7 +40,7 @@ const ScorecardForm = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleثبت = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!recommendation) {
@@ -52,7 +52,7 @@ const ScorecardForm = () => {
       return;
     }
 
-    setSubmitting(true);
+    setثبتting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -69,7 +69,7 @@ const ScorecardForm = () => {
       if (error) throw error;
 
       toast({
-        title: 'Scorecard Submitted',
+        title: 'Scorecard ثبتted',
         description: 'Your interview feedback has been recorded.',
       });
 
@@ -81,7 +81,7 @@ const ScorecardForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setSubmitting(false);
+      setثبتting(false);
     }
   };
 
@@ -94,10 +94,10 @@ const ScorecardForm = () => {
         <h1 className="text-3xl">Interview Scorecard</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onثبت={handleثبت} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Rating Categories</CardTitle>
+            <Cardعنوان>Rating Categories</Cardعنوان>
           </CardHeader>
           <CardContent className="space-y-6">
             {RATING_CATEGORIES.map((category) => (
@@ -137,7 +137,7 @@ const ScorecardForm = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recommendation</CardTitle>
+            <Cardعنوان>Recommendation</Cardعنوان>
           </CardHeader>
           <CardContent>
             <RadioGroup value={recommendation} onValueChange={setRecommendation}>
@@ -165,7 +165,7 @@ const ScorecardForm = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Overall Notes</CardTitle>
+            <Cardعنوان>Overall Notes</Cardعنوان>
           </CardHeader>
           <CardContent>
             <Textarea
@@ -179,14 +179,14 @@ const ScorecardForm = () => {
 
         <div className="flex gap-4">
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Submit Scorecard'}
+            {submitting ? 'ثبتting...' : 'ثبت Scorecard'}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => navigate(`/interviews/${id}`)}
           >
-            Cancel
+            انصراف
           </Button>
         </div>
       </form>

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FileUpload } from '@/components/shared/FileUpload';
 import { toast } from '@/hooks/use-toast';
@@ -15,7 +15,7 @@ import { parseResume } from '@/lib/resume-parser';
 const CandidateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     full_name: '',
@@ -51,16 +51,16 @@ const CandidateForm = () => {
       });
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleثبت = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setبارگذاری(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -138,19 +138,19 @@ const CandidateForm = () => {
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: id ? 'Candidate updated successfully' : 'Candidate added successfully',
       });
 
       navigate('/candidates');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -161,20 +161,20 @@ const CandidateForm = () => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl">{id ? 'Edit Candidate' : 'Add New Candidate'}</h1>
+          <h1 className="text-3xl">{id ? 'ویرایش Candidate' : 'Add New Candidate'}</h1>
           <p className="text-muted-foreground">
-            {id ? 'Update candidate information' : 'Add a new candidate to your talent pool'}
+            {id ? 'به‌روزرسانی candidate information' : 'Add a new candidate to your talent pool'}
           </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Candidate Information</CardTitle>
+          <Cardعنوان>Candidate Information</Cardعنوان>
           <CardDescription>Basic details about the candidate</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onثبت={handleثبت} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="full_name">Full Name *</Label>
@@ -210,7 +210,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
+                <Label htmlFor="location">مکان</Label>
                 <Input
                   id="location"
                   value={formData.location}
@@ -275,10 +275,10 @@ const CandidateForm = () => {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={loading}>
-                {loading ? 'Saving...' : id ? 'Update Candidate' : 'Add Candidate'}
+                {loading ? 'در حال ذخیره...' : id ? 'به‌روزرسانی Candidate' : 'Add Candidate'}
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate('/candidates')}>
-                Cancel
+                انصراف
               </Button>
             </div>
           </form>

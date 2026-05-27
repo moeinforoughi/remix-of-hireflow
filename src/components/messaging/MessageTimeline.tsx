@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +24,7 @@ interface MessageTimelineProps {
 
 export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
 
   useEffect(() => {
     fetchMessages();
@@ -76,7 +76,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
   }, [applicationId, candidateId]);
 
   const fetchMessages = async () => {
-    setLoading(true);
+    setبارگذاری(true);
     try {
       let query = supabase
         .from("messages")
@@ -96,7 +96,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -126,10 +126,10 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Message History</CardTitle>
+          <Cardعنوان>Message History</Cardعنوان>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Loading messages...</p>
+          <p className="text-sm text-muted-foreground">بارگذاری messages...</p>
         </CardContent>
       </Card>
     );
@@ -138,7 +138,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Message History</CardTitle>
+        <Cardعنوان>Message History</Cardعنوان>
       </CardHeader>
       <CardContent>
         {messages.length === 0 ? (
@@ -166,7 +166,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
                   <p className="text-xs text-muted-foreground">
                     {message.sent_at
                       ? `Sent ${formatDistanceToNow(new Date(message.sent_at))} ago`
-                      : `Created ${formatDistanceToNow(new Date(message.created_at))} ago`}
+                      : `ایجادd ${formatDistanceToNow(new Date(message.created_at))} ago`}
                   </p>
                   
                   <details className="mt-2">

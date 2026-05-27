@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, CheckCircle2, XCircle, Clock, Send, FileCheck, FileX, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
@@ -23,7 +23,7 @@ interface OfferTimelineProps {
 
 export function OfferTimeline({ offerId }: OfferTimelineProps) {
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -51,7 +51,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
     } catch (error: any) {
       console.error('Error fetching activities:', error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -150,7 +150,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Status History</CardTitle>
+        <Cardعنوان>Status History</Cardعنوان>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">

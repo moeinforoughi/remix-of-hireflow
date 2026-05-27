@@ -20,7 +20,7 @@ export const BrandingSettings = () => {
     primary_color: '#3B82F6',
     secondary_color: '#10B981',
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isبارگذاری, setIsبارگذاری] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export const BrandingSettings = () => {
     } catch (error) {
       console.error('Error fetching branding:', error);
     } finally {
-      setIsLoading(false);
+      setIsبارگذاری(false);
     }
   };
 
@@ -120,8 +120,8 @@ export const BrandingSettings = () => {
         .list(orgId);
 
       if (files && files.length > 0) {
-        const filesToDelete = files.map(f => `${orgId}/${f.name}`);
-        await supabase.storage.from('logos').remove(filesToDelete);
+        const filesToحذف = files.map(f => `${orgId}/${f.name}`);
+        await supabase.storage.from('logos').remove(filesToحذف);
       }
 
       setBranding(prev => ({ ...prev, logo_url: null }));
@@ -132,12 +132,12 @@ export const BrandingSettings = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handleذخیره = async () => {
     if (!orgId) return;
 
     setIsSaving(true);
     try {
-      const brandingToSave = {
+      const brandingToذخیره = {
         platform_name: branding.platform_name,
         logo_url: branding.logo_url,
         primary_color: branding.primary_color,
@@ -147,7 +147,7 @@ export const BrandingSettings = () => {
       const { error } = await supabase
         .from('organizations')
         .update({
-          branding_json: brandingToSave,
+          branding_json: brandingToذخیره,
         })
         .eq('id', orgId);
 
@@ -164,7 +164,7 @@ export const BrandingSettings = () => {
     }
   };
 
-  if (isLoading) {
+  if (isبارگذاری) {
     return (
       <div className="flex items-center justify-center py-8">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -322,8 +322,8 @@ export const BrandingSettings = () => {
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? 'Saving...' : 'Save Changes'}
+        <Button onClick={handleذخیره} disabled={isSaving}>
+          {isSaving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
         </Button>
       </div>
     </div>

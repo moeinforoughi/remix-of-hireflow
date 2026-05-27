@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, User, FileText, Briefcase, Mail, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
@@ -45,9 +45,9 @@ const getEntityIcon = (entity: string) => {
 
 const getActionLabel = (action: string) => {
   const labels: Record<string, string> = {
-    created: 'Created',
-    updated: 'Updated',
-    deleted: 'Deleted',
+    created: 'ایجادd',
+    updated: 'به‌روزرسانیd',
+    deleted: 'حذفd',
     stage_moved: 'Moved stage',
     state_changed: 'Changed state',
     sent: 'Sent',
@@ -74,7 +74,7 @@ const getActionColor = (action: string): 'default' | 'secondary' | 'destructive'
 export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityTimelineProps) => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [candidateActivities, setCandidateActivities] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -110,7 +110,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
     } catch (error: any) {
       console.error('Error fetching activities:', error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -192,7 +192,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Activity Timeline</CardTitle>
+          <Cardعنوان>Activity Timeline</Cardعنوان>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
@@ -209,7 +209,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Activity Timeline</CardTitle>
+          <Cardعنوان>Activity Timeline</Cardعنوان>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground py-8">No activity yet</p>
@@ -221,7 +221,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Activity Timeline</CardTitle>
+        <Cardعنوان>Activity Timeline</Cardعنوان>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -231,9 +231,9 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
 
             if (item.type === 'application') {
               icon = FileText;
-              const jobTitle = Array.isArray(item.data.job) ? item.data.job[0]?.title : item.data.job?.title;
+              const jobعنوان = Array.isArray(item.data.job) ? item.data.job[0]?.title : item.data.job?.title;
               label = 'Applied to Job';
-              description = jobTitle || 'Unknown position';
+              description = jobعنوان || 'Unknown position';
               
               if (item.data.state === 'rejected') {
                 badgeVariant = 'destructive';
@@ -241,40 +241,40 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
               } else if (item.data.current_stage?.type === 'hired') {
                 badgeVariant = 'default';
                 label = 'Hired';
-                description = `${jobTitle} - ${item.data.current_stage.name}`;
+                description = `${jobعنوان} - ${item.data.current_stage.name}`;
               } else if (item.data.current_stage) {
                 badgeVariant = 'secondary';
                 label = item.data.current_stage.name;
               }
             } else if (item.type === 'interview') {
               icon = Calendar;
-              const jobTitle = Array.isArray(item.data.application?.job) 
+              const jobعنوان = Array.isArray(item.data.application?.job) 
                 ? item.data.application?.job[0]?.title 
                 : item.data.application?.job?.title;
               label = 'Interview Scheduled';
-              description = `${item.data.title} - ${jobTitle}`;
+              description = `${item.data.title} - ${jobعنوان}`;
               badgeVariant = 'secondary';
               
               if (item.data.status === 'completed') {
                 label = 'Interview Completed';
               } else if (item.data.status === 'cancelled') {
-                label = 'Interview Cancelled';
+                label = 'Interview انصرافled';
                 badgeVariant = 'destructive';
               }
             } else if (item.type === 'offer') {
               icon = Mail;
-              const jobTitle = Array.isArray(item.data.application?.job) 
+              const jobعنوان = Array.isArray(item.data.application?.job) 
                 ? item.data.application?.job[0]?.title 
                 : item.data.application?.job?.title;
               const amount = item.data.base_amount?.toLocaleString();
               const currency = item.data.currency || 'USD';
-              description = `${jobTitle} - ${currency} ${amount}`;
+              description = `${jobعنوان} - ${currency} ${amount}`;
               
               if (item.data.state === 'draft') {
                 label = 'Offer Being Prepared';
                 badgeVariant = 'secondary';
               } else if (item.data.state === 'pending_approval') {
-                label = 'Offer Pending Approval';
+                label = 'Offer در انتظار Approval';
                 badgeVariant = 'secondary';
               } else if (item.data.state === 'approved') {
                 label = 'Offer Approved';
@@ -362,7 +362,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
                         {activity.action === 'stage_moved' && `moved the application to a new stage`}
                         {activity.action === 'state_changed' && `changed the application state`}
                         {activity.action === 'sent' && `sent a message`}
-                        {activity.action === 'scheduled' && `scheduled an interview`}
+                        {activity.action === 'scheduled' && `یک مصاحبه برنامه‌ریزی کرد`}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">System action</span>

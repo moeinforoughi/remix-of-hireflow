@@ -4,17 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Plus, X } from "lucide-react";
+import { ArrowLeft, ذخیره, Plus, X } from "lucide-react";
 
 export default function TemplateForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [bodyHtml, setBodyHtml] = useState("");
@@ -61,7 +61,7 @@ export default function TemplateForm() {
     setVariables(variables.filter((v) => v !== variable));
   };
 
-  const handleSubmit = async () => {
+  const handleثبت = async () => {
     if (!name || !subject || !bodyHtml) {
       toast({
         title: "Missing fields",
@@ -71,7 +71,7 @@ export default function TemplateForm() {
       return;
     }
 
-    setLoading(true);
+    setبارگذاری(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -126,7 +126,7 @@ export default function TemplateForm() {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -138,17 +138,17 @@ export default function TemplateForm() {
         </Button>
         <div>
           <h1 className="text-3xl">
-            {id ? "Edit Template" : "New Template"}
+            {id ? "ویرایش Template" : "New Template"}
           </h1>
           <p className="text-muted-foreground">
-            Create reusable email templates with variable support
+            ایجاد reusable email templates with variable support
           </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Template Details</CardTitle>
+          <Cardعنوان>Template Details</Cardعنوان>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -223,9 +223,9 @@ export default function TemplateForm() {
             )}
           </div>
 
-          <Button onClick={handleSubmit} disabled={loading} className="w-full">
-            <Save className="mr-2 h-4 w-4" />
-            {loading ? "Saving..." : id ? "Update Template" : "Create Template"}
+          <Button onClick={handleثبت} disabled={loading} className="w-full">
+            <ذخیره className="mr-2 h-4 w-4" />
+            {loading ? "در حال ذخیره..." : id ? "به‌روزرسانی Template" : "ایجاد Template"}
           </Button>
         </CardContent>
       </Card>

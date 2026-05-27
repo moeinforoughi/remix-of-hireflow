@@ -5,9 +5,9 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
 } from '@/components/ui/dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -71,7 +71,7 @@ const getRecommendationText = (recommendation: string) => {
 
 export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: ScorecardsDialogProps) => {
   const [scorecards, setScorecards] = useState<Scorecard[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
 
   const fetchScorecards = async () => {
     try {
-      setLoading(true);
+      setبارگذاری(true);
       const { data, error } = await supabase
         .from('scorecards')
         .select(`
@@ -102,12 +102,12 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
       setScorecards((data as any) || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to load scorecards',
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -131,9 +131,9 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Interview Scorecards Summary</DialogTitle>
+          <Dialogعنوان>Interview Scorecards Summary</Dialogعنوان>
           <DialogDescription>
-            Review feedback from all interviewers
+            Review feedback from all مصاحبه‌کننده
           </DialogDescription>
         </DialogHeader>
 
@@ -149,7 +149,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Overall Summary</CardTitle>
+                <Cardعنوان className="text-lg">Overall Summary</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -188,7 +188,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
                 <Card key={scorecard.id}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-base">{scorecard.user.full_name}</CardTitle>
+                      <Cardعنوان className="text-base">{scorecard.user.full_name}</Cardعنوان>
                       <Badge variant={getRecommendationColor(scorecard.recommendation)}>
                         {getRecommendationText(scorecard.recommendation)}
                       </Badge>

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 
 interface SkillMatchCardProps {
   candidateSkills: string[];
@@ -35,7 +35,7 @@ export const SkillMatchCard = ({ candidateSkills, requiredSkills = [] }: SkillMa
     <div className="flex h-44 py-3 px-3 pl-[30px] items-center gap-5 rounded-lg bg-muted">
       {/* Circular Progress Chart */}
       <div className="relative w-[108px] h-[108px] flex-shrink-0">
-        {/* Background circle */}
+        {/* بازگشتground circle */}
         <svg 
           className="absolute left-0 top-0 w-[108px] h-[108px]" 
           width="108" 

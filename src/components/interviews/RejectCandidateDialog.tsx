@@ -5,7 +5,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -21,7 +21,7 @@ import {
 interface RejectCandidateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (reason: string, notes: string) => void;
+  onتأیید: (reason: string, notes: string) => void;
 }
 
 const REJECTION_REASONS = [
@@ -38,14 +38,14 @@ const REJECTION_REASONS = [
 export const RejectCandidateDialog = ({
   open,
   onOpenChange,
-  onConfirm,
+  onتأیید,
 }: RejectCandidateDialogProps) => {
   const [reason, setReason] = useState('');
   const [notes, setNotes] = useState('');
 
-  const handleConfirm = () => {
+  const handleتأیید = () => {
     if (reason) {
-      onConfirm(reason, notes);
+      onتأیید(reason, notes);
       setReason('');
       setNotes('');
     }
@@ -55,7 +55,7 @@ export const RejectCandidateDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Reject Candidate</DialogTitle>
+          <Dialogعنوان>Reject Candidate</Dialogعنوان>
           <DialogDescription>
             Please select a reason for rejecting this candidate and provide any additional notes.
           </DialogDescription>
@@ -92,11 +92,11 @@ export const RejectCandidateDialog = ({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
           <Button 
             variant="destructive" 
-            onClick={handleConfirm}
+            onClick={handleتأیید}
             disabled={!reason}
           >
             Reject Candidate

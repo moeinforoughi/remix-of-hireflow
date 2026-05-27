@@ -1,10 +1,10 @@
 import React from 'react';
 import Sidebar from '@/components/dashboard/Sidebar';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import داشبوردHeader from '@/components/dashboard/داشبوردHeader';
 import StatsCards from '@/components/dashboard/StatsCards';
-import TasksPanel from '@/components/dashboard/TasksPanel';
+import وظایفPanel from '@/components/dashboard/وظایفPanel';
 import JobListingsTable from '@/components/dashboard/JobListingsTable';
-import NextMeetingCard from '@/components/dashboard/NextMeetingCard';
+import بعدیMeetingCard from '@/components/dashboard/بعدیMeetingCard';
 import RecentActivityFeed from '@/components/dashboard/RecentActivityFeed';
 
 const Index = () => {
@@ -17,18 +17,18 @@ const Index = () => {
         
         <main className="w-[77%] ml-5 max-md:w-full max-md:ml-0">
           <div className="w-full mt-[18px] max-md:max-w-full max-md:mt-10">
-            <DashboardHeader />
+            <داشبوردHeader />
             
             <div className="min-h-[898px] w-full mt-[26px] max-md:max-w-full">
               <StatsCards />
               
               <div className="flex w-full items-stretch gap-5 flex-1 flex-wrap h-full mt-5 max-md:max-w-full">
-                <TasksPanel />
+                <وظایفPanel />
                 <JobListingsTable />
               </div>
               
               <div className="flex min-h-[202px] w-full items-stretch gap-5 flex-wrap mt-5 max-md:max-w-full">
-                <NextMeetingCard />
+                <بعدیMeetingCard />
                 <RecentActivityFeed />
               </div>
             </div>

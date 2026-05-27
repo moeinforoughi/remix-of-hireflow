@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -46,7 +46,7 @@ export const AddCandidateRatingDialog = ({
   onSuccess,
 }: AddCandidateRatingDialogProps) => {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [ratings, setRatings] = useState<Record<RatingKey, number>>({
     soft_skills: 3,
     hard_skills: 3,
@@ -78,8 +78,8 @@ export const AddCandidateRatingDialog = ({
     }
   }, [existingRating, open]);
 
-  const handleSubmit = async () => {
-    setLoading(true);
+  const handleثبت = async () => {
+    setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -127,7 +127,7 @@ export const AddCandidateRatingDialog = ({
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -135,7 +135,7 @@ export const AddCandidateRatingDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{existingRating ? 'Edit Rating' : 'Rate Candidate'}</DialogTitle>
+          <Dialogعنوان>{existingRating ? 'ویرایش Rating' : 'Rate Candidate'}</Dialogعنوان>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -166,10 +166,10 @@ export const AddCandidateRatingDialog = ({
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? 'Saving...' : existingRating ? 'Update' : 'Save Rating'}
+          <Button onClick={handleثبت} disabled={loading}>
+            {loading ? 'در حال ذخیره...' : existingRating ? 'به‌روزرسانی' : 'ذخیره Rating'}
           </Button>
         </div>
       </DialogContent>

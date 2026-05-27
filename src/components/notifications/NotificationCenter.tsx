@@ -112,12 +112,12 @@ export const NotificationCenter = () => {
       setUnreadCount(0);
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'All notifications marked as read',
       });
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });

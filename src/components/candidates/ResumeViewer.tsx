@@ -2,7 +2,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Download, ExternalLink } from 'lucide-react';
@@ -44,9 +44,9 @@ export const ResumeViewer = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0">
         <DialogHeader className="px-6 py-4 border-b flex flex-row items-center justify-between space-y-0">
-          <DialogTitle className="text-xl font-semibold">
+          <Dialogعنوان className="text-xl font-semibold">
             {candidateName}'s Resume
-          </DialogTitle>
+          </Dialogعنوان>
           <div className="flex items-center gap-2 mr-12">
             <Button
               variant="outline"

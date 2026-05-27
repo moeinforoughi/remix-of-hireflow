@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -20,7 +20,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
@@ -29,7 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { تأییدDialog } from '@/components/shared/تأییدDialog';
 import { PERMISSION_PRESETS, getPresetById, detectPresetFromPermissions, PermissionPreset } from '@/lib/permission-presets';
 
 type AppRole = 'basic' | 'job_admin' | 'site_admin';
@@ -84,8 +84,8 @@ const ROLE_PERMISSION_MATRIX: Record<AppRole, Record<string, boolean>> = {
 // Which presets are available for each role
 const ROLE_PRESET_FILTER: Record<AppRole, string[]> = {
   basic: ['viewer', 'custom'], // Basic users can only be Viewer or Custom (with view only)
-  job_admin: ['viewer', 'interviewer', 'recruiter', 'hiring_manager', 'custom'],
-  site_admin: ['viewer', 'interviewer', 'recruiter', 'hiring_manager', 'custom'],
+  job_admin: ['viewer', 'مصاحبه‌کننده', 'recruiter', 'hiring_manager', 'custom'],
+  site_admin: ['viewer', 'مصاحبه‌کننده', 'recruiter', 'hiring_manager', 'custom'],
 };
 
 const canTogglePermission = (role: AppRole | undefined, permission: string): boolean => {
@@ -120,11 +120,11 @@ const getRoleLabel = (role: AppRole | undefined): string => {
 export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
   const [teamMembers, setTeamMembers] = useState<JobTeamMember[]>([]);
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedPreset, setSelectedPreset] = useState('recruiter');
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteDialogOpen, setحذفDialogOpen] = useState(false);
   const [deletingMemberId, setDeletingMemberId] = useState<string | null>(null);
   const [permissions, setPermissions] = useState({
     can_view: true,
@@ -177,7 +177,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
 
         if (rolesError) throw rolesError;
 
-        // Create a map of user_id to role
+        // ایجاد a map of user_id to role
         const roleMap = new Map<string, AppRole>();
         rolesData?.forEach(r => roleMap.set(r.user_id, r.role as AppRole));
 
@@ -193,12 +193,12 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -234,7 +234,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
 
         if (rolesError) throw rolesError;
 
-        // Create a map of user_id to role
+        // ایجاد a map of user_id to role
         const roleMap = new Map<string, AppRole>();
         rolesData?.forEach(r => roleMap.set(r.user_id, r.role as AppRole));
 
@@ -286,7 +286,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Team member added successfully',
       });
 
@@ -302,14 +302,14 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       fetchTeamMembers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleUpdatePermission = async (
+  const handleبه‌روزرسانیPermission = async (
     memberId: string,
     field: keyof typeof permissions,
     value: boolean
@@ -323,14 +323,14 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Permission updated',
       });
 
       fetchTeamMembers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -349,16 +349,16 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Team member removed',
       });
 
-      setDeleteDialogOpen(false);
+      setحذفDialogOpen(false);
       setDeletingMemberId(null);
       fetchTeamMembers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -407,7 +407,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       <Checkbox
         checked={member[permission]}
         onCheckedChange={(checked) =>
-          handleUpdatePermission(member.id, permission, checked as boolean)
+          handleبه‌روزرسانیPermission(member.id, permission, checked as boolean)
         }
       />
     );
@@ -430,7 +430,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Job Team</CardTitle>
+            <Cardعنوان>Job Team</Cardعنوان>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
@@ -440,7 +440,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add Team Member</DialogTitle>
+                  <Dialogعنوان>Add Team Member</Dialogعنوان>
                   <DialogDescription>
                     Grant a user access to this job with specific permissions
                   </DialogDescription>
@@ -604,7 +604,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
 
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                    Cancel
+                    انصراف
                   </Button>
                   <Button onClick={handleAddMember} disabled={!selectedUser}>
                     Add Member
@@ -666,7 +666,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                         size="sm"
                         onClick={() => {
                           setDeletingMemberId(member.id);
-                          setDeleteDialogOpen(true);
+                          setحذفDialogOpen(true);
                         }}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -680,10 +680,10 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
         </CardContent>
       </Card>
 
-      <ConfirmDialog
+      <تأییدDialog
         open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleRemoveMember}
+        onOpenChange={setحذفDialogOpen}
+        onتأیید={handleRemoveMember}
         title="Remove Team Member"
         description="Are you sure you want to remove this user from the job team? They will lose access to this job's applications and data."
         confirmText="Remove"

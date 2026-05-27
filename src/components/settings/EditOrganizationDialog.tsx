@@ -3,11 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
-interface EditOrganizationDialogProps {
+interface ویرایشOrganizationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
@@ -18,8 +18,8 @@ interface OrgSettings {
   salary_currency?: string;
 }
 
-export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOrganizationDialogProps) => {
-  const [loading, setLoading] = useState(false);
+export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }: ویرایشOrganizationDialogProps) => {
+  const [loading, setبارگذاری] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgName, setOrgName] = useState('');
   const [orgSlug, setOrgSlug] = useState('');
@@ -62,17 +62,17 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
       setCompanyEmail(orgSettings.company_email || '');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleSave = async () => {
+  const handleذخیره = async () => {
     if (!orgId) return;
 
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const updatedSettings = { ...settings, company_email: companyEmail };
       const { error } = await supabase
@@ -87,7 +87,7 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Organization information has been updated',
       });
 
@@ -95,12 +95,12 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -108,9 +108,9 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Organization</DialogTitle>
+          <Dialogعنوان>ویرایش Organization</Dialogعنوان>
           <DialogDescription>
-            Update your organization information here.
+            به‌روزرسانی your organization information here.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -145,11 +145,11 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
-          <Button onClick={handleSave} disabled={loading}>
+          <Button onClick={handleذخیره} disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Save Changes
+            ذخیره تغییرات
           </Button>
         </DialogFooter>
       </DialogContent>

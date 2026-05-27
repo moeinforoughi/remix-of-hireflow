@@ -3,18 +3,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
-interface EditAccountDialogProps {
+interface ویرایشAccountDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
-export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccountDialogProps) => {
-  const [loading, setLoading] = useState(false);
+export const ویرایشAccountDialog = ({ open, onOpenChange, onSuccess }: ویرایشAccountDialogProps) => {
+  const [loading, setبارگذاری] = useState(false);
   const [fullName, setFullName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const { toast } = useToast();
@@ -42,15 +42,15 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
       setAvatarUrl(data?.avatar_url || '');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleSave = async () => {
-    setLoading(true);
+  const handleذخیره = async () => {
+    setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -66,7 +66,7 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Your account information has been updated',
       });
 
@@ -79,12 +79,12 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -92,9 +92,9 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Account Information</DialogTitle>
+          <Dialogعنوان>ویرایش Account Information</Dialogعنوان>
           <DialogDescription>
-            Update your personal information here.
+            به‌روزرسانی your personal information here.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -119,11 +119,11 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
-          <Button onClick={handleSave} disabled={loading}>
+          <Button onClick={handleذخیره} disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Save Changes
+            ذخیره تغییرات
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Briefcase, Search, Loader2, X } from 'lucide-react';
+import { MapPin, Briefcase, جستجو, Loader2, X } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Job {
@@ -21,11 +21,11 @@ interface Job {
 
 const CareersHome = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [departmentFilter, setDepartmentFilter] = useState<string>('all');
-  const [locationFilter, setLocationFilter] = useState<string>('all');
-  const [employmentTypeFilter, setEmploymentTypeFilter] = useState<string>('all');
+  const [loading, setبارگذاری] = useState(true);
+  const [searchQuery, setجستجوQuery] = useState('');
+  const [departmentفیلتر, setDepartmentفیلتر] = useState<string>('all');
+  const [locationفیلتر, setمکانفیلتر] = useState<string>('all');
+  const [employmentTypeفیلتر, setEmploymentTypeفیلتر] = useState<string>('all');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const CareersHome = () => {
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -54,25 +54,25 @@ const CareersHome = () => {
   const employmentTypes = Array.from(new Set(jobs.map(j => j.employment_type)));
 
   const filteredJobs = jobs.filter((job) => {
-    const matchesSearch = 
+    const matchesجستجو = 
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (job.department?.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (job.location?.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    const matchesDepartment = departmentFilter === 'all' || job.department === departmentFilter;
-    const matchesLocation = locationFilter === 'all' || job.location === locationFilter;
-    const matchesEmploymentType = employmentTypeFilter === 'all' || job.employment_type === employmentTypeFilter;
+    const matchesDepartment = departmentفیلتر === 'all' || job.department === departmentفیلتر;
+    const matchesمکان = locationفیلتر === 'all' || job.location === locationفیلتر;
+    const matchesEmploymentType = employmentTypeفیلتر === 'all' || job.employment_type === employmentTypeفیلتر;
 
-    return matchesSearch && matchesDepartment && matchesLocation && matchesEmploymentType;
+    return matchesجستجو && matchesDepartment && matchesمکان && matchesEmploymentType;
   });
 
-  const hasActiveFilters = searchQuery || departmentFilter !== 'all' || locationFilter !== 'all' || employmentTypeFilter !== 'all';
+  const hasActiveفیلترs = searchQuery || departmentفیلتر !== 'all' || locationفیلتر !== 'all' || employmentTypeفیلتر !== 'all';
 
-  const clearFilters = () => {
-    setSearchQuery('');
-    setDepartmentFilter('all');
-    setLocationFilter('all');
-    setEmploymentTypeFilter('all');
+  const clearفیلترs = () => {
+    setجستجوQuery('');
+    setDepartmentفیلتر('all');
+    setمکانفیلتر('all');
+    setEmploymentTypeفیلتر('all');
   };
 
   const formatEmploymentType = (type: string) => {
@@ -99,23 +99,23 @@ const CareersHome = () => {
             Discover opportunities to grow your career with us
           </p>
           
-          {/* Filters and Search */}
+          {/* فیلترs and جستجو */}
           <div className="max-w-4xl mx-auto space-y-4">
-            {/* Search Bar */}
+            {/* جستجو Bar */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search by job title, department, or location..."
+                placeholder="جستجو by job title, department, or location..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => setجستجوQuery(e.target.value)}
                 className="pl-10 h-12 text-lg"
               />
             </div>
 
-            {/* Dropdown Filters */}
+            {/* Dropdown فیلترs */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <Select value={departmentفیلتر} onValueChange={setDepartmentفیلتر}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
                   <SelectValue placeholder="Department" />
                 </SelectTrigger>
@@ -129,12 +129,12 @@ const CareersHome = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={locationFilter} onValueChange={setLocationFilter}>
+              <Select value={locationفیلتر} onValueChange={setمکانفیلتر}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
-                  <SelectValue placeholder="Location" />
+                  <SelectValue placeholder="مکان" />
                 </SelectTrigger>
                 <SelectContent className="bg-background">
-                  <SelectItem value="all">All Locations</SelectItem>
+                  <SelectItem value="all">All مکانs</SelectItem>
                   {locations.map((loc) => (
                     <SelectItem key={loc} value={loc!}>
                       {loc}
@@ -143,7 +143,7 @@ const CareersHome = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={employmentTypeFilter} onValueChange={setEmploymentTypeFilter}>
+              <Select value={employmentTypeفیلتر} onValueChange={setEmploymentTypeفیلتر}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
                   <SelectValue placeholder="Employment Type" />
                 </SelectTrigger>
@@ -157,8 +157,8 @@ const CareersHome = () => {
                 </SelectContent>
               </Select>
 
-              {hasActiveFilters && (
-                <Button variant="outline" onClick={clearFilters} className="bg-background">
+              {hasActiveفیلترs && (
+                <Button variant="outline" onClick={clearفیلترs} className="bg-background">
                   <X className="h-4 w-4 mr-2" />
                   Clear
                 </Button>
@@ -168,7 +168,7 @@ const CareersHome = () => {
         </div>
       </div>
 
-      {/* Job Listings */}
+      {/* موقعیت‌های شغلی */}
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="mb-6">
           <h2 className="text-2xl">
@@ -180,15 +180,15 @@ const CareersHome = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">
-                {hasActiveFilters ? 'No jobs match your filters.' : 'No open positions at this time.'}
+                {hasActiveفیلترs ? 'No jobs match your filters.' : 'No open positions at this time.'}
               </p>
-              {hasActiveFilters && (
+              {hasActiveفیلترs && (
                 <Button
                   variant="outline"
                   className="mt-4"
-                  onClick={clearFilters}
+                  onClick={clearفیلترs}
                 >
-                  Clear Filters
+                  Clear فیلترs
                 </Button>
               )}
             </CardContent>
@@ -204,7 +204,7 @@ const CareersHome = () => {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-xl mb-2">{job.title}</CardTitle>
+                      <Cardعنوان className="text-xl mb-2">{job.title}</Cardعنوان>
                       <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                         {job.department && (
                           <div className="flex items-center gap-1">

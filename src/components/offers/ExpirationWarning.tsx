@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Clock } from "lucide-react";
-import { differenceInDays, isPast, isToday, isTomorrow } from "date-fns";
+import { differenceInDays, isPast, isامروز, isفردا } from "date-fns";
 
 interface ExpirationWarningProps {
   expiresAt: string | null | undefined;
@@ -28,7 +28,7 @@ export const ExpirationWarning = ({ expiresAt, state }: ExpirationWarningProps) 
     );
   }
 
-  if (isToday(expirationDate)) {
+  if (isامروز(expirationDate)) {
     return (
       <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
         <AlertCircle className="h-4 w-4 text-destructive" />
@@ -40,7 +40,7 @@ export const ExpirationWarning = ({ expiresAt, state }: ExpirationWarningProps) 
     );
   }
 
-  if (isTomorrow(expirationDate)) {
+  if (isفردا(expirationDate)) {
     return (
       <div className="flex items-center gap-2 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg">
         <AlertCircle className="h-4 w-4 text-orange-500" />

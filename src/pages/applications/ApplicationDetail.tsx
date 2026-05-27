@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +14,7 @@ import { ApplicationActions } from '@/components/applications/ApplicationActions
 import { ActivityTimeline } from '@/components/shared/ActivityTimeline';
 import { ScorecardsDialog } from '@/components/interviews/ScorecardsDialog';
 import { AddTaskDialog } from '@/components/tasks/AddTaskDialog';
-import { TasksList } from '@/components/tasks/TasksList';
+import { وظایفList } from '@/components/tasks/وظایفList';
 
 interface ApplicationDetail {
   id: string;
@@ -66,13 +66,13 @@ const ApplicationDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [application, setApplication] = useState<ApplicationDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loadingInterviews, setLoadingInterviews] = useState(false);
+  const [loadingInterviews, setبارگذاریInterviews] = useState(false);
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
   const [scorecardsDialogOpen, setScorecardsDialogOpen] = useState(false);
   const [offer, setOffer] = useState<Offer | null>(null);
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setوظایف] = useState<any[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -84,7 +84,7 @@ const ApplicationDetail = () => {
 
   useEffect(() => {
     if (application?.candidate?.id) {
-      fetchTasks();
+      fetchوظایف();
     }
   }, [application?.candidate?.id]);
 
@@ -110,12 +110,12 @@ const ApplicationDetail = () => {
       setApplication(data);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -123,7 +123,7 @@ const ApplicationDetail = () => {
     if (!id) return;
     
     try {
-      setLoadingInterviews(true);
+      setبارگذاریInterviews(true);
       const { data, error } = await supabase
         .from('interviews')
         .select('*')
@@ -135,12 +135,12 @@ const ApplicationDetail = () => {
     } catch (error: any) {
       console.error('Error fetching interviews:', error);
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to load interviews',
         variant: 'destructive',
       });
     } finally {
-      setLoadingInterviews(false);
+      setبارگذاریInterviews(false);
     }
   };
 
@@ -161,7 +161,7 @@ const ApplicationDetail = () => {
     }
   };
 
-  const fetchTasks = async () => {
+  const fetchوظایف = async () => {
     if (!application?.candidate?.id) return;
 
     try {
@@ -172,7 +172,7 @@ const ApplicationDetail = () => {
         .order('due_date', { ascending: true, nullsFirst: false });
 
       if (error) throw error;
-      setTasks(data || []);
+      setوظایف(data || []);
     } catch (error: any) {
       console.error('Error fetching tasks:', error);
     }
@@ -237,7 +237,7 @@ const ApplicationDetail = () => {
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -261,7 +261,7 @@ const ApplicationDetail = () => {
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -311,7 +311,7 @@ const ApplicationDetail = () => {
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -335,7 +335,7 @@ const ApplicationDetail = () => {
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -360,7 +360,7 @@ const ApplicationDetail = () => {
         </p>
         <Button onClick={() => navigate('/applications')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Applications
+          بازگشت to Applications
         </Button>
       </div>
     );
@@ -413,7 +413,7 @@ const ApplicationDetail = () => {
       <Tabs defaultValue="overview">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="tasks">Tasks ({tasks.length})</TabsTrigger>
+          <TabsTrigger value="tasks">وظایف ({tasks.length})</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="timeline">Timeline</TabsTrigger>
           <TabsTrigger value="interviews">Interviews</TabsTrigger>
@@ -423,7 +423,7 @@ const ApplicationDetail = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Candidate Information</CardTitle>
+                <Cardعنوان>Candidate Information</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
@@ -438,7 +438,7 @@ const ApplicationDetail = () => {
                 )}
                 {application.candidate.location && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Location</p>
+                    <p className="text-sm text-muted-foreground">مکان</p>
                     <p className="font-medium">{application.candidate.location}</p>
                   </div>
                 )}
@@ -460,7 +460,7 @@ const ApplicationDetail = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Application Details</CardTitle>
+                <Cardعنوان>Application Details</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
@@ -488,7 +488,7 @@ const ApplicationDetail = () => {
           {application.cover_letter && (
             <Card>
               <CardHeader>
-                <CardTitle>Cover Letter</CardTitle>
+                <Cardعنوان>Cover Letter</Cardعنوان>
               </CardHeader>
               <CardContent>
                 <div className="prose prose-sm max-w-none dark:prose-invert">
@@ -501,7 +501,7 @@ const ApplicationDetail = () => {
           {application.state === 'rejected' && (
             <Card>
               <CardHeader>
-                <CardTitle>Rejection Details</CardTitle>
+                <Cardعنوان>Rejection Details</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-2">
                 {application.rejection_reason && (
@@ -524,15 +524,15 @@ const ApplicationDetail = () => {
         <TabsContent value="tasks" className="space-y-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Tasks</CardTitle>
+              <Cardعنوان>وظایف</Cardعنوان>
               <AddTaskDialog 
                 candidateId={application.candidate.id} 
                 orgId={application.candidate.org_id} 
-                onTaskAdded={fetchTasks} 
+                onTaskAdded={fetchوظایف} 
               />
             </CardHeader>
             <CardContent>
-              <TasksList tasks={tasks} onTasksChange={fetchTasks} />
+              <وظایفList tasks={tasks} onوظایفChange={fetchوظایف} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -555,7 +555,7 @@ const ApplicationDetail = () => {
         <TabsContent value="interviews">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Interviews</CardTitle>
+              <Cardعنوان>Interviews</Cardعنوان>
               <Button asChild size="sm">
                 <Link to={`/interviews/new?applicationId=${application.id}`}>
                   <Calendar className="h-4 w-4 mr-2" />
@@ -631,7 +631,7 @@ const ApplicationDetail = () => {
                                 rel="noopener noreferrer"
                                 className="text-primary hover:underline truncate"
                               >
-                                Join Virtual Meeting
+                                Join آنلاین Meeting
                               </a>
                             </div>
                           )}
@@ -640,7 +640,7 @@ const ApplicationDetail = () => {
                         <div className="mt-4 grid grid-cols-2 gap-2">
                           <Button asChild variant="outline" size="sm" className="w-full">
                             <Link to={`/interviews/${interview.id}`}>
-                              View Details
+                              مشاهده جزئیات
                             </Link>
                           </Button>
                           {interview.status === 'completed' && (

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +36,7 @@ export const MessageComposer = ({
 }: MessageComposerProps) => {
   const { toast } = useToast();
   const { canMessage } = useUserPermissions();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [templates, setTemplates] = useState<MessageTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [to, setTo] = useState<string>(defaultTo.join(", "));
@@ -130,7 +130,7 @@ export const MessageComposer = ({
       return;
     }
 
-    setLoading(true);
+    setبارگذاری(true);
 
     try {
       // Get user profile for org_id
@@ -148,7 +148,7 @@ export const MessageComposer = ({
       const interpolatedSubject = interpolateVariables(subject);
       const interpolatedBody = interpolateVariables(body);
 
-      // Create message record
+      // ایجاد message record
       const { data: message, error: messageError } = await supabase
         .from("messages")
         .insert({
@@ -196,7 +196,7 @@ export const MessageComposer = ({
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -207,7 +207,7 @@ export const MessageComposer = ({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Compose Message</CardTitle>
+          <Cardعنوان>Compose Message</Cardعنوان>
         </CardHeader>
         <CardContent>
           <Alert>
@@ -224,7 +224,7 @@ export const MessageComposer = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Compose Message</CardTitle>
+        <Cardعنوان>Compose Message</Cardعنوان>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>

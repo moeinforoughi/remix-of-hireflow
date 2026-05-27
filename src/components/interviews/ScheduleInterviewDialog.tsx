@@ -9,7 +9,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -36,14 +36,14 @@ import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   application_id: z.string().min(1, 'Application is required'),
-  title: z.string().min(1, 'Title is required'),
+  title: z.string().min(1, 'عنوان is required'),
   date: z.date({ required_error: 'Date is required' }),
   start_time: z.string().min(1, 'Start time is required'),
   end_time: z.string().min(1, 'End time is required'),
   interview_type: z.enum(['onsite', 'virtual']),
   location: z.string().optional(),
   meeting_link: z.string().optional(),
-  panel_user_ids: z.array(z.string()).min(1, 'Select at least one interviewer'),
+  panel_user_ids: z.array(z.string()).min(1, 'Select at least one مصاحبه‌کننده'),
   status: z.enum(['scheduled', 'completed', 'no_show', 'cancelled']),
 }).refine((data) => {
   if (data.interview_type === 'onsite') {
@@ -51,7 +51,7 @@ const formSchema = z.object({
   }
   return true;
 }, {
-  message: 'Location is required for onsite interviews',
+  message: 'مکان is required for onsite interviews',
   path: ['location'],
 }).refine((data) => {
   if (data.interview_type === 'virtual') {
@@ -76,7 +76,7 @@ export function ScheduleInterviewDialog({
   onOpenChange,
   onSuccess,
 }: ScheduleInterviewDialogProps) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -119,15 +119,15 @@ export function ScheduleInterviewDialog({
       setUsers(usersRes.data || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+  const onثبت = async (values: FormValues) => {
+    setبارگذاری(true);
     try {
       const startDateTime = new Date(values.date);
       const [startHour, startMinute] = values.start_time.split(':');
@@ -151,7 +151,7 @@ export function ScheduleInterviewDialog({
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Interview scheduled successfully',
       });
 
@@ -160,12 +160,12 @@ export function ScheduleInterviewDialog({
       onSuccess?.();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -173,11 +173,11 @@ export function ScheduleInterviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Schedule Interview</DialogTitle>
+          <Dialogعنوان>Schedule Interview</Dialogعنوان>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onثبت={form.handleثبت(onثبت)} className="space-y-4">
             <FormField
               control={form.control}
               name="application_id"
@@ -210,7 +210,7 @@ export function ScheduleInterviewDialog({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Interview Title</FormLabel>
+                  <FormLabel>Interview عنوان</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., Technical Interview" {...field} />
                   </FormControl>
@@ -310,7 +310,7 @@ export function ScheduleInterviewDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="virtual">Virtual</SelectItem>
+                      <SelectItem value="virtual">آنلاین</SelectItem>
                       <SelectItem value="onsite">Onsite</SelectItem>
                     </SelectContent>
                   </Select>
@@ -344,7 +344,7 @@ export function ScheduleInterviewDialog({
                 name="location"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Location</FormLabel>
+                    <FormLabel>مکان</FormLabel>
                     <FormControl>
                       <Input placeholder="Office address" {...field} />
                     </FormControl>
@@ -371,8 +371,8 @@ export function ScheduleInterviewDialog({
                           )}
                         >
                           {field.value?.length
-                            ? `${field.value.length} interviewer(s) selected`
-                            : 'Select interviewers'}
+                            ? `${field.value.length} مصاحبه‌کننده(s) selected`
+                            : 'Select مصاحبه‌کننده'}
                           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
@@ -438,7 +438,7 @@ export function ScheduleInterviewDialog({
                       <SelectItem value="scheduled">Scheduled</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
                       <SelectItem value="no_show">No Show</SelectItem>
-                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                      <SelectItem value="cancelled">انصرافled</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -452,7 +452,7 @@ export function ScheduleInterviewDialog({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                انصراف
               </Button>
               <Button type="submit" disabled={loading}>
                 {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}

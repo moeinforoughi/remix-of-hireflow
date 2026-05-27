@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { TimePickerAMPM } from '@/components/ui/time-picker-ampm';
@@ -22,7 +22,7 @@ import { sendInterviewInvitation } from '@/lib/email-notifications';
 import { notifyInterviewScheduled } from '@/lib/notifications';
 
 const formSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
+  title: z.string().min(1, 'عنوان is required'),
   application_id: z.string().min(1, 'Please select an application'),
   interview_type: z.enum(['virtual', 'onsite'], {
     required_error: 'Please select interview type',
@@ -39,7 +39,7 @@ const formSchema = z.object({
   }
   return true;
 }, {
-  message: 'Location is required for on-site interviews',
+  message: 'مکان is required for on-site interviews',
   path: ['location'],
 }).refine((data) => {
   if (data.interview_type === 'virtual' && !data.meeting_link) {
@@ -57,7 +57,7 @@ const InterviewForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -112,8 +112,8 @@ const InterviewForm = () => {
     }
   };
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+  const onثبت = async (values: FormValues) => {
+    setبارگذاری(true);
     try {
       // Combine date and time
       const startDateTime = new Date(values.start_date);
@@ -161,7 +161,7 @@ const InterviewForm = () => {
           // Don't fail the interview scheduling if email fails
         }
 
-        // Create in-app notifications
+        // ایجاد in-app notifications
         try {
           await notifyInterviewScheduled(
             selectedApp.id,
@@ -173,15 +173,15 @@ const InterviewForm = () => {
           console.error('Failed to create notifications:', notifError);
         }
 
-        // Send notifications to interviewers
+        // Send notifications to مصاحبه‌کننده
         if (values.panel_user_ids && values.panel_user_ids.length > 0) {
           const selectedInterviewers = users.filter(u => values.panel_user_ids?.includes(u.id));
           
-          for (const interviewer of selectedInterviewers) {
+          for (const مصاحبه‌کننده of selectedInterviewers) {
             try {
               await sendInterviewInvitation(
-                interviewer.email,
-                interviewer.full_name,
+                مصاحبه‌کننده.email,
+                مصاحبه‌کننده.full_name,
                 selectedApp.job.title,
                 format(startDateTime, 'PPP'),
                 format(startDateTime, 'p'),
@@ -191,10 +191,10 @@ const InterviewForm = () => {
                 selectedApp.candidate.id
               );
 
-              // Create in-app notification for interviewer
+              // ایجاد in-app notification for مصاحبه‌کننده
               const { data: userData } = await supabase.auth.getUser();
               await supabase.from('notifications').insert({
-                user_id: interviewer.id,
+                user_id: مصاحبه‌کننده.id,
                 org_id: userData.user?.user_metadata?.org_id,
                 type: 'interview_scheduled',
                 title: 'Interview Panel Assignment',
@@ -203,26 +203,26 @@ const InterviewForm = () => {
                 entity_id: interview.id,
               });
             } catch (error) {
-              console.error(`Failed to notify interviewer ${interviewer.full_name}:`, error);
+              console.error(`Failed to notify مصاحبه‌کننده ${مصاحبه‌کننده.full_name}:`, error);
             }
           }
         }
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Interview scheduled successfully',
       });
 
       navigate('/interviews');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -235,17 +235,17 @@ const InterviewForm = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Interview Details</CardTitle>
+          <Cardعنوان>Interview Details</Cardعنوان>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Interview Title</FormLabel>
+                    <FormLabel>Interview عنوان</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Technical Interview" {...field} />
                     </FormControl>
@@ -295,7 +295,7 @@ const InterviewForm = () => {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Add interviewers..." />
+                          <SelectValue placeholder="Add مصاحبه‌کننده..." />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -421,7 +421,7 @@ const InterviewForm = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="virtual">Virtual Interview</SelectItem>
+                        <SelectItem value="virtual">آنلاین Interview</SelectItem>
                         <SelectItem value="onsite">On-site Interview</SelectItem>
                       </SelectContent>
                     </Select>
@@ -436,7 +436,7 @@ const InterviewForm = () => {
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Location</FormLabel>
+                      <FormLabel>مکان</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., Office - Conference Room A" {...field} />
                       </FormControl>
@@ -474,7 +474,7 @@ const InterviewForm = () => {
                   Schedule Interview
                 </Button>
                 <Button type="button" variant="outline" onClick={() => navigate('/interviews')}>
-                  Cancel
+                  انصراف
                 </Button>
               </div>
             </form>

@@ -34,18 +34,18 @@ interface Offer {
 
 const OffersList = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { role, canViewOffer, loading: permissionsLoading } = useUserPermissions();
+  const { role, canViewOffer, loading: permissionsبارگذاری } = useUserPermissions();
 
   useEffect(() => {
     // Only fetch offers once permissions are loaded
-    if (!permissionsLoading) {
+    if (!permissionsبارگذاری) {
       fetchOffers();
       checkExpiredOffers();
     }
-  }, [permissionsLoading, role]);
+  }, [permissionsبارگذاری, role]);
 
   const fetchOffers = async () => {
     try {
@@ -70,7 +70,7 @@ const OffersList = () => {
 
       if (error) throw error;
       
-      // Filter offers based on permissions for non-site-admins
+      // فیلتر offers based on permissions for non-site-admins
       let filteredOffers = data || [];
       if (role !== 'site_admin') {
         filteredOffers = (data || []).filter((offer: any) => {
@@ -82,12 +82,12 @@ const OffersList = () => {
       setOffers(filteredOffers);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -102,7 +102,7 @@ const OffersList = () => {
 
       if (error) throw error;
 
-      // Update expired offers
+      // به‌روزرسانی expired offers
       const now = new Date();
       const offersToExpire = expiredOffers?.filter(
         offer => offer.expires_at && isPast(new Date(offer.expires_at))
@@ -129,7 +129,7 @@ const OffersList = () => {
       case 'draft':
         return <Badge variant="outline">Draft</Badge>;
       case 'pending_approval':
-        return <Badge variant="secondary">Pending Approval</Badge>;
+        return <Badge variant="secondary">در انتظار Approval</Badge>;
       case 'approved':
         return <Badge variant="success">Approved</Badge>;
       case 'sent':
@@ -154,7 +154,7 @@ const OffersList = () => {
     }).format(total);
   };
 
-  if (loading || permissionsLoading) {
+  if (loading || permissionsبارگذاری) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -170,7 +170,7 @@ const OffersList = () => {
         </div>
         <Button onClick={() => navigate('/offers/new')}>
           <Plus className="h-4 w-4 mr-2" />
-          Create Offer
+          ایجاد Offer
         </Button>
       </div>
 
@@ -181,7 +181,7 @@ const OffersList = () => {
             <p className="text-muted-foreground mb-4">No offers created yet</p>
             <Button onClick={() => navigate('/offers/new')}>
               <Plus className="h-4 w-4 mr-2" />
-              Create First Offer
+              ایجاد First Offer
             </Button>
           </CardContent>
         </Card>
@@ -193,7 +193,7 @@ const OffersList = () => {
               <TableHead>Position</TableHead>
               <TableHead>Total Compensation</TableHead>
               <TableHead>Base Salary</TableHead>
-              <TableHead>Created</TableHead>
+              <TableHead>ایجادd</TableHead>
               <TableHead>Expires</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-12"></TableHead>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, X } from "lucide-react";
@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
-interface PendingApproval {
+interface در انتظارApproval {
   id: string;
   offer_id: string;
   approver_user_id: string;
@@ -28,24 +28,24 @@ interface ApprovalRequestedDialogProps {
 }
 
 export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequestedDialogProps) {
-  const [approvals, setApprovals] = useState<PendingApproval[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [approvals, setApprovals] = useState<در انتظارApproval[]>([]);
+  const [loading, setبارگذاری] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
-      fetchPendingApprovals();
+      fetchدر انتظارApprovals();
     }
   }, [open]);
 
-  const fetchPendingApprovals = async () => {
-    setLoading(true);
+  const fetchدر انتظارApprovals = async () => {
+    setبارگذاری(true);
     try {
       // Get current user's org_id
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setLoading(false);
+        setبارگذاری(false);
         return;
       }
       
@@ -56,7 +56,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
         .single();
       
       if (!profile) {
-        setLoading(false);
+        setبارگذاری(false);
         return;
       }
 
@@ -100,7 +100,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
 
       if (error) throw error;
 
-      const formattedData: PendingApproval[] = (data || []).map((approval: any) => ({
+      const formattedData: در انتظارApproval[] = (data || []).map((approval: any) => ({
         id: approval.id,
         offer_id: approval.offers.id,
         approver_user_id: approval.approver_user_id,
@@ -119,12 +119,12 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
     } catch (error: any) {
       console.error('Error fetching approvals:', error);
       toast({
-        title: "Error",
+        title: "خطا",
         description: "Failed to load pending approvals",
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -157,11 +157,11 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
           : "The offer has been rejected",
       });
 
-      fetchPendingApprovals();
+      fetchدر انتظارApprovals();
     } catch (error: any) {
       console.error('Error updating approval:', error);
       toast({
-        title: "Error",
+        title: "خطا",
         description: `Failed to ${action === 'approved' ? 'approve' : 'reject'} offer`,
         variant: "destructive",
       });
@@ -182,12 +182,12 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[790px] max-w-[90vw] p-5 max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Approval Requested</DialogTitle>
+          <Dialogعنوان className="text-2xl">در انتظار تأیید</Dialogعنوان>
         </DialogHeader>
 
         <div className="py-5 flex flex-col gap-4">
           {loading ? (
-            <div className="text-center text-muted-foreground">Loading approvals...</div>
+            <div className="text-center text-muted-foreground">بارگذاری approvals...</div>
           ) : approvals.length === 0 ? (
             <div className="text-center text-muted-foreground">No pending approvals</div>
           ) : (

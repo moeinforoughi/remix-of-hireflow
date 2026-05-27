@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -44,7 +44,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to copy link',
         variant: 'destructive',
       });
@@ -65,7 +65,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
       const { error } = await supabase.functions.invoke('share-job', {
         body: {
           jobId: job.id,
-          jobTitle: job.title,
+          jobعنوان: job.title,
           jobUrl,
           recipientEmail: emailData.recipientEmail,
           recipientName: emailData.recipientName,
@@ -89,7 +89,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message || 'Failed to send email',
         variant: 'destructive',
       });
@@ -102,7 +102,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold">Share Job Posting</DialogTitle>
+          <Dialogعنوان className="text-2xl font-semibold">Share Job Posting</Dialogعنوان>
         </DialogHeader>
 
         <div className="space-y-6 pt-4">
@@ -148,7 +148,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
           </div>
 
           {/* Email Form Section */}
-          <form onSubmit={handleSendEmail} className="space-y-4">
+          <form onثبت={handleSendEmail} className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium">
               <Mail className="h-4 w-4" />
               <span>Send via Email</span>

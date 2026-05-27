@@ -106,7 +106,7 @@ export const ApplicationActions = ({
       <RejectDialog
         open={rejectOpen}
         onOpenChange={setRejectOpen}
-        onConfirm={(reason, note) => {
+        onتأیید={(reason, note) => {
           onReject(reason, note);
           setRejectOpen(false);
         }}
@@ -115,7 +115,7 @@ export const ApplicationActions = ({
       <WithdrawDialog
         open={withdrawOpen}
         onOpenChange={setWithdrawOpen}
-        onConfirm={() => {
+        onتأیید={() => {
           onWithdraw();
           setWithdrawOpen(false);
         }}
@@ -124,7 +124,7 @@ export const ApplicationActions = ({
       <HireDialog
         open={hireOpen}
         onOpenChange={setHireOpen}
-        onConfirm={() => {
+        onتأیید={() => {
           onHire();
           setHireOpen(false);
         }}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,15 +21,15 @@ interface Task {
   status: "pending" | "completed";
 }
 
-interface EditTaskDialogProps {
+interface ویرایشTaskDialogProps {
   task: Task;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onTaskUpdated: () => void;
+  onTaskبه‌روزرسانیd: () => void;
 }
 
-export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: EditTaskDialogProps) {
-  const [title, setTitle] = useState(task.title);
+export function ویرایشTaskDialog({ task, open, onOpenChange, onTaskبه‌روزرسانیd }: ویرایشTaskDialogProps) {
+  const [title, setعنوان] = useState(task.title);
   const [label, setLabel] = useState(task.label || "");
   const [dueDate, setDueDate] = useState<Date | undefined>(
     task.due_date ? new Date(task.due_date) : undefined
@@ -38,24 +38,24 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
     task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00"
   );
   const [status, setStatus] = useState<"pending" | "completed">(task.status);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isثبتting, setIsثبتting] = useState(false);
 
   useEffect(() => {
-    setTitle(task.title);
+    setعنوان(task.title);
     setLabel(task.label || "");
     setDueDate(task.due_date ? new Date(task.due_date) : undefined);
     setDueTime(task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00");
     setStatus(task.status);
   }, [task]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleثبت = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error("Title is required");
+      toast.error("عنوان is required");
       return;
     }
 
-    setIsSubmitting(true);
+    setIsثبتting(true);
 
     let dueDatetime = null;
     if (dueDate) {
@@ -75,7 +75,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
       })
       .eq("id", task.id);
 
-    setIsSubmitting(false);
+    setIsثبتting(false);
 
     if (error) {
       toast.error("Failed to update task");
@@ -85,22 +85,22 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
 
     toast.success("Task updated successfully");
     onOpenChange(false);
-    onTaskUpdated();
+    onTaskبه‌روزرسانیd();
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
+          <Dialogعنوان>ویرایش Task</Dialogعنوان>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onثبت={handleثبت} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">عنوان *</Label>
             <Input
               id="title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => setعنوان(e.target.value)}
               placeholder="Task title"
               required
             />
@@ -160,7 +160,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="pending">در انتظار</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
@@ -168,10 +168,10 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              انصراف
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Updating..." : "Update Task"}
+            <Button type="submit" disabled={isثبتting}>
+              {isثبتting ? "در حال به‌روزرسانی..." : "به‌روزرسانی Task"}
             </Button>
           </div>
         </form>

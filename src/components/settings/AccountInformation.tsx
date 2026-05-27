@@ -5,14 +5,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
-import { EditAccountDialog } from './EditAccountDialog';
+import { ویرایشAccountDialog } from './ویرایشAccountDialog';
 
 export const AccountInformation = () => {
   const [profile, setProfile] = useState<any>(null);
   const [role, setRole] = useState<string>('');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [loading, setبارگذاری] = useState(true);
+  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -41,12 +41,12 @@ export const AccountInformation = () => {
               roleData?.role === 'job_admin' ? 'Job Admin' : 'Basic User');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -84,9 +84,9 @@ export const AccountInformation = () => {
             </Avatar>
             <h2 className="text-2xl">{profile?.full_name || 'User'}</h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setEditDialogOpen(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogOpen(true)}>
             <Pencil className="h-4 w-4 mr-2" />
-            Edit
+            ویرایش
           </Button>
         </div>
 
@@ -127,9 +127,9 @@ export const AccountInformation = () => {
         </div>
       </div>
 
-      <EditAccountDialog 
+      <ویرایشAccountDialog 
         open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
+        onOpenChange={setویرایشDialogOpen}
         onSuccess={fetchProfile}
       />
     </div>

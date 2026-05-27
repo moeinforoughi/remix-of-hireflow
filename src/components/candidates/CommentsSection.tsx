@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -27,7 +27,7 @@ interface CommentsSectionProps {
 export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
 
@@ -80,7 +80,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
     } catch (error: any) {
       console.error('Error fetching comments:', error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -101,7 +101,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Comment added successfully',
       });
 
@@ -109,7 +109,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
       fetchComments();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -119,12 +119,12 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
   return (
     <Card className="flex flex-col max-h-[600px]">
       <CardHeader>
-        <CardTitle className="text-lg">Comments</CardTitle>
+        <Cardعنوان className="text-lg">Comments</Cardعنوان>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="flex-1 space-y-4 mb-4 overflow-y-auto min-h-0">
           {loading ? (
-            <p className="text-sm text-muted-foreground">Loading comments...</p>
+            <p className="text-sm text-muted-foreground">بارگذاری comments...</p>
           ) : comments.length === 0 ? (
             <p className="text-sm text-muted-foreground">No comments yet. Be the first to comment!</p>
           ) : (

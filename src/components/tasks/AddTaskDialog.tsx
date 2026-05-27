@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,21 +21,21 @@ interface AddTaskDialogProps {
 
 export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialogProps) {
   const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setعنوان] = useState("");
   const [label, setLabel] = useState("");
   const [dueDate, setDueDate] = useState<Date>();
   const [dueTime, setDueTime] = useState("12:00");
   const [status, setStatus] = useState<"pending" | "completed">("pending");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isثبتting, setIsثبتting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleثبت = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error("Title is required");
+      toast.error("عنوان is required");
       return;
     }
 
-    setIsSubmitting(true);
+    setIsثبتting(true);
 
     let dueDatetime = null;
     if (dueDate) {
@@ -54,7 +54,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
       status,
     });
 
-    setIsSubmitting(false);
+    setIsثبتting(false);
 
     if (error) {
       toast.error("Failed to create task");
@@ -64,7 +64,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
 
     toast.success("Task created successfully");
     setOpen(false);
-    setTitle("");
+    setعنوان("");
     setLabel("");
     setDueDate(undefined);
     setDueTime("12:00");
@@ -82,15 +82,15 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add New Task</DialogTitle>
+          <Dialogعنوان>Add New Task</Dialogعنوان>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onثبت={handleثبت} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">عنوان *</Label>
             <Input
               id="title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => setعنوان(e.target.value)}
               placeholder="Task title"
               required
             />
@@ -150,7 +150,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="pending">در انتظار</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
@@ -158,10 +158,10 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              انصراف
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Task"}
+            <Button type="submit" disabled={isثبتting}>
+              {isثبتting ? "در حال ایجاد..." : "ایجاد Task"}
             </Button>
           </div>
         </form>

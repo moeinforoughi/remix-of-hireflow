@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -44,7 +44,7 @@ const OfferDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [offer, setOffer] = useState<OfferDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
   useEffect(() => {
@@ -83,12 +83,12 @@ const OfferDetail = () => {
       setOffer(data);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -115,7 +115,7 @@ const OfferDetail = () => {
     }
   };
 
-  const handleStateUpdate = async (newState: 'pending_approval' | 'sent' | 'accepted' | 'declined') => {
+  const handleStateبه‌روزرسانی = async (newState: 'pending_approval' | 'sent' | 'accepted' | 'declined') => {
     try {
       const { error } = await supabase
         .from('offers')
@@ -125,14 +125,14 @@ const OfferDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: `Offer ${newState.replace('_', ' ')}`,
       });
 
       fetchOffer();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -221,7 +221,7 @@ const OfferDetail = () => {
         <p className="text-muted-foreground">Offer not found</p>
         <Button onClick={() => navigate('/offers')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Offers
+          بازگشت to Offers
         </Button>
       </div>
     );
@@ -255,7 +255,7 @@ const OfferDetail = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Compensation Package</CardTitle>
+                <Cardعنوان>Compensation Package</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -296,7 +296,7 @@ const OfferDetail = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Candidate Information</CardTitle>
+                <Cardعنوان>Candidate Information</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
@@ -338,7 +338,7 @@ const OfferDetail = () => {
           {offer.benefits_md && (
             <Card>
               <CardHeader>
-                <CardTitle>Benefits</CardTitle>
+                <Cardعنوان>Benefits</Cardعنوان>
               </CardHeader>
               <CardContent>
                 <div className="whitespace-pre-wrap">{offer.benefits_md}</div>
@@ -349,7 +349,7 @@ const OfferDetail = () => {
           {offer.notes && (
             <Card>
               <CardHeader>
-                <CardTitle>Internal Notes</CardTitle>
+                <Cardعنوان>Internal Notes</Cardعنوان>
               </CardHeader>
               <CardContent>
                 <div className="whitespace-pre-wrap text-muted-foreground">{offer.notes}</div>
@@ -359,7 +359,7 @@ const OfferDetail = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Offer Letter & E-Signature</CardTitle>
+              <Cardعنوان>Offer Letter & E-Signature</Cardعنوان>
             </CardHeader>
             <CardContent className="space-y-4">
               {offer.pdf_url ? (
@@ -443,7 +443,7 @@ const OfferDetail = () => {
           {offer.state === 'draft' && (
             <Card>
               <CardHeader>
-                <CardTitle>Actions</CardTitle>
+                <Cardعنوان>Actions</Cardعنوان>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
@@ -456,7 +456,7 @@ const OfferDetail = () => {
           {offer.state === 'pending_approval' && (
             <Card>
               <CardHeader>
-                <CardTitle>Pending Approvals</CardTitle>
+                <Cardعنوان>در انتظار Approvals</Cardعنوان>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
@@ -469,13 +469,13 @@ const OfferDetail = () => {
           {offer.state === 'sent' && (
             <Card>
               <CardHeader>
-                <CardTitle>Candidate Response</CardTitle>
+                <Cardعنوان>Candidate Response</Cardعنوان>
               </CardHeader>
               <CardContent className="flex gap-4">
-                <Button onClick={() => handleStateUpdate('accepted')}>
+                <Button onClick={() => handleStateبه‌روزرسانی('accepted')}>
                   Mark as Accepted
                 </Button>
-                <Button variant="destructive" onClick={() => handleStateUpdate('declined')}>
+                <Button variant="destructive" onClick={() => handleStateبه‌روزرسانی('declined')}>
                   Mark as Declined
                 </Button>
               </CardContent>

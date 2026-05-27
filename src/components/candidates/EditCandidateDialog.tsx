@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -22,7 +22,7 @@ const formatPhoneNumber = (value: string) => {
   return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)}-${limitedDigits.slice(6)}`;
 };
 
-interface EditCandidateDialogProps {
+interface ویرایشCandidateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   candidate: {
@@ -35,10 +35,10 @@ interface EditCandidateDialogProps {
     source: string;
     consent: boolean | null;
   } | null;
-  onUpdateSuccess: () => void;
+  onبه‌روزرسانیSuccess: () => void;
 }
 
-export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuccess }: EditCandidateDialogProps) => {
+export const ویرایشCandidateDialog = ({ open, onOpenChange, candidate, onبه‌روزرسانیSuccess }: ویرایشCandidateDialogProps) => {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -49,7 +49,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
     phone: '',
     linkedin_url: '',
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [currentResume, setCurrentResume] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -157,7 +157,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
     }
   };
 
-  const handleUpdate = async () => {
+  const handleبه‌روزرسانی = async () => {
     if (!candidate) return;
 
     // Reset errors
@@ -196,7 +196,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
       }
     }
 
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -210,7 +210,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
       if (profileError) throw profileError;
       if (!profile) throw new Error('Profile not found');
 
-      // Update candidate data (preserving source and consent)
+      // به‌روزرسانی candidate data (preserving source and consent)
       const candidateData = {
         full_name: formData.full_name,
         email: formData.email || null,
@@ -234,7 +234,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
       
       // Verify the update actually applied
       if (updatedCandidate.full_name !== formData.full_name) {
-        throw new Error('Update was blocked. You may not have permission to modify this candidate.');
+        throw new Error('به‌روزرسانی was blocked. You may not have permission to modify this candidate.');
       }
 
       // Upload new resume if provided
@@ -250,14 +250,14 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
 
         if (uploadError) throw uploadError;
 
-        // Delete old attachment records
+        // حذف old attachment records
         await supabase
           .from('attachments')
           .delete()
           .eq('owner_type', 'candidate')
           .eq('owner_id', candidate.id);
 
-        // Create new attachment record
+        // ایجاد new attachment record
         await supabase.from('attachments').insert({
           owner_type: 'candidate',
           owner_id: candidate.id,
@@ -275,20 +275,20 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Candidate updated successfully',
       });
 
       onOpenChange(false);
-      onUpdateSuccess();
+      onبه‌روزرسانیSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
       setUploading(false);
     }
   };
@@ -297,7 +297,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Edit Candidate</DialogTitle>
+          <Dialogعنوان>ویرایش Candidate</Dialogعنوان>
         </DialogHeader>
         <div className="space-y-6">
           {/* Current Resume Section */}
@@ -443,14 +443,14 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
               onClick={() => onOpenChange(false)}
               className="px-6"
             >
-              Cancel
+              انصراف
             </Button>
             <Button
-              onClick={handleUpdate}
+              onClick={handleبه‌روزرسانی}
               disabled={loading || !formData.full_name}
               className="px-6 bg-foreground text-background hover:bg-foreground/90"
             >
-              {loading ? 'Updating...' : 'Update Candidate'}
+              {loading ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی Candidate'}
             </Button>
           </div>
         </div>

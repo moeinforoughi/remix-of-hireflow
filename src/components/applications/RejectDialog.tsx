@@ -2,12 +2,12 @@ import { useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogانصراف,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogعنوان,
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface RejectDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (reason: string, note: string) => void;
+  onتأیید: (reason: string, note: string) => void;
 }
 
 const REJECTION_REASONS = [
@@ -27,12 +27,12 @@ const REJECTION_REASONS = [
   'Other',
 ];
 
-export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProps) => {
+export const RejectDialog = ({ open, onOpenChange, onتأیید }: RejectDialogProps) => {
   const [reason, setReason] = useState('');
   const [note, setNote] = useState('');
 
-  const handleConfirm = () => {
-    onConfirm(reason, note);
+  const handleتأیید = () => {
+    onتأیید(reason, note);
     setReason('');
     setNote('');
   };
@@ -41,7 +41,7 @@ export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProp
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Reject Application</AlertDialogTitle>
+          <AlertDialogعنوان>Reject Application</AlertDialogعنوان>
           <AlertDialogDescription>
             This will mark the application as rejected. This action can be reversed later if needed.
           </AlertDialogDescription>
@@ -73,8 +73,8 @@ export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProp
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm} disabled={!reason}>
+          <AlertDialogانصراف>انصراف</AlertDialogانصراف>
+          <AlertDialogAction onClick={handleتأیید} disabled={!reason}>
             Reject Application
           </AlertDialogAction>
         </AlertDialogFooter>

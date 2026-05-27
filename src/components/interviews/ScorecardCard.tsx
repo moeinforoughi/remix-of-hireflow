@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { Star } from 'lucide-react';
@@ -29,12 +29,12 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">{scorecard.user.full_name}</CardTitle>
+          <Cardعنوان className="text-base">{scorecard.user.full_name}</Cardعنوان>
           <Badge variant={recInfo.variant}>{recInfo.label}</Badge>
         </div>
         {scorecard.submitted_at && (
           <p className="text-sm text-muted-foreground">
-            Submitted {format(new Date(scorecard.submitted_at), 'MMM d, yyyy')}
+            ثبتted {format(new Date(scorecard.submitted_at), 'MMM d, yyyy')}
           </p>
         )}
       </CardHeader>

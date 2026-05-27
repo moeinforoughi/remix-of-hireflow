@@ -20,17 +20,17 @@ interface ManagerAssignmentDropdownProps {
   applicationId: string;
   currentManagerId: string | null;
   currentManagerName: string | null;
-  onUpdate?: () => void;
+  onبه‌روزرسانی?: () => void;
 }
 
 export const ManagerAssignmentDropdown = ({
   applicationId,
   currentManagerId,
   currentManagerName,
-  onUpdate,
+  onبه‌روزرسانی,
 }: ManagerAssignmentDropdownProps) => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const ManagerAssignmentDropdown = ({
   };
 
   const handleAssign = async (userId: string) => {
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { error } = await supabase
         .from('applications')
@@ -79,21 +79,21 @@ export const ManagerAssignmentDropdown = ({
       if (error) throw error;
 
       toast({
-        title: 'Manager Updated',
+        title: 'Manager به‌روزرسانیd',
         description: userId === 'unassign' 
           ? 'Manager has been unassigned' 
           : 'Manager has been assigned successfully',
       });
 
-      onUpdate?.();
+      onبه‌روزرسانی?.();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 

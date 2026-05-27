@@ -8,7 +8,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  Dialogعنوان,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Paperclip, Plus, Search, Loader2, User } from 'lucide-react';
+import { Upload, Paperclip, Plus, جستجو, Loader2, User } from 'lucide-react';
 import { parseResume } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -63,7 +63,7 @@ interface AddCandidateDialogProps {
 export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandidateDialogProps) => {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'new' | 'existing'>('new');
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [parsing, setParsing] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -73,13 +73,13 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Existing candidate search state
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setجستجوQuery] = useState('');
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [existingJobCandidateIds, setExistingJobCandidateIds] = useState<string[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
-  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchبارگذاری, setجستجوبارگذاری] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
+  const { register, handleثبت, formState: { errors }, reset, setValue } = useForm({
     resolver: zodResolver(formSchema),
   });
 
@@ -115,7 +115,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
   };
 
   const fetchCandidates = async () => {
-    setSearchLoading(true);
+    setجستجوبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -142,7 +142,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       const { data, error } = await query;
       if (error) throw error;
 
-      // Filter out candidates already applied to this job
+      // فیلتر out candidates already applied to this job
       const targetJobId = jobId || selectedJobId;
       let filtered = data || [];
       if (targetJobId && existingJobCandidateIds.length > 0) {
@@ -153,7 +153,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     } catch (error: any) {
       console.error('Error fetching candidates:', error);
     } finally {
-      setSearchLoading(false);
+      setجستجوبارگذاری(false);
     }
   };
 
@@ -287,19 +287,19 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     }
   };
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onثبت = async (data: z.infer<typeof formSchema>) => {
     const targetJobId = jobId || selectedJobId;
     
     if (!targetJobId) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Please select a job',
         variant: 'destructive',
       });
       return;
     }
 
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -346,7 +346,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           currentStages = createdStages || [];
           
           toast({
-            title: 'Pipeline Created',
+            title: 'Pipeline ایجادd',
             description: 'Default pipeline stages have been set up for this job.',
           });
         } else {
@@ -354,7 +354,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         }
       }
 
-      // Create candidate
+      // ایجاد candidate
       const { data: candidate, error: candidateError } = await supabase
         .from('candidates')
         .insert({
@@ -425,7 +425,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Candidate added to pipeline',
       });
 
@@ -436,12 +436,12 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       onSuccess?.();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -450,7 +450,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     
     if (!targetJobId) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Please select a job',
         variant: 'destructive',
       });
@@ -459,14 +459,14 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
 
     if (!selectedCandidate) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Please select a candidate',
         variant: 'destructive',
       });
       return;
     }
 
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -490,7 +490,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         throw new Error('No stage found for this job');
       }
 
-      // Create application
+      // ایجاد application
       const { data: applicationData, error: applicationError } = await supabase
         .from('applications')
         .insert({
@@ -512,22 +512,22 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: `${selectedCandidate.full_name} added to pipeline`,
       });
 
       setSelectedCandidate(null);
-      setSearchQuery('');
+      setجستجوQuery('');
       setOpen(false);
       onSuccess?.();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -539,7 +539,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       setPhoneValue('');
       setActiveTab('new');
       setSelectedCandidate(null);
-      setSearchQuery('');
+      setجستجوQuery('');
     }
   };
 
@@ -553,7 +553,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add Candidate</DialogTitle>
+          <Dialogعنوان>Add Candidate</Dialogعنوان>
         </DialogHeader>
         
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'new' | 'existing')}>
@@ -563,7 +563,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           </TabsList>
 
           <TabsContent value="new" className="mt-4">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onثبت={handleثبت(onثبت)} className="space-y-6">
               {/* Upload Resume Section */}
               <div
                 className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
@@ -698,7 +698,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                   onClick={() => setOpen(false)}
                   className="px-6"
                 >
-                  Cancel
+                  انصراف
                 </Button>
                 <Button
                   type="submit"
@@ -731,20 +731,20 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
               </div>
             )}
 
-            {/* Search */}
+            {/* جستجو */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search candidates by name or email..."
+                placeholder="جستجو candidates by name or email..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => setجستجوQuery(e.target.value)}
                 className="pl-10 h-11"
               />
             </div>
 
             {/* Candidates List */}
             <ScrollArea className="h-[300px] border rounded-lg">
-              {searchLoading ? (
+              {searchبارگذاری ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 </div>
@@ -805,7 +805,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                 onClick={() => setOpen(false)}
                 className="px-6"
               >
-                Cancel
+                انصراف
               </Button>
               <Button
                 onClick={handleAddExistingCandidate}

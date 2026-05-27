@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, Video, User, ExternalLink } from 'lucide-react';
@@ -18,14 +18,14 @@ interface QuickScheduleDialogProps {
     meeting_link?: string;
     panel_user_ids?: string[];
   } | null;
-  interviewers?: Array<{ id: string; full_name: string; email: string }>;
+  مصاحبه‌کننده?: Array<{ id: string; full_name: string; email: string }>;
 }
 
 export function QuickScheduleDialog({ 
   open, 
   onOpenChange, 
   interview,
-  interviewers = []
+  مصاحبه‌کننده = []
 }: QuickScheduleDialogProps) {
   const navigate = useNavigate();
 
@@ -36,7 +36,7 @@ export function QuickScheduleDialog({
       scheduled: <Badge>Scheduled</Badge>,
       completed: <Badge variant="secondary">Completed</Badge>,
       no_show: <Badge variant="outline">No Show</Badge>,
-      cancelled: <Badge variant="destructive">Cancelled</Badge>,
+      cancelled: <Badge variant="destructive">انصرافled</Badge>,
     };
     return statusMap[status as keyof typeof statusMap] || <Badge>{status}</Badge>;
   };
@@ -50,7 +50,7 @@ export function QuickScheduleDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{interview.title}</DialogTitle>
+          <Dialogعنوان>{interview.title}</Dialogعنوان>
         </DialogHeader>
         
         <div className="space-y-4 pt-4">
@@ -86,7 +86,7 @@ export function QuickScheduleDialog({
                   rel="noopener noreferrer"
                   className="text-sm text-primary hover:underline flex items-center gap-1"
                 >
-                  Virtual - Join Meeting <ExternalLink className="h-3 w-3" />
+                  آنلاین - ورود به جلسه <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
             </div>
@@ -100,15 +100,15 @@ export function QuickScheduleDialog({
             </div>
           ) : null}
 
-          {interviewers.length > 0 && (
+          {مصاحبه‌کننده.length > 0 && (
             <div className="flex items-start gap-3">
               <User className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
                 <p className="font-medium text-sm mb-2">Panel</p>
                 <div className="flex flex-wrap gap-2">
-                  {interviewers.map((interviewer) => (
-                    <Badge key={interviewer.id} variant="secondary">
-                      {interviewer.full_name}
+                  {مصاحبه‌کننده.map((مصاحبه‌کننده) => (
+                    <Badge key={مصاحبه‌کننده.id} variant="secondary">
+                      {مصاحبه‌کننده.full_name}
                     </Badge>
                   ))}
                 </div>
@@ -127,7 +127,7 @@ export function QuickScheduleDialog({
               variant="outline" 
               onClick={() => onOpenChange(false)}
             >
-              Close
+              بستن
             </Button>
           </div>
         </div>

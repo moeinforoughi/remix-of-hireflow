@@ -4,23 +4,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-interface DeleteAccountDialogProps {
+interface حذفAccountDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogProps) => {
-  const [loading, setLoading] = useState(false);
-  const [confirmation, setConfirmation] = useState('');
+export const حذفAccountDialog = ({ open, onOpenChange }: حذفAccountDialogProps) => {
+  const [loading, setبارگذاری] = useState(false);
+  const [confirmation, setتأییدation] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleDelete = async () => {
+  const handleحذف = async () => {
     if (confirmation !== 'DELETE') {
       toast({
         title: 'Invalid confirmation',
@@ -30,13 +30,13 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
       return;
     }
 
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
         toast({
-          title: 'Error',
+          title: 'خطا',
           description: 'You must be logged in to delete your account',
           variant: 'destructive',
         });
@@ -68,12 +68,12 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
       navigate('/auth/login');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message || 'Failed to delete account',
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -81,10 +81,10 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-destructive">
+          <Dialogعنوان className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-5 w-5" />
-            Delete Account
-          </DialogTitle>
+            حذف Account
+          </Dialogعنوان>
           <DialogDescription>
             This action cannot be undone. This will permanently delete your account and remove your data from our servers.
           </DialogDescription>
@@ -104,7 +104,7 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
             <Input
               id="confirmation"
               value={confirmation}
-              onChange={(e) => setConfirmation(e.target.value)}
+              onChange={(e) => setتأییدation(e.target.value)}
               placeholder="DELETE"
             />
           </div>
@@ -112,15 +112,15 @@ export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogP
         
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
           <Button 
             variant="destructive" 
-            onClick={handleDelete} 
+            onClick={handleحذف} 
             disabled={loading || confirmation !== 'DELETE'}
           >
             {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Delete Account
+            حذف Account
           </Button>
         </DialogFooter>
       </DialogContent>

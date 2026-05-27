@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Briefcase, Users, Calendar, ArrowLeft, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -23,7 +23,7 @@ const CareersJobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [job, setJob] = useState<Job | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
 
   useEffect(() => {
     if (id) {
@@ -45,7 +45,7 @@ const CareersJobDetail = () => {
     } catch (error) {
       console.error('Error fetching job:', error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -71,7 +71,7 @@ const CareersJobDetail = () => {
           <p className="text-muted-foreground">This position may no longer be available</p>
           <Button onClick={() => navigate('/careers')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Careers
+            بازگشت to Careers
           </Button>
         </div>
       </div>
@@ -89,7 +89,7 @@ const CareersJobDetail = () => {
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to all jobs
+            بازگشت to all jobs
           </Button>
           
           <h1 className="text-3xl md:text-4xl mb-4">{job.title}</h1>
@@ -131,7 +131,7 @@ const CareersJobDetail = () => {
             {job.description_md && (
               <Card>
                 <CardHeader>
-                  <CardTitle>About the Role</CardTitle>
+                  <Cardعنوان>About the Role</Cardعنوان>
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-sm max-w-none whitespace-pre-wrap">
@@ -144,7 +144,7 @@ const CareersJobDetail = () => {
             {job.requirements_md && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Requirements</CardTitle>
+                  <Cardعنوان>Requirements</Cardعنوان>
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-sm max-w-none whitespace-pre-wrap">
@@ -159,7 +159,7 @@ const CareersJobDetail = () => {
           <div>
             <Card className="sticky top-4">
               <CardHeader>
-                <CardTitle>Apply for this position</CardTitle>
+                <Cardعنوان>Apply for this position</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">

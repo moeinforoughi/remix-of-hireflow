@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,20 +39,20 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
   const { toast } = useToast();
   const [approvals, setApprovals] = useState<Approval[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [selectedApprover, setSelectedApprover] = useState("");
   const [actionComment, setActionComment] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string>("");
-  const [pendingOffers, setPendingOffers] = useState<any[]>([]);
+  const [pendingOffers, setدر انتظارOffers] = useState<any[]>([]);
 
   useEffect(() => {
     fetchApprovals();
     fetchProfiles();
     getCurrentUser();
-    fetchPendingOffers();
+    fetchدر انتظارOffers();
   }, [offerId]);
 
-  const fetchPendingOffers = async () => {
+  const fetchدر انتظارOffers = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -86,7 +86,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
         .neq("offer_id", offerId);
 
       if (error) throw error;
-      setPendingOffers(data || []);
+      setدر انتظارOffers(data || []);
     } catch (error: any) {
       console.error("Error fetching pending offers:", error);
     }
@@ -98,7 +98,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
   };
 
   const fetchApprovals = async () => {
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { data, error } = await supabase
         .from("approvals")
@@ -118,7 +118,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -254,13 +254,13 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
   );
 
   if (loading) {
-    return <div className="text-sm text-muted-foreground">Loading approvals...</div>;
+    return <div className="text-sm text-muted-foreground">بارگذاری approvals...</div>;
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Approvals</CardTitle>
+        <Cardعنوان>Approvals</Cardعنوان>
       </CardHeader>
       <CardContent className="space-y-4">
         {pendingOffers.length > 0 && (

@@ -54,7 +54,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 };
 const RecentActivityFeed = () => {
   const [activities, setActivities] = useState<ActivityItemProps[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   useEffect(() => {
     fetchActivities();
   }, []);
@@ -89,7 +89,7 @@ const RecentActivityFeed = () => {
     } catch (error) {
       console.error('Error fetching activities:', error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
   const formatAction = async (activity: any): Promise<string> => {
@@ -131,14 +131,14 @@ const RecentActivityFeed = () => {
         const oldStageName = oldStageData?.data?.name;
         const newStageName = newStageData?.data?.name || 'new stage';
         const candidateName = candidateData?.data?.full_name || 'candidate';
-        const jobTitle = jobData?.data?.title || 'job';
+        const jobعنوان = jobData?.data?.title || 'job';
         if (oldStageName) {
-          return `moved ${candidateName} from "${oldStageName}" to "${newStageName}" for ${jobTitle}`;
+          return `moved ${candidateName} from "${oldStageName}" to "${newStageName}" for ${jobعنوان}`;
         }
-        return `moved ${candidateName} to "${newStageName}" for ${jobTitle}`;
+        return `moved ${candidateName} to "${newStageName}" for ${jobعنوان}`;
       } catch (error) {
         console.error('Error formatting stage_moved action:', error);
-        return 'moved an application to a new stage';
+        return 'یک درخواست را به مرحله جدید منتقل کرد';
       }
     }
 
@@ -150,16 +150,16 @@ const RecentActivityFeed = () => {
         try {
           const [candidateData, jobData] = await Promise.all([supabase.from('candidates').select('full_name').eq('id', candidateId).single(), supabase.from('jobs').select('title').eq('id', jobId).single()]);
           const candidateName = candidateData?.data?.full_name || 'candidate';
-          const jobTitle = jobData?.data?.title || 'job';
+          const jobعنوان = jobData?.data?.title || 'job';
           if (action === 'created') {
-            return `received application from ${candidateName} for ${jobTitle}`;
+            return `received application from ${candidateName} for ${jobعنوان}`;
           }
           if (action === 'state_changed') {
             const newState = after_json?.state;
-            return `changed ${candidateName}'s application for ${jobTitle} to ${newState}`;
+            return `changed ${candidateName}'s application for ${jobعنوان} to ${newState}`;
           }
           if (action === 'updated') {
-            return `updated ${candidateName}'s application for ${jobTitle}`;
+            return `updated ${candidateName}'s application for ${jobعنوان}`;
           }
         } catch (error) {
           console.error('Error formatting application action:', error);
@@ -176,10 +176,10 @@ const RecentActivityFeed = () => {
             data: appData
           } = await supabase.from('applications').select('candidate:candidates(full_name), job:jobs(title)').eq('id', applicationId).single();
           const candidateName = appData?.candidate?.full_name || 'candidate';
-          const jobTitle = appData?.job?.title || 'job';
-          if (action === 'created') return `scheduled interview with ${candidateName} for ${jobTitle}`;
-          if (action === 'updated') return `updated interview with ${candidateName} for ${jobTitle}`;
-          if (action === 'deleted') return `cancelled interview with ${candidateName} for ${jobTitle}`;
+          const jobعنوان = appData?.job?.title || 'job';
+          if (action === 'created') return `scheduled interview with ${candidateName} for ${jobعنوان}`;
+          if (action === 'updated') return `updated interview with ${candidateName} for ${jobعنوان}`;
+          if (action === 'deleted') return `cancelled interview with ${candidateName} for ${jobعنوان}`;
         } catch (error) {
           console.error('Error formatting interview action:', error);
         }
@@ -188,13 +188,13 @@ const RecentActivityFeed = () => {
 
     // Handle job actions
     if (entity === 'job') {
-      const jobTitle = after_json?.title;
-      if (action === 'created' && jobTitle) {
-        return `posted "${jobTitle}"`;
+      const jobعنوان = after_json?.title;
+      if (action === 'created' && jobعنوان) {
+        return `posted "${jobعنوان}"`;
       }
-      if (action === 'status_changed' && jobTitle) {
+      if (action === 'status_changed' && jobعنوان) {
         const newStatus = after_json?.status || 'updated';
-        return `changed "${jobTitle}" status to ${newStatus}`;
+        return `changed "${jobعنوان}" status to ${newStatus}`;
       }
     }
 
@@ -207,8 +207,8 @@ const RecentActivityFeed = () => {
             data: appData
           } = await supabase.from('applications').select('candidate:candidates(full_name), job:jobs(title)').eq('id', applicationId).single();
           const candidateName = appData?.candidate?.full_name || 'candidate';
-          const jobTitle = appData?.job?.title || 'job';
-          if (action === 'insert') return `created offer for ${candidateName} - ${jobTitle}`;
+          const jobعنوان = appData?.job?.title || 'job';
+          if (action === 'insert') return `created offer for ${candidateName} - ${jobعنوان}`;
           if (action === 'update') {
             const oldState = before_json?.state;
             const newState = after_json?.state;
@@ -226,29 +226,29 @@ const RecentActivityFeed = () => {
     // Fallback to simple action mapping
     const actionMap: Record<string, Record<string, string>> = {
       application: {
-        created: 'submitted an application',
-        updated: 'updated an application',
-        deleted: 'withdrew an application'
+        created: 'درخواست شغلی ثبت کرد',
+        updated: 'یک درخواست را به‌روزرسانی کرد',
+        deleted: 'درخواستی را پس گرفت'
       },
       candidate: {
-        created: 'added a new candidate',
-        updated: 'updated a candidate profile',
-        deleted: 'removed a candidate'
+        created: 'کاندیدای جدیدی اضافه کرد',
+        updated: 'پروفایل یک کاندیدا را به‌روزرسانی کرد',
+        deleted: 'یک کاندیدا را حذف کرد'
       },
       job: {
-        created: 'posted a new job',
-        updated: 'updated a job listing',
-        deleted: 'closed a job listing'
+        created: 'موقعیت شغلی جدیدی ثبت کرد',
+        updated: 'یک موقعیت شغلی را به‌روزرسانی کرد',
+        deleted: 'یک موقعیت شغلی را بست'
       },
       interview: {
-        created: 'scheduled an interview',
-        updated: 'updated an interview',
-        deleted: 'cancelled an interview'
+        created: 'یک مصاحبه برنامه‌ریزی کرد',
+        updated: 'یک مصاحبه را به‌روزرسانی کرد',
+        deleted: 'یک مصاحبه را لغو کرد'
       },
       offer: {
-        created: 'created an offer',
-        updated: 'updated an offer',
-        deleted: 'withdrew an offer'
+        created: 'یک پیشنهاد ایجاد کرد',
+        updated: 'یک پیشنهاد را به‌روزرسانی کرد',
+        deleted: 'یک پیشنهاد را پس گرفت'
       }
     };
     return actionMap[entity]?.[action] || `${action} ${entity}`;
@@ -256,7 +256,7 @@ const RecentActivityFeed = () => {
   if (loading) {
     return <section className="justify-end items-stretch flex min-w-60 flex-col overflow-hidden flex-1 shrink basis-[0%] bg-card pt-[17px] px-4 rounded-xl max-md:max-w-full">
         <h2 className="text-foreground text-sm font-[590]">
-          Recent Activity
+          فعالیت‌های اخیر
         </h2>
         <div className="w-full mt-4 space-y-4 py-3">
           {[1, 2, 3, 4].map((i) => (
@@ -271,10 +271,10 @@ const RecentActivityFeed = () => {
   }
   return <section className="justify-end items-stretch flex min-w-60 flex-col overflow-hidden flex-1 shrink basis-[0%] bg-card pt-[17px] px-4 rounded-xl max-md:max-w-full">
       <h2 className="text-foreground text-sm font-[590]">
-        Recent Activity
+        فعالیت‌های اخیر
       </h2>
       <div className="w-full mt-4 max-h-[400px] overflow-y-auto max-md:max-w-full my-px mx-0 py-[12px]">
-        {activities.length === 0 ? <p className="text-muted-foreground text-sm py-4">No recent activity</p> : activities.map((activity, index) => <ActivityItem key={index} avatarUrl={activity.avatarUrl} username={activity.username} action={activity.action} timeAgo={activity.timeAgo} />)}
+        {activities.length === 0 ? <p className="text-muted-foreground text-sm py-4">فعالیت اخیری وجود ندارد</p> : activities.map((activity, index) => <ActivityItem key={index} avatarUrl={activity.avatarUrl} username={activity.username} action={activity.action} timeAgo={activity.timeAgo} />)}
       </div>
     </section>;
 };

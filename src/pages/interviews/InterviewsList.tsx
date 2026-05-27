@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Loader2, Calendar, MapPin, Video } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -33,11 +33,11 @@ interface Interview {
 
 const InterviewsList = () => {
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const [showQuickView, setShowQuickView] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
-  const [interviewers, setInterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
+  const [مصاحبه‌کننده, setInterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -70,12 +70,12 @@ const InterviewsList = () => {
       setInterviews(data || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -94,7 +94,7 @@ const InterviewsList = () => {
       if (error) throw error;
       setInterviewers(data || []);
     } catch (error) {
-      console.error("Error fetching interviewers:", error);
+      console.error("Error fetching مصاحبه‌کننده:", error);
     }
   };
 
@@ -113,7 +113,7 @@ const InterviewsList = () => {
       return <Badge variant="secondary">Completed</Badge>;
     }
     if (interview.status === 'cancelled') {
-      return <Badge variant="destructive">Cancelled</Badge>;
+      return <Badge variant="destructive">انصرافled</Badge>;
     }
     if (interview.status === 'no_show') {
       return <Badge variant="outline">No Show</Badge>;
@@ -161,7 +161,7 @@ const InterviewsList = () => {
         open={showQuickView}
         onOpenChange={setShowQuickView}
         interview={selectedInterview}
-        interviewers={interviewers}
+        مصاحبه‌کننده={مصاحبه‌کننده}
       />
 
       {upcomingInterviews.length > 0 && (
@@ -180,9 +180,9 @@ const InterviewsList = () => {
                       <div className="flex items-center gap-2 mb-2">
                         {getStatusBadge(interview)}
                       </div>
-                      <CardTitle className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
+                      <Cardعنوان className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
                         {interview.title}
-                      </CardTitle>
+                      </Cardعنوان>
                       <p className="text-sm text-muted-foreground mt-1.5 font-medium">
                         {interview.application?.candidate?.full_name || 'N/A'}
                       </p>
@@ -208,7 +208,7 @@ const InterviewsList = () => {
                   {interview.meeting_link && (
                     <div className="flex items-center gap-2 text-sm bg-primary/5 rounded-lg p-2.5">
                       <Video className="h-4 w-4 text-primary shrink-0" />
-                      <p className="font-medium text-primary">Virtual Interview</p>
+                      <p className="font-medium text-primary">آنلاین Interview</p>
                     </div>
                   )}
                   
@@ -241,9 +241,9 @@ const InterviewsList = () => {
                       <div className="flex items-center gap-2 mb-2">
                         {getStatusBadge(interview)}
                       </div>
-                      <CardTitle className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
+                      <Cardعنوان className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
                         {interview.title}
-                      </CardTitle>
+                      </Cardعنوان>
                       <p className="text-sm text-muted-foreground mt-1.5 font-medium">
                         {interview.application?.candidate?.full_name || 'N/A'}
                       </p>

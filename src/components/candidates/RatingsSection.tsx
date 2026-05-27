@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil } from 'lucide-react';
@@ -40,10 +40,10 @@ type RatingKey = typeof CATEGORIES[number]['key'];
 
 export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
   const [ratings, setRatings] = useState<CandidateRating[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [editingRating, setEditingRating] = useState<CandidateRating | null>(null);
+  const [editingRating, setویرایشingRating] = useState<CandidateRating | null>(null);
 
   useEffect(() => {
     fetchRatings();
@@ -78,7 +78,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
     } catch (error) {
       console.error('Error fetching ratings:', error);
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -90,11 +90,11 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
 
   const userRating = ratings.find(r => r.user.id === currentUserId);
 
-  const handleAddOrEdit = () => {
+  const handleAddOrویرایش = () => {
     if (userRating) {
-      setEditingRating(userRating);
+      setویرایشingRating(userRating);
     } else {
-      setEditingRating(null);
+      setویرایشingRating(null);
     }
     setDialogOpen(true);
   };
@@ -103,10 +103,10 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Ratings</CardTitle>
+          <Cardعنوان className="text-lg">Ratings</Cardعنوان>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Loading ratings...</p>
+          <p className="text-sm text-muted-foreground">بارگذاری ratings...</p>
         </CardContent>
       </Card>
     );
@@ -116,12 +116,12 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
     <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg">Ratings</CardTitle>
-          <Button size="sm" variant="outline" onClick={handleAddOrEdit}>
+          <Cardعنوان className="text-lg">Ratings</Cardعنوان>
+          <Button size="sm" variant="outline" onClick={handleAddOrویرایش}>
             {userRating ? (
               <>
                 <Pencil className="h-4 w-4 mr-1" />
-                Edit
+                ویرایش
               </>
             ) : (
               <>

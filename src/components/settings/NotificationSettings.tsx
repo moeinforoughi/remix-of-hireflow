@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Mail, Trash2 } from 'lucide-react';
-import { DeleteAccountDialog } from './DeleteAccountDialog';
+import { حذفAccountDialog } from './حذفAccountDialog';
 import { supabase } from '@/integrations/supabase/client';
 
 interface NotificationPreference {
@@ -19,7 +19,7 @@ export const NotificationSettings = () => {
     { type: 'Offer Made', email: false, push: true },
     { type: 'Offer Accepted', email: true, push: true },
   ]);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteDialogOpen, setحذفDialogOpen] = useState(false);
   const [isDemoAccount, setIsDemoAccount] = useState(false);
 
   useEffect(() => {
@@ -89,17 +89,17 @@ export const NotificationSettings = () => {
           <Button 
             variant="outline" 
             className="flex-1 text-destructive hover:text-destructive"
-            onClick={() => setDeleteDialogOpen(true)}
+            onClick={() => setحذفDialogOpen(true)}
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Delete Account
+            حذف Account
           </Button>
         )}
       </div>
 
-      <DeleteAccountDialog 
+      <حذفAccountDialog 
         open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
+        onOpenChange={setحذفDialogOpen}
       />
     </div>
   );

@@ -88,14 +88,14 @@ export const StatusDropdown = ({
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Status updated successfully',
       });
     } catch (error: any) {
       // Revert optimistic UI on failure
       setOptimisticStageId(previousStageId);
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });

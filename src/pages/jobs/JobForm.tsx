@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,7 +15,7 @@ import { CustomQuestionsManager } from '@/components/jobs/CustomQuestionsManager
 const JobForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     department: '',
@@ -47,16 +47,16 @@ const JobForm = () => {
       setFormData(data);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleثبت = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setبارگذاری(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -79,7 +79,7 @@ const JobForm = () => {
         if (error) throw error;
 
         toast({
-          title: 'Success',
+          title: 'موفقیت',
           description: 'Job updated successfully',
         });
       } else {
@@ -114,7 +114,7 @@ const JobForm = () => {
         }
 
         toast({
-          title: 'Success',
+          title: 'موفقیت',
           description: 'Job created successfully',
         });
       }
@@ -122,12 +122,12 @@ const JobForm = () => {
       navigate('/jobs');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -138,9 +138,9 @@ const JobForm = () => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl">{id ? 'Edit Job' : 'Create New Job'}</h1>
+          <h1 className="text-3xl">{id ? 'ویرایش Job' : 'ایجاد New Job'}</h1>
           <p className="text-muted-foreground">
-            {id ? 'Update job details' : 'Fill in the details to post a new job'}
+            {id ? 'به‌روزرسانی job details' : 'Fill in the details to post a new job'}
           </p>
         </div>
       </div>
@@ -154,14 +154,14 @@ const JobForm = () => {
         <TabsContent value="details">
           <Card>
             <CardHeader>
-              <CardTitle>Job Information</CardTitle>
+              <Cardعنوان>Job Information</Cardعنوان>
               <CardDescription>Basic details about the position</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onثبت={handleثبت} className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Job Title *</Label>
+                    <Label htmlFor="title">Job عنوان *</Label>
                     <Input
                       id="title"
                       value={formData.title}
@@ -182,12 +182,12 @@ const JobForm = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
+                    <Label htmlFor="location">مکان</Label>
                     <Input
                       id="location"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      placeholder="e.g. San Francisco, CA / Remote"
+                      placeholder="e.g. San Francisco, CA / دورکاری"
                     />
                   </div>
 
@@ -232,10 +232,10 @@ const JobForm = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                        <SelectItem value="pending_approval">در انتظار Approval</SelectItem>
                         <SelectItem value="open">Open</SelectItem>
                         <SelectItem value="paused">Paused</SelectItem>
-                        <SelectItem value="closed">Closed</SelectItem>
+                        <SelectItem value="closed">بستنd</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -321,10 +321,10 @@ const JobForm = () => {
 
                 <div className="flex gap-4">
                   <Button type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : id ? 'Update Job' : 'Create Job'}
+                    {loading ? 'در حال ذخیره...' : id ? 'به‌روزرسانی Job' : 'ایجاد Job'}
                   </Button>
                   <Button type="button" variant="outline" onClick={() => navigate('/jobs')}>
-                    Cancel
+                    انصراف
                   </Button>
                 </div>
               </form>
@@ -336,7 +336,7 @@ const JobForm = () => {
           <TabsContent value="questions">
             <Card>
               <CardHeader>
-                <CardTitle>Application Questions</CardTitle>
+                <Cardعنوان>Application Questions</Cardعنوان>
                 <CardDescription>
                   Customize your application form with additional questions
                 </CardDescription>

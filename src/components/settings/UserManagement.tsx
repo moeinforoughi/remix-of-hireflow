@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ChevronRight, ChevronDown } from 'lucide-react';
 import { InviteUserDialog } from './InviteUserDialog';
-import { EditUserDialog } from './EditUserDialog';
+import { ویرایشUserDialog } from './ویرایشUserDialog';
 import { notifyRoleChanged } from '@/lib/notifications';
 
 interface User {
@@ -23,10 +23,10 @@ interface User {
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingUser, setویرایشingUser] = useState<User | null>(null);
+  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export const UserManagement = () => {
       // Get current user's org_id first
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setLoading(false);
+        setبارگذاری(false);
         return;
       }
 
@@ -57,11 +57,11 @@ export const UserManagement = () => {
         .single();
 
       if (!currentProfile) {
-        setLoading(false);
+        setبارگذاری(false);
         return;
       }
 
-      // Filter profiles by same org_id
+      // فیلتر profiles by same org_id
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -116,12 +116,12 @@ export const UserManagement = () => {
       setUsers(usersWithRoles);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -133,7 +133,7 @@ export const UserManagement = () => {
       // Get target user info for notification
       const targetUser = users.find(u => u.id === userId);
 
-      // Delete existing role
+      // حذف existing role
       const { error: deleteError } = await supabase
         .from('user_roles')
         .delete()
@@ -149,7 +149,7 @@ export const UserManagement = () => {
       if (insertError) throw insertError;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'User role updated successfully',
       });
 
@@ -161,7 +161,7 @@ export const UserManagement = () => {
       fetchUsers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -179,7 +179,7 @@ export const UserManagement = () => {
   const getRoleLabel = (role: string) => {
     const labels: Record<string, string> = {
       basic: 'Can View',
-      job_admin: 'Can Edit',
+      job_admin: 'Can ویرایش',
       site_admin: 'Admin',
     };
     return labels[role] || role;
@@ -216,8 +216,8 @@ export const UserManagement = () => {
                   borderRadius: '8px',
                 }}
                 onClick={() => {
-                  setEditingUser(user);
-                  setEditDialogOpen(true);
+                  setویرایشingUser(user);
+                  setویرایشDialogOpen(true);
                 }}
               >
                 <TableCell className="rounded-l-lg">
@@ -255,7 +255,7 @@ export const UserManagement = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="basic">Can View</SelectItem>
-                        <SelectItem value="job_admin">Can Edit</SelectItem>
+                        <SelectItem value="job_admin">Can ویرایش</SelectItem>
                         <SelectItem value="site_admin">Admin</SelectItem>
                       </SelectContent>
                     </Select>
@@ -270,11 +270,11 @@ export const UserManagement = () => {
         </Table>
       </div>
 
-      <EditUserDialog
+      <ویرایشUserDialog
         open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
+        onOpenChange={setویرایشDialogOpen}
         user={editingUser}
-        onUpdateSuccess={fetchUsers}
+        onبه‌روزرسانیSuccess={fetchUsers}
       />
     </div>
   );

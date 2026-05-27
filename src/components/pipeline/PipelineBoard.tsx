@@ -1,4 +1,4 @@
-// Pipeline Board Component - Updated Design
+// Pipeline Board Component - به‌روزرسانیd Design
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,8 +26,8 @@ import {
   closestCenter,
   useDroppable,
 } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
+import { مرتب‌سازیableContext, verticalListمرتب‌سازیingStrategy } from '@dnd-kit/sortable';
+import { useمرتب‌سازیable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 interface Stage {
@@ -54,7 +54,7 @@ interface PipelineBoardProps {
   jobId: string;
 }
 
-interface SortableApplicationProps {
+interface مرتب‌سازیableApplicationProps {
   application: ApplicationCard;
   onClick: () => void;
   isSelected: boolean;
@@ -73,7 +73,7 @@ const getStageColor = (index: number) => {
   return colors[index % colors.length];
 };
 
-const SortableApplication = ({ application, onClick, isSelected, onToggleSelect }: SortableApplicationProps) => {
+const مرتب‌سازیableApplication = ({ application, onClick, isSelected, onToggleSelect }: مرتب‌سازیableApplicationProps) => {
   const {
     attributes,
     listeners,
@@ -81,7 +81,7 @@ const SortableApplication = ({ application, onClick, isSelected, onToggleSelect 
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: application.id });
+  } = useمرتب‌سازیable({ id: application.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -125,7 +125,7 @@ const SortableApplication = ({ application, onClick, isSelected, onToggleSelect 
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground">{application.candidate.full_name}</p>
             <p className="text-sm text-muted-foreground">
-              {application.candidate.location || 'Location not specified'}
+              {application.candidate.location || 'مکان not specified'}
             </p>
           </div>
         </div>
@@ -147,12 +147,12 @@ interface DroppableStageProps {
   stage: Stage;
   stageColor: string;
   candidateCount: number;
-  onEditStage: () => void;
-  isEditing: boolean;
+  onویرایشStage: () => void;
+  isویرایشing: boolean;
   editingStageName: string;
-  onEditingNameChange: (value: string) => void;
-  onSaveStage: () => void;
-  onCancelEdit: () => void;
+  onویرایشingNameChange: (value: string) => void;
+  onذخیرهStage: () => void;
+  onانصرافویرایش: () => void;
 }
 
 const DroppableStage = ({ 
@@ -162,12 +162,12 @@ const DroppableStage = ({
   stage, 
   stageColor, 
   candidateCount,
-  onEditStage,
-  isEditing,
+  onویرایشStage,
+  isویرایشing,
   editingStageName,
-  onEditingNameChange,
-  onSaveStage,
-  onCancelEdit
+  onویرایشingNameChange,
+  onذخیرهStage,
+  onانصرافویرایش
 }: DroppableStageProps) => {
   const { setNodeRef } = useDroppable({ id });
 
@@ -182,31 +182,31 @@ const DroppableStage = ({
       <div className="bg-muted/30 p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <div className={`w-2.5 h-2.5 rounded-full ${stageColor}`}></div>
-          {isEditing ? (
+          {isویرایشing ? (
             <>
               <Input
                 value={editingStageName}
-                onChange={(e) => onEditingNameChange(e.target.value)}
+                onChange={(e) => onویرایشingNameChange(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') onSaveStage();
-                  if (e.key === 'Escape') onCancelEdit();
+                  if (e.key === 'Enter') onذخیرهStage();
+                  if (e.key === 'Escape') onانصرافویرایش();
                 }}
                 className="h-7 text-sm flex-1"
                 autoFocus
               />
               <button 
-                onClick={onSaveStage}
+                onClick={onذخیرهStage}
                 className="p-1 hover:bg-green-100 rounded text-green-600"
-                title="Save"
+                title="ذخیره"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </button>
               <button 
-                onClick={onCancelEdit}
+                onClick={onانصرافویرایش}
                 className="p-1 hover:bg-red-100 rounded text-red-600"
-                title="Cancel"
+                title="انصراف"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -217,9 +217,9 @@ const DroppableStage = ({
             <>
               <h3 className="text-sm flex-1">{stage.name}</h3>
               <button 
-                onClick={onEditStage}
+                onClick={onویرایشStage}
                 className="p-1 hover:bg-muted rounded"
-                title="Edit stage name"
+                title="ویرایش stage name"
               >
                 <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
@@ -242,13 +242,13 @@ const DroppableStage = ({
 const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
   const [stages, setStages] = useState<Stage[]>([]);
   const [applications, setApplications] = useState<ApplicationCard[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollStart, setScrollStart] = useState({ x: 0, scrollLeft: 0 });
-  const [editingStageId, setEditingStageId] = useState<string | null>(null);
-  const [editingStageName, setEditingStageName] = useState('');
+  const [editingStageId, setویرایشingStageId] = useState<string | null>(null);
+  const [editingStageName, setویرایشingStageName] = useState('');
   const [selectedApplicationIds, setSelectedApplicationIds] = useState<string[]>([]);
   const [showBulkRejectDialog, setShowBulkRejectDialog] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -325,7 +325,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       if (appsRes.error) throw appsRes.error;
 
       setStages(stagesRes.data || []);
-      // Filter out applications with null candidates
+      // فیلتر out applications with null candidates
       setApplications((appsRes.data || []).filter(app => app.candidate !== null));
     } catch (error: any) {
       toast({
@@ -334,7 +334,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -423,15 +423,15 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     setIsScrolling(false);
   };
 
-  const handleStartEditStage = (stage: Stage) => {
-    setEditingStageId(stage.id);
-    setEditingStageName(stage.name);
+  const handleStartویرایشStage = (stage: Stage) => {
+    setویرایشingStageId(stage.id);
+    setویرایشingStageName(stage.name);
   };
 
-  const handleSaveStage = async (stageId: string) => {
+  const handleذخیرهStage = async (stageId: string) => {
     if (!editingStageName.trim()) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Stage name cannot be empty',
         variant: 'destructive',
       });
@@ -451,8 +451,8 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         description: 'Stage name has been updated successfully',
       });
 
-      setEditingStageId(null);
-      setEditingStageName('');
+      setویرایشingStageId(null);
+      setویرایشingStageName('');
       fetchPipelineData();
     } catch (error: any) {
       toast({
@@ -463,9 +463,9 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingStageId(null);
-    setEditingStageName('');
+  const handleانصرافویرایش = () => {
+    setویرایشingStageId(null);
+    setویرایشingStageName('');
   };
 
   const handleToggleSelect = (id: string) => {
@@ -630,10 +630,10 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                   key={stage.id}
                   className="w-[320px] flex-shrink-0"
                 >
-                  <SortableContext
+                  <مرتب‌سازیableContext
                     id={stage.id}
                     items={stageApplications.map((a) => a.id)}
-                    strategy={verticalListSortingStrategy}
+                    strategy={verticalListمرتب‌سازیingStrategy}
                   >
                     <DroppableStage 
                       id={stage.id} 
@@ -641,15 +641,15 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                       stage={stage}
                       stageColor={stageColor}
                       candidateCount={stageApplications.length}
-                      onEditStage={() => handleStartEditStage(stage)}
-                      isEditing={editingStageId === stage.id}
+                      onویرایشStage={() => handleStartویرایشStage(stage)}
+                      isویرایشing={editingStageId === stage.id}
                       editingStageName={editingStageName}
-                      onEditingNameChange={setEditingStageName}
-                      onSaveStage={() => handleSaveStage(stage.id)}
-                      onCancelEdit={handleCancelEdit}
+                      onویرایشingNameChange={setویرایشingStageName}
+                      onذخیرهStage={() => handleذخیرهStage(stage.id)}
+                      onانصرافویرایش={handleانصرافویرایش}
                     >
                       {stageApplications.map((app) => (
-                        <SortableApplication
+                        <مرتب‌سازیableApplication
                           key={app.id}
                           application={app}
                           onClick={() => navigate(`/applications/${app.id}`)}
@@ -663,7 +663,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                         </div>
                       )}
                     </DroppableStage>
-                  </SortableContext>
+                  </مرتب‌سازیableContext>
                 </div>
               );
             })}
@@ -688,7 +688,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                   <div className="flex-1">
                     <p className="font-medium text-sm">{activeApplication.candidate.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {activeApplication.candidate.location || 'Location not specified'}
+                      {activeApplication.candidate.location || 'مکان not specified'}
                     </p>
                   </div>
                 </div>
@@ -711,7 +711,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       <BulkRejectDialog
         open={showBulkRejectDialog}
         onOpenChange={setShowBulkRejectDialog}
-        onConfirm={handleBulkReject}
+        onتأیید={handleBulkReject}
         count={selectedApplicationIds.length}
       />
     </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, Download } from 'lucide-react';
@@ -54,8 +54,8 @@ const InterviewDetail = () => {
   const { toast } = useToast();
   const [interview, setInterview] = useState<InterviewDetail | null>(null);
   const [scorecards, setScorecards] = useState<Scorecard[]>([]);
-  const [interviewers, setInterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
-  const [loading, setLoading] = useState(true);
+  const [مصاحبه‌کننده, setInterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
+  const [loading, setبارگذاری] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const InterviewDetail = () => {
       if (error) throw error;
       setInterviewers(data || []);
     } catch (error) {
-      console.error("Error fetching interviewers:", error);
+      console.error("Error fetching مصاحبه‌کننده:", error);
     }
   };
 
@@ -117,18 +117,18 @@ const InterviewDetail = () => {
       if (error) throw error;
       setInterview(data);
 
-      // Fetch interviewers if panel_user_ids exists
+      // Fetch مصاحبه‌کننده if panel_user_ids exists
       if (data?.panel_user_ids && data.panel_user_ids.length > 0) {
         await fetchInterviewers(data.panel_user_ids);
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -164,7 +164,7 @@ const InterviewDetail = () => {
 
       if (error) throw error;
 
-      // Create a blob and download
+      // ایجاد a blob and download
       const blob = new Blob([data], { type: 'text/calendar' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -188,7 +188,7 @@ const InterviewDetail = () => {
     }
   };
 
-  const handleStatusUpdate = async (newStatus: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
+  const handleStatusبه‌روزرسانی = async (newStatus: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
     try {
       const { error } = await supabase
         .from('interviews')
@@ -198,14 +198,14 @@ const InterviewDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: `Interview marked as ${newStatus}`,
       });
 
       fetchInterview();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -223,7 +223,7 @@ const InterviewDetail = () => {
 
       if (!stages || stages.length === 0) {
         toast({
-          title: 'Error',
+          title: 'خطا',
           description: 'No stages found for this job',
           variant: 'destructive',
         });
@@ -264,7 +264,7 @@ const InterviewDetail = () => {
       navigate(`/applications/${interview?.application.id}`);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -293,7 +293,7 @@ const InterviewDetail = () => {
       navigate(`/applications/${interview?.application.id}`);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -314,7 +314,7 @@ const InterviewDetail = () => {
         <p className="text-muted-foreground">Interview not found</p>
         <Button onClick={() => navigate('/interviews')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Interviews
+          بازگشت to Interviews
         </Button>
       </div>
     );
@@ -336,7 +336,7 @@ const InterviewDetail = () => {
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Interview Details</CardTitle>
+            <Cardعنوان>Interview Details</Cardعنوان>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-start gap-3">
@@ -361,7 +361,7 @@ const InterviewDetail = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="font-medium">Location</p>
+                  <p className="font-medium">مکان</p>
                   <p className="text-sm text-muted-foreground">{interview.location}</p>
                 </div>
               </div>
@@ -378,25 +378,25 @@ const InterviewDetail = () => {
                     rel="noopener noreferrer"
                     className="text-sm text-primary hover:underline flex items-center gap-1"
                   >
-                    Join Meeting <ExternalLink className="h-3 w-3" />
+                    ورود به جلسه <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
               </div>
             )}
 
-            {interviewers.length > 0 && (
+            {مصاحبه‌کننده.length > 0 && (
               <div className="flex items-start gap-3">
                 <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div className="flex-1">
                   <p className="font-medium mb-2">Interview Panel</p>
                   <div className="space-y-2">
-                    {interviewers.map((interviewer) => (
-                      <div key={interviewer.id} className="flex items-center gap-2">
+                    {مصاحبه‌کننده.map((مصاحبه‌کننده) => (
+                      <div key={مصاحبه‌کننده.id} className="flex items-center gap-2">
                         <Badge variant="secondary">
-                          {interviewer.full_name}
+                          {مصاحبه‌کننده.full_name}
                         </Badge>
                         <span className="text-sm text-muted-foreground">
-                          {interviewer.email}
+                          {مصاحبه‌کننده.email}
                         </span>
                       </div>
                     ))}
@@ -409,7 +409,7 @@ const InterviewDetail = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Candidate Information</CardTitle>
+            <Cardعنوان>Candidate Information</Cardعنوان>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-start gap-3">
@@ -454,14 +454,14 @@ const InterviewDetail = () => {
       {interview.status === 'scheduled' && (
         <Card>
           <CardHeader>
-            <CardTitle>Actions</CardTitle>
+            <Cardعنوان>Actions</Cardعنوان>
           </CardHeader>
           <CardContent className="flex gap-4">
-            <Button onClick={() => handleStatusUpdate('completed')}>
+            <Button onClick={() => handleStatusبه‌روزرسانی('completed')}>
               Mark as Completed
             </Button>
-            <Button variant="outline" onClick={() => handleStatusUpdate('cancelled')}>
-              Cancel Interview
+            <Button variant="outline" onClick={() => handleStatusبه‌روزرسانی('cancelled')}>
+              انصراف Interview
             </Button>
           </CardContent>
         </Card>

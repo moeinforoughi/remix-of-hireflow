@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Plus, Users, ChevronRight, Filter } from 'lucide-react';
+import { Plus, Users, ChevronRight, فیلتر } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -52,12 +52,12 @@ interface ApplicationWithDetails {
 
 const CandidatesList = () => {
   const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setبارگذاری] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [jobs, setJobs] = useState<Array<{ id: string; title: string }>>([]);
   const [stages, setStages] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const { role, assignedJobIds, loading: permissionsLoading } = useUserPermissions();
+  const [statusفیلتر, setStatusفیلتر] = useState<string>('all');
+  const { role, assignedJobIds, loading: permissionsبارگذاری } = useUserPermissions();
 
   useEffect(() => {
     fetchUserRole();
@@ -65,10 +65,10 @@ const CandidatesList = () => {
   }, []);
 
   useEffect(() => {
-    if (!permissionsLoading) {
+    if (!permissionsبارگذاری) {
       fetchApplications();
     }
-  }, [permissionsLoading, role, assignedJobIds, statusFilter]);
+  }, [permissionsبارگذاری, role, assignedJobIds, statusفیلتر]);
 
   const fetchUserRole = async () => {
     try {
@@ -125,7 +125,7 @@ const CandidatesList = () => {
       // Non-site_admin users with no job assignments see nothing
       if (role !== 'site_admin' && assignedJobIds.length === 0) {
         setApplications([]);
-        setLoading(false);
+        setبارگذاری(false);
         return;
       }
 
@@ -159,11 +159,11 @@ const CandidatesList = () => {
       // Site admins - no filter (see all)
 
       // Apply status filter
-      if (statusFilter === 'active') {
+      if (statusفیلتر === 'active') {
         query = query.eq('state', 'active');
-      } else if (statusFilter === 'rejected') {
+      } else if (statusفیلتر === 'rejected') {
         query = query.eq('state', 'rejected');
-      } else if (statusFilter === 'withdrawn') {
+      } else if (statusفیلتر === 'withdrawn') {
         query = query.eq('state', 'withdrawn');
       }
       // Note: 'hired' filter is handled post-query since we need to check stage type
@@ -172,7 +172,7 @@ const CandidatesList = () => {
 
       if (error) throw error;
 
-      // Filter out null candidates/jobs and apply hired filter
+      // فیلتر out null candidates/jobs and apply hired filter
       let filteredData = (data || [])
         .filter((app: any) => app.candidate && app.job)
         .map((app: any) => ({
@@ -181,14 +181,14 @@ const CandidatesList = () => {
         }));
 
       // Handle hired filter - check both state='hired' and stage type='hired'
-      if (statusFilter === 'hired') {
+      if (statusفیلتر === 'hired') {
         filteredData = filteredData.filter((app: any) => 
           app.state === 'hired' || app.current_stage?.type === 'hired'
         );
       }
       
       // Exclude hired candidates from "Active" filter
-      if (statusFilter === 'active') {
+      if (statusفیلتر === 'active') {
         filteredData = filteredData.filter((app: any) => 
           app.current_stage?.type !== 'hired'
         );
@@ -197,12 +197,12 @@ const CandidatesList = () => {
       setApplications(filteredData);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -212,10 +212,10 @@ const CandidatesList = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-3xl">Candidates</h1>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusفیلتر} onValueChange={setStatusفیلتر}>
             <SelectTrigger className="w-[160px]">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Filter by status" />
+              <فیلتر className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="فیلتر by status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Candidates</SelectItem>
@@ -234,7 +234,7 @@ const CandidatesList = () => {
         )}
       </div>
 
-      {loading || permissionsLoading ? (
+      {loading || permissionsبارگذاری ? (
         <CandidatesListSkeleton />
       ) : applications.length === 0 ? (
         <div className="text-center py-12">
@@ -243,8 +243,8 @@ const CandidatesList = () => {
           <p className="text-muted-foreground">
             {role !== 'site_admin' && assignedJobIds.length === 0
               ? "You haven't been assigned to any jobs yet. Contact your administrator to get access."
-              : statusFilter !== 'all' 
-                ? `No ${statusFilter} candidates found`
+              : statusفیلتر !== 'all' 
+                ? `No ${statusفیلتر} candidates found`
                 : "Get started by adding your first candidate"}
           </p>
         </div>
@@ -307,7 +307,7 @@ const CandidatesList = () => {
                       applicationId={application.id}
                       currentManagerId={application.owner_user_id}
                       currentManagerName={application.owner?.full_name || null}
-                      onUpdate={fetchApplications}
+                      onبه‌روزرسانی={fetchApplications}
                     />
                   </TableCell>
                   <TableCell className="rounded-r-lg">

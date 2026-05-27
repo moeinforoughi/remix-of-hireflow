@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Loader2, Search, X, ChevronRight, Briefcase } from 'lucide-react';
+import { Plus, Loader2, جستجو, X, ChevronRight, Briefcase } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   Select,
@@ -44,10 +44,10 @@ interface Application {
 
 const ApplicationsList = () => {
   const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
+  const [loading, setبارگذاری] = useState(true);
+  const [searchQuery, setجستجوQuery] = useState('');
+  const [statusفیلتر, setStatusفیلتر] = useState<string>('all');
+  const [sortBy, setمرتب‌سازیBy] = useState<'date' | 'name'>('date');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -73,12 +73,12 @@ const ApplicationsList = () => {
       setApplications(data || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -94,17 +94,17 @@ const ApplicationsList = () => {
 
   const filteredApplications = applications
     .filter((app) => {
-      // Filter out applications with missing candidate or job data
+      // فیلتر out applications with missing candidate or job data
       if (!app.candidate || !app.job) return false;
 
-      const matchesSearch =
+      const matchesجستجو =
         app.candidate.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         app.candidate.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         app.job.title.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesStatus = statusFilter === 'all' || app.state === statusFilter;
+      const matchesStatus = statusفیلتر === 'all' || app.state === statusفیلتر;
 
-      return matchesSearch && matchesStatus;
+      return matchesجستجو && matchesStatus;
     })
     .sort((a, b) => {
       if (sortBy === 'date') {
@@ -114,13 +114,13 @@ const ApplicationsList = () => {
       }
     });
 
-  const clearFilters = () => {
-    setSearchQuery('');
-    setStatusFilter('all');
-    setSortBy('date');
+  const clearفیلترs = () => {
+    setجستجوQuery('');
+    setStatusفیلتر('all');
+    setمرتب‌سازیBy('date');
   };
 
-  const hasActiveFilters = searchQuery || statusFilter !== 'all' || sortBy !== 'date';
+  const hasActiveفیلترs = searchQuery || statusفیلتر !== 'all' || sortBy !== 'date';
 
   if (loading) {
     return (
@@ -144,16 +144,16 @@ const ApplicationsList = () => {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by candidate name, email, or job title..."
+            placeholder="جستجو by candidate name, email, or job title..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => setجستجوQuery(e.target.value)}
             className="pl-10 bg-card border-input"
           />
         </div>
 
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusفیلتر} onValueChange={setStatusفیلتر}>
           <SelectTrigger className="w-full sm:w-[180px] bg-card">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -166,9 +166,9 @@ const ApplicationsList = () => {
           </SelectContent>
         </Select>
 
-        <Select value={sortBy} onValueChange={(value: 'date' | 'name') => setSortBy(value)}>
+        <Select value={sortBy} onValueChange={(value: 'date' | 'name') => setمرتب‌سازیBy(value)}>
           <SelectTrigger className="w-full sm:w-[180px] bg-card">
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder="مرتب‌سازی by" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="date">Date (Newest)</SelectItem>
@@ -176,8 +176,8 @@ const ApplicationsList = () => {
           </SelectContent>
         </Select>
 
-        {hasActiveFilters && (
-          <Button variant="outline" onClick={clearFilters}>
+        {hasActiveفیلترs && (
+          <Button variant="outline" onClick={clearفیلترs}>
             <X className="h-4 w-4 mr-2" />
             Clear
           </Button>
@@ -189,9 +189,9 @@ const ApplicationsList = () => {
           <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg mb-2">No applications found</h3>
           <p className="text-muted-foreground mb-4">
-            {hasActiveFilters ? 'Try adjusting your filters' : 'Get started by creating your first application'}
+            {hasActiveفیلترs ? 'Try adjusting your filters' : 'Get started by creating your first application'}
           </p>
-          {!hasActiveFilters && (
+          {!hasActiveفیلترs && (
             <Button onClick={() => navigate('/applications/new')}>
               <Plus className="h-4 w-4 mr-2" />
               New Application

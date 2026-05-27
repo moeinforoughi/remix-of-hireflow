@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Clock } from 'lucide-react';
@@ -34,7 +34,7 @@ export const InterviewDecision = ({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Interview Decision</CardTitle>
+          <Cardعنوان>Interview Decision</Cardعنوان>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -61,7 +61,7 @@ export const InterviewDecision = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Interview Decision</CardTitle>
+        <Cardعنوان>Interview Decision</Cardعنوان>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
@@ -98,7 +98,7 @@ export const InterviewDecision = ({
               {majorityRecommendation === 'advance' && (
                 <Badge variant="default" className="flex items-center gap-1">
                   <CheckCircle className="h-3 w-3" />
-                  Move to Next Stage
+                  Move to بعدی Stage
                 </Badge>
               )}
               {majorityRecommendation === 'reject' && (
@@ -132,7 +132,7 @@ export const InterviewDecision = ({
       <RejectCandidateDialog
         open={showRejectDialog}
         onOpenChange={setShowRejectDialog}
-        onConfirm={handleReject}
+        onتأیید={handleReject}
       />
     </Card>
   );

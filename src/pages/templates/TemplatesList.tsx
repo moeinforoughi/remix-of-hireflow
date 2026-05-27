@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2 } from "lucide-react";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Plus, ویرایش, Trash2 } from "lucide-react";
+import { تأییدDialog } from "@/components/shared/تأییدDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Template {
@@ -22,9 +22,9 @@ export default function TemplatesList() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
+  const [loading, setبارگذاری] = useState(true);
+  const [deleteDialogOpen, setحذفDialogOpen] = useState(false);
+  const [templateToحذف, setTemplateToحذف] = useState<string | null>(null);
   const [isSiteAdmin, setIsSiteAdmin] = useState(false);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function TemplatesList() {
   };
 
   const fetchTemplates = async () => {
-    setLoading(true);
+    setبارگذاری(true);
     try {
       const { data, error } = await supabase
         .from("message_templates")
@@ -63,23 +63,23 @@ export default function TemplatesList() {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
-  const handleDeleteClick = (id: string) => {
-    setTemplateToDelete(id);
-    setDeleteDialogOpen(true);
+  const handleحذفClick = (id: string) => {
+    setTemplateToحذف(id);
+    setحذفDialogOpen(true);
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!templateToDelete) return;
+  const handleحذفتأیید = async () => {
+    if (!templateToحذف) return;
 
     try {
       const { error } = await supabase
         .from("message_templates")
         .delete()
-        .eq("id", templateToDelete);
+        .eq("id", templateToحذف);
 
       if (error) throw error;
 
@@ -96,13 +96,13 @@ export default function TemplatesList() {
         variant: "destructive",
       });
     } finally {
-      setDeleteDialogOpen(false);
-      setTemplateToDelete(null);
+      setحذفDialogOpen(false);
+      setTemplateToحذف(null);
     }
   };
 
   if (loading) {
-    return <div className="p-8">Loading...</div>;
+    return <div className="p-8">در حال بارگذاری...</div>;
   }
 
   return (
@@ -123,7 +123,7 @@ export default function TemplatesList() {
             <p className="text-muted-foreground mb-4">No templates yet</p>
             <Button onClick={() => navigate("/templates/new")}>
               <Plus className="mr-2 h-4 w-4" />
-              Create your first template
+              ایجاد your first template
             </Button>
           </CardContent>
         </Card>
@@ -132,7 +132,7 @@ export default function TemplatesList() {
           {templates.map((template) => (
             <Card key={template.id}>
               <CardHeader>
-                <CardTitle className="flex items-start justify-between">
+                <Cardعنوان className="flex items-start justify-between">
                   <span className="text-lg">{template.name}</span>
                   <div className="flex gap-2">
                     <Button
@@ -140,7 +140,7 @@ export default function TemplatesList() {
                       size="icon"
                       onClick={() => navigate(`/templates/${template.id}/edit`)}
                     >
-                      <Edit className="h-4 w-4" />
+                      <ویرایش className="h-4 w-4" />
                     </Button>
                     <TooltipProvider>
                       <Tooltip>
@@ -149,7 +149,7 @@ export default function TemplatesList() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => handleDeleteClick(template.id)}
+                              onClick={() => handleحذفClick(template.id)}
                               disabled={!isSiteAdmin}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -164,7 +164,7 @@ export default function TemplatesList() {
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                </CardTitle>
+                </Cardعنوان>
               </CardHeader>
               <CardContent>
                 <p className="text-sm font-medium mb-2">{template.subject}</p>
@@ -189,13 +189,13 @@ export default function TemplatesList() {
         </div>
       )}
 
-      <ConfirmDialog
+      <تأییدDialog
         open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleDeleteConfirm}
-        title="Delete Template"
+        onOpenChange={setحذفDialogOpen}
+        onتأیید={handleحذفتأیید}
+        title="حذف Template"
         description="Are you sure you want to delete this template? This action cannot be undone."
-        confirmText="Delete"
+        confirmText="حذف"
         variant="destructive"
       />
     </div>

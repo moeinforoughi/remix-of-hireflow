@@ -1,18 +1,18 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogانصراف,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogعنوان,
 } from '@/components/ui/alert-dialog';
 
-interface ConfirmDialogProps {
+interface تأییدDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onتأیید: () => void;
   title: string;
   description: string;
   confirmText?: string;
@@ -20,27 +20,27 @@ interface ConfirmDialogProps {
   variant?: 'default' | 'destructive';
 }
 
-export const ConfirmDialog = ({
+export const تأییدDialog = ({
   open,
   onOpenChange,
-  onConfirm,
+  onتأیید,
   title,
   description,
   confirmText = 'Continue',
-  cancelText = 'Cancel',
+  cancelText = 'انصراف',
   variant = 'default',
-}: ConfirmDialogProps) => {
+}: تأییدDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogعنوان>{title}</AlertDialogعنوان>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{cancelText}</AlertDialogCancel>
+          <AlertDialogانصراف>{cancelText}</AlertDialogانصراف>
           <AlertDialogAction
-            onClick={onConfirm}
+            onClick={onتأیید}
             className={variant === 'destructive' ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : ''}
           >
             {confirmText}

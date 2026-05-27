@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
@@ -22,7 +22,7 @@ const ApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setبارگذاری] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
 
@@ -78,8 +78,8 @@ const ApplicationForm = () => {
     }
   };
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+  const onثبت = async (values: FormValues) => {
+    setبارگذاری(true);
     try {
       // Get the first stage for the job
       const { data: stages, error: stagesError } = await supabase
@@ -101,19 +101,19 @@ const ApplicationForm = () => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Application created successfully',
       });
 
       navigate('/applications');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setبارگذاری(false);
     }
   };
 
@@ -121,16 +121,16 @@ const ApplicationForm = () => {
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl">New Application</h1>
-        <p className="text-muted-foreground">Create a new job application</p>
+        <p className="text-muted-foreground">ایجاد a new job application</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Application Details</CardTitle>
+          <Cardعنوان>Application Details</Cardعنوان>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="candidate_id"
@@ -197,10 +197,10 @@ const ApplicationForm = () => {
               <div className="flex gap-4">
                 <Button type="submit" disabled={loading}>
                   {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Create Application
+                  ایجاد Application
                 </Button>
                 <Button type="button" variant="outline" onClick={() => navigate('/applications')}>
-                  Cancel
+                  انصراف
                 </Button>
               </div>
             </form>

@@ -1,33 +1,33 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogانصراف,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogعنوان,
 } from '@/components/ui/alert-dialog';
 
 interface WithdrawDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onتأیید: () => void;
 }
 
-export const WithdrawDialog = ({ open, onOpenChange, onConfirm }: WithdrawDialogProps) => {
+export const WithdrawDialog = ({ open, onOpenChange, onتأیید }: WithdrawDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Withdraw Application</AlertDialogTitle>
+          <AlertDialogعنوان>Withdraw Application</AlertDialogعنوان>
           <AlertDialogDescription>
             This will mark the application as withdrawn by the candidate. This action can be reversed later if needed.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>
+          <AlertDialogانصراف>انصراف</AlertDialogانصراف>
+          <AlertDialogAction onClick={onتأیید}>
             Withdraw Application
           </AlertDialogAction>
         </AlertDialogFooter>
