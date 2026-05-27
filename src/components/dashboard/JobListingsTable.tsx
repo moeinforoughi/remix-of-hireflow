@@ -3,7 +3,7 @@ import React from 'react';
 interface JobListingProps {
   title: string;
   location: string;
-  dateOpened: string;
+  dateبازed: string;
   candidates: string;
   isLast?: boolean;
 }
@@ -11,7 +11,7 @@ interface JobListingProps {
 const JobListingRow: React.FC<JobListingProps> = ({ 
   title, 
   location, 
-  dateOpened, 
+  dateبازed, 
   candidates, 
   isLast = false 
 }) => {
@@ -24,7 +24,7 @@ const JobListingRow: React.FC<JobListingProps> = ({
         {location}
       </div>
       <div className={`text-muted-foreground self-stretch ${isLast ? '' : 'z-0'} flex-1 shrink basis-[0%] my-auto`}>
-        {dateOpened}
+        {dateبازed}
       </div>
       {isLast ? (
         <img
@@ -40,7 +40,7 @@ const JobListingRow: React.FC<JobListingProps> = ({
           <img
             src="https://api.builder.io/api/v1/image/assets/160bd503595d4b3e818fa7f42e1b117f/e6eb34be971f13c6ffa94328c5e566f7cee4dd59?placeholderIfAbsent=true"
             className="aspect-[1/1] object-contain w-4 absolute z-0 shrink-0 translate-x-[0%] -translate-y-2/4 h-4 right-[11px] top-2/4"
-            alt="More options"
+            alt="بیشتر options"
           />
         </>
       )}
@@ -50,14 +50,14 @@ const JobListingRow: React.FC<JobListingProps> = ({
 
 const JobListingsTable = () => {
   const jobListings = [
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" }
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateبازed: "10/01/2025", candidates: "13" }
   ];
 
   return (
@@ -88,7 +88,7 @@ const JobListingsTable = () => {
             key={index}
             title={job.title}
             location={job.location}
-            dateOpened={job.dateOpened}
+            dateبازed={job.dateبازed}
             candidates={job.candidates}
           />
         ))}
@@ -96,7 +96,7 @@ const JobListingsTable = () => {
         <JobListingRow
           title="Front-End Developer"
           location="دورکاری"
-          dateOpened="10/01/2025"
+          dateبازed="10/01/2025"
           candidates=""
           isLast={true}
         />

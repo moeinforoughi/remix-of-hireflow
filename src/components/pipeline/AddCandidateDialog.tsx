@@ -14,16 +14,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Paperclip, Plus, جستجو, Loader2, User } from 'lucide-react';
-import { parseResume } from '@/lib/resume-parser';
+import { بارگذاری, Paperclip, Plus, جستجو, Loader2, User } from 'lucide-react';
+import { parseرزومه } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Format phone number as (XXX) XXX-XXXX
-const formatPhoneNumber = (value: string) => {
+const formatتلفنNumber = (value: string) => {
   const digits = value.replace(/\D/g, '');
   const limitedDigits = digits.slice(0, 10);
   
@@ -42,7 +42,7 @@ const formSchema = z.object({
   ),
   linkedin_url: z.string().optional().refine(
     (val) => !val || val === '' || (val.startsWith('http') && val.includes('linkedin.com')),
-    { message: 'Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)' }
+    { message: 'Please enter a valid لینکدین URL (e.g., https://linkedin.com/in/username)' }
   ),
 });
 
@@ -53,30 +53,30 @@ interface Candidate {
   avatar_url: string | null;
 }
 
-interface AddCandidateDialogProps {
+interface افزودنCandidateDialogProps {
   jobId?: string;
   stages?: Array<{ id: string; name: string; order_idx: number }>;
   jobs?: Array<{ id: string; title: string }>;
   onSuccess?: () => void;
 }
 
-export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandidateDialogProps) => {
-  const [open, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'new' | 'existing'>('new');
+export const افزودنCandidateDialog = ({ jobId, stages, jobs, onSuccess }: افزودنCandidateDialogProps) => {
+  const [open, setباز] = useState(false);
+  const [activeTab, setفعالTab] = useState<'new' | 'existing'>('new');
   const [loading, setبارگذاری] = useState(false);
   const [parsing, setParsing] = useState(false);
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumeFile, setرزومهFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedJobId, setSelectedJobId] = useState<string>(jobId || '');
-  const [jobStages, setJobStages] = useState<Array<{ id: string; name: string; order_idx: number }>>(stages || []);
-  const [phoneValue, setPhoneValue] = useState('');
+  const [selectedJobId, setانتخابedJobId] = useState<string>(jobId || '');
+  const [jobمرحلهs, setJobمرحلهs] = useState<Array<{ id: string; name: string; order_idx: number }>>(stages || []);
+  const [phoneValue, setتلفنValue] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Existing candidate search state
   const [searchQuery, setجستجوQuery] = useState('');
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [existingJobCandidateIds, setExistingJobCandidateIds] = useState<string[]>([]);
-  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+  const [selectedCandidate, setانتخابedCandidate] = useState<Candidate | null>(null);
   const [searchبارگذاری, setجستجوبارگذاری] = useState(false);
 
   const { register, handleثبت, formState: { errors }, reset, setValue } = useForm({
@@ -93,11 +93,11 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
   // Fetch candidates already applied to this job
   useEffect(() => {
     if (open && jobId) {
-      fetchExistingApplications();
+      fetchExistingدرخواست‌ها();
     }
   }, [open, jobId]);
 
-  const fetchExistingApplications = async () => {
+  const fetchExistingدرخواست‌ها = async () => {
     const targetJobId = jobId || selectedJobId;
     if (!targetJobId) return;
 
@@ -181,11 +181,11 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     
     const files = e.dataTransfer.files;
     if (files && files[0]) {
-      handleFileSelect(files[0]);
+      handleFileانتخاب(files[0]);
     }
   };
 
-  const handleFileSelect = async (file: File) => {
+  const handleFileانتخاب = async (file: File) => {
     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     const maxSize = 10 * 1024 * 1024;
 
@@ -207,7 +207,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       return;
     }
 
-    setResumeFile(file);
+    setرزومهFile(file);
     
     setParsing(true);
     try {
@@ -229,14 +229,14 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           if (data.data.full_name) setValue('full_name', data.data.full_name);
           if (data.data.email) setValue('email', data.data.email);
           if (data.data.phone) {
-            const formatted = formatPhoneNumber(data.data.phone);
-            setPhoneValue(formatted);
+            const formatted = formatتلفنNumber(data.data.phone);
+            setتلفنValue(formatted);
             setValue('phone', formatted);
           }
           if (data.data.linkedin_url) setValue('linkedin_url', data.data.linkedin_url);
 
           toast({
-            title: 'Resume parsed',
+            title: 'رزومه parsed',
             description: 'Form fields have been auto-filled. Please review and edit as needed.',
           });
         }
@@ -258,12 +258,12 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files[0]) {
-      handleFileSelect(files[0]);
+      handleFileانتخاب(files[0]);
     }
   };
 
   const handleJobChange = async (newJobId: string) => {
-    setSelectedJobId(newJobId);
+    setانتخابedJobId(newJobId);
     
     try {
       const { data, error } = await supabase
@@ -273,7 +273,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         .order('order_idx');
 
       if (error) throw error;
-      setJobStages(data || []);
+      setJobمرحلهs(data || []);
 
       // Refetch existing applications for this job
       const { data: apps } = await supabase
@@ -302,7 +302,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -310,10 +310,10 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
-      let currentStages = jobStages;
-      if (!currentStages || currentStages.length === 0) {
+      let currentمرحلهs = jobمرحلهs;
+      if (!currentمرحلهs || currentمرحلهs.length === 0) {
         const { data: stagesData, error: stagesError } = await supabase
           .from('job_stages')
           .select('id, name, order_idx')
@@ -323,34 +323,34 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         if (stagesError) throw stagesError;
         
         if (!stagesData || stagesData.length === 0) {
-          const defaultStages: Array<{
+          const defaultمرحلهs: Array<{
             name: string;
             type: 'applied' | 'screen' | 'phone' | 'onsite' | 'offer' | 'hired' | 'rejected';
             order_idx: number;
           }> = [
-            { name: 'Applied', type: 'applied', order_idx: 0 },
+            { name: 'ثبت درخواست شده', type: 'applied', order_idx: 0 },
             { name: 'Screening', type: 'screen', order_idx: 1 },
-            { name: 'Phone Interview', type: 'phone', order_idx: 2 },
-            { name: 'Onsite Interview', type: 'onsite', order_idx: 3 },
+            { name: 'تلفن Interview', type: 'phone', order_idx: 2 },
+            { name: 'مصاحبه حضوری', type: 'onsite', order_idx: 3 },
             { name: 'Offer', type: 'offer', order_idx: 4 },
-            { name: 'Hired', type: 'hired', order_idx: 5 },
-            { name: 'Rejected', type: 'rejected', order_idx: 6 },
+            { name: 'استخدامd', type: 'hired', order_idx: 5 },
+            { name: 'ردed', type: 'rejected', order_idx: 6 },
           ];
 
-          const { data: createdStages, error: createError } = await supabase
+          const { data: createdمرحلهs, error: createError } = await supabase
             .from('job_stages')
-            .insert(defaultStages.map(stage => ({ ...stage, job_id: targetJobId })))
+            .insert(defaultمرحلهs.map(stage => ({ ...stage, job_id: targetJobId })))
             .select('id, name, order_idx');
 
           if (createError) throw createError;
-          currentStages = createdStages || [];
+          currentمرحلهs = createdمرحلهs || [];
           
           toast({
-            title: 'Pipeline ایجادd',
+            title: 'پایپ‌لاین ایجادd',
             description: 'Default pipeline stages have been set up for this job.',
           });
         } else {
-          currentStages = stagesData;
+          currentمرحلهs = stagesData;
         }
       }
 
@@ -365,17 +365,17 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           source: 'manual',
           org_id: profile.org_id,
           consent: true,
-          consent_at: new Date().toISOString(),
+          consent_at: new تاریخ().toISOString(),
         })
         .select()
         .single();
 
       if (candidateError) throw candidateError;
 
-      // Upload resume if provided
+      // بارگذاری resume if provided
       if (resumeFile && candidate) {
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${candidate.id}-${Date.now()}.${fileExt}`;
+        const fileName = `${candidate.id}-${تاریخ.now()}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -395,13 +395,13 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           uploaded_by: user.id,
         });
 
-        parseResume(filePath, candidate.id).catch(console.error);
+        parseرزومه(filePath, candidate.id).catch(console.error);
       }
 
-      const firstStage = currentStages.find(s => s.name.toLowerCase().includes('applied')) || currentStages[0];
+      const firstمرحله = currentمرحلهs.find(s => s.name.toکمerCase().includes('applied')) || currentمرحلهs[0];
       
-      if (!firstStage) {
-        throw new Error('No stage found for this job');
+      if (!firstمرحله) {
+        throw new Error('خیر stage found for this job');
       }
 
       const { data: applicationData, error: applicationError } = await supabase
@@ -409,17 +409,17 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         .insert({
           candidate_id: candidate.id,
           job_id: targetJobId,
-          current_stage_id: firstStage.id,
+          current_stage_id: firstمرحله.id,
           state: 'active',
           owner_user_id: user.id,
-          applied_at: new Date().toISOString(),
+          applied_at: new تاریخ().toISOString(),
         })
         .select('id')
         .single();
 
       if (applicationError) throw applicationError;
 
-      // Send notification
+      // ارسال notification
       if (applicationData) {
         notifyNewApplication(targetJobId, data.full_name, applicationData.id).catch(console.error);
       }
@@ -430,9 +430,9 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       });
 
       reset();
-      setResumeFile(null);
-      setPhoneValue('');
-      setOpen(false);
+      setرزومهFile(null);
+      setتلفنValue('');
+      setباز(false);
       onSuccess?.();
     } catch (error: any) {
       toast({
@@ -445,7 +445,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     }
   };
 
-  const handleAddExistingCandidate = async () => {
+  const handleافزودنExistingCandidate = async () => {
     const targetJobId = jobId || selectedJobId;
     
     if (!targetJobId) {
@@ -469,11 +469,11 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       // Get stages
-      let currentStages = jobStages;
-      if (!currentStages || currentStages.length === 0) {
+      let currentمرحلهs = jobمرحلهs;
+      if (!currentمرحلهs || currentمرحلهs.length === 0) {
         const { data: stagesData, error: stagesError } = await supabase
           .from('job_stages')
           .select('id, name, order_idx')
@@ -481,13 +481,13 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           .order('order_idx');
 
         if (stagesError) throw stagesError;
-        currentStages = stagesData || [];
+        currentمرحلهs = stagesData || [];
       }
 
-      const firstStage = currentStages.find(s => s.name.toLowerCase().includes('applied')) || currentStages[0];
+      const firstمرحله = currentمرحلهs.find(s => s.name.toکمerCase().includes('applied')) || currentمرحلهs[0];
       
-      if (!firstStage) {
-        throw new Error('No stage found for this job');
+      if (!firstمرحله) {
+        throw new Error('خیر stage found for this job');
       }
 
       // ایجاد application
@@ -496,17 +496,17 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         .insert({
           candidate_id: selectedCandidate.id,
           job_id: targetJobId,
-          current_stage_id: firstStage.id,
+          current_stage_id: firstمرحله.id,
           state: 'active',
           owner_user_id: user.id,
-          applied_at: new Date().toISOString(),
+          applied_at: new تاریخ().toISOString(),
         })
         .select('id')
         .single();
 
       if (applicationError) throw applicationError;
 
-      // Send notification
+      // ارسال notification
       if (applicationData) {
         notifyNewApplication(targetJobId, selectedCandidate.full_name, applicationData.id).catch(console.error);
       }
@@ -516,9 +516,9 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         description: `${selectedCandidate.full_name} added to pipeline`,
       });
 
-      setSelectedCandidate(null);
+      setانتخابedCandidate(null);
       setجستجوQuery('');
-      setOpen(false);
+      setباز(false);
       onSuccess?.();
     } catch (error: any) {
       toast({
@@ -531,40 +531,40 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
     }
   };
 
-  const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen);
-    if (!newOpen) {
+  const handleبازChange = (newباز: boolean) => {
+    setباز(newباز);
+    if (!newباز) {
       reset();
-      setResumeFile(null);
-      setPhoneValue('');
-      setActiveTab('new');
-      setSelectedCandidate(null);
+      setرزومهFile(null);
+      setتلفنValue('');
+      setفعالTab('new');
+      setانتخابedCandidate(null);
       setجستجوQuery('');
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onبازChange={handleبازChange}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Add Candidate
+          افزودن کاندیدا
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <Dialogعنوان>Add Candidate</Dialogعنوان>
+          <Dialogعنوان>افزودن کاندیدا</Dialogعنوان>
         </DialogHeader>
         
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'new' | 'existing')}>
+        <Tabs value={activeTab} onValueChange={(v) => setفعالTab(v as 'new' | 'existing')}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="new">New Candidate</TabsTrigger>
+            <TabsTrigger value="new">کاندیدای جدید</TabsTrigger>
             <TabsTrigger value="existing">Existing Candidate</TabsTrigger>
           </TabsList>
 
           <TabsContent value="new" className="mt-4">
             <form onثبت={handleثبت(onثبت)} className="space-y-6">
-              {/* Upload Resume Section */}
+              {/* بارگذاری رزومه Section */}
               <div
                 className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
                   isDragging ? 'border-primary bg-accent/20' : parsing ? 'border-primary bg-accent/10' : 'border-border'
@@ -577,11 +577,11 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
               >
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                    <Upload className={`h-6 w-6 text-muted-foreground ${parsing ? 'animate-pulse' : ''}`} />
+                    <بارگذاری className={`h-6 w-6 text-muted-foreground ${parsing ? 'animate-pulse' : ''}`} />
                   </div>
                   <div>
                     <p className="text-sm font-medium mb-1">
-                      {parsing ? 'Parsing resume...' : 'Upload Resume to auto-fill new applicant information'}
+                      {parsing ? 'Parsing resume...' : 'بارگذاری رزومه to auto-fill new applicant information'}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {parsing ? 'Extracting candidate information' : 'Drag a file here or click to browse your computer files'}
@@ -610,7 +610,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-background text-muted-foreground">
-                    Manually Add Candidate
+                    Manually افزودن کاندیدا
                   </span>
                 </div>
               </div>
@@ -620,18 +620,18 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                 {!jobId && jobs && jobs.length > 0 && (
                   <div className="space-y-2">
                     <Label htmlFor="job">Job Position *</Label>
-                    <Select value={selectedJobId} onValueChange={handleJobChange}>
-                      <SelectTrigger className="h-11">
-                        <SelectValue placeholder="Select a job" />
-                      </SelectTrigger>
-                      <SelectContent>
+                    <انتخاب value={selectedJobId} onValueChange={handleJobChange}>
+                      <انتخابTrigger className="h-11">
+                        <انتخابValue placeholder="انتخاب a job" />
+                      </انتخابTrigger>
+                      <انتخابContent>
                         {jobs.map((job) => (
-                          <SelectItem key={job.id} value={job.id}>
+                          <انتخابItem key={job.id} value={job.id}>
                             {job.title}
-                          </SelectItem>
+                          </انتخابItem>
                         ))}
-                      </SelectContent>
-                    </Select>
+                      </انتخابContent>
+                    </انتخاب>
                   </div>
                 )}
 
@@ -651,7 +651,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Email"
+                    placeholder="ایمیل"
                     {...register('email')}
                     className="h-11"
                   />
@@ -663,11 +663,11 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                 <div className="space-y-2">
                   <Input
                     id="phone"
-                    placeholder="Phone number"
+                    placeholder="تلفن number"
                     value={phoneValue}
                     onChange={(e) => {
-                      const formatted = formatPhoneNumber(e.target.value);
-                      setPhoneValue(formatted);
+                      const formatted = formatتلفنNumber(e.target.value);
+                      setتلفنValue(formatted);
                       setValue('phone', formatted);
                     }}
                     className="h-11"
@@ -680,7 +680,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                 <div className="space-y-2">
                   <Input
                     id="linkedin_url"
-                    placeholder="LinkedIn URL"
+                    placeholder="لینکدین URL"
                     {...register('linkedin_url')}
                     className="h-11"
                   />
@@ -695,7 +695,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setOpen(false)}
+                  onClick={() => setباز(false)}
                   className="px-6"
                 >
                   انصراف
@@ -705,29 +705,29 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                   disabled={loading}
                   className="px-6 bg-foreground text-background hover:bg-foreground/90"
                 >
-                  {loading ? 'Adding...' : 'Add Candidate'}
+                  {loading ? 'افزودنing...' : 'افزودن کاندیدا'}
                 </Button>
               </div>
             </form>
           </TabsContent>
 
           <TabsContent value="existing" className="mt-4 space-y-4">
-            {/* Job Selection for existing candidate */}
+            {/* Job انتخابion for existing candidate */}
             {!jobId && jobs && jobs.length > 0 && (
               <div className="space-y-2">
                 <Label htmlFor="job-existing">Job Position *</Label>
-                <Select value={selectedJobId} onValueChange={handleJobChange}>
-                  <SelectTrigger className="h-11">
-                    <SelectValue placeholder="Select a job" />
-                  </SelectTrigger>
-                  <SelectContent>
+                <انتخاب value={selectedJobId} onValueChange={handleJobChange}>
+                  <انتخابTrigger className="h-11">
+                    <انتخابValue placeholder="انتخاب a job" />
+                  </انتخابTrigger>
+                  <انتخابContent>
                     {jobs.map((job) => (
-                      <SelectItem key={job.id} value={job.id}>
+                      <انتخابItem key={job.id} value={job.id}>
                         {job.title}
-                      </SelectItem>
+                      </انتخابItem>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </انتخابContent>
+                </انتخاب>
               </div>
             )}
 
@@ -753,8 +753,8 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                   <User className="h-8 w-8 mb-2" />
                   <p className="text-sm">
                     {searchQuery 
-                      ? 'No candidates found matching your search' 
-                      : 'No candidates available for this job'}
+                      ? 'خیر candidates found matching your search' 
+                      : 'خیر candidates available for this job'}
                   </p>
                 </div>
               ) : (
@@ -767,7 +767,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                           ? 'bg-primary/10 border border-primary' 
                           : 'hover:bg-accent'
                       }`}
-                      onClick={() => setSelectedCandidate(candidate)}
+                      onClick={() => setانتخابedCandidate(candidate)}
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={candidate.avatar_url || ''} />
@@ -787,11 +787,11 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
               )}
             </ScrollArea>
 
-            {/* Selected Candidate Info */}
+            {/* انتخابed Candidate Info */}
             {selectedCandidate && (
               <div className="p-3 bg-muted/50 rounded-lg">
                 <p className="text-sm">
-                  <span className="text-muted-foreground">Selected: </span>
+                  <span className="text-muted-foreground">انتخابed: </span>
                   <span className="font-medium">{selectedCandidate.full_name}</span>
                 </p>
               </div>
@@ -802,23 +802,23 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={() => setباز(false)}
                 className="px-6"
               >
                 انصراف
               </Button>
               <Button
-                onClick={handleAddExistingCandidate}
+                onClick={handleافزودنExistingCandidate}
                 disabled={loading || !selectedCandidate || (!jobId && !selectedJobId)}
                 className="px-6 bg-foreground text-background hover:bg-foreground/90"
               >
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Adding...
+                    افزودنing...
                   </>
                 ) : (
-                  'Add to Pipeline'
+                  'افزودن to پایپ‌لاین'
                 )}
               </Button>
             </div>

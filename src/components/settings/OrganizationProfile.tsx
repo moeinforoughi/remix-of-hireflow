@@ -3,32 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
-import { ویرایشOrganizationDialog } from './ویرایشOrganizationDialog';
+import { ویرایشسازمانDialog } from './ویرایشسازمانDialog';
 
-interface OrgSettings {
+interface Orgتنظیمات {
   company_email?: string;
   salary_currency?: string;
 }
 
-export const OrganizationProfile = () => {
+export const سازمانپروفایل = () => {
   const [org, setOrg] = useState<any>(null);
-  const [settings, setSettings] = useState<OrgSettings>({});
+  const [settings, setتنظیمات] = useState<Orgتنظیمات>({});
   const [loading, setبارگذاری] = useState(true);
-  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
-  const { toast } = useToast();
+  const [editDialogباز, setویرایشDialogباز] = useState(false);
+  const { toast } = useگیرندهast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOrganization();
+    fetchسازمان();
   }, []);
 
-  const fetchOrganization = async () => {
+  const fetchسازمان = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -36,7 +36,7 @@ export const OrganizationProfile = () => {
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
       const { data, error } = await supabase
         .from('organizations')
@@ -47,7 +47,7 @@ export const OrganizationProfile = () => {
       if (error) throw error;
 
       setOrg(data);
-      setSettings((data.settings_json as OrgSettings) || {});
+      setتنظیمات((data.settings_json as Orgتنظیمات) || {});
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -59,18 +59,18 @@ export const OrganizationProfile = () => {
     }
   };
 
-  const handleCurrencyChange = async (newCurrency: string) => {
+  const handleواحد پولChange = async (newواحد پول: string) => {
     try {
-      const updatedSettings = { ...settings, salary_currency: newCurrency };
+      const updatedتنظیمات = { ...settings, salary_currency: newواحد پول };
       const { error } = await supabase
         .from('organizations')
-        .update({ settings_json: updatedSettings })
+        .update({ settings_json: updatedتنظیمات })
         .eq('id', org.id);
 
       if (error) throw error;
 
-      setSettings(updatedSettings);
-      toast({ title: 'Currency updated' });
+      setتنظیمات(updatedتنظیمات);
+      toast({ title: 'واحد پول updated' });
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -93,35 +93,35 @@ export const OrganizationProfile = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg">Organization Profile & Settings</h3>
+        <h3 className="text-lg">سازمان پروفایل & تنظیمات</h3>
       </div>
 
       <div className="space-y-6">
-        {/* Organization Header */}
+        {/* سازمان Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16 bg-primary">
               <AvatarFallback className="text-lg text-primary-foreground">{orgInitials}</AvatarFallback>
             </Avatar>
-            <h2 className="text-2xl">{org?.name || 'Organization'}</h2>
+            <h2 className="text-2xl">{org?.name || 'سازمان'}</h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogOpen(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogباز(true)}>
             <Pencil className="h-4 w-4 mr-2" />
             ویرایش
           </Button>
         </div>
 
-        {/* Organization Details */}
+        {/* سازمان Details */}
         <div className="space-y-4">
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Company Email Address</span>
+            <span className="text-sm text-muted-foreground">Company ایمیل آدرس</span>
             <span className="text-sm font-medium text-primary">
-              {settings.company_email || 'Not set - click ویرایش to add'}
+              {settings.company_email || 'خیرt set - click ویرایش to add'}
             </span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Rejection Email Template</span>
+            <span className="text-sm text-muted-foreground">ردion ایمیل Template</span>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
@@ -134,7 +134,7 @@ export const OrganizationProfile = () => {
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Offer Email Template</span>
+            <span className="text-sm text-muted-foreground">Offer ایمیل Template</span>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
@@ -147,26 +147,26 @@ export const OrganizationProfile = () => {
           </div>
 
           <div className="flex justify-between items-center py-3">
-            <span className="text-sm text-muted-foreground">Salary Currency</span>
-            <Select value={settings.salary_currency || 'USD'} onValueChange={handleCurrencyChange}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="USD">$ US Dollar</SelectItem>
-                <SelectItem value="EUR">€ Euro</SelectItem>
-                <SelectItem value="GBP">£ British Pound</SelectItem>
-                <SelectItem value="JPY">¥ Japanese Yen</SelectItem>
-              </SelectContent>
-            </Select>
+            <span className="text-sm text-muted-foreground">Salary واحد پول</span>
+            <انتخاب value={settings.salary_currency || 'USD'} onValueChange={handleواحد پولChange}>
+              <انتخابTrigger className="w-[200px]">
+                <انتخابValue />
+              </انتخابTrigger>
+              <انتخابContent>
+                <انتخابItem value="USD">$ US Dollar</انتخابItem>
+                <انتخابItem value="EUR">€ Euro</انتخابItem>
+                <انتخابItem value="GBP">£ British Pound</انتخابItem>
+                <انتخابItem value="JPY">¥ Japanese Yen</انتخابItem>
+              </انتخابContent>
+            </انتخاب>
           </div>
         </div>
       </div>
 
-      <ویرایشOrganizationDialog 
-        open={editDialogOpen}
-        onOpenChange={setویرایشDialogOpen}
-        onSuccess={fetchOrganization}
+      <ویرایشسازمانDialog 
+        open={editDialogباز}
+        onبازChange={setویرایشDialogباز}
+        onSuccess={fetchسازمان}
       />
     </div>
   );

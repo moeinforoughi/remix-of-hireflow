@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, Cardتوضیحات, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, MapPin, Users, Briefcase, LayoutGrid, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ایجادJobDialog } from '@/components/jobs/ایجادJobDialog';
-import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
 interface Job {
   id: string;
   title: string;
@@ -23,23 +23,23 @@ interface Job {
   shortlistedCount?: number;
   hiredCount?: number;
 }
-type Statusفیلتر = 'all' | 'open' | 'paused' | 'filled' | 'closed';
+type وضعیتفیلتر = 'all' | 'open' | 'paused' | 'filled' | 'closed';
 
 const JobsList = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setبارگذاری] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [createDialogOpen, setایجادDialogOpen] = useState(false);
-  const [statusفیلتر, setStatusفیلتر] = useState<Statusفیلتر>('all');
-  const { role, assignedJobIds, loading: permissionsبارگذاری } = useUserPermissions();
+  const [userنقش, setUserنقش] = useState<string | null>(null);
+  const [createDialogباز, setایجادDialogباز] = useState(false);
+  const [statusفیلتر, setوضعیتفیلتر] = useState<وضعیتفیلتر>('all');
+  const { role, assignedJobIds, loading: permissionsبارگذاری } = useUserدسترسی‌ها();
 
   const filteredJobs = statusفیلتر === 'all' 
     ? jobs 
     : jobs.filter(job => job.status === statusفیلتر);
   useEffect(() => {
-    fetchUserRole();
+    fetchUserنقش();
   }, []);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const JobsList = () => {
       fetchJobs();
     }
   }, [permissionsبارگذاری, role, assignedJobIds]);
-  const fetchUserRole = async () => {
+  const fetchUserنقش = async () => {
     try {
       const {
         data: {
@@ -60,7 +60,7 @@ const JobsList = () => {
         error
       } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
       if (error) throw error;
-      setUserRole(data?.role || null);
+      setUserنقش(data?.role || null);
     } catch (error: any) {
       console.error('Error fetching user role:', error.message);
     }
@@ -91,7 +91,7 @@ const JobsList = () => {
         .select('*')
         .eq('org_id', profile.org_id);
       
-      // Additionally filter by assigned jobs for basic users
+      // افزودنitionally filter by assigned jobs for basic users
       if (role === 'basic') {
         if (assignedJobIds.length === 0) {
           setJobs([]);
@@ -142,12 +142,12 @@ const JobsList = () => {
       setبارگذاری(false);
     }
   };
-  const formatStatusLabel = (status: string) => {
+  const formatوضعیتLabel = (status: string) => {
     if (status === 'closed') return 'انصرافled';
     if (status === 'filled') return 'Filled';
     return status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   };
-  const getStatusColor = (status: string) => {
+  const getوضعیتColor = (status: string) => {
     const colors: Record<string, string> = {
       draft: 'bg-gray-100 text-gray-700 border-gray-200',
       pending_approval: 'bg-orange-100 text-orange-700 border-orange-200',
@@ -174,23 +174,23 @@ const JobsList = () => {
               <LayoutGrid className="w-[18px] h-[18px]" />
             </button>
           </div>
-          {userRole && userRole !== 'basic' && (
-            <Button onClick={() => setایجادDialogOpen(true)}>
+          {userنقش && userنقش !== 'basic' && (
+            <Button onClick={() => setایجادDialogباز(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              New Job
+              موقعیت جدید
             </Button>
           )}
         </div>
       </div>
 
-      {/* Status فیلترs */}
+      {/* وضعیت فیلترs */}
       <div className="flex items-center gap-2">
-        {(['all', 'open', 'paused', 'filled', 'closed'] as Statusفیلتر[]).map((status) => {
+        {(['all', 'open', 'paused', 'filled', 'closed'] as وضعیتفیلتر[]).map((status) => {
           const count = status === 'all' ? jobs.length : jobs.filter(j => j.status === status).length;
-          const labels: Record<Statusفیلتر, string> = {
+          const labels: Record<وضعیتفیلتر, string> = {
             all: 'All',
-            open: 'Open',
-            paused: 'Paused',
+            open: 'باز',
+            paused: 'وقفهd',
             filled: 'Filled',
             closed: 'بستنd'
           };
@@ -199,7 +199,7 @@ const JobsList = () => {
               key={status}
               variant={statusفیلتر === status ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setStatusفیلتر(status)}
+              onClick={() => setوضعیتفیلتر(status)}
               className="gap-2"
             >
               {labels[status]}
@@ -215,7 +215,7 @@ const JobsList = () => {
           <CardContent className="py-12 text-center">
             <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg mb-2">
-              {jobs.length === 0 ? 'No jobs found' : `No ${statusفیلتر} jobs`}
+              {jobs.length === 0 ? 'خیر jobs found' : `خیر ${statusفیلتر} jobs`}
             </h3>
             <p className="text-muted-foreground mb-4">
               {jobs.length === 0 
@@ -224,8 +224,8 @@ const JobsList = () => {
                   : "Get started by creating your first job")
                 : `There are no jobs with "${statusفیلتر}" status.`}
             </p>
-            {jobs.length === 0 && userRole && userRole !== 'basic' && (
-              <Button onClick={() => setایجادDialogOpen(true)}>
+            {jobs.length === 0 && userنقش && userنقش !== 'basic' && (
+              <Button onClick={() => setایجادDialogباز(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 ایجاد Job
               </Button>
@@ -237,11 +237,11 @@ const JobsList = () => {
                 <CardHeader className="flex-1">
                   <div className="flex items-start justify-between">
                     <Cardعنوان className="text-xl">{job.title}</Cardعنوان>
-                    <Badge className={`capitalize ${getStatusColor(job.status)}`}>
-                      {formatStatusLabel(job.status)}
+                    <Badge className={`capitalize ${getوضعیتColor(job.status)}`}>
+                      {formatوضعیتLabel(job.status)}
                     </Badge>
                   </div>
-                  <CardDescription className="space-y-1 min-h-[40px]">
+                  <Cardتوضیحات className="space-y-1 min-h-[40px]">
                     {job.department && <div className="flex items-center gap-1">
                         <Briefcase className="h-3 w-3" />
                         <span>{job.department}</span>
@@ -250,7 +250,7 @@ const JobsList = () => {
                         <MapPin className="h-3 w-3" />
                         <span>{job.location}</span>
                       </div>}
-                  </CardDescription>
+                  </Cardتوضیحات>
                 </CardHeader>
                 <CardContent className="mt-auto">
                   <div className="flex items-center justify-between text-sm">
@@ -272,7 +272,7 @@ const JobsList = () => {
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b-0">
                 <TableHead className="w-[200px]">عنوان</TableHead>
-                <TableHead className="w-[100px]">Status</TableHead>
+                <TableHead className="w-[100px]">وضعیت</TableHead>
                 <TableHead className="w-[120px]">Positions</TableHead>
                 <TableHead className="w-[140px]">تاریخ ایجاد</TableHead>
                 <TableHead className="w-[100px] text-center">Candidates</TableHead>
@@ -287,8 +287,8 @@ const JobsList = () => {
           }} onClick={() => navigate(`/jobs/${job.id}`)}>
                   <TableCell className="font-medium rounded-l-lg">{job.title}</TableCell>
                   <TableCell>
-                    <Badge className={`capitalize text-xs ${getStatusColor(job.status)}`}>
-                      {formatStatusLabel(job.status)}
+                    <Badge className={`capitalize text-xs ${getوضعیتColor(job.status)}`}>
+                      {formatوضعیتLabel(job.status)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -297,7 +297,7 @@ const JobsList = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {format(new Date(job.created_at), 'MM/dd/yyyy')}
+                    {format(new تاریخ(job.created_at), 'MM/dd/yyyy')}
                   </TableCell>
                   <TableCell className="text-primary font-bold text-center">{job.candidatesCount || 0}</TableCell>
                   <TableCell className="rounded-r-lg">
@@ -309,10 +309,10 @@ const JobsList = () => {
         </div>}
 
       <ایجادJobDialog 
-        open={createDialogOpen} 
-        onOpenChange={setایجادDialogOpen}
+        open={createDialogباز} 
+        onبازChange={setایجادDialogباز}
         onSuccess={() => {
-          setایجادDialogOpen(false);
+          setایجادDialogباز(false);
           fetchJobs();
         }}
       />

@@ -3,7 +3,7 @@ import {
   AlertDialogAction,
   AlertDialogانصراف,
   AlertDialogContent,
-  AlertDialogDescription,
+  AlertDialogتوضیحات,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogعنوان,
@@ -11,7 +11,7 @@ import {
 
 interface تأییدDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   onتأیید: () => void;
   title: string;
   description: string;
@@ -22,20 +22,20 @@ interface تأییدDialogProps {
 
 export const تأییدDialog = ({
   open,
-  onOpenChange,
+  onبازChange,
   onتأیید,
   title,
   description,
-  confirmText = 'Continue',
+  confirmText = 'ادامه',
   cancelText = 'انصراف',
   variant = 'default',
 }: تأییدDialogProps) => {
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onبازChange={onبازChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogعنوان>{title}</AlertDialogعنوان>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogتوضیحات>{description}</AlertDialogتوضیحات>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogانصراف>{cancelText}</AlertDialogانصراف>

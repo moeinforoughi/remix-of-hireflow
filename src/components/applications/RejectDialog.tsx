@@ -4,70 +4,70 @@ import {
   AlertDialogAction,
   AlertDialogانصراف,
   AlertDialogContent,
-  AlertDialogDescription,
+  AlertDialogتوضیحات,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogعنوان,
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
 
-interface RejectDialogProps {
+interface ردDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   onتأیید: (reason: string, note: string) => void;
 }
 
 const REJECTION_REASONS = [
-  'Qualifications not met',
+  'شرایط احراز not met',
   'Position filled',
   'Salary expectations mismatch',
   'Cultural fit concerns',
   'Other',
 ];
 
-export const RejectDialog = ({ open, onOpenChange, onتأیید }: RejectDialogProps) => {
+export const ردDialog = ({ open, onبازChange, onتأیید }: ردDialogProps) => {
   const [reason, setReason] = useState('');
-  const [note, setNote] = useState('');
+  const [note, setخیرte] = useState('');
 
   const handleتأیید = () => {
     onتأیید(reason, note);
     setReason('');
-    setNote('');
+    setخیرte('');
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onبازChange={onبازChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogعنوان>Reject Application</AlertDialogعنوان>
-          <AlertDialogDescription>
+          <AlertDialogعنوان>رد Application</AlertDialogعنوان>
+          <AlertDialogتوضیحات>
             This will mark the application as rejected. This action can be reversed later if needed.
-          </AlertDialogDescription>
+          </AlertDialogتوضیحات>
         </AlertDialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Rejection Reason</Label>
-            <Select value={reason} onValueChange={setReason}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a reason" />
-              </SelectTrigger>
-              <SelectContent>
+            <Label>ردion Reason</Label>
+            <انتخاب value={reason} onValueChange={setReason}>
+              <انتخابTrigger>
+                <انتخابValue placeholder="انتخاب a reason" />
+              </انتخابTrigger>
+              <انتخابContent>
                 {REJECTION_REASONS.map((r) => (
-                  <SelectItem key={r} value={r}>
+                  <انتخابItem key={r} value={r}>
                     {r}
-                  </SelectItem>
+                  </انتخابItem>
                 ))}
-              </SelectContent>
-            </Select>
+              </انتخابContent>
+            </انتخاب>
           </div>
           <div className="space-y-2">
-            <Label>Additional Notes (Optional)</Label>
+            <Label>افزودنitional خیرtes (اختیاری)</Label>
             <Textarea
               value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Add any additional context..."
+              onChange={(e) => setخیرte(e.target.value)}
+              placeholder="افزودن any additional context..."
               rows={4}
             />
           </div>
@@ -75,7 +75,7 @@ export const RejectDialog = ({ open, onOpenChange, onتأیید }: RejectDialogP
         <AlertDialogFooter>
           <AlertDialogانصراف>انصراف</AlertDialogانصراف>
           <AlertDialogAction onClick={handleتأیید} disabled={!reason}>
-            Reject Application
+            رد Application
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

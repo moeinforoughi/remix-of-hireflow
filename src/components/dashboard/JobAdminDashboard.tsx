@@ -17,7 +17,7 @@ import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { وظایفCardSkeleton } from "@/components/dashboard/وظایفCardSkeleton";
 import { JobListingsCardSkeleton } from "@/components/dashboard/JobListingsCardSkeleton";
 
-export function JobAdminداشبورد() {
+export function Jobمدیر کلداشبورد() {
   const navigate = useNavigate();
   const [tasks, setوظایف] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
@@ -59,22 +59,22 @@ export function JobAdminداشبورد() {
         setوظایف(tasksData || []);
 
         // Fetch metrics
-        const { data: allApplications } = await supabase
+        const { data: allدرخواست‌ها } = await supabase
           .from('applications')
           .select('id, state, current_stage_id, job_stages(type)')
           .in('job_id', jobIds);
 
-        const activeApplications = allApplications?.filter(a => a.state === 'active') || [];
-        const interviewing = activeApplications.filter(a => 
+        const activeدرخواست‌ها = allدرخواست‌ها?.filter(a => a.state === 'active') || [];
+        const interviewing = activeدرخواست‌ها.filter(a => 
           ['phone', 'onsite'].includes(a.job_stages?.type || '')
         ).length;
-        const shortlisted = activeApplications.filter(a => 
+        const shortlisted = activeدرخواست‌ها.filter(a => 
           a.job_stages?.type === 'offer'
         ).length;
 
         setMetrics({
           currentListings: assignedJobs.length,
-          totalApplicants: allApplications?.length || 0,
+          totalApplicants: allدرخواست‌ها?.length || 0,
           interviewing,
           shortlisted,
         });
@@ -83,22 +83,22 @@ export function JobAdminداشبورد() {
 
     // If demo reset in progress, wait for the event
     if (isبارگذاریDemo) {
-      const handleDemoDataRefresh = () => {
+      const handleDemoDataبه‌روزرسانی = () => {
         setIsبارگذاریDemo(false);
         fetchData();
       };
-      window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
-      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
+      window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
+      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
     } else {
       fetchData();
     }
 
     // Also listen for future demo data refresh events
-    const handleDemoDataRefresh = () => {
+    const handleDemoDataبه‌روزرسانی = () => {
       fetchData();
     };
-    window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
-    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
+    window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
+    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
   }, [isبارگذاریDemo]);
 
   const metricCards = [
@@ -204,7 +204,7 @@ export function JobAdminداشبورد() {
                   >
                     <p className="font-medium text-sm">{task.title}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {task.due_date ? format(new Date(task.due_date), 'MMM d, yyyy') : 'امروز'} • {task.due_date ? format(new Date(task.due_date), 'h:mm a') : '12:30 PM'}
+                      {task.due_date ? format(new تاریخ(task.due_date), 'MMM d, yyyy') : 'امروز'} • {task.due_date ? format(new تاریخ(task.due_date), 'h:mm a') : '12:30 PM'}
                     </p>
                   </div>
                 ))
@@ -241,7 +241,7 @@ export function JobAdminداشبورد() {
                     <div className="font-medium">{job.title}</div>
                     <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new Date(job.created_at).toLocaleDateString()}
+                      {new تاریخ(job.created_at).toLocaleتاریخString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">

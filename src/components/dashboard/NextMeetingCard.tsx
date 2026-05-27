@@ -52,7 +52,7 @@ const بعدیMeetingCard = () => {
             jobs!inner(title)
           )
         `)
-        .gte('start_at', new Date().toISOString())
+        .gte('start_at', new تاریخ().toISOString())
         .order('start_at', { ascending: true })
         .limit(1)
         .maybeSingle();
@@ -116,8 +116,8 @@ const بعدیMeetingCard = () => {
     );
   }
 
-  const interviewDate = new Date(nextInterview.start_at);
-  const isامروز = format(interviewDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+  const interviewتاریخ = new تاریخ(nextInterview.start_at);
+  const isامروز = format(interviewتاریخ, 'yyyy-MM-dd') === format(new تاریخ(), 'yyyy-MM-dd');
   const panelCount = nextInterview.panel_user_ids?.length || 0;
 
   return (
@@ -127,16 +127,16 @@ const بعدیMeetingCard = () => {
       </CardHeader>
       <CardContent>
         <div className="flex gap-4">
-          {/* Left side - Date/Time box */}
+          {/* Left side - تاریخ/زمان box */}
           <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg px-6 py-4 min-w-[120px]">
             <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-3">
               <Video className="w-6 h-6 text-primary" />
             </div>
             <div className="text-sm font-semibold text-foreground">
-              {isامروز ? 'امروز' : format(interviewDate, 'MMM d')}
+              {isامروز ? 'امروز' : format(interviewتاریخ, 'MMM d')}
             </div>
             <div className="text-xs text-muted-foreground">
-              {format(interviewDate, 'h:mm a')}
+              {format(interviewتاریخ, 'h:mm a')}
             </div>
           </div>
 
@@ -148,7 +148,7 @@ const بعدیMeetingCard = () => {
             
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
               <Clock className="w-4 h-4" />
-              <span>{format(interviewDate, 'MMM d, yyyy')} at {format(interviewDate, 'h:mm a')}</span>
+              <span>{format(interviewتاریخ, 'MMM d, yyyy')} at {format(interviewتاریخ, 'h:mm a')}</span>
             </div>
             
             <div className="flex items-center gap-1.5 text-xs mb-2">

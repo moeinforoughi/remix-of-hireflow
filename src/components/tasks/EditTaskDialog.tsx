@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from "@/compone
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
@@ -11,7 +11,7 @@ import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { TimePickerAMPM } from "@/components/ui/time-picker-ampm";
+import { زمانPickerAMPM } from "@/components/ui/time-picker-ampm";
 
 interface Task {
   id: string;
@@ -24,28 +24,28 @@ interface Task {
 interface ویرایشTaskDialogProps {
   task: Task;
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   onTaskبه‌روزرسانیd: () => void;
 }
 
-export function ویرایشTaskDialog({ task, open, onOpenChange, onTaskبه‌روزرسانیd }: ویرایشTaskDialogProps) {
+export function ویرایشTaskDialog({ task, open, onبازChange, onTaskبه‌روزرسانیd }: ویرایشTaskDialogProps) {
   const [title, setعنوان] = useState(task.title);
   const [label, setLabel] = useState(task.label || "");
-  const [dueDate, setDueDate] = useState<Date | undefined>(
-    task.due_date ? new Date(task.due_date) : undefined
+  const [dueتاریخ, setDueتاریخ] = useState<تاریخ | undefined>(
+    task.due_date ? new تاریخ(task.due_date) : undefined
   );
-  const [dueTime, setDueTime] = useState(
-    task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00"
+  const [dueزمان, setDueزمان] = useState(
+    task.due_date ? format(new تاریخ(task.due_date), "HH:mm") : "12:00"
   );
-  const [status, setStatus] = useState<"pending" | "completed">(task.status);
+  const [status, setوضعیت] = useState<"pending" | "completed">(task.status);
   const [isثبتting, setIsثبتting] = useState(false);
 
   useEffect(() => {
     setعنوان(task.title);
     setLabel(task.label || "");
-    setDueDate(task.due_date ? new Date(task.due_date) : undefined);
-    setDueTime(task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00");
-    setStatus(task.status);
+    setDueتاریخ(task.due_date ? new تاریخ(task.due_date) : undefined);
+    setDueزمان(task.due_date ? format(new تاریخ(task.due_date), "HH:mm") : "12:00");
+    setوضعیت(task.status);
   }, [task]);
 
   const handleثبت = async (e: React.FormEvent) => {
@@ -57,12 +57,12 @@ export function ویرایشTaskDialog({ task, open, onOpenChange, onTaskبه‌
 
     setIsثبتting(true);
 
-    let dueDatetime = null;
-    if (dueDate) {
-      const [hours, minutes] = dueTime.split(":");
-      const datetime = new Date(dueDate);
+    let dueتاریخtime = null;
+    if (dueتاریخ) {
+      const [hours, minutes] = dueزمان.split(":");
+      const datetime = new تاریخ(dueتاریخ);
       datetime.setHours(parseInt(hours), parseInt(minutes), 0);
-      dueDatetime = datetime.toISOString();
+      dueتاریخtime = datetime.toISOString();
     }
 
     const { error } = await supabase
@@ -70,7 +70,7 @@ export function ویرایشTaskDialog({ task, open, onOpenChange, onTaskبه‌
       .update({
         title: title.trim(),
         label: label.trim() || null,
-        due_date: dueDatetime,
+        due_date: dueتاریخtime,
         status,
       })
       .eq("id", task.id);
@@ -84,12 +84,12 @@ export function ویرایشTaskDialog({ task, open, onOpenChange, onTaskبه‌
     }
 
     toast.success("Task updated successfully");
-    onOpenChange(false);
+    onبازChange(false);
     onTaskبه‌روزرسانیd();
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <Dialogعنوان>ویرایش Task</Dialogعنوان>
@@ -112,31 +112,31 @@ export function ویرایشTaskDialog({ task, open, onOpenChange, onTaskبه‌
               id="label"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              placeholder="Optional label"
+              placeholder="اختیاری label"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Due Date</Label>
+              <Label>Due تاریخ</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !dueDate && "text-muted-foreground"
+                      !dueتاریخ && "text-muted-foreground"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
+                    {dueتاریخ ? format(dueتاریخ, "PPP") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    selected={dueDate}
-                    onSelect={setDueDate}
+                    selected={dueتاریخ}
+                    onانتخاب={setDueتاریخ}
                     initialFocus
                   />
                 </PopoverContent>
@@ -144,30 +144,30 @@ export function ویرایشTaskDialog({ task, open, onOpenChange, onTaskبه‌
             </div>
 
             <div className="space-y-2">
-              <Label>Time</Label>
-              <TimePickerAMPM
-                value={dueTime}
-                onChange={setDueTime}
-                disabled={!dueDate}
+              <Label>زمان</Label>
+              <زمانPickerAMPM
+                value={dueزمان}
+                onChange={setDueزمان}
+                disabled={!dueتاریخ}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
-              <SelectTrigger id="status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">در انتظار</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="status">وضعیت</Label>
+            <انتخاب value={status} onValueChange={(value: "pending" | "completed") => setوضعیت(value)}>
+              <انتخابTrigger id="status">
+                <انتخابValue />
+              </انتخابTrigger>
+              <انتخابContent>
+                <انتخابItem value="pending">در انتظار</انتخابItem>
+                <انتخابItem value="completed">انجام شده</انتخابItem>
+              </انتخابContent>
+            </انتخاب>
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onبازChange(false)}>
               انصراف
             </Button>
             <Button type="submit" disabled={isثبتting}>

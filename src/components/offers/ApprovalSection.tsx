@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useگیرندهast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, Clock, Plus } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceگیرندهخیرw } from "date-fns";
 
-interface Approval {
+interface تأیید {
   id: string;
   approver_user_id: string;
   state: string;
@@ -23,31 +23,31 @@ interface Approval {
   };
 }
 
-interface Profile {
+interface پروفایل {
   id: string;
   full_name: string;
   email: string;
 }
 
-interface ApprovalSectionProps {
+interface تأییدSectionProps {
   offerId: string;
   offerState: string;
-  onApprovalChange?: () => void;
+  onتأییدChange?: () => void;
 }
 
-export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: ApprovalSectionProps) => {
-  const { toast } = useToast();
-  const [approvals, setApprovals] = useState<Approval[]>([]);
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+export const تأییدSection = ({ offerId, offerState, onتأییدChange }: تأییدSectionProps) => {
+  const { toast } = useگیرندهast();
+  const [approvals, setتأییدs] = useState<تأیید[]>([]);
+  const [profiles, setپروفایلs] = useState<پروفایل[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const [selectedApprover, setSelectedApprover] = useState("");
-  const [actionComment, setActionComment] = useState("");
+  const [selectedتأییدr, setانتخابedتأییدr] = useState("");
+  const [actionنظر, setActionنظر] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [pendingOffers, setدر انتظارOffers] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchApprovals();
-    fetchProfiles();
+    fetchتأییدs();
+    fetchپروفایلs();
     getCurrentUser();
     fetchدر انتظارOffers();
   }, [offerId]);
@@ -97,7 +97,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
     if (user) setCurrentUserId(user.id);
   };
 
-  const fetchApprovals = async () => {
+  const fetchتأییدs = async () => {
     setبارگذاری(true);
     try {
       const { data, error } = await supabase
@@ -110,7 +110,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setApprovals(data || []);
+      setتأییدs(data || []);
     } catch (error: any) {
       toast({
         title: "Error fetching approvals",
@@ -122,7 +122,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
     }
   };
 
-  const fetchProfiles = async () => {
+  const fetchپروفایلs = async () => {
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -130,16 +130,16 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
         .order("full_name");
 
       if (error) throw error;
-      setProfiles(data || []);
+      setپروفایلs(data || []);
     } catch (error: any) {
       console.error("Error fetching profiles:", error);
     }
   };
 
-  const handleAddApproval = async () => {
-    if (!selectedApprover) {
+  const handleافزودنتأیید = async () => {
+    if (!selectedتأییدr) {
       toast({
-        title: "Select an approver",
+        title: "انتخاب an approver",
         description: "Please select a user to approve this offer",
         variant: "destructive",
       });
@@ -149,20 +149,20 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
     try {
       const { error } = await supabase.from("approvals").insert({
         offer_id: offerId,
-        approver_user_id: selectedApprover,
+        approver_user_id: selectedتأییدr,
         state: "pending",
       });
 
       if (error) throw error;
 
       toast({
-        title: "Approver added",
-        description: "Approval request has been sent",
+        title: "تأییدr added",
+        description: "تأیید request has been sent",
       });
 
-      setSelectedApprover("");
-      fetchApprovals();
-      onApprovalChange?.();
+      setانتخابedتأییدr("");
+      fetchتأییدs();
+      onتأییدChange?.();
     } catch (error: any) {
       toast({
         title: "Error adding approver",
@@ -172,14 +172,14 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
     }
   };
 
-  const handleApprovalAction = async (approvalId: string, action: "approved" | "rejected") => {
+  const handleتأییدAction = async (approvalId: string, action: "approved" | "rejected") => {
     try {
       const { error } = await supabase
         .from("approvals")
         .update({
           state: action,
-          comment: actionComment || null,
-          acted_at: new Date().toISOString(),
+          comment: actionنظر || null,
+          acted_at: new تاریخ().toISOString(),
         })
         .eq("id", approvalId);
 
@@ -190,16 +190,16 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
         description: `You have ${action} this offer`,
       });
 
-      setActionComment("");
+      setActionنظر("");
       
       // Fetch updated approvals to check if all are complete
-      const { data: updatedApprovals } = await supabase
+      const { data: updatedتأییدs } = await supabase
         .from("approvals")
         .select("state")
         .eq("offer_id", offerId);
 
       // If all approvals are approved, trigger email notification
-      if (updatedApprovals?.every(a => a.state === "approved")) {
+      if (updatedتأییدs?.every(a => a.state === "approved")) {
         try {
           await supabase.functions.invoke("handle-offer-approval", {
             body: { offerId },
@@ -211,15 +211,15 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
         } catch (emailError: any) {
           console.error("Failed to send offer notification:", emailError);
           toast({
-            title: "Approval complete",
+            title: "تأیید complete",
             description: "Offer approved but email notification failed. Please send manually.",
             variant: "destructive",
           });
         }
       }
 
-      fetchApprovals();
-      onApprovalChange?.();
+      fetchتأییدs();
+      onتأییدChange?.();
     } catch (error: any) {
       toast({
         title: "Error updating approval",
@@ -229,7 +229,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
     }
   };
 
-  const getStatusIcon = (state: string) => {
+  const getوضعیتIcon = (state: string) => {
     switch (state) {
       case "approved":
         return <CheckCircle className="h-5 w-5 text-green-500" />;
@@ -240,7 +240,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
     }
   };
 
-  const getStatusBadge = (state: string) => {
+  const getوضعیتBadge = (state: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive"> = {
       approved: "default",
       rejected: "destructive",
@@ -249,7 +249,7 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
     return <Badge variant={variants[state] || "secondary"}>{state}</Badge>;
   };
 
-  const pendingApproval = approvals.find(
+  const pendingتأیید = approvals.find(
     (a) => a.state === "pending" && a.approver_user_id === currentUserId
   );
 
@@ -260,12 +260,12 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>Approvals</Cardعنوان>
+        <Cardعنوان>تأییدs</Cardعنوان>
       </CardHeader>
       <CardContent className="space-y-4">
         {pendingOffers.length > 0 && (
           <div className="mb-6 p-4 border rounded-lg bg-muted/50">
-            <h4 className="mb-3">Other Offers Awaiting Your Approval</h4>
+            <h4 className="mb-3">Other Offers Awaiting Your تأیید</h4>
             <div className="space-y-2">
               {pendingOffers.map((approval) => (
                 <div key={approval.id} className="p-3 bg-background border rounded flex items-center justify-between">
@@ -294,23 +294,23 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
 
         {offerState === "draft" && (
           <div className="space-y-2">
-            <Label>Add Approver</Label>
+            <Label>افزودن تأییدکننده</Label>
             <div className="flex gap-2">
-              <Select value={selectedApprover} onValueChange={setSelectedApprover}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select approver" />
-                </SelectTrigger>
-                <SelectContent>
+              <انتخاب value={selectedتأییدr} onValueChange={setانتخابedتأییدr}>
+                <انتخابTrigger>
+                  <انتخابValue placeholder="انتخاب approver" />
+                </انتخابTrigger>
+                <انتخابContent>
                   {profiles
                     .filter((p) => !approvals.find((a) => a.approver_user_id === p.id))
                     .map((profile) => (
-                      <SelectItem key={profile.id} value={profile.id}>
+                      <انتخابItem key={profile.id} value={profile.id}>
                         {profile.full_name} ({profile.email})
-                      </SelectItem>
+                      </انتخابItem>
                     ))}
-                </SelectContent>
-              </Select>
-              <Button onClick={handleAddApproval} size="icon">
+                </انتخابContent>
+              </انتخاب>
+              <Button onClick={handleافزودنتأیید} size="icon">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -318,62 +318,62 @@ export const ApprovalSection = ({ offerId, offerState, onApprovalChange }: Appro
         )}
 
         {approvals.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No approvals required</p>
+          <p className="text-sm text-muted-foreground">خیر approvals required</p>
         ) : (
           <div className="space-y-4">
             {approvals.map((approval) => (
               <div key={approval.id} className="border rounded-lg p-4 space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    {getStatusIcon(approval.state)}
+                    {getوضعیتIcon(approval.state)}
                     <div>
                       <p className="font-medium">{approval.approver.full_name}</p>
                       <p className="text-xs text-muted-foreground">{approval.approver.email}</p>
                     </div>
                   </div>
-                  {getStatusBadge(approval.state)}
+                  {getوضعیتBadge(approval.state)}
                 </div>
 
                 {approval.comment && (
                   <div className="bg-muted p-2 rounded text-sm">
-                    <p className="text-xs text-muted-foreground mb-1">Comment:</p>
+                    <p className="text-xs text-muted-foreground mb-1">نظر:</p>
                     <p>{approval.comment}</p>
                   </div>
                 )}
 
                 <p className="text-xs text-muted-foreground">
                   {approval.acted_at
-                    ? `${approval.state} ${formatDistanceToNow(new Date(approval.acted_at))} ago`
-                    : `Requested ${formatDistanceToNow(new Date(approval.created_at))} ago`}
+                    ? `${approval.state} ${formatDistanceگیرندهخیرw(new تاریخ(approval.acted_at))} ago`
+                    : `Requested ${formatDistanceگیرندهخیرw(new تاریخ(approval.created_at))} ago`}
                 </p>
 
                 {approval.state === "pending" && approval.approver_user_id === currentUserId && (
                   <div className="space-y-2 pt-2 border-t">
-                    <Label htmlFor={`comment-${approval.id}`}>Comment (optional)</Label>
+                    <Label htmlFor={`comment-${approval.id}`}>نظر (optional)</Label>
                     <Textarea
                       id={`comment-${approval.id}`}
-                      value={actionComment}
-                      onChange={(e) => setActionComment(e.target.value)}
-                      placeholder="Add a comment..."
+                      value={actionنظر}
+                      onChange={(e) => setActionنظر(e.target.value)}
+                      placeholder="افزودن a comment..."
                       rows={2}
                     />
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => handleApprovalAction(approval.id, "approved")}
+                        onClick={() => handleتأییدAction(approval.id, "approved")}
                         size="sm"
                         className="flex-1"
                       >
                         <CheckCircle className="h-4 w-4 mr-1" />
-                        Approve
+                        تأیید
                       </Button>
                       <Button
-                        onClick={() => handleApprovalAction(approval.id, "rejected")}
+                        onClick={() => handleتأییدAction(approval.id, "rejected")}
                         size="sm"
                         variant="destructive"
                         className="flex-1"
                       >
                         <XCircle className="h-4 w-4 mr-1" />
-                        Reject
+                        رد
                       </Button>
                     </div>
                   </div>

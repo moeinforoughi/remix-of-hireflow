@@ -1,30 +1,30 @@
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 
 interface SkillMatchCardProps {
-  candidateSkills: string[];
-  requiredSkills?: string[];
+  candidateمهارت‌ها: string[];
+  requiredمهارت‌ها?: string[];
 }
 
-export const SkillMatchCard = ({ candidateSkills, requiredSkills = [] }: SkillMatchCardProps) => {
+export const SkillMatchCard = ({ candidateمهارت‌ها, requiredمهارت‌ها = [] }: SkillMatchCardProps) => {
   // Match skills (case-insensitive, partial matches)
-  const matchedSkills = candidateSkills.filter(skill => 
-    requiredSkills.some(req => 
-      req.toLowerCase() === skill.toLowerCase() || 
-      req.toLowerCase().includes(skill.toLowerCase()) ||
-      skill.toLowerCase().includes(req.toLowerCase())
+  const matchedمهارت‌ها = candidateمهارت‌ها.filter(skill => 
+    requiredمهارت‌ها.some(req => 
+      req.toکمerCase() === skill.toکمerCase() || 
+      req.toکمerCase().includes(skill.toکمerCase()) ||
+      skill.toکمerCase().includes(req.toکمerCase())
     )
   );
   
-  const unmatchedSkills = requiredSkills.filter(skill => 
-    !candidateSkills.some(cs => 
-      cs.toLowerCase() === skill.toLowerCase() ||
-      cs.toLowerCase().includes(skill.toLowerCase()) ||
-      skill.toLowerCase().includes(cs.toLowerCase())
+  const unmatchedمهارت‌ها = requiredمهارت‌ها.filter(skill => 
+    !candidateمهارت‌ها.some(cs => 
+      cs.toکمerCase() === skill.toکمerCase() ||
+      cs.toکمerCase().includes(skill.toکمerCase()) ||
+      skill.toکمerCase().includes(cs.toکمerCase())
     )
   );
   
-  const matchPercentage = requiredSkills.length > 0 
-    ? Math.round((matchedSkills.length / requiredSkills.length) * 100) 
+  const matchPercentage = requiredمهارت‌ها.length > 0 
+    ? Math.round((matchedمهارت‌ها.length / requiredمهارت‌ها.length) * 100) 
     : 0;
 
   // Circle SVG properties
@@ -80,15 +80,15 @@ export const SkillMatchCard = ({ candidateSkills, requiredSkills = [] }: SkillMa
         </div>
       </div>
 
-      {/* Skills section */}
+      {/* مهارت‌ها section */}
       <div className="flex flex-col justify-center items-start gap-3 flex-1">
         <div className="text-black text-center font-semibold text-base leading-normal tracking-[-0.8px]">
-          {matchedSkills.length} out of {requiredSkills.length} required skills met
+          {matchedمهارت‌ها.length} out of {requiredمهارت‌ها.length} required skills met
         </div>
 
         <div className="flex items-start content-start gap-3 self-stretch flex-wrap">
           {/* Matched skills - green border */}
-          {matchedSkills.map((skill, index) => (
+          {matchedمهارت‌ها.map((skill, index) => (
             <div 
               key={`matched-${index}`}
               className="flex py-2 px-2 justify-center items-center gap-2.5 rounded-lg border border-[#45CE99] bg-card"
@@ -100,7 +100,7 @@ export const SkillMatchCard = ({ candidateSkills, requiredSkills = [] }: SkillMa
           ))}
           
           {/* Unmatched skills - gray background */}
-          {unmatchedSkills.map((skill, index) => (
+          {unmatchedمهارت‌ها.map((skill, index) => (
             <div 
               key={`unmatched-${index}`}
               className="flex py-2 px-2 justify-center items-center gap-2.5 rounded-lg bg-[#D5DAE7]"

@@ -3,16 +3,16 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
+  Dialogتوضیحات,
   DialogHeader,
   Dialogعنوان,
 } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Star } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useگیرندهast } from '@/hooks/use-toast';
 
-interface Scorecard {
+interface فرم ارزیابی {
   id: string;
   user_id: string;
   recommendation: string;
@@ -29,21 +29,21 @@ interface Scorecard {
   };
 }
 
-interface ScorecardsDialogProps {
+interface فرم ارزیابیsDialogProps {
   interviewId: string;
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
 }
 
 const RATING_LABELS: { [key: string]: string } = {
-  technical_skills: 'Technical Skills',
+  technical_skills: 'Technical مهارت‌ها',
   problem_solving: 'Problem Solving',
   communication: 'Communication',
   culture_fit: 'Culture Fit',
-  experience: 'Experience',
+  experience: 'سابقه کار',
 };
 
-const getRecommendationColor = (recommendation: string) => {
+const getتوصیهColor = (recommendation: string) => {
   switch (recommendation) {
     case 'advance':
       return 'default';
@@ -56,31 +56,31 @@ const getRecommendationColor = (recommendation: string) => {
   }
 };
 
-const getRecommendationText = (recommendation: string) => {
+const getتوصیهText = (recommendation: string) => {
   switch (recommendation) {
     case 'advance':
       return 'Advance';
     case 'hold':
       return 'Hold';
     case 'no':
-      return 'No';
+      return 'خیر';
     default:
       return recommendation;
   }
 };
 
-export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: ScorecardsDialogProps) => {
-  const [scorecards, setScorecards] = useState<Scorecard[]>([]);
+export const فرم ارزیابیsDialog = ({ interviewId, open, onبازChange }: فرم ارزیابیsDialogProps) => {
+  const [scorecards, setفرم ارزیابیs] = useState<فرم ارزیابی[]>([]);
   const [loading, setبارگذاری] = useState(false);
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
 
   useEffect(() => {
     if (open && interviewId) {
-      fetchScorecards();
+      fetchفرم ارزیابیs();
     }
   }, [open, interviewId]);
 
-  const fetchScorecards = async () => {
+  const fetchفرم ارزیابیs = async () => {
     try {
       setبارگذاری(true);
       const { data, error } = await supabase
@@ -99,7 +99,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
         .order('submitted_at', { ascending: false });
 
       if (error) throw error;
-      setScorecards((data as any) || []);
+      setفرم ارزیابیs((data as any) || []);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -115,26 +115,26 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
     if (scorecards.length === 0) return 0;
     
     let totalScore = 0;
-    let totalRatings = 0;
+    let totalامتیازs = 0;
 
     scorecards.forEach((scorecard) => {
       Object.values(scorecard.ratings_json).forEach((rating) => {
         totalScore += rating.score;
-        totalRatings++;
+        totalامتیازs++;
       });
     });
 
-    return totalRatings > 0 ? (totalScore / totalRatings).toFixed(1) : 0;
+    return totalامتیازs > 0 ? (totalScore / totalامتیازs).toFixed(1) : 0;
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <Dialogعنوان>Interview Scorecards Summary</Dialogعنوان>
-          <DialogDescription>
+          <Dialogعنوان>Interview فرم ارزیابیs Summary</Dialogعنوان>
+          <Dialogتوضیحات>
             Review feedback from all مصاحبه‌کننده
-          </DialogDescription>
+          </Dialogتوضیحات>
         </DialogHeader>
 
         {loading ? (
@@ -143,7 +143,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
           </div>
         ) : scorecards.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">No scorecards submitted yet</p>
+            <p className="text-muted-foreground">خیر scorecards submitted yet</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -154,7 +154,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Total Reviews</p>
+                    <p className="text-sm text-muted-foreground">گیرندهtal Reviews</p>
                     <p className="text-2xl font-bold">{scorecards.length}</p>
                   </div>
                   <div>
@@ -167,13 +167,13 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Recommendations</p>
+                  <p className="text-sm text-muted-foreground mb-2">توصیهs</p>
                   <div className="flex gap-2">
                     {['advance', 'hold', 'no'].map((rec) => {
                       const count = scorecards.filter((s) => s.recommendation === rec).length;
                       return count > 0 ? (
-                        <Badge key={rec} variant={getRecommendationColor(rec)}>
-                          {getRecommendationText(rec)}: {count}
+                        <Badge key={rec} variant={getتوصیهColor(rec)}>
+                          {getتوصیهText(rec)}: {count}
                         </Badge>
                       ) : null;
                     })}
@@ -183,14 +183,14 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
             </Card>
 
             <div className="space-y-4">
-              <h3 className="">Individual Feedback</h3>
+              <h3 className="">Individual بازخورد</h3>
               {scorecards.map((scorecard) => (
                 <Card key={scorecard.id}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <Cardعنوان className="text-base">{scorecard.user.full_name}</Cardعنوان>
-                      <Badge variant={getRecommendationColor(scorecard.recommendation)}>
-                        {getRecommendationText(scorecard.recommendation)}
+                      <Badge variant={getتوصیهColor(scorecard.recommendation)}>
+                        {getتوصیهText(scorecard.recommendation)}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -215,7 +215,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
                     </div>
                     {scorecard.notes && (
                       <div>
-                        <p className="text-sm font-medium mb-1">Overall Notes</p>
+                        <p className="text-sm font-medium mb-1">Overall خیرtes</p>
                         <p className="text-sm text-muted-foreground">{scorecard.notes}</p>
                       </div>
                     )}

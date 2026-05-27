@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Copy, Mail, Check, Link as LinkIcon } from 'lucide-react';
+import { کپی, Mail, Check, Link as LinkIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -15,17 +15,17 @@ interface Job {
   employment_type: string;
 }
 
-interface ShareJobDialogProps {
+interface اشتراک‌گذاریJobDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   job: Job;
 }
 
-export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps) {
-  const [copied, setCopied] = useState(false);
-  const [sendingEmail, setSendingEmail] = useState(false);
-  const [emailData, setEmailData] = useState({
-    recipientEmail: '',
+export function اشتراک‌گذاریJobDialog({ open, onبازChange, job }: اشتراک‌گذاریJobDialogProps) {
+  const [copied, setکپی شد] = useState(false);
+  const [sendingایمیل, setارسالingایمیل] = useState(false);
+  const [emailData, setایمیلData] = useState({
+    recipientایمیل: '',
     recipientName: '',
     message: '',
   });
@@ -33,15 +33,15 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
   // Generate the public job posting URL
   const jobUrl = `${window.location.origin}/careers/jobs/${job.id}`;
 
-  const handleCopyLink = async () => {
+  const handleکپیLink = async () => {
     try {
       await navigator.clipboard.writeText(jobUrl);
-      setCopied(true);
+      setکپی شد(true);
       toast({
         title: 'Link copied!',
         description: 'Job posting link copied to clipboard',
       });
-      setTimeout(() => setCopied(false), 2000);
+      setزمانout(() => setکپی شد(false), 2000);
     } catch (error) {
       toast({
         title: 'خطا',
@@ -51,9 +51,9 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
     }
   };
 
-  const handleSendEmail = async (e: React.FormEvent) => {
+  const handleارسالایمیل = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSendingEmail(true);
+    setارسالingایمیل(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -67,26 +67,26 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
           jobId: job.id,
           jobعنوان: job.title,
           jobUrl,
-          recipientEmail: emailData.recipientEmail,
+          recipientایمیل: emailData.recipientایمیل,
           recipientName: emailData.recipientName,
-          senderMessage: emailData.message,
+          senderپیام: emailData.message,
         },
       });
 
       if (error) throw error;
 
       toast({
-        title: 'Email sent!',
-        description: `Job posting shared with ${emailData.recipientEmail}`,
+        title: 'ایمیل sent!',
+        description: `Job posting shared with ${emailData.recipientایمیل}`,
       });
 
-      // Reset form
-      setEmailData({
-        recipientEmail: '',
+      // بازنشانی form
+      setایمیلData({
+        recipientایمیل: '',
         recipientName: '',
         message: '',
       });
-      onOpenChange(false);
+      onبازChange(false);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -94,23 +94,23 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
         variant: 'destructive',
       });
     } finally {
-      setSendingEmail(false);
+      setارسالingایمیل(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <Dialogعنوان className="text-2xl font-semibold">Share Job Posting</Dialogعنوان>
+          <Dialogعنوان className="text-2xl font-semibold">اشتراک‌گذاری موقعیت Posting</Dialogعنوان>
         </DialogHeader>
 
         <div className="space-y-6 pt-4">
-          {/* Copy Link Section */}
+          {/* کپی Link Section */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm font-medium">
               <LinkIcon className="h-4 w-4" />
-              <span>Shareable Link</span>
+              <span>اشتراک‌گذاریable Link</span>
             </div>
             <div className="flex gap-2">
               <Input
@@ -122,13 +122,13 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
               <Button
                 variant="outline"
                 size="icon"
-                onClick={handleCopyLink}
+                onClick={handleکپیLink}
                 className="shrink-0"
               >
                 {copied ? (
                   <Check className="h-4 w-4 text-green-600" />
                 ) : (
-                  <Copy className="h-4 w-4" />
+                  <کپی className="h-4 w-4" />
                 )}
               </Button>
             </div>
@@ -147,21 +147,21 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
             </div>
           </div>
 
-          {/* Email Form Section */}
-          <form onثبت={handleSendEmail} className="space-y-4">
+          {/* ایمیل Form Section */}
+          <form onثبت={handleارسالایمیل} className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium">
               <Mail className="h-4 w-4" />
-              <span>Send via Email</span>
+              <span>ارسال via ایمیل</span>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="recipientEmail">Recipient Email *</Label>
+              <Label htmlFor="recipientایمیل">Recipient ایمیل *</Label>
               <Input
-                id="recipientEmail"
+                id="recipientایمیل"
                 type="email"
                 placeholder="colleague@company.com"
-                value={emailData.recipientEmail}
-                onChange={(e) => setEmailData({ ...emailData, recipientEmail: e.target.value })}
+                value={emailData.recipientایمیل}
+                onChange={(e) => setایمیلData({ ...emailData, recipientایمیل: e.target.value })}
                 required
               />
             </div>
@@ -173,27 +173,27 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
                 type="text"
                 placeholder="John Doe"
                 value={emailData.recipientName}
-                onChange={(e) => setEmailData({ ...emailData, recipientName: e.target.value })}
+                onChange={(e) => setایمیلData({ ...emailData, recipientName: e.target.value })}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="message">Personal Message (Optional)</Label>
+              <Label htmlFor="message">Personal پیام (اختیاری)</Label>
               <Textarea
                 id="message"
                 placeholder="I thought you might be interested in this opportunity..."
                 value={emailData.message}
-                onChange={(e) => setEmailData({ ...emailData, message: e.target.value })}
+                onChange={(e) => setایمیلData({ ...emailData, message: e.target.value })}
                 rows={3}
               />
             </div>
 
             <Button
               type="submit"
-              disabled={sendingEmail}
+              disabled={sendingایمیل}
               className="w-full bg-foreground text-background hover:bg-foreground/90"
             >
-              {sendingEmail ? 'Sending...' : 'Send Email'}
+              {sendingایمیل ? 'ارسالing...' : 'ارسال ایمیل'}
             </Button>
           </form>
         </div>

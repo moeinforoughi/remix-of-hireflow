@@ -3,31 +3,31 @@ import {
   AlertDialogAction,
   AlertDialogانصراف,
   AlertDialogContent,
-  AlertDialogDescription,
+  AlertDialogتوضیحات,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogعنوان,
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  انتخاب,
+  انتخابContent,
+  انتخابItem,
+  انتخابTrigger,
+  انتخابValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 
-interface BulkRejectDialogProps {
+interface BulkردDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   onتأیید: (reason: string, note: string) => void;
   count: number;
 }
 
 const REJECTION_REASONS = [
-  'Qualifications do not match',
+  'شرایط احراز do not match',
   'Position filled',
   'Insufficient experience',
   'Cultural fit concerns',
@@ -35,50 +35,50 @@ const REJECTION_REASONS = [
   'Other',
 ];
 
-export const BulkRejectDialog = ({ open, onOpenChange, onتأیید, count }: BulkRejectDialogProps) => {
+export const BulkردDialog = ({ open, onبازChange, onتأیید, count }: BulkردDialogProps) => {
   const [reason, setReason] = useState('');
-  const [note, setNote] = useState('');
+  const [note, setخیرte] = useState('');
 
   const handleتأیید = () => {
     onتأیید(reason, note);
     setReason('');
-    setNote('');
+    setخیرte('');
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onبازChange={onبازChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogعنوان>Reject {count} Application{count > 1 ? 's' : ''}</AlertDialogعنوان>
-          <AlertDialogDescription>
+          <AlertDialogعنوان>رد {count} Application{count > 1 ? 's' : ''}</AlertDialogعنوان>
+          <AlertDialogتوضیحات>
             This will reject {count} selected application{count > 1 ? 's' : ''}. This action can be reversed later if needed.
-          </AlertDialogDescription>
+          </AlertDialogتوضیحات>
         </AlertDialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="reason">Rejection Reason *</Label>
-            <Select value={reason} onValueChange={setReason}>
-              <SelectTrigger id="reason">
-                <SelectValue placeholder="Select a reason" />
-              </SelectTrigger>
-              <SelectContent>
+            <Label htmlFor="reason">ردion Reason *</Label>
+            <انتخاب value={reason} onValueChange={setReason}>
+              <انتخابTrigger id="reason">
+                <انتخابValue placeholder="انتخاب a reason" />
+              </انتخابTrigger>
+              <انتخابContent>
                 {REJECTION_REASONS.map((r) => (
-                  <SelectItem key={r} value={r}>
+                  <انتخابItem key={r} value={r}>
                     {r}
-                  </SelectItem>
+                  </انتخابItem>
                 ))}
-              </SelectContent>
-            </Select>
+              </انتخابContent>
+            </انتخاب>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="note">Additional Notes (optional)</Label>
+            <Label htmlFor="note">افزودنitional خیرtes (optional)</Label>
             <Textarea
               id="note"
               value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Add any additional context..."
+              onChange={(e) => setخیرte(e.target.value)}
+              placeholder="افزودن any additional context..."
               rows={3}
             />
           </div>
@@ -87,7 +87,7 @@ export const BulkRejectDialog = ({ open, onOpenChange, onتأیید, count }: Bu
         <AlertDialogFooter>
           <AlertDialogانصراف>انصراف</AlertDialogانصراف>
           <AlertDialogAction onClick={handleتأیید} disabled={!reason}>
-            Reject {count} Application{count > 1 ? 's' : ''}
+            رد {count} Application{count > 1 ? 's' : ''}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -14,7 +14,7 @@ import {
   AlertDialogAction,
   AlertDialogانصراف,
   AlertDialogContent,
-  AlertDialogDescription,
+  AlertDialogتوضیحات,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogعنوان,
@@ -22,18 +22,18 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
+  Dialogتوضیحات,
   DialogFooter,
   DialogHeader,
   Dialogعنوان,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  انتخاب,
+  انتخابContent,
+  انتخابItem,
+  انتخابTrigger,
+  انتخابValue,
 } from "@/components/ui/select";
 import {
   Popover,
@@ -41,7 +41,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { TimePickerAMPM } from "@/components/ui/time-picker-ampm";
+import { زمانPickerAMPM } from "@/components/ui/time-picker-ampm";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -69,18 +69,18 @@ export default function وظایفPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setبارگذاری] = useState(true);
   const [searchQuery, setجستجوQuery] = useState("");
-  const [statusفیلتر, setStatusفیلتر] = useState<"all" | "pending" | "completed">("all");
+  const [statusفیلتر, setوضعیتفیلتر] = useState<"all" | "pending" | "completed">("all");
   const [deleteTaskId, setحذفTaskId] = useState<string | null>(null);
   const [editTask, setویرایشTask] = useState<Task | null>(null);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isافزودنDialogباز, setIsافزودنDialogباز] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
 
   // Form states
   const [formعنوان, setFormعنوان] = useState("");
   const [formLabel, setFormLabel] = useState("");
-  const [formDueDate, setFormDueDate] = useState<Date | undefined>();
-  const [formDueTime, setFormDueTime] = useState<string>("09:00");
-  const [formStatus, setFormStatus] = useState<"pending" | "completed">("pending");
+  const [formDueتاریخ, setFormDueتاریخ] = useState<تاریخ | undefined>();
+  const [formDueزمان, setFormDueزمان] = useState<string>("09:00");
+  const [formوضعیت, setFormوضعیت] = useState<"pending" | "completed">("pending");
   const [formCandidateId, setFormCandidateId] = useState<string>("");
   const [isثبتting, setIsثبتting] = useState(false);
 
@@ -131,11 +131,11 @@ export default function وظایفPage() {
     fetchData();
   }, []);
 
-  const handleToggleStatus = async (task: Task) => {
-    const newStatus = task.status === "pending" ? "completed" : "pending";
+  const handleگیرندهggleوضعیت = async (task: Task) => {
+    const newوضعیت = task.status === "pending" ? "completed" : "pending";
     const { error } = await supabase
       .from("tasks")
-      .update({ status: newStatus })
+      .update({ status: newوضعیت })
       .eq("id", task.id);
 
     if (error) {
@@ -144,7 +144,7 @@ export default function وظایفPage() {
       return;
     }
 
-    toast.success(`Task marked as ${newStatus}`);
+    toast.success(`Task marked as ${newوضعیت}`);
     fetchData();
   };
 
@@ -167,13 +167,13 @@ export default function وظایفPage() {
   const resetForm = () => {
     setFormعنوان("");
     setFormLabel("");
-    setFormDueDate(undefined);
-    setFormDueTime("09:00");
-    setFormStatus("pending");
+    setFormDueتاریخ(undefined);
+    setFormDueزمان("09:00");
+    setFormوضعیت("pending");
     setFormCandidateId("");
   };
 
-  const handleAddTask = async () => {
+  const handleافزودنTask = async () => {
     if (!formعنوان.trim() || !formCandidateId || !orgId) {
       toast.error("Please fill in required fields");
       return;
@@ -181,21 +181,21 @@ export default function وظایفPage() {
 
     setIsثبتting(true);
     try {
-      let dueDateTime: string | null = null;
-      if (formDueDate) {
-        const date = new Date(formDueDate);
-        if (formDueTime) {
-          const [hours, minutes] = formDueTime.split(":").map(Number);
+      let dueتاریخزمان: string | null = null;
+      if (formDueتاریخ) {
+        const date = new تاریخ(formDueتاریخ);
+        if (formDueزمان) {
+          const [hours, minutes] = formDueزمان.split(":").map(Number);
           date.setHours(hours, minutes);
         }
-        dueDateTime = date.toISOString();
+        dueتاریخزمان = date.toISOString();
       }
 
       const { error } = await supabase.from("tasks").insert({
         title: formعنوان.trim(),
         label: formLabel.trim() || null,
-        due_date: dueDateTime,
-        status: formStatus,
+        due_date: dueتاریخزمان,
+        status: formوضعیت,
         candidate_id: formCandidateId,
         org_id: orgId,
       });
@@ -203,7 +203,7 @@ export default function وظایفPage() {
       if (error) throw error;
 
       toast.success("Task created successfully");
-      setIsAddDialogOpen(false);
+      setIsافزودنDialogباز(false);
       resetForm();
       fetchData();
     } catch (error) {
@@ -222,14 +222,14 @@ export default function وظایفPage() {
 
     setIsثبتting(true);
     try {
-      let dueDateTime: string | null = null;
-      if (formDueDate) {
-        const date = new Date(formDueDate);
-        if (formDueTime) {
-          const [hours, minutes] = formDueTime.split(":").map(Number);
+      let dueتاریخزمان: string | null = null;
+      if (formDueتاریخ) {
+        const date = new تاریخ(formDueتاریخ);
+        if (formDueزمان) {
+          const [hours, minutes] = formDueزمان.split(":").map(Number);
           date.setHours(hours, minutes);
         }
-        dueDateTime = date.toISOString();
+        dueتاریخزمان = date.toISOString();
       }
 
       const { error } = await supabase
@@ -237,8 +237,8 @@ export default function وظایفPage() {
         .update({
           title: formعنوان.trim(),
           label: formLabel.trim() || null,
-          due_date: dueDateTime,
-          status: formStatus,
+          due_date: dueتاریخزمان,
+          status: formوضعیت,
         })
         .eq("id", editTask.id);
 
@@ -260,25 +260,25 @@ export default function وظایفPage() {
     setویرایشTask(task);
     setFormعنوان(task.title);
     setFormLabel(task.label || "");
-    setFormStatus(task.status);
+    setFormوضعیت(task.status);
     if (task.due_date) {
-      const date = new Date(task.due_date);
-      setFormDueDate(date);
-      const hours = date.getHours().toString().padStart(2, "0");
-      const minutes = date.getMinutes().toString().padStart(2, "0");
-      setFormDueTime(`${hours}:${minutes}`);
+      const date = new تاریخ(task.due_date);
+      setFormDueتاریخ(date);
+      const hours = date.getHours().toString().padشروع(2, "0");
+      const minutes = date.getMinutes().toString().padشروع(2, "0");
+      setFormDueزمان(`${hours}:${minutes}`);
     } else {
-      setFormDueDate(undefined);
-      setFormDueTime("09:00");
+      setFormDueتاریخ(undefined);
+      setFormDueزمان("09:00");
     }
   };
 
   const filteredوظایف = tasks.filter((task) => {
-    const matchesجستجو = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.label?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.candidate?.full_name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusفیلتر === "all" || task.status === statusفیلتر;
-    return matchesجستجو && matchesStatus;
+    const matchesجستجو = task.title.toکمerCase().includes(searchQuery.toکمerCase()) ||
+      task.label?.toکمerCase().includes(searchQuery.toکمerCase()) ||
+      task.candidate?.full_name.toکمerCase().includes(searchQuery.toکمerCase());
+    const matchesوضعیت = statusفیلتر === "all" || task.status === statusفیلتر;
+    return matchesجستجو && matchesوضعیت;
   });
 
   const pendingCount = tasks.filter(t => t.status === "pending").length;
@@ -310,9 +310,9 @@ export default function وظایفPage() {
             {pendingCount} pending, {completedCount} completed
           </p>
         </div>
-        <Button onClick={() => setIsAddDialogOpen(true)}>
+        <Button onClick={() => setIsافزودنDialogباز(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Task
+          افزودن وظیفه
         </Button>
       </div>
 
@@ -326,11 +326,11 @@ export default function وظایفPage() {
             className="pl-9"
           />
         </div>
-        <Tabs value={statusفیلتر} onValueChange={(v) => setStatusفیلتر(v as typeof statusفیلتر)}>
+        <Tabs value={statusفیلتر} onValueChange={(v) => setوضعیتفیلتر(v as typeof statusفیلتر)}>
           <TabsList>
             <TabsTrigger value="all">All ({tasks.length})</TabsTrigger>
             <TabsTrigger value="pending">در انتظار ({pendingCount})</TabsTrigger>
-            <TabsTrigger value="completed">Completed ({completedCount})</TabsTrigger>
+            <TabsTrigger value="completed">انجام شده ({completedCount})</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -339,7 +339,7 @@ export default function وظایفPage() {
         <Card>
           <CardContent className="pt-6">
             <p className="text-center text-muted-foreground">
-              {tasks.length === 0 ? "No tasks yet. ایجاد your first task!" : "No tasks match your filters"}
+              {tasks.length === 0 ? "خیر tasks yet. ایجاد your first task!" : "خیر tasks match your filters"}
             </p>
           </CardContent>
         </Card>
@@ -370,7 +370,7 @@ export default function وظایفPage() {
                       {task.due_date && (
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {format(new Date(task.due_date), "PPp")}
+                          {format(new تاریخ(task.due_date), "PPp")}
                         </span>
                       )}
                       {task.candidate && (
@@ -389,7 +389,7 @@ export default function وظایفPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleToggleStatus(task)}
+                      onClick={() => handleگیرندهggleوضعیت(task)}
                       title={task.status === "pending" ? "Mark as completed" : "Mark as pending"}
                     >
                       {task.status === "pending" ? (
@@ -420,14 +420,14 @@ export default function وظایفPage() {
         </div>
       )}
 
-      {/* Add Task Dialog */}
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+      {/* افزودن وظیفه Dialog */}
+      <Dialog open={isافزودنDialogباز} onبازChange={setIsافزودنDialogباز}>
         <DialogContent>
           <DialogHeader>
-            <Dialogعنوان>Add New Task</Dialogعنوان>
-            <DialogDescription>
+            <Dialogعنوان>افزودن وظیفه جدید</Dialogعنوان>
+            <Dialogتوضیحات>
               ایجاد a new task linked to a candidate.
-            </DialogDescription>
+            </Dialogتوضیحات>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -441,18 +441,18 @@ export default function وظایفPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="candidate">Candidate *</Label>
-              <Select value={formCandidateId} onValueChange={setFormCandidateId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a candidate" />
-                </SelectTrigger>
-                <SelectContent>
+              <انتخاب value={formCandidateId} onValueChange={setFormCandidateId}>
+                <انتخابTrigger>
+                  <انتخابValue placeholder="انتخاب a candidate" />
+                </انتخابTrigger>
+                <انتخابContent>
                   {candidates.map((candidate) => (
-                    <SelectItem key={candidate.id} value={candidate.id}>
+                    <انتخابItem key={candidate.id} value={candidate.id}>
                       {candidate.full_name}
-                    </SelectItem>
+                    </انتخابItem>
                   ))}
-                </SelectContent>
-              </Select>
+                </انتخابContent>
+              </انتخاب>
             </div>
             <div className="space-y-2">
               <Label htmlFor="label">Label</Label>
@@ -465,47 +465,47 @@ export default function وظایفPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Due Date</Label>
+                <Label>Due تاریخ</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formDueDate ? format(formDueDate, "PP") : "Pick a date"}
+                      {formDueتاریخ ? format(formDueتاریخ, "PP") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <CalendarComponent
                       mode="single"
-                      selected={formDueDate}
-                      onSelect={setFormDueDate}
+                      selected={formDueتاریخ}
+                      onانتخاب={setFormDueتاریخ}
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
               </div>
               <div className="space-y-2">
-                <Label>Due Time</Label>
-                <TimePickerAMPM value={formDueTime} onChange={setFormDueTime} />
+                <Label>Due زمان</Label>
+                <زمانPickerAMPM value={formDueزمان} onChange={setFormDueزمان} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">در انتظار</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>وضعیت</Label>
+              <انتخاب value={formوضعیت} onValueChange={(v) => setFormوضعیت(v as typeof formوضعیت)}>
+                <انتخابTrigger>
+                  <انتخابValue />
+                </انتخابTrigger>
+                <انتخابContent>
+                  <انتخابItem value="pending">در انتظار</انتخابItem>
+                  <انتخابItem value="completed">انجام شده</انتخابItem>
+                </انتخابContent>
+              </انتخاب>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setIsAddDialogOpen(false); resetForm(); }}>
+            <Button variant="outline" onClick={() => { setIsافزودنDialogباز(false); resetForm(); }}>
               انصراف
             </Button>
-            <Button onClick={handleAddTask} disabled={isثبتting}>
+            <Button onClick={handleافزودنTask} disabled={isثبتting}>
               {isثبتting ? "در حال ایجاد..." : "ایجاد Task"}
             </Button>
           </DialogFooter>
@@ -513,13 +513,13 @@ export default function وظایفPage() {
       </Dialog>
 
       {/* ویرایش Task Dialog */}
-      <Dialog open={!!editTask} onOpenChange={(open) => { if (!open) { setویرایشTask(null); resetForm(); } }}>
+      <Dialog open={!!editTask} onبازChange={(open) => { if (!open) { setویرایشTask(null); resetForm(); } }}>
         <DialogContent>
           <DialogHeader>
             <Dialogعنوان>ویرایش Task</Dialogعنوان>
-            <DialogDescription>
+            <Dialogتوضیحات>
               به‌روزرسانی the task details.
-            </DialogDescription>
+            </Dialogتوضیحات>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -542,40 +542,40 @@ export default function وظایفPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Due Date</Label>
+                <Label>Due تاریخ</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formDueDate ? format(formDueDate, "PP") : "Pick a date"}
+                      {formDueتاریخ ? format(formDueتاریخ, "PP") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <CalendarComponent
                       mode="single"
-                      selected={formDueDate}
-                      onSelect={setFormDueDate}
+                      selected={formDueتاریخ}
+                      onانتخاب={setFormDueتاریخ}
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
               </div>
               <div className="space-y-2">
-                <Label>Due Time</Label>
-                <TimePickerAMPM value={formDueTime} onChange={setFormDueTime} />
+                <Label>Due زمان</Label>
+                <زمانPickerAMPM value={formDueزمان} onChange={setFormDueزمان} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">در انتظار</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>وضعیت</Label>
+              <انتخاب value={formوضعیت} onValueChange={(v) => setFormوضعیت(v as typeof formوضعیت)}>
+                <انتخابTrigger>
+                  <انتخابValue />
+                </انتخابTrigger>
+                <انتخابContent>
+                  <انتخابItem value="pending">در انتظار</انتخابItem>
+                  <انتخابItem value="completed">انجام شده</انتخابItem>
+                </انتخابContent>
+              </انتخاب>
             </div>
           </div>
           <DialogFooter>
@@ -590,13 +590,13 @@ export default function وظایفPage() {
       </Dialog>
 
       {/* حذف تأییدation Dialog */}
-      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setحذفTaskId(null)}>
+      <AlertDialog open={!!deleteTaskId} onبازChange={() => setحذفTaskId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogعنوان>حذف Task</AlertDialogعنوان>
-            <AlertDialogDescription>
+            <AlertDialogتوضیحات>
               Are you sure you want to delete this task? This action cannot be undone.
-            </AlertDialogDescription>
+            </AlertDialogتوضیحات>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogانصراف>انصراف</AlertDialogانصراف>

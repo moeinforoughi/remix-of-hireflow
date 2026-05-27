@@ -7,16 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useگیرندهast } from "@/hooks/use-toast";
 import { ArrowLeft, ذخیره, Plus, X } from "lucide-react";
 
 export default function TemplateForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const [loading, setبارگذاری] = useState(false);
   const [name, setName] = useState("");
-  const [subject, setSubject] = useState("");
+  const [subject, setموضوع] = useState("");
   const [bodyHtml, setBodyHtml] = useState("");
   const [variables, setVariables] = useState<string[]>([]);
   const [newVariable, setNewVariable] = useState("");
@@ -38,7 +38,7 @@ export default function TemplateForm() {
       if (error) throw error;
 
       setName(data.name);
-      setSubject(data.subject);
+      setموضوع(data.subject);
       setBodyHtml(data.body_html);
       setVariables(data.variables || []);
     } catch (error: any) {
@@ -50,14 +50,14 @@ export default function TemplateForm() {
     }
   };
 
-  const handleAddVariable = () => {
+  const handleافزودنVariable = () => {
     if (newVariable && !variables.includes(newVariable)) {
       setVariables([...variables, newVariable]);
       setNewVariable("");
     }
   };
 
-  const handleRemoveVariable = (variable: string) => {
+  const handleحذفVariable = (variable: string) => {
     setVariables(variables.filter((v) => v !== variable));
   };
 
@@ -75,7 +75,7 @@ export default function TemplateForm() {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error("خیرt authenticated");
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -83,7 +83,7 @@ export default function TemplateForm() {
         .eq("id", user.id)
         .single();
 
-      if (!profile) throw new Error("Profile not found");
+      if (!profile) throw new Error("پروفایل not found");
 
       const templateData = {
         org_id: profile.org_id,
@@ -162,17 +162,17 @@ export default function TemplateForm() {
           </div>
 
           <div>
-            <Label htmlFor="subject">Email Subject *</Label>
+            <Label htmlFor="subject">ایمیل موضوع *</Label>
             <Input
               id="subject"
               value={subject}
-              onChange={(e) => setSubject(e.target.value)}
+              onChange={(e) => setموضوع(e.target.value)}
               placeholder="Interview Invitation for {{position}}"
             />
           </div>
 
           <div>
-            <Label htmlFor="body">Email Body (HTML) *</Label>
+            <Label htmlFor="body">ایمیل Body (HTML) *</Label>
             <Textarea
               id="body"
               value={bodyHtml}
@@ -188,16 +188,16 @@ export default function TemplateForm() {
           <div>
             <Label>Template Variables</Label>
             <p className="text-xs text-muted-foreground mb-2">
-              Add variables that can be dynamically replaced when sending emails
+              افزودن variables that can be dynamically replaced when sending emails
             </p>
             <div className="flex gap-2 mb-3">
               <Input
                 value={newVariable}
                 onChange={(e) => setNewVariable(e.target.value)}
                 placeholder="e.g., candidate_name, job_title"
-                onKeyPress={(e) => e.key === "Enter" && handleAddVariable()}
+                onKeyPress={(e) => e.key === "Enter" && handleافزودنVariable()}
               />
-              <Button onClick={handleAddVariable} size="icon" type="button">
+              <Button onClick={handleافزودنVariable} size="icon" type="button">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -208,7 +208,7 @@ export default function TemplateForm() {
                     {"{{"}{variable}{"}}"}
                     <button
                       type="button"
-                      onClick={() => handleRemoveVariable(variable)}
+                      onClick={() => handleحذفVariable(variable)}
                       className="ml-2 hover:text-destructive"
                     >
                       <X className="h-3 w-3" />
@@ -218,7 +218,7 @@ export default function TemplateForm() {
               </div>
             ) : (
               <p className="text-xs text-muted-foreground italic">
-                No variables added yet. Common variables: candidate_name, job_title, interview_date
+                خیر variables added yet. Common variables: candidate_name, job_title, interview_date
               </p>
             )}
           </div>

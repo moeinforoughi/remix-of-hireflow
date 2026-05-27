@@ -4,19 +4,19 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, Cardتوضیحات, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
-import PlatformLogo from '@/components/PlatformLogo';
+import Platformلوگو from '@/components/Platformلوگو';
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setایمیل] = useState('');
+  const [password, setرمز عبور] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithرمز عبور({ email, password });
       if (error) throw error;
       toast({ title: 'موفقیت', description: 'با موفقیت وارد شدید' });
       navigate('/dashboard');
@@ -29,7 +29,7 @@ const Login = () => {
   const handleDemoLogin = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithرمز عبور({
         email: 'demo@hireflow.app',
         password: 'Demo123!'
       });
@@ -63,22 +63,22 @@ const Login = () => {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <PlatformLogo />
+            <Platformلوگو />
           </div>
           
-          <CardDescription className="text-center">
+          <Cardتوضیحات className="text-center">
             برای ورود به حساب کاربری خود اقدام کنید
-          </CardDescription>
+          </Cardتوضیحات>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">ایمیل</Label>
-              <Input id="email" type="email" placeholder="you@company.com" value={email} onChange={e => setEmail(e.target.value)} required dir="ltr" />
+              <Input id="email" type="email" placeholder="you@company.com" value={email} onChange={e => setایمیل(e.target.value)} required dir="ltr" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">رمز عبور</Label>
-              <Input id="password" type="password" placeholder="رمز عبور خود را وارد کنید" value={password} onChange={e => setPassword(e.target.value)} required />
+              <Input id="password" type="password" placeholder="رمز عبور خود را وارد کنید" value={password} onChange={e => setرمز عبور(e.target.value)} required />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'در حال ورود...' : 'ورود'}

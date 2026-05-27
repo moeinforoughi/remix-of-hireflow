@@ -30,7 +30,7 @@ export const CandidateDetailSkeleton = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left column */}
         <div className="space-y-6">
-          {/* Basic Information card */}
+          {/* پایه Information card */}
           <Card>
             <CardHeader>
               <Skeleton className="h-5 w-40" />
@@ -65,7 +65,7 @@ export const CandidateDetailSkeleton = () => {
             </CardContent>
           </Card>
 
-          {/* Ratings card */}
+          {/* امتیازs card */}
           <Card>
             <CardHeader>
               <Skeleton className="h-5 w-24" />
@@ -84,7 +84,7 @@ export const CandidateDetailSkeleton = () => {
           </Card>
         </div>
 
-        {/* Right column - Comments */}
+        {/* Right column - نظرات */}
         <Card className="h-fit">
           <CardHeader>
             <Skeleton className="h-5 w-24" />

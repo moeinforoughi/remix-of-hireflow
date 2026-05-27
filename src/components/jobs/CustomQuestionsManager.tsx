@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { Card, CardContent, Cardتوضیحات, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { تأییدDialog } from '@/components/shared/تأییدDialog';
 
-interface Question {
+interface سؤال {
   id: string;
   question_text: string;
   question_type: string;
@@ -20,16 +20,16 @@ interface Question {
   order_idx: number;
 }
 
-interface CustomQuestionsManagerProps {
+interface CustomسؤالsManagerProps {
   jobId: string;
 }
 
-export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
+export const CustomسؤالsManager = ({ jobId }: CustomسؤالsManagerProps) => {
+  const [questions, setسؤالs] = useState<سؤال[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showافزودنForm, setنمایشافزودنForm] = useState(false);
   const [deleteتأیید, setحذفتأیید] = useState<string | null>(null);
-  const [newQuestion, setNewQuestion] = useState({
+  const [newسؤال, setNewسؤال] = useState({
     question_text: '',
     question_type: 'text',
     options: [''],
@@ -37,10 +37,10 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
   });
 
   useEffect(() => {
-    fetchQuestions();
+    fetchسؤالs();
   }, [jobId]);
 
-  const fetchQuestions = async () => {
+  const fetchسؤالs = async () => {
     try {
       const { data, error } = await supabase
         .from('application_questions')
@@ -49,7 +49,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
         .order('order_idx');
 
       if (error) throw error;
-      setQuestions(data || []);
+      setسؤالs(data || []);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -61,18 +61,18 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
     }
   };
 
-  const handleAddQuestion = async () => {
+  const handleافزودنسؤال = async () => {
     try {
       const { error } = await supabase
         .from('application_questions')
         .insert({
           job_id: jobId,
-          question_text: newQuestion.question_text,
-          question_type: newQuestion.question_type,
-          options: newQuestion.question_type === 'multiple_choice' 
-            ? newQuestion.options.filter(o => o.trim()) 
+          question_text: newسؤال.question_text,
+          question_type: newسؤال.question_type,
+          options: newسؤال.question_type === 'multiple_choice' 
+            ? newسؤال.options.filter(o => o.trim()) 
             : null,
-          is_required: newQuestion.is_required,
+          is_required: newسؤال.is_required,
           order_idx: questions.length,
         });
 
@@ -80,17 +80,17 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
 
       toast({
         title: 'موفقیت',
-        description: 'Question added successfully',
+        description: 'سؤال added successfully',
       });
 
-      setNewQuestion({
+      setNewسؤال({
         question_text: '',
         question_type: 'text',
         options: [''],
         is_required: false,
       });
-      setShowAddForm(false);
-      fetchQuestions();
+      setنمایشافزودنForm(false);
+      fetchسؤالs();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -100,7 +100,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
     }
   };
 
-  const handleحذفQuestion = async (id: string) => {
+  const handleحذفسؤال = async (id: string) => {
     try {
       const { error } = await supabase
         .from('application_questions')
@@ -111,10 +111,10 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
 
       toast({
         title: 'موفقیت',
-        description: 'Question deleted successfully',
+        description: 'سؤال deleted successfully',
       });
 
-      fetchQuestions();
+      fetchسؤالs();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -126,22 +126,22 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
   };
 
   const addOption = () => {
-    setNewQuestion({
-      ...newQuestion,
-      options: [...newQuestion.options, ''],
+    setNewسؤال({
+      ...newسؤال,
+      options: [...newسؤال.options, ''],
     });
   };
 
   const updateOption = (index: number, value: string) => {
-    const newOptions = [...newQuestion.options];
+    const newOptions = [...newسؤال.options];
     newOptions[index] = value;
-    setNewQuestion({ ...newQuestion, options: newOptions });
+    setNewسؤال({ ...newسؤال, options: newOptions });
   };
 
   const removeOption = (index: number) => {
-    if (newQuestion.options.length > 1) {
-      const newOptions = newQuestion.options.filter((_, i) => i !== index);
-      setNewQuestion({ ...newQuestion, options: newOptions });
+    if (newسؤال.options.length > 1) {
+      const newOptions = newسؤال.options.filter((_, i) => i !== index);
+      setNewسؤال({ ...newسؤال, options: newOptions });
     }
   };
 
@@ -153,55 +153,55 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-lg">Custom Application Questions</h3>
+          <h3 className="text-lg">Custom Application سؤالs</h3>
           <p className="text-sm text-muted-foreground">
-            Add custom questions to your application form
+            افزودن custom questions to your application form
           </p>
         </div>
-        <Button onClick={() => setShowAddForm(!showAddForm)}>
+        <Button onClick={() => setنمایشافزودنForm(!showافزودنForm)}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Question
+          افزودن سؤال
         </Button>
       </div>
 
-      {showAddForm && (
+      {showافزودنForm && (
         <Card>
           <CardHeader>
-            <Cardعنوان>New Question</Cardعنوان>
+            <Cardعنوان>New سؤال</Cardعنوان>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label>Question Text *</Label>
+              <Label>سؤال Text *</Label>
               <Textarea
-                value={newQuestion.question_text}
-                onChange={(e) => setNewQuestion({ ...newQuestion, question_text: e.target.value })}
+                value={newسؤال.question_text}
+                onChange={(e) => setNewسؤال({ ...newسؤال, question_text: e.target.value })}
                 placeholder="Enter your question..."
                 rows={2}
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Question Type *</Label>
-              <Select
-                value={newQuestion.question_type}
-                onValueChange={(value: any) => setNewQuestion({ ...newQuestion, question_type: value })}
+              <Label>سؤال Type *</Label>
+              <انتخاب
+                value={newسؤال.question_type}
+                onValueChange={(value: any) => setNewسؤال({ ...newسؤال, question_type: value })}
               >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="text">Short Text</SelectItem>
-                  <SelectItem value="textarea">Long Text</SelectItem>
-                  <SelectItem value="yes_no">Yes/No</SelectItem>
-                  <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
-                </SelectContent>
-              </Select>
+                <انتخابTrigger>
+                  <انتخابValue />
+                </انتخابTrigger>
+                <انتخابContent>
+                  <انتخابItem value="text">Short Text</انتخابItem>
+                  <انتخابItem value="textarea">Long Text</انتخابItem>
+                  <انتخابItem value="yes_no">بله/خیر</انتخابItem>
+                  <انتخابItem value="multiple_choice">Multiple Choice</انتخابItem>
+                </انتخابContent>
+              </انتخاب>
             </div>
 
-            {newQuestion.question_type === 'multiple_choice' && (
+            {newسؤال.question_type === 'multiple_choice' && (
               <div className="space-y-2">
                 <Label>Options</Label>
-                {newQuestion.options.map((option, index) => (
+                {newسؤال.options.map((option, index) => (
                   <div key={index} className="flex gap-2">
                     <Input
                       value={option}
@@ -213,14 +213,14 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
                       variant="outline"
                       size="icon"
                       onClick={() => removeOption(index)}
-                      disabled={newQuestion.options.length === 1}
+                      disabled={newسؤال.options.length === 1}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
                 <Button type="button" variant="outline" onClick={addOption} className="w-full">
-                  Add Option
+                  افزودن Option
                 </Button>
               </div>
             )}
@@ -228,21 +228,21 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="required"
-                checked={newQuestion.is_required}
+                checked={newسؤال.is_required}
                 onCheckedChange={(checked) => 
-                  setNewQuestion({ ...newQuestion, is_required: checked as boolean })
+                  setNewسؤال({ ...newسؤال, is_required: checked as boolean })
                 }
               />
               <Label htmlFor="required" className="cursor-pointer">
-                Required field
+                اجباری field
               </Label>
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={handleAddQuestion} disabled={!newQuestion.question_text}>
-                Add Question
+              <Button onClick={handleافزودنسؤال} disabled={!newسؤال.question_text}>
+                افزودن سؤال
               </Button>
-              <Button variant="outline" onClick={() => setShowAddForm(false)}>
+              <Button variant="outline" onClick={() => setنمایشافزودنForm(false)}>
                 انصراف
               </Button>
             </div>
@@ -253,9 +253,9 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
       {questions.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No custom questions yet</p>
+            <p className="text-muted-foreground">خیر custom questions yet</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Add questions to collect additional information from applicants
+              افزودن questions to collect additional information from applicants
             </p>
           </CardContent>
         </Card>
@@ -305,9 +305,9 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
 
       <تأییدDialog
         open={deleteتأیید !== null}
-        onOpenChange={(open) => !open && setحذفتأیید(null)}
-        onتأیید={() => deleteتأیید && handleحذفQuestion(deleteتأیید)}
-        title="حذف Question"
+        onبازChange={(open) => !open && setحذفتأیید(null)}
+        onتأیید={() => deleteتأیید && handleحذفسؤال(deleteتأیید)}
+        title="حذف سؤال"
         description="Are you sure you want to delete this question? This action cannot be undone."
         confirmText="حذف"
         variant="destructive"

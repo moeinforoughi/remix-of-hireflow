@@ -3,12 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { Loader2, ChevronRight, ChevronDown } from 'lucide-react';
 import { InviteUserDialog } from './InviteUserDialog';
 import { ویرایشUserDialog } from './ویرایشUserDialog';
-import { notifyRoleChanged } from '@/lib/notifications';
+import { notifyنقشChanged } from '@/lib/notifications';
 
 interface User {
   id: string;
@@ -24,10 +24,10 @@ interface User {
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
+  const [currentUserایمیل, setCurrentUserایمیل] = useState<string>('');
   const [editingUser, setویرایشingUser] = useState<User | null>(null);
-  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
-  const { toast } = useToast();
+  const [editDialogباز, setویرایشDialogباز] = useState(false);
+  const { toast } = useگیرندهast();
 
   useEffect(() => {
     fetchUsers();
@@ -37,7 +37,7 @@ export const UserManagement = () => {
   const fetchCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user?.email) {
-      setCurrentUserEmail(user.email);
+      setCurrentUserایمیل(user.email);
     }
   };
 
@@ -50,13 +50,13 @@ export const UserManagement = () => {
         return;
       }
 
-      const { data: currentProfile } = await supabase
+      const { data: currentپروفایل } = await supabase
         .from('profiles')
         .select('org_id')
         .eq('id', user.id)
         .single();
 
-      if (!currentProfile) {
+      if (!currentپروفایل) {
         setبارگذاری(false);
         return;
       }
@@ -65,12 +65,12 @@ export const UserManagement = () => {
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('org_id', currentProfile.org_id)
+        .eq('org_id', currentپروفایل.org_id)
         .order('created_at', { ascending: false });
 
       if (profilesError) throw profilesError;
 
-      const usersWithRoles = await Promise.all(
+      const usersWithنقشs = await Promise.all(
         profiles.map(async (profile) => {
           const { data: roleData } = await supabase
             .from('user_roles')
@@ -81,11 +81,11 @@ export const UserManagement = () => {
           // If user has no role, auto-fix by assigning 'basic' role
           let role = roleData?.role;
           if (!role) {
-            const { error: fixRoleError } = await supabase
+            const { error: fixنقشError } = await supabase
               .from('user_roles')
               .insert({ user_id: profile.id, role: 'basic' });
             
-            if (!fixRoleError) {
+            if (!fixنقشError) {
               role = 'basic';
               console.log(`Auto-fixed missing role for user ${profile.email}`);
             }
@@ -113,7 +113,7 @@ export const UserManagement = () => {
         })
       );
 
-      setUsers(usersWithRoles);
+      setUsers(usersWithنقشs);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -125,7 +125,7 @@ export const UserManagement = () => {
     }
   };
 
-  const handleRoleChange = async (userId: string, newRole: 'basic' | 'job_admin' | 'site_admin') => {
+  const handleنقشChange = async (userId: string, newنقش: 'basic' | 'job_admin' | 'site_admin') => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -144,7 +144,7 @@ export const UserManagement = () => {
       // Insert new role
       const { error: insertError } = await supabase
         .from('user_roles')
-        .insert({ user_id: userId, role: newRole });
+        .insert({ user_id: userId, role: newنقش });
 
       if (insertError) throw insertError;
 
@@ -153,9 +153,9 @@ export const UserManagement = () => {
         description: 'User role updated successfully',
       });
 
-      // Send notification about role change
+      // ارسال notification about role change
       if (targetUser) {
-        notifyRoleChanged(userId, targetUser.full_name, newRole, user.id);
+        notifyنقشChanged(userId, targetUser.full_name, newنقش, user.id);
       }
 
       fetchUsers();
@@ -176,11 +176,11 @@ export const UserManagement = () => {
     );
   }
 
-  const getRoleLabel = (role: string) => {
+  const getنقشLabel = (role: string) => {
     const labels: Record<string, string> = {
       basic: 'Can View',
       job_admin: 'Can ویرایش',
-      site_admin: 'Admin',
+      site_admin: 'مدیر کل',
     };
     return labels[role] || role;
   };
@@ -189,7 +189,7 @@ export const UserManagement = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl">Team Members</h1>
+          <h1 className="text-3xl">اعضای تیم</h1>
         </div>
         <InviteUserDialog onInviteSuccess={fetchUsers} />
       </div>
@@ -199,10 +199,10 @@ export const UserManagement = () => {
           <TableHeader>
             <TableRow className="hover:bg-transparent border-b-0">
               <TableHead className="w-[200px]">Name</TableHead>
-              <TableHead className="w-[220px]">Email</TableHead>
-              <TableHead className="w-[150px]">Department</TableHead>
+              <TableHead className="w-[220px]">ایمیل</TableHead>
+              <TableHead className="w-[150px]">بخش</TableHead>
               <TableHead className="w-[100px]"># of Listings</TableHead>
-              <TableHead className="w-[130px]">Permissions</TableHead>
+              <TableHead className="w-[130px]">دسترسی‌ها</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -217,7 +217,7 @@ export const UserManagement = () => {
                 }}
                 onClick={() => {
                   setویرایشingUser(user);
-                  setویرایشDialogOpen(true);
+                  setویرایشDialogباز(true);
                 }}
               >
                 <TableCell className="rounded-l-lg">
@@ -242,23 +242,23 @@ export const UserManagement = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-between">
-                    <Select
+                    <انتخاب
                       value={user.role}
-                      onValueChange={(value) => handleRoleChange(user.id, value as 'basic' | 'job_admin' | 'site_admin')}
-                      disabled={user.email === 'demo@hireflow.app' && currentUserEmail === 'demo@hireflow.app'}
+                      onValueChange={(value) => handleنقشChange(user.id, value as 'basic' | 'job_admin' | 'site_admin')}
+                      disabled={user.email === 'demo@hireflow.app' && currentUserایمیل === 'demo@hireflow.app'}
                     >
-                      <SelectTrigger 
+                      <انتخابTrigger 
                         className="w-[106px] h-[30px] text-[12px] font-medium border-border"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <SelectValue>{getRoleLabel(user.role)}</SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="basic">Can View</SelectItem>
-                        <SelectItem value="job_admin">Can ویرایش</SelectItem>
-                        <SelectItem value="site_admin">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
+                        <انتخابValue>{getنقشLabel(user.role)}</انتخابValue>
+                      </انتخابTrigger>
+                      <انتخابContent>
+                        <انتخابItem value="basic">Can View</انتخابItem>
+                        <انتخابItem value="job_admin">Can ویرایش</انتخابItem>
+                        <انتخابItem value="site_admin">مدیر کل</انتخابItem>
+                      </انتخابContent>
+                    </انتخاب>
                   </div>
                 </TableCell>
                 <TableCell className="rounded-r-lg">
@@ -271,8 +271,8 @@ export const UserManagement = () => {
       </div>
 
       <ویرایشUserDialog
-        open={editDialogOpen}
-        onOpenChange={setویرایشDialogOpen}
+        open={editDialogباز}
+        onبازChange={setویرایشDialogباز}
         user={editingUser}
         onبه‌روزرسانیSuccess={fetchUsers}
       />

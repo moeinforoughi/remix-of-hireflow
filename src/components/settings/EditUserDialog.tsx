@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Trash2, Loader2 } from 'lucide-react';
@@ -11,7 +11,7 @@ import { تأییدDialog } from '@/components/shared/تأییدDialog';
 
 interface ویرایشUserDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   user: {
     id: string;
     full_name: string;
@@ -21,19 +21,19 @@ interface ویرایشUserDialogProps {
   onبه‌روزرسانیSuccess: () => void;
 }
 
-export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌روزرسانیSuccess }: ویرایشUserDialogProps) => {
-  const [department, setDepartment] = useState('');
-  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
+export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌روزرسانیSuccess }: ویرایشUserDialogProps) => {
+  const [department, setبخش] = useState('');
+  const [selectedJobs, setانتخابedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
   const [loading, setبارگذاری] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [showحذفتأیید, setShowحذفتأیید] = useState(false);
+  const [showحذفتأیید, setنمایشحذفتأیید] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
 
   useEffect(() => {
     if (open && user) {
-      setDepartment(user.department || '');
+      setبخش(user.department || '');
       fetchJobs();
       fetchUserJobs();
       fetchCurrentUser();
@@ -68,7 +68,7 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
       .eq('user_id', user.id);
 
     if (!error && data) {
-      setSelectedJobs(data.map(acl => acl.job_id));
+      setانتخابedJobs(data.map(acl => acl.job_id));
     }
   };
 
@@ -116,7 +116,7 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
         description: 'User updated successfully',
       });
 
-      onOpenChange(false);
+      onبازChange(false);
       onبه‌روزرسانیSuccess();
     } catch (error: any) {
       toast({
@@ -146,8 +146,8 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
         description: 'Team member removed successfully',
       });
 
-      setShowحذفتأیید(false);
-      onOpenChange(false);
+      setنمایشحذفتأیید(false);
+      onبازChange(false);
       onبه‌روزرسانیSuccess();
     } catch (error: any) {
       toast({
@@ -161,7 +161,7 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
   };
 
   const toggleJob = (jobId: string) => {
-    setSelectedJobs(prev =>
+    setانتخابedJobs(prev =>
       prev.includes(jobId)
         ? prev.filter(id => id !== jobId)
         : [...prev, jobId]
@@ -172,7 +172,7 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onبازChange={onبازChange}>
         <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-hidden flex flex-col gap-0 p-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b">
             <Dialogعنوان className="text-xl">ویرایش Team Member</Dialogعنوان>
@@ -191,36 +191,36 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
                     <div className="text-sm font-medium">{user?.full_name}</div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Email</Label>
+                    <Label className="text-xs text-muted-foreground">ایمیل</Label>
                     <div className="text-sm font-medium truncate">{user?.email}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Department Section */}
+              {/* بخش Section */}
               <div className="space-y-3 pt-2">
                 <h3 className="text-sm text-foreground uppercase tracking-wide">
-                  Role & Access
+                  نقش & Access
                 </h3>
                 <div className="space-y-1.5">
                   <Label htmlFor="department" className="text-sm font-medium">
-                    Department
+                    بخش
                   </Label>
-                  <Select value={department} onValueChange={setDepartment}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Department" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-50">
-                      <SelectItem value="Engineering">Engineering</SelectItem>
-                      <SelectItem value="Design">Design</SelectItem>
-                      <SelectItem value="Product">Product</SelectItem>
-                      <SelectItem value="Marketing">Marketing</SelectItem>
-                      <SelectItem value="Sales">Sales</SelectItem>
-                      <SelectItem value="HR">HR</SelectItem>
-                      <SelectItem value="Finance">Finance</SelectItem>
-                      <SelectItem value="Operations">Operations</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <انتخاب value={department} onValueChange={setبخش}>
+                    <انتخابTrigger>
+                      <انتخابValue placeholder="انتخاب بخش" />
+                    </انتخابTrigger>
+                    <انتخابContent className="bg-background z-50">
+                      <انتخابItem value="Engineering">Engineering</انتخابItem>
+                      <انتخابItem value="Design">Design</انتخابItem>
+                      <انتخابItem value="Product">Product</انتخابItem>
+                      <انتخابItem value="Marketing">Marketing</انتخابItem>
+                      <انتخابItem value="Sales">Sales</انتخابItem>
+                      <انتخابItem value="HR">HR</انتخابItem>
+                      <انتخابItem value="Finance">Finance</انتخابItem>
+                      <انتخابItem value="Operations">Operations</انتخابItem>
+                    </انتخابContent>
+                  </انتخاب>
                 </div>
               </div>
 
@@ -239,7 +239,7 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
                 <div className="border rounded-lg p-3 max-h-[140px] overflow-y-auto bg-muted/20">
                   {jobs.length === 0 ? (
                     <div className="text-sm text-muted-foreground text-center py-4">
-                      No open jobs to assign
+                      خیر open jobs to assign
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -272,10 +272,10 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
                   <Button
                     variant="outline"
                     className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                    onClick={() => setShowحذفتأیید(true)}
+                    onClick={() => setنمایشحذفتأیید(true)}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Remove from Team
+                    حذف from Team
                   </Button>
                 </div>
               )}
@@ -284,7 +284,7 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
 
           {/* Footer */}
           <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
-            <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+            <Button variant="outline" onClick={() => onبازChange(false)} className="flex-1">
               انصراف
             </Button>
             <Button onClick={handleبه‌روزرسانی} disabled={loading} className="flex-1">
@@ -296,10 +296,10 @@ export const ویرایشUserDialog = ({ open, onOpenChange, user, onبه‌رو
 
       <تأییدDialog
         open={showحذفتأیید}
-        onOpenChange={setShowحذفتأیید}
-        title="Remove Team Member"
+        onبازChange={setنمایشحذفتأیید}
+        title="حذف Team Member"
         description={`Are you sure you want to remove ${user?.full_name} from your team? This action cannot be undone and will delete their account.`}
-        confirmText={deleting ? 'Removing...' : 'Remove'}
+        confirmText={deleting ? 'Removing...' : 'حذف'}
         onتأیید={handleحذف}
         variant="destructive"
       />

@@ -3,37 +3,37 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, Dialogتوضیحات, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
-interface ویرایشOrganizationDialogProps {
+interface ویرایشسازمانDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
-interface OrgSettings {
+interface Orgتنظیمات {
   company_email?: string;
   salary_currency?: string;
 }
 
-export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }: ویرایشOrganizationDialogProps) => {
+export const ویرایشسازمانDialog = ({ open, onبازChange, onSuccess }: ویرایشسازمانDialogProps) => {
   const [loading, setبارگذاری] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgName, setOrgName] = useState('');
   const [orgSlug, setOrgSlug] = useState('');
-  const [companyEmail, setCompanyEmail] = useState('');
-  const [settings, setSettings] = useState<OrgSettings>({});
-  const { toast } = useToast();
+  const [companyایمیل, setCompanyایمیل] = useState('');
+  const [settings, setتنظیمات] = useState<Orgتنظیمات>({});
+  const { toast } = useگیرندهast();
 
   useEffect(() => {
     if (open) {
-      fetchOrganization();
+      fetchسازمان();
     }
   }, [open]);
 
-  const fetchOrganization = async () => {
+  const fetchسازمان = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -57,9 +57,9 @@ export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }
       setOrgId(data.id);
       setOrgName(data.name || '');
       setOrgSlug(data.slug || '');
-      const orgSettings = (data.settings_json as OrgSettings) || {};
-      setSettings(orgSettings);
-      setCompanyEmail(orgSettings.company_email || '');
+      const orgتنظیمات = (data.settings_json as Orgتنظیمات) || {};
+      setتنظیمات(orgتنظیمات);
+      setCompanyایمیل(orgتنظیمات.company_email || '');
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -74,13 +74,13 @@ export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }
 
     setبارگذاری(true);
     try {
-      const updatedSettings = { ...settings, company_email: companyEmail };
+      const updatedتنظیمات = { ...settings, company_email: companyایمیل };
       const { error } = await supabase
         .from('organizations')
         .update({
           name: orgName,
           slug: orgSlug,
-          settings_json: updatedSettings,
+          settings_json: updatedتنظیمات,
         })
         .eq('id', orgId);
 
@@ -88,11 +88,11 @@ export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }
 
       toast({
         title: 'موفقیت',
-        description: 'Organization information has been updated',
+        description: 'سازمان information has been updated',
       });
 
       onSuccess?.();
-      onOpenChange(false);
+      onبازChange(false);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -105,17 +105,17 @@ export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent>
         <DialogHeader>
-          <Dialogعنوان>ویرایش Organization</Dialogعنوان>
-          <DialogDescription>
+          <Dialogعنوان>ویرایش سازمان</Dialogعنوان>
+          <Dialogتوضیحات>
             به‌روزرسانی your organization information here.
-          </DialogDescription>
+          </Dialogتوضیحات>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="orgName">Organization Name</Label>
+            <Label htmlFor="orgName">سازمان Name</Label>
             <Input
               id="orgName"
               value={orgName}
@@ -124,7 +124,7 @@ export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="orgSlug">Organization Slug</Label>
+            <Label htmlFor="orgSlug">سازمان Slug</Label>
             <Input
               id="orgSlug"
               value={orgSlug}
@@ -133,18 +133,18 @@ export const ویرایشOrganizationDialog = ({ open, onOpenChange, onSuccess }
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="companyEmail">Company Email Address</Label>
+            <Label htmlFor="companyایمیل">Company ایمیل آدرس</Label>
             <Input
-              id="companyEmail"
+              id="companyایمیل"
               type="email"
-              value={companyEmail}
-              onChange={(e) => setCompanyEmail(e.target.value)}
+              value={companyایمیل}
+              onChange={(e) => setCompanyایمیل(e.target.value)}
               placeholder="contact@company.com"
             />
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onبازChange(false)}>
             انصراف
           </Button>
           <Button onClick={handleذخیره} disabled={loading}>

@@ -4,18 +4,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ویرایش, Eye, Share2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { ChevronLeft, ویرایش, Eye, اشتراک‌گذاری2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
-import PipelineBoard from '@/components/pipeline/PipelineBoard';
+import پایپ‌لاینBoard from '@/components/pipeline/پایپ‌لاینBoard';
 import { تأییدDialog } from '@/components/shared/تأییدDialog';
-import { AddCandidateDialog } from '@/components/pipeline/AddCandidateDialog';
+import { افزودنCandidateDialog } from '@/components/pipeline/افزودنCandidateDialog';
 import { ViewJobDialog } from '@/components/jobs/ViewJobDialog';
 import { ویرایشJobDialog } from '@/components/jobs/ویرایشJobDialog';
-import { ShareJobDialog } from '@/components/jobs/ShareJobDialog';
+import { اشتراک‌گذاریJobDialog } from '@/components/jobs/اشتراک‌گذاریJobDialog';
 import { JobTeamManager } from '@/components/jobs/JobTeamManager';
-import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
 
 interface Job {
   id: string;
@@ -36,13 +36,13 @@ interface Job {
   created_at: string;
 }
 
-interface JobStage {
+interface Jobمرحله {
   id: string;
   name: string;
   order_idx: number;
 }
 
-interface HiredCandidate {
+interface استخدامdCandidate {
   id: string;
   full_name: string;
   email: string | null;
@@ -53,24 +53,24 @@ interface HiredCandidate {
 const JobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { role, loading: permissionsبارگذاری } = useUserPermissions();
+  const { role, loading: permissionsبارگذاری } = useUserدسترسی‌ها();
   const [job, setJob] = useState<Job | null>(null);
-  const [stages, setStages] = useState<JobStage[]>([]);
+  const [stages, setمرحلهs] = useState<Jobمرحله[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const [deleteDialogOpen, setحذفDialogOpen] = useState(false);
-  const [closeDialogOpen, setبستنDialogOpen] = useState(false);
-  const [fillDialogOpen, setFillDialogOpen] = useState(false);
-  const [viewDialogOpen, setViewDialogOpen] = useState(false);
-  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [hiredCandidates, setHiredCandidates] = useState<HiredCandidate[]>([]);
-  const [hiredCount, setHiredCount] = useState(0);
+  const [deleteDialogباز, setحذفDialogباز] = useState(false);
+  const [closeDialogباز, setبستنDialogباز] = useState(false);
+  const [fillDialogباز, setFillDialogباز] = useState(false);
+  const [viewDialogباز, setViewDialogباز] = useState(false);
+  const [editDialogباز, setویرایشDialogباز] = useState(false);
+  const [shareDialogباز, setاشتراک‌گذاریDialogباز] = useState(false);
+  const [hiredCandidates, setاستخدامdCandidates] = useState<استخدامdCandidate[]>([]);
+  const [hiredCount, setاستخدامdCount] = useState(0);
 
   // Only site_admin and job_admin can add candidates
-  const canAddCandidate = role === 'site_admin' || role === 'job_admin';
+  const canافزودنCandidate = role === 'site_admin' || role === 'job_admin';
   useEffect(() => {
     fetchJob();
-    fetchHiredCandidates();
+    fetchاستخدامdCandidates();
   }, [id]);
 
   const fetchJob = async () => {
@@ -113,7 +113,7 @@ const JobDetail = () => {
       }
 
       setJob(jobResponse.data);
-      setStages(stagesResponse.data || []);
+      setمرحلهs(stagesResponse.data || []);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -126,7 +126,7 @@ const JobDetail = () => {
     }
   };
 
-  const fetchHiredCandidates = async () => {
+  const fetchاستخدامdCandidates = async () => {
     try {
       const { data, error } = await supabase
         .from('applications')
@@ -148,8 +148,8 @@ const JobDetail = () => {
         application_id: app.id,
       }));
 
-      setHiredCandidates(hired);
-      setHiredCount(hired.length);
+      setاستخدامdCandidates(hired);
+      setاستخدامdCount(hired.length);
     } catch (error: any) {
       console.error('Error fetching hired candidates:', error);
     }
@@ -248,24 +248,24 @@ const JobDetail = () => {
   };
 
   const statusConfig: Record<string, { label: string; className: string; dotColor: string }> = {
-    open: { label: 'Open', className: 'bg-green-100 text-green-700 border-green-200', dotColor: 'bg-green-500' },
-    paused: { label: 'Paused', className: 'bg-yellow-100 text-yellow-700 border-yellow-200', dotColor: 'bg-yellow-500' },
+    open: { label: 'باز', className: 'bg-green-100 text-green-700 border-green-200', dotColor: 'bg-green-500' },
+    paused: { label: 'وقفهd', className: 'bg-yellow-100 text-yellow-700 border-yellow-200', dotColor: 'bg-yellow-500' },
     filled: { label: 'Filled', className: 'bg-blue-100 text-blue-700 border-blue-200', dotColor: 'bg-blue-500' },
     closed: { label: 'بستنd', className: 'bg-gray-100 text-gray-700 border-gray-200', dotColor: 'bg-gray-500' },
-    draft: { label: 'Draft', className: 'bg-gray-100 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
-    pending_approval: { label: 'در انتظار Approval', className: 'bg-orange-100 text-orange-700 border-orange-200', dotColor: 'bg-orange-500' },
+    draft: { label: 'پیش‌نویس', className: 'bg-gray-100 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
+    pending_approval: { label: 'در انتظار تأیید', className: 'bg-orange-100 text-orange-700 border-orange-200', dotColor: 'bg-orange-500' },
   };
 
-  const getStatusBadge = (status: string) => {
+  const getوضعیتBadge = (status: string) => {
     const config = statusConfig[status] || statusConfig.draft;
     return <Badge className={config.className}>{config.label}</Badge>;
   };
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleوضعیتChange = async (newوضعیت: string) => {
     try {
       const { data, error } = await supabase
         .from('jobs')
-        .update({ status: newStatus as 'open' | 'paused' | 'filled' | 'closed' })
+        .update({ status: newوضعیت as 'open' | 'paused' | 'filled' | 'closed' })
         .eq('id', id)
         .select()
         .single();
@@ -282,15 +282,15 @@ const JobDetail = () => {
       }
 
       const statusLabels: Record<string, string> = {
-        open: 'Open',
-        paused: 'Paused',
+        open: 'باز',
+        paused: 'وقفهd',
         filled: 'Filled',
         closed: 'بستنd',
       };
 
       toast({
-        title: 'Status به‌روزرسانیd',
-        description: `Job status changed to ${statusLabels[newStatus] || newStatus}.`,
+        title: 'وضعیت به‌روزرسانیd',
+        description: `Job status changed to ${statusLabels[newوضعیت] || newوضعیت}.`,
       });
 
       fetchJob();
@@ -329,81 +329,81 @@ const JobDetail = () => {
           <span className="text-foreground">Details</span>
         </div>
         <div className="flex items-center gap-3">
-          {canAddCandidate && job.status !== 'filled' && job.status !== 'closed' && (
+          {canافزودنCandidate && job.status !== 'filled' && job.status !== 'closed' && (
             <Button
               variant="outline"
               className="gap-2 font-medium text-destructive hover:text-destructive"
-              onClick={() => setبستنDialogOpen(true)}
+              onClick={() => setبستنDialogباز(true)}
             >
               <XCircle className="h-4 w-4" />
               انصراف Job
             </Button>
           )}
-          {canAddCandidate && (
+          {canافزودنCandidate && (
             <Button
               variant="outline"
               className="gap-2 font-medium"
-              onClick={() => setحذفDialogOpen(true)}
+              onClick={() => setحذفDialogباز(true)}
             >
               <Trash2 className="h-4 w-4" />
-              Remove Listing
+              حذف Listing
             </Button>
           )}
-          {canAddCandidate && job.status !== 'filled' && job.status !== 'closed' && (
-            <AddCandidateDialog 
+          {canافزودنCandidate && job.status !== 'filled' && job.status !== 'closed' && (
+            <افزودنCandidateDialog 
               jobId={id!} 
               stages={stages}
               onSuccess={() => {
                 fetchJob();
-                fetchHiredCandidates();
+                fetchاستخدامdCandidates();
               }}
             />
           )}
         </div>
       </div>
 
-      {/* Header with Job عنوان, Status and Actions */}
+      {/* Header with Job عنوان, وضعیت and Actions */}
       <div className="bg-card rounded-2xl p-8 flex items-start justify-between border border-border shadow-sm">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl">{job.title}</h1>
-            {canAddCandidate ? (
-              <Select value={job.status} onValueChange={handleStatusChange}>
-                <SelectTrigger className={`w-[130px] h-8 text-sm font-medium border ${statusConfig[job.status]?.className || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
+            {canافزودنCandidate ? (
+              <انتخاب value={job.status} onValueChange={handleوضعیتChange}>
+                <انتخابTrigger className={`w-[130px] h-8 text-sm font-medium border ${statusConfig[job.status]?.className || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${statusConfig[job.status]?.dotColor || 'bg-gray-400'}`} />
-                    <SelectValue />
+                    <انتخابValue />
                   </div>
-                </SelectTrigger>
-                <SelectContent className="bg-card">
-                  <SelectItem value="open">
+                </انتخابTrigger>
+                <انتخابContent className="bg-card">
+                  <انتخابItem value="open">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-green-500" />
-                      Open
+                      باز
                     </div>
-                  </SelectItem>
-                  <SelectItem value="paused">
+                  </انتخابItem>
+                  <انتخابItem value="paused">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                      Paused
+                      وقفهd
                     </div>
-                  </SelectItem>
-                  <SelectItem value="filled">
+                  </انتخابItem>
+                  <انتخابItem value="filled">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-blue-500" />
                       Filled
                     </div>
-                  </SelectItem>
-                  <SelectItem value="closed">
+                  </انتخابItem>
+                  <انتخابItem value="closed">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-gray-500" />
                       بستنd
                     </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                  </انتخابItem>
+                </انتخابContent>
+              </انتخاب>
             ) : (
-              getStatusBadge(job.status)
+              getوضعیتBadge(job.status)
             )}
           </div>
           <p className="text-muted-foreground text-base">{job.location}</p>
@@ -412,12 +412,12 @@ const JobDetail = () => {
           <div className="flex items-center gap-4 pt-2">
             <div className="flex items-center gap-2 text-sm">
               <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Openings:</span>
+              <span className="text-muted-foreground">بازings:</span>
               <span className="font-semibold">{job.openings}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <UserCheck className="h-4 w-4 text-green-600" />
-              <span className="text-muted-foreground">Hired:</span>
+              <span className="text-muted-foreground">استخدامd:</span>
               <span className={`font-semibold ${hiredCount >= job.openings ? 'text-green-600' : ''}`}>
                 {hiredCount} / {job.openings}
               </span>
@@ -430,11 +430,11 @@ const JobDetail = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {/* Mark as Filled Button - Show when hired count >= openings and job is open */}
-          {canAddCandidate && hiredCount >= job.openings && job.status === 'open' && (
+          {/* Mark as Filled Button - نمایش when hired count >= openings and job is open */}
+          {canافزودنCandidate && hiredCount >= job.openings && job.status === 'open' && (
             <Button
               className="bg-green-600 hover:bg-green-700 text-white font-medium gap-2 h-12 px-6 rounded-xl"
-              onClick={() => setFillDialogOpen(true)}
+              onClick={() => setFillDialogباز(true)}
             >
               <CheckCircle2 className="h-5 w-5" />
               Mark as Filled
@@ -444,21 +444,21 @@ const JobDetail = () => {
             variant="outline"
             size="icon"
             className="h-12 w-12 rounded-xl border-2 border-border hover:bg-muted"
-            onClick={() => setShareDialogOpen(true)}
+            onClick={() => setاشتراک‌گذاریDialogباز(true)}
           >
-            <Share2 className="h-5 w-5" />
+            <اشتراک‌گذاری2 className="h-5 w-5" />
           </Button>
           <Button
             variant="outline"
             size="icon"
             className="h-12 w-12 rounded-xl border-2 border-border hover:bg-muted"
-            onClick={() => setویرایشDialogOpen(true)}
+            onClick={() => setویرایشDialogباز(true)}
           >
             <ویرایش className="h-5 w-5" />
           </Button>
           <Button
             className="bg-[#A8E6CF] hover:bg-[#8FD9B6] text-gray-900 font-medium gap-2 h-12 px-6 rounded-xl"
-            onClick={() => setViewDialogOpen(true)}
+            onClick={() => setViewDialogباز(true)}
           >
             <Eye className="h-5 w-5" />
             View
@@ -466,13 +466,13 @@ const JobDetail = () => {
         </div>
       </div>
 
-      {/* Hired Candidates Section - Show when there are hired candidates */}
+      {/* استخدامd Candidates Section - نمایش when there are hired candidates */}
       {hiredCandidates.length > 0 && (
         <Card>
           <CardHeader>
             <Cardعنوان className="flex items-center gap-2">
               <UserCheck className="h-5 w-5 text-green-600" />
-              Hired Candidates ({hiredCandidates.length})
+              استخدامd Candidates ({hiredCandidates.length})
             </Cardعنوان>
           </CardHeader>
           <CardContent>
@@ -489,7 +489,7 @@ const JobDetail = () => {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate">{candidate.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      Hired on {format(new Date(candidate.hired_at), 'MMM d, yyyy')}
+                      استخدامd on {format(new تاریخ(candidate.hired_at), 'MMM d, yyyy')}
                     </p>
                   </div>
                 </Link>
@@ -499,17 +499,17 @@ const JobDetail = () => {
         </Card>
       )}
 
-      {/* Pipeline Board */}
+      {/* پایپ‌لاین Board */}
       <div className="bg-background rounded-lg">
-        <PipelineBoard jobId={id!} />
+        <پایپ‌لاینBoard jobId={id!} />
       </div>
 
       {/* Job Team Management */}
       <JobTeamManager jobId={id!} />
 
       <تأییدDialog
-        open={deleteDialogOpen}
-        onOpenChange={setحذفDialogOpen}
+        open={deleteDialogباز}
+        onبازChange={setحذفDialogباز}
         onتأیید={handleحذف}
         title="حذف Job"
         description="Are you sure you want to delete this job? This will also delete all associated applications, interviews, and offers. This action cannot be undone."
@@ -518,8 +518,8 @@ const JobDetail = () => {
       />
 
       <تأییدDialog
-        open={closeDialogOpen}
-        onOpenChange={setبستنDialogOpen}
+        open={closeDialogباز}
+        onبازChange={setبستنDialogباز}
         onتأیید={handleبستن}
         title="انصراف Job"
         description="Are you sure you want to cancel this job? It will no longer accept new applications and won't be visible on the careers site. This is different from marking a job as filled."
@@ -528,8 +528,8 @@ const JobDetail = () => {
       />
 
       <تأییدDialog
-        open={fillDialogOpen}
-        onOpenChange={setFillDialogOpen}
+        open={fillDialogباز}
+        onبازChange={setFillDialogباز}
         onتأیید={handleMarkAsFilled}
         title="Mark Job as Filled"
         description={`This will mark the job as successfully filled with ${hiredCount} candidate(s). The job will be closed to new applications. You can still view all hiring data.`}
@@ -539,21 +539,21 @@ const JobDetail = () => {
       {job && (
         <>
           <ViewJobDialog
-            open={viewDialogOpen}
-            onOpenChange={setViewDialogOpen}
+            open={viewDialogباز}
+            onبازChange={setViewDialogباز}
             job={job}
             onSuccess={fetchJob}
             hiredCount={hiredCount}
           />
           <ویرایشJobDialog
-            open={editDialogOpen}
-            onOpenChange={setویرایشDialogOpen}
+            open={editDialogباز}
+            onبازChange={setویرایشDialogباز}
             job={job}
             onSuccess={fetchJob}
           />
-          <ShareJobDialog
-            open={shareDialogOpen}
-            onOpenChange={setShareDialogOpen}
+          <اشتراک‌گذاریJobDialog
+            open={shareDialogباز}
+            onبازChange={setاشتراک‌گذاریDialogباز}
             job={job}
           />
         </>

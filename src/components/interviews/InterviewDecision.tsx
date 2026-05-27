@@ -3,38 +3,38 @@ import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/c
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Clock } from 'lucide-react';
-import { RejectCandidateDialog } from './RejectCandidateDialog';
+import { ردCandidateDialog } from './ردCandidateDialog';
 
-interface InterviewDecisionProps {
+interface InterviewتصمیمProps {
   scorecards: Array<{
     recommendation: string;
     user: { full_name: string };
   }>;
-  interviewStatus: string;
+  interviewوضعیت: string;
   applicationState: string;
   onAdvance: () => void;
-  onReject: (reason: string, notes: string) => void;
+  onرد: (reason: string, notes: string) => void;
 }
 
-export const InterviewDecision = ({ 
+export const Interviewتصمیم = ({ 
   scorecards, 
-  interviewStatus,
+  interviewوضعیت,
   applicationState,
   onAdvance,
-  onReject 
-}: InterviewDecisionProps) => {
-  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  onرد 
+}: InterviewتصمیمProps) => {
+  const [showردDialog, setنمایشردDialog] = useState(false);
 
-  const handleReject = (reason: string, notes: string) => {
-    onReject(reason, notes);
-    setShowRejectDialog(false);
+  const handleرد = (reason: string, notes: string) => {
+    onرد(reason, notes);
+    setنمایشردDialog(false);
   };
 
   if (scorecards.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان>Interview Decision</Cardعنوان>
+          <Cardعنوان>Interview تصمیم</Cardعنوان>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -54,18 +54,18 @@ export const InterviewDecision = ({
   };
 
   const totalScores = scorecards.length;
-  const majorityRecommendation = 
+  const majorityتوصیه = 
     recommendations.advance > recommendations.no ? 'advance' :
     recommendations.no > recommendations.advance ? 'reject' : 'mixed';
 
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>Interview Decision</Cardعنوان>
+        <Cardعنوان>Interview تصمیم</Cardعنوان>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <h4 className="">Scorecard Summary</h4>
+          <h4 className="">فرم ارزیابی Summary</h4>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center p-3 bg-green-50 dark:bg-green-950 rounded-lg">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
@@ -83,7 +83,7 @@ export const InterviewDecision = ({
               <div className="text-2xl font-bold text-red-600 dark:text-red-400">
                 {recommendations.no}
               </div>
-              <div className="text-sm text-muted-foreground">Do Not Advance</div>
+              <div className="text-sm text-muted-foreground">Do خیرt Advance</div>
             </div>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -91,23 +91,23 @@ export const InterviewDecision = ({
           </p>
         </div>
 
-        {interviewStatus === 'completed' && applicationState === 'active' && (
+        {interviewوضعیت === 'completed' && applicationState === 'active' && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="font-medium">Recommended Action:</span>
-              {majorityRecommendation === 'advance' && (
+              {majorityتوصیه === 'advance' && (
                 <Badge variant="default" className="flex items-center gap-1">
                   <CheckCircle className="h-3 w-3" />
-                  Move to بعدی Stage
+                  Move to بعدی مرحله
                 </Badge>
               )}
-              {majorityRecommendation === 'reject' && (
+              {majorityتوصیه === 'reject' && (
                 <Badge variant="destructive" className="flex items-center gap-1">
                   <XCircle className="h-3 w-3" />
-                  Do Not Advance
+                  Do خیرt Advance
                 </Badge>
               )}
-              {majorityRecommendation === 'mixed' && (
+              {majorityتوصیه === 'mixed' && (
                 <Badge variant="secondary" className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
                   Mixed Reviews - Needs Discussion
@@ -120,19 +120,19 @@ export const InterviewDecision = ({
                 <CheckCircle className="h-4 w-4 mr-2" />
                 Advance Candidate
               </Button>
-              <Button onClick={() => setShowRejectDialog(true)} variant="destructive" className="flex-1">
+              <Button onClick={() => setنمایشردDialog(true)} variant="destructive" className="flex-1">
                 <XCircle className="h-4 w-4 mr-2" />
-                Reject Candidate
+                رد Candidate
               </Button>
             </div>
           </div>
         )}
       </CardContent>
 
-      <RejectCandidateDialog
-        open={showRejectDialog}
-        onOpenChange={setShowRejectDialog}
-        onتأیید={handleReject}
+      <ردCandidateDialog
+        open={showردDialog}
+        onبازChange={setنمایشردDialog}
+        onتأیید={handleرد}
       />
     </Card>
   );

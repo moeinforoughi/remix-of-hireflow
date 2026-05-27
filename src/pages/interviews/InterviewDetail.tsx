@@ -4,13 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, Download } from 'lucide-react';
+import { useگیرندهast } from '@/hooks/use-toast';
+import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, دانلود } from 'lucide-react';
 import { format } from 'date-fns';
-import { ScorecardCard } from '@/components/interviews/ScorecardCard';
-import { InterviewDecision } from '@/components/interviews/InterviewDecision';
+import { فرم ارزیابیCard } from '@/components/interviews/فرم ارزیابیCard';
+import { Interviewتصمیم } from '@/components/interviews/Interviewتصمیم';
 
-interface Scorecard {
+interface فرم ارزیابی {
   id: string;
   user_id: string;
   user: {
@@ -51,10 +51,10 @@ interface InterviewDetail {
 const InterviewDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const [interview, setInterview] = useState<InterviewDetail | null>(null);
-  const [scorecards, setScorecards] = useState<Scorecard[]>([]);
-  const [مصاحبه‌کننده, setInterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
+  const [scorecards, setفرم ارزیابیs] = useState<فرم ارزیابی[]>([]);
+  const [مصاحبه‌کننده, setمصاحبه‌کنندهs] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
   const [loading, setبارگذاری] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
@@ -68,13 +68,13 @@ const InterviewDetail = () => {
     
     if (id) {
       fetchInterview();
-      fetchScorecards();
+      fetchفرم ارزیابیs();
     }
   }, [id]);
 
-  const fetchInterviewers = async (panelUserIds: string[]) => {
+  const fetchمصاحبه‌کنندهs = async (panelUserIds: string[]) => {
     if (!panelUserIds || panelUserIds.length === 0) {
-      setInterviewers([]);
+      setمصاحبه‌کنندهs([]);
       return;
     }
 
@@ -85,7 +85,7 @@ const InterviewDetail = () => {
         .in("id", panelUserIds);
 
       if (error) throw error;
-      setInterviewers(data || []);
+      setمصاحبه‌کنندهs(data || []);
     } catch (error) {
       console.error("Error fetching مصاحبه‌کننده:", error);
     }
@@ -119,7 +119,7 @@ const InterviewDetail = () => {
 
       // Fetch مصاحبه‌کننده if panel_user_ids exists
       if (data?.panel_user_ids && data.panel_user_ids.length > 0) {
-        await fetchInterviewers(data.panel_user_ids);
+        await fetchمصاحبه‌کنندهs(data.panel_user_ids);
       }
     } catch (error: any) {
       toast({
@@ -132,7 +132,7 @@ const InterviewDetail = () => {
     }
   };
 
-  const fetchScorecards = async () => {
+  const fetchفرم ارزیابیs = async () => {
     try {
       const { data, error } = await supabase
         .from('scorecards')
@@ -150,13 +150,13 @@ const InterviewDetail = () => {
         .order('submitted_at', { ascending: false });
 
       if (error) throw error;
-      setScorecards(data || []);
+      setفرم ارزیابیs(data || []);
     } catch (error: any) {
       console.error('Error fetching scorecards:', error);
     }
   };
 
-  const handleDownloadICS = async () => {
+  const handleدانلودICS = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('generate-ics', {
         body: { interviewId: id },
@@ -176,30 +176,30 @@ const InterviewDetail = () => {
       document.body.removeChild(a);
 
       toast({
-        title: 'Calendar Event Downloaded',
+        title: 'Calendar Event دانلودed',
         description: 'ICS file has been downloaded',
       });
     } catch (error: any) {
       toast({
-        title: 'Download Failed',
+        title: 'دانلود Failed',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleStatusبه‌روزرسانی = async (newStatus: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
+  const handleوضعیتبه‌روزرسانی = async (newوضعیت: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
     try {
       const { error } = await supabase
         .from('interviews')
-        .update({ status: newStatus })
+        .update({ status: newوضعیت })
         .eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'موفقیت',
-        description: `Interview marked as ${newStatus}`,
+        description: `Interview marked as ${newوضعیت}`,
       });
 
       fetchInterview();
@@ -224,7 +224,7 @@ const InterviewDetail = () => {
       if (!stages || stages.length === 0) {
         toast({
           title: 'خطا',
-          description: 'No stages found for this job',
+          description: 'خیر stages found for this job',
           variant: 'destructive',
         });
         return;
@@ -236,12 +236,12 @@ const InterviewDetail = () => {
         .eq('id', interview?.application.id)
         .single();
 
-      const currentStage = stages.find(s => s.id === currentApp?.current_stage_id);
-      const nextStage = stages.find(s => s.order_idx === (currentStage?.order_idx || 0) + 1);
+      const currentمرحله = stages.find(s => s.id === currentApp?.current_stage_id);
+      const nextمرحله = stages.find(s => s.order_idx === (currentمرحله?.order_idx || 0) + 1);
 
-      if (!nextStage) {
+      if (!nextمرحله) {
         toast({
-          title: 'Already at Final Stage',
+          title: 'Already at Final مرحله',
           description: 'This candidate is already at the final stage',
           variant: 'destructive',
         });
@@ -250,7 +250,7 @@ const InterviewDetail = () => {
 
       const { error } = await supabase
         .from('applications')
-        .update({ current_stage_id: nextStage.id })
+        .update({ current_stage_id: nextمرحله.id })
         .eq('id', interview?.application.id);
 
       if (error) throw error;
@@ -271,7 +271,7 @@ const InterviewDetail = () => {
     }
   };
 
-  const handleRejectCandidate = async (reason: string, notes: string) => {
+  const handleردCandidate = async (reason: string, notes: string) => {
     try {
       const { error } = await supabase
         .from('applications')
@@ -285,7 +285,7 @@ const InterviewDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Candidate Rejected',
+        title: 'Candidate ردed',
         description: 'Application marked as rejected',
       });
 
@@ -342,18 +342,18 @@ const InterviewDetail = () => {
             <div className="flex items-start gap-3">
               <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium">{format(new Date(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
+                <p className="font-medium">{format(new تاریخ(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
                 <p className="text-sm text-muted-foreground">
-                  {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
+                  {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
                 </p>
               </div>
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={handleDownloadICS}
+                onClick={handleدانلودICS}
               >
-                <Download className="h-4 w-4 mr-2" />
-                Add to Calendar
+                <دانلود className="h-4 w-4 mr-2" />
+                افزودن to Calendar
               </Button>
             </div>
 
@@ -388,7 +388,7 @@ const InterviewDetail = () => {
               <div className="flex items-start gap-3">
                 <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div className="flex-1">
-                  <p className="font-medium mb-2">Interview Panel</p>
+                  <p className="font-medium mb-2">Interview هیئت مصاحبه</p>
                   <div className="space-y-2">
                     {مصاحبه‌کننده.map((مصاحبه‌کننده) => (
                       <div key={مصاحبه‌کننده.id} className="flex items-center gap-2">
@@ -437,7 +437,7 @@ const InterviewDetail = () => {
                 className="w-full"
                 onClick={() => navigate(`/candidates/${interview.application.candidate.id}`)}
               >
-                View Candidate Profile
+                View Candidate پروفایل
               </Button>
               <Button
                 variant="outline"
@@ -457,46 +457,46 @@ const InterviewDetail = () => {
             <Cardعنوان>Actions</Cardعنوان>
           </CardHeader>
           <CardContent className="flex gap-4">
-            <Button onClick={() => handleStatusبه‌روزرسانی('completed')}>
-              Mark as Completed
+            <Button onClick={() => handleوضعیتبه‌روزرسانی('completed')}>
+              Mark as انجام شده
             </Button>
-            <Button variant="outline" onClick={() => handleStatusبه‌روزرسانی('cancelled')}>
+            <Button variant="outline" onClick={() => handleوضعیتبه‌روزرسانی('cancelled')}>
               انصراف Interview
             </Button>
           </CardContent>
         </Card>
       )}
 
-      <InterviewDecision 
+      <Interviewتصمیم 
         scorecards={scorecards}
-        interviewStatus={interview.status}
+        interviewوضعیت={interview.status}
         applicationState={interview.application.state}
         onAdvance={handleAdvanceCandidate}
-        onReject={handleRejectCandidate}
+        onرد={handleردCandidate}
       />
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl">Interview Feedback</h2>
+          <h2 className="text-2xl">Interview بازخورد</h2>
           <Button 
             onClick={() => navigate(`/interviews/${id}/scorecard`)}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Scorecard
+            افزودن فرم ارزیابی
           </Button>
         </div>
 
         {scorecards.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-4">
             {scorecards.map((scorecard) => (
-              <ScorecardCard key={scorecard.id} scorecard={scorecard} />
+              <فرم ارزیابیCard key={scorecard.id} scorecard={scorecard} />
             ))}
           </div>
         ) : (
           <Card>
             <CardContent className="py-8">
               <p className="text-center text-muted-foreground">
-                No scorecards submitted yet
+                خیر scorecards submitted yet
               </p>
             </CardContent>
           </Card>

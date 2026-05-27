@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { Star } from 'lucide-react';
 
-interface ScorecardCardProps {
+interface فرم ارزیابیCardProps {
   scorecard: {
     id: string;
     user: {
@@ -19,10 +19,10 @@ interface ScorecardCardProps {
 const RECOMMENDATION_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' }> = {
   advance: { label: 'Advance', variant: 'default' },
   hold: { label: 'Hold', variant: 'secondary' },
-  no: { label: 'Do Not Advance', variant: 'destructive' },
+  no: { label: 'Do خیرt Advance', variant: 'destructive' },
 };
 
-export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
+export const فرم ارزیابیCard = ({ scorecard }: فرم ارزیابیCardProps) => {
   const recInfo = RECOMMENDATION_LABELS[scorecard.recommendation] || { label: scorecard.recommendation, variant: 'default' as const };
 
   return (
@@ -34,14 +34,14 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
         </div>
         {scorecard.submitted_at && (
           <p className="text-sm text-muted-foreground">
-            ثبتted {format(new Date(scorecard.submitted_at), 'MMM d, yyyy')}
+            ثبتted {format(new تاریخ(scorecard.submitted_at), 'MMM d, yyyy')}
           </p>
         )}
       </CardHeader>
       <CardContent className="space-y-4">
         {scorecard.ratings_json && Object.keys(scorecard.ratings_json).length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-sm">Ratings</h4>
+            <h4 className="text-sm">امتیازs</h4>
             {Object.entries(scorecard.ratings_json).map(([key, value]: [string, any]) => (
               <div key={key} className="space-y-1">
                 <div className="flex items-center justify-between">
@@ -69,7 +69,7 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
         
         {scorecard.notes && (
           <div className="space-y-2">
-            <h4 className="text-sm">Overall Notes</h4>
+            <h4 className="text-sm">Overall خیرtes</h4>
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">{scorecard.notes}</p>
           </div>
         )}

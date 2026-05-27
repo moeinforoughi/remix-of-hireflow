@@ -20,7 +20,7 @@ interface Activity {
   };
 }
 
-interface ActivityTimelineProps {
+interface ActivityزمانlineProps {
   entityType?: string;
   entityId?: string;
   limit?: number;
@@ -50,7 +50,7 @@ const getActionLabel = (action: string) => {
     deleted: 'حذفd',
     stage_moved: 'Moved stage',
     state_changed: 'Changed state',
-    sent: 'Sent',
+    sent: 'ارسال شده',
     scheduled: 'Scheduled',
   };
   return labels[action] || action;
@@ -71,7 +71,7 @@ const getActionColor = (action: string): 'default' | 'secondary' | 'destructive'
   }
 };
 
-export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityTimelineProps) => {
+export const Activityزمانline = ({ entityType, entityId, limit = 20 }: ActivityزمانlineProps) => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [candidateActivities, setCandidateActivities] = useState<any[]>([]);
   const [loading, setبارگذاری] = useState(true);
@@ -181,7 +181,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
         })) || []),
       ];
 
-      combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      combined.sort((a, b) => new تاریخ(b.created_at).getزمان() - new تاریخ(a.created_at).getزمان());
       setCandidateActivities(combined);
     } catch (error: any) {
       console.error('Error fetching candidate activities:', error);
@@ -192,7 +192,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان>Activity Timeline</Cardعنوان>
+          <Cardعنوان>Activity زمانline</Cardعنوان>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
@@ -209,10 +209,10 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان>Activity Timeline</Cardعنوان>
+          <Cardعنوان>Activity زمانline</Cardعنوان>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-muted-foreground py-8">No activity yet</p>
+          <p className="text-center text-muted-foreground py-8">خیر activity yet</p>
         </CardContent>
       </Card>
     );
@@ -221,7 +221,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>Activity Timeline</Cardعنوان>
+        <Cardعنوان>Activity زمانline</Cardعنوان>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -232,15 +232,15 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
             if (item.type === 'application') {
               icon = FileText;
               const jobعنوان = Array.isArray(item.data.job) ? item.data.job[0]?.title : item.data.job?.title;
-              label = 'Applied to Job';
+              label = 'ثبت درخواست شده to Job';
               description = jobعنوان || 'Unknown position';
               
               if (item.data.state === 'rejected') {
                 badgeVariant = 'destructive';
-                label = 'Application Rejected';
+                label = 'Application ردed';
               } else if (item.data.current_stage?.type === 'hired') {
                 badgeVariant = 'default';
-                label = 'Hired';
+                label = 'استخدامd';
                 description = `${jobعنوان} - ${item.data.current_stage.name}`;
               } else if (item.data.current_stage) {
                 badgeVariant = 'secondary';
@@ -256,7 +256,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
               badgeVariant = 'secondary';
               
               if (item.data.status === 'completed') {
-                label = 'Interview Completed';
+                label = 'Interview انجام شده';
               } else if (item.data.status === 'cancelled') {
                 label = 'Interview انصرافled';
                 badgeVariant = 'destructive';
@@ -274,19 +274,19 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
                 label = 'Offer Being Prepared';
                 badgeVariant = 'secondary';
               } else if (item.data.state === 'pending_approval') {
-                label = 'Offer در انتظار Approval';
+                label = 'Offer در انتظار تأیید';
                 badgeVariant = 'secondary';
               } else if (item.data.state === 'approved') {
-                label = 'Offer Approved';
+                label = 'Offer تأییدd';
                 badgeVariant = 'default';
               } else if (item.data.state === 'sent') {
-                label = 'Offer Sent';
+                label = 'Offer ارسال شده';
                 badgeVariant = 'default';
               } else if (item.data.state === 'accepted') {
-                label = 'Offer Accepted';
+                label = 'Offer پذیرفته شده';
                 badgeVariant = 'default';
               } else if (item.data.state === 'declined') {
-                label = 'Offer Declined';
+                label = 'Offer رد شده';
                 badgeVariant = 'destructive';
               } else if (item.data.state === 'expired') {
                 label = 'Offer Expired';
@@ -311,7 +311,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
                       {label}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {format(new Date(item.created_at), 'MMM d, yyyy h:mm a')}
+                      {format(new تاریخ(item.created_at), 'MMM d, yyyy h:mm a')}
                     </span>
                   </div>
 
@@ -321,7 +321,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
 
                   {item.type === 'interview' && item.data.start_at && (
                     <div className="text-xs text-muted-foreground mt-1">
-                      Scheduled for: {format(new Date(item.data.start_at), 'MMM d, yyyy h:mm a')}
+                      Scheduled for: {format(new تاریخ(item.data.start_at), 'MMM d, yyyy h:mm a')}
                     </div>
                   )}
                 </div>
@@ -348,7 +348,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
                       {getActionLabel(activity.action)}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {format(new Date(activity.created_at), 'MMM d, yyyy h:mm a')}
+                      {format(new تاریخ(activity.created_at), 'MMM d, yyyy h:mm a')}
                     </span>
                   </div>
 
@@ -371,7 +371,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
 
                   {activity.action === 'stage_moved' && activity.after_json?.current_stage_id && (
                     <div className="text-xs text-muted-foreground mt-1">
-                      Stage changed
+                      مرحله changed
                     </div>
                   )}
 

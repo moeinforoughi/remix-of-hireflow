@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
 import { MapPin, Briefcase, جستجو, Loader2, X } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -19,11 +19,11 @@ interface Job {
   created_at: string;
 }
 
-const CareersHome = () => {
+const فرصت‌های شغلیHome = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setبارگذاری] = useState(true);
   const [searchQuery, setجستجوQuery] = useState('');
-  const [departmentفیلتر, setDepartmentفیلتر] = useState<string>('all');
+  const [departmentفیلتر, setبخشفیلتر] = useState<string>('all');
   const [locationفیلتر, setمکانفیلتر] = useState<string>('all');
   const [employmentTypeفیلتر, setEmploymentTypeفیلتر] = useState<string>('all');
   const navigate = useNavigate();
@@ -55,22 +55,22 @@ const CareersHome = () => {
 
   const filteredJobs = jobs.filter((job) => {
     const matchesجستجو = 
-      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (job.department?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (job.location?.toLowerCase().includes(searchQuery.toLowerCase()));
+      job.title.toکمerCase().includes(searchQuery.toکمerCase()) ||
+      (job.department?.toکمerCase().includes(searchQuery.toکمerCase())) ||
+      (job.location?.toکمerCase().includes(searchQuery.toکمerCase()));
     
-    const matchesDepartment = departmentفیلتر === 'all' || job.department === departmentفیلتر;
+    const matchesبخش = departmentفیلتر === 'all' || job.department === departmentفیلتر;
     const matchesمکان = locationفیلتر === 'all' || job.location === locationفیلتر;
     const matchesEmploymentType = employmentTypeفیلتر === 'all' || job.employment_type === employmentTypeفیلتر;
 
-    return matchesجستجو && matchesDepartment && matchesمکان && matchesEmploymentType;
+    return matchesجستجو && matchesبخش && matchesمکان && matchesEmploymentType;
   });
 
-  const hasActiveفیلترs = searchQuery || departmentفیلتر !== 'all' || locationفیلتر !== 'all' || employmentTypeفیلتر !== 'all';
+  const hasفعالفیلترs = searchQuery || departmentفیلتر !== 'all' || locationفیلتر !== 'all' || employmentTypeفیلتر !== 'all';
 
   const clearفیلترs = () => {
     setجستجوQuery('');
-    setDepartmentفیلتر('all');
+    setبخشفیلتر('all');
     setمکانفیلتر('all');
     setEmploymentTypeفیلتر('all');
   };
@@ -115,52 +115,52 @@ const CareersHome = () => {
 
             {/* Dropdown فیلترs */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Select value={departmentفیلتر} onValueChange={setDepartmentفیلتر}>
-                <SelectTrigger className="w-full sm:w-[200px] bg-background">
-                  <SelectValue placeholder="Department" />
-                </SelectTrigger>
-                <SelectContent className="bg-background">
-                  <SelectItem value="all">All Departments</SelectItem>
+              <انتخاب value={departmentفیلتر} onValueChange={setبخشفیلتر}>
+                <انتخابTrigger className="w-full sm:w-[200px] bg-background">
+                  <انتخابValue placeholder="بخش" />
+                </انتخابTrigger>
+                <انتخابContent className="bg-background">
+                  <انتخابItem value="all">All بخشs</انتخابItem>
                   {departments.map((dept) => (
-                    <SelectItem key={dept} value={dept!}>
+                    <انتخابItem key={dept} value={dept!}>
                       {dept}
-                    </SelectItem>
+                    </انتخابItem>
                   ))}
-                </SelectContent>
-              </Select>
+                </انتخابContent>
+              </انتخاب>
 
-              <Select value={locationفیلتر} onValueChange={setمکانفیلتر}>
-                <SelectTrigger className="w-full sm:w-[200px] bg-background">
-                  <SelectValue placeholder="مکان" />
-                </SelectTrigger>
-                <SelectContent className="bg-background">
-                  <SelectItem value="all">All مکانs</SelectItem>
+              <انتخاب value={locationفیلتر} onValueChange={setمکانفیلتر}>
+                <انتخابTrigger className="w-full sm:w-[200px] bg-background">
+                  <انتخابValue placeholder="مکان" />
+                </انتخابTrigger>
+                <انتخابContent className="bg-background">
+                  <انتخابItem value="all">All مکانs</انتخابItem>
                   {locations.map((loc) => (
-                    <SelectItem key={loc} value={loc!}>
+                    <انتخابItem key={loc} value={loc!}>
                       {loc}
-                    </SelectItem>
+                    </انتخابItem>
                   ))}
-                </SelectContent>
-              </Select>
+                </انتخابContent>
+              </انتخاب>
 
-              <Select value={employmentTypeفیلتر} onValueChange={setEmploymentTypeفیلتر}>
-                <SelectTrigger className="w-full sm:w-[200px] bg-background">
-                  <SelectValue placeholder="Employment Type" />
-                </SelectTrigger>
-                <SelectContent className="bg-background">
-                  <SelectItem value="all">All Types</SelectItem>
+              <انتخاب value={employmentTypeفیلتر} onValueChange={setEmploymentTypeفیلتر}>
+                <انتخابTrigger className="w-full sm:w-[200px] bg-background">
+                  <انتخابValue placeholder="نوع همکاری" />
+                </انتخابTrigger>
+                <انتخابContent className="bg-background">
+                  <انتخابItem value="all">All Types</انتخابItem>
                   {employmentTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
+                    <انتخابItem key={type} value={type}>
                       {formatEmploymentType(type)}
-                    </SelectItem>
+                    </انتخابItem>
                   ))}
-                </SelectContent>
-              </Select>
+                </انتخابContent>
+              </انتخاب>
 
-              {hasActiveفیلترs && (
+              {hasفعالفیلترs && (
                 <Button variant="outline" onClick={clearفیلترs} className="bg-background">
                   <X className="h-4 w-4 mr-2" />
-                  Clear
+                  پاک کردن
                 </Button>
               )}
             </div>
@@ -172,7 +172,7 @@ const CareersHome = () => {
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="mb-6">
           <h2 className="text-2xl">
-            Open Positions {filteredJobs.length > 0 && `(${filteredJobs.length})`}
+            باز Positions {filteredJobs.length > 0 && `(${filteredJobs.length})`}
           </h2>
         </div>
 
@@ -180,15 +180,15 @@ const CareersHome = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">
-                {hasActiveفیلترs ? 'No jobs match your filters.' : 'No open positions at this time.'}
+                {hasفعالفیلترs ? 'خیر jobs match your filters.' : 'خیر open positions at this time.'}
               </p>
-              {hasActiveفیلترs && (
+              {hasفعالفیلترs && (
                 <Button
                   variant="outline"
                   className="mt-4"
                   onClick={clearفیلترs}
                 >
-                  Clear فیلترs
+                  پاک کردن فیلترs
                 </Button>
               )}
             </CardContent>
@@ -235,9 +235,9 @@ const CareersHome = () => {
                 <CardContent>
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      Posted {format(new Date(job.created_at), 'MMM d, yyyy')}
+                      منتشرشده {format(new تاریخ(job.created_at), 'MMM d, yyyy')}
                     </p>
-                    <Button>Apply Now</Button>
+                    <Button>ثبت درخواست خیرw</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -249,11 +249,11 @@ const CareersHome = () => {
       {/* Footer */}
       <div className="border-t mt-16">
         <div className="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 HireFlow. All rights reserved.</p>
+          <p>© 2025 استخدامFlow. All rights reserved.</p>
         </div>
       </div>
     </div>
   );
 };
 
-export default CareersHome;
+export default فرصت‌های شغلیHome;

@@ -19,7 +19,7 @@ interface Job {
   created_at: string;
 }
 
-const CareersJobDetail = () => {
+const فرصت‌های شغلیJobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [job, setJob] = useState<Job | null>(null);
@@ -71,7 +71,7 @@ const CareersJobDetail = () => {
           <p className="text-muted-foreground">This position may no longer be available</p>
           <Button onClick={() => navigate('/careers')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            بازگشت to Careers
+            بازگشت to فرصت‌های شغلی
           </Button>
         </div>
       </div>
@@ -113,7 +113,7 @@ const CareersJobDetail = () => {
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              <span>Posted {format(new Date(job.created_at), 'MMM d, yyyy')}</span>
+              <span>منتشرشده {format(new تاریخ(job.created_at), 'MMM d, yyyy')}</span>
             </div>
           </div>
 
@@ -131,7 +131,7 @@ const CareersJobDetail = () => {
             {job.description_md && (
               <Card>
                 <CardHeader>
-                  <Cardعنوان>About the Role</Cardعنوان>
+                  <Cardعنوان>About the نقش</Cardعنوان>
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-sm max-w-none whitespace-pre-wrap">
@@ -144,7 +144,7 @@ const CareersJobDetail = () => {
             {job.requirements_md && (
               <Card>
                 <CardHeader>
-                  <Cardعنوان>Requirements</Cardعنوان>
+                  <Cardعنوان>نیازمندی‌ها</Cardعنوان>
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-sm max-w-none whitespace-pre-wrap">
@@ -155,11 +155,11 @@ const CareersJobDetail = () => {
             )}
           </div>
 
-          {/* Sidebar - Apply CTA */}
+          {/* Sidebar - ثبت درخواست CTA */}
           <div>
             <Card className="sticky top-4">
               <CardHeader>
-                <Cardعنوان>Apply for this position</Cardعنوان>
+                <Cardعنوان>ثبت درخواست for this position</Cardعنوان>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
@@ -170,7 +170,7 @@ const CareersJobDetail = () => {
                   size="lg"
                   onClick={() => navigate(`/careers/jobs/${job.id}/apply`)}
                 >
-                  Apply Now
+                  ثبت درخواست خیرw
                 </Button>
               </CardContent>
             </Card>
@@ -181,4 +181,4 @@ const CareersJobDetail = () => {
   );
 };
 
-export default CareersJobDetail;
+export default فرصت‌های شغلیJobDetail;

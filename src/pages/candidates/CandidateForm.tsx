@@ -4,19 +4,19 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { Card, CardContent, Cardتوضیحات, CardHeader, Cardعنوان } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { FileUpload } from '@/components/shared/FileUpload';
+import { Fileبارگذاری } from '@/components/shared/Fileبارگذاری';
 import { toast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
-import { parseResume } from '@/lib/resume-parser';
+import { parseرزومه } from '@/lib/resume-parser';
 
 const CandidateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setبارگذاری] = useState(false);
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumeFile, setرزومهFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -64,7 +64,7 @@ const CandidateForm = () => {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -72,7 +72,7 @@ const CandidateForm = () => {
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
       const candidateData = {
         ...formData,
@@ -80,7 +80,7 @@ const CandidateForm = () => {
         phone: formData.phone || null,
         location: formData.location || null,
         linkedin_url: formData.linkedin_url || null,
-        consent_at: formData.consent ? new Date().toISOString() : null,
+        consent_at: formData.consent ? new تاریخ().toISOString() : null,
       };
 
       let candidateId = id;
@@ -106,10 +106,10 @@ const CandidateForm = () => {
         candidateId = newCandidate.id;
       }
 
-      // Upload resume if provided
+      // بارگذاری resume if provided
       if (resumeFile && candidateId) {
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const fileName = `${تاریخ.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -132,8 +132,8 @@ const CandidateForm = () => {
           });
 
         // Parse resume in the background - use the file path
-        parseResume(filePath, candidateId).catch((error) => {
-          console.error('Resume parsing failed:', error);
+        parseرزومه(filePath, candidateId).catch((error) => {
+          console.error('رزومه parsing failed:', error);
         });
       }
 
@@ -161,9 +161,9 @@ const CandidateForm = () => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl">{id ? 'ویرایش Candidate' : 'Add New Candidate'}</h1>
+          <h1 className="text-3xl">{id ? 'ویرایش Candidate' : 'افزودن کاندیدای جدید'}</h1>
           <p className="text-muted-foreground">
-            {id ? 'به‌روزرسانی candidate information' : 'Add a new candidate to your talent pool'}
+            {id ? 'به‌روزرسانی candidate information' : 'افزودن a new candidate to your talent pool'}
           </p>
         </div>
       </div>
@@ -171,13 +171,13 @@ const CandidateForm = () => {
       <Card>
         <CardHeader>
           <Cardعنوان>Candidate Information</Cardعنوان>
-          <CardDescription>Basic details about the candidate</CardDescription>
+          <Cardتوضیحات>پایه details about the candidate</Cardتوضیحات>
         </CardHeader>
         <CardContent>
           <form onثبت={handleثبت} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name *</Label>
+                <Label htmlFor="full_name">نام و نام خانوادگی *</Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
@@ -188,7 +188,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">ایمیل</Label>
                 <Input
                   id="email"
                   type="email"
@@ -199,7 +199,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">تلفن</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -220,7 +220,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+                <Label htmlFor="linkedin_url">لینکدین URL</Label>
                 <Input
                   id="linkedin_url"
                   type="url"
@@ -231,31 +231,31 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="source">Source *</Label>
-                <Select
+                <Label htmlFor="source">منبع *</Label>
+                <انتخاب
                   value={formData.source}
                   onValueChange={(value: any) => setFormData({ ...formData, source: value })}
                 >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="manual">Manual Entry</SelectItem>
-                    <SelectItem value="careers_site">Careers Site</SelectItem>
-                    <SelectItem value="referral">Referral</SelectItem>
-                    <SelectItem value="linkedin">LinkedIn</SelectItem>
-                    <SelectItem value="agency">Agency</SelectItem>
-                    <SelectItem value="job_fair">Job Fair</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <انتخابTrigger>
+                    <انتخابValue />
+                  </انتخابTrigger>
+                  <انتخابContent>
+                    <انتخابItem value="manual">Manual Entry</انتخابItem>
+                    <انتخابItem value="careers_site">فرصت‌های شغلی Site</انتخابItem>
+                    <انتخابItem value="referral">Referral</انتخابItem>
+                    <انتخابItem value="linkedin">لینکدین</انتخابItem>
+                    <انتخابItem value="agency">Agency</انتخابItem>
+                    <انتخابItem value="job_fair">Job Fair</انتخابItem>
+                  </انتخابContent>
+                </انتخاب>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="resume">Resume (Optional)</Label>
-              <FileUpload
+              <Label htmlFor="resume">رزومه (اختیاری)</Label>
+              <Fileبارگذاری
                 value={resumeFile}
-                onChange={setResumeFile}
+                onChange={setرزومهFile}
               />
             </div>
 
@@ -275,7 +275,7 @@ const CandidateForm = () => {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={loading}>
-                {loading ? 'در حال ذخیره...' : id ? 'به‌روزرسانی Candidate' : 'Add Candidate'}
+                {loading ? 'در حال ذخیره...' : id ? 'به‌روزرسانی Candidate' : 'افزودن کاندیدا'}
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate('/candidates')}>
                 انصراف

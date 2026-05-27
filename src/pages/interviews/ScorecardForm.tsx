@@ -6,35 +6,35 @@ import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/c
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useToast } from '@/hooks/use-toast';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { ArrowLeft, Star } from 'lucide-react';
 
 const RATING_CATEGORIES = [
-  { key: 'technical_skills', label: 'Technical Skills' },
+  { key: 'technical_skills', label: 'Technical مهارت‌ها' },
   { key: 'communication', label: 'Communication' },
   { key: 'problem_solving', label: 'Problem Solving' },
   { key: 'culture_fit', label: 'Culture Fit' },
-  { key: 'experience', label: 'Relevant Experience' },
+  { key: 'experience', label: 'Relevant سابقه کار' },
 ];
 
-const ScorecardForm = () => {
+const فرم ارزیابیForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [recommendation, setRecommendation] = useState('');
-  const [ratings, setRatings] = useState<Record<string, { score: number; comment: string }>>({});
-  const [overallNotes, setOverallNotes] = useState('');
+  const { toast } = useگیرندهast();
+  const [recommendation, setتوصیه] = useState('');
+  const [ratings, setامتیازs] = useState<Record<string, { score: number; comment: string }>>({});
+  const [overallخیرtes, setOverallخیرtes] = useState('');
   const [submitting, setثبتting] = useState(false);
 
-  const handleRatingChange = (category: string, score: number) => {
-    setRatings((prev) => ({
+  const handleامتیازChange = (category: string, score: number) => {
+    setامتیازs((prev) => ({
       ...prev,
       [category]: { score, comment: prev[category]?.comment || '' },
     }));
   };
 
-  const handleCommentChange = (category: string, comment: string) => {
-    setRatings((prev) => ({
+  const handleنظرChange = (category: string, comment: string) => {
+    setامتیازs((prev) => ({
       ...prev,
       [category]: { score: prev[category]?.score || 0, comment },
     }));
@@ -45,7 +45,7 @@ const ScorecardForm = () => {
     
     if (!recommendation) {
       toast({
-        title: 'Recommendation Required',
+        title: 'توصیه اجباری',
         description: 'Please select a recommendation',
         variant: 'destructive',
       });
@@ -55,21 +55,21 @@ const ScorecardForm = () => {
     setثبتting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       const { error } = await supabase.from('scorecards').insert([{
         interview_id: id!,
         user_id: user.id,
         recommendation: recommendation as 'advance' | 'hold' | 'no',
         ratings_json: ratings as any,
-        notes: overallNotes,
-        submitted_at: new Date().toISOString(),
+        notes: overallخیرtes,
+        submitted_at: new تاریخ().toISOString(),
       }]);
 
       if (error) throw error;
 
       toast({
-        title: 'Scorecard ثبتted',
+        title: 'فرم ارزیابی ثبتted',
         description: 'Your interview feedback has been recorded.',
       });
 
@@ -91,13 +91,13 @@ const ScorecardForm = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate(`/interviews/${id}`)}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-3xl">Interview Scorecard</h1>
+        <h1 className="text-3xl">Interview فرم ارزیابی</h1>
       </div>
 
       <form onثبت={handleثبت} className="space-y-6">
         <Card>
           <CardHeader>
-            <Cardعنوان>Rating Categories</Cardعنوان>
+            <Cardعنوان>امتیاز Categories</Cardعنوان>
           </CardHeader>
           <CardContent className="space-y-6">
             {RATING_CATEGORIES.map((category) => (
@@ -108,7 +108,7 @@ const ScorecardForm = () => {
                     <button
                       key={score}
                       type="button"
-                      onClick={() => handleRatingChange(category.key, score)}
+                      onClick={() => handleامتیازChange(category.key, score)}
                       className="focus:outline-none"
                     >
                       <Star
@@ -125,9 +125,9 @@ const ScorecardForm = () => {
                   </span>
                 </div>
                 <Textarea
-                  placeholder="Add comments about this area..."
+                  placeholder="افزودن comments about this area..."
                   value={ratings[category.key]?.comment || ''}
-                  onChange={(e) => handleCommentChange(category.key, e.target.value)}
+                  onChange={(e) => handleنظرChange(category.key, e.target.value)}
                   rows={2}
                 />
               </div>
@@ -137,10 +137,10 @@ const ScorecardForm = () => {
 
         <Card>
           <CardHeader>
-            <Cardعنوان>Recommendation</Cardعنوان>
+            <Cardعنوان>توصیه</Cardعنوان>
           </CardHeader>
           <CardContent>
-            <RadioGroup value={recommendation} onValueChange={setRecommendation}>
+            <RadioGroup value={recommendation} onValueChange={setتوصیه}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="advance" id="advance" />
                 <Label htmlFor="advance" className="font-normal">
@@ -156,7 +156,7 @@ const ScorecardForm = () => {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="no" id="no" />
                 <Label htmlFor="no" className="font-normal">
-                  Do Not Advance
+                  Do خیرt Advance
                 </Label>
               </div>
             </RadioGroup>
@@ -165,13 +165,13 @@ const ScorecardForm = () => {
 
         <Card>
           <CardHeader>
-            <Cardعنوان>Overall Notes</Cardعنوان>
+            <Cardعنوان>Overall خیرtes</Cardعنوان>
           </CardHeader>
           <CardContent>
             <Textarea
               placeholder="Provide overall feedback about the candidate..."
-              value={overallNotes}
-              onChange={(e) => setOverallNotes(e.target.value)}
+              value={overallخیرtes}
+              onChange={(e) => setOverallخیرtes(e.target.value)}
               rows={6}
             />
           </CardContent>
@@ -179,7 +179,7 @@ const ScorecardForm = () => {
 
         <div className="flex gap-4">
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'ثبتting...' : 'ثبت Scorecard'}
+            {submitting ? 'ثبتting...' : 'ثبت فرم ارزیابی'}
           </Button>
           <Button
             type="button"
@@ -194,4 +194,4 @@ const ScorecardForm = () => {
   );
 };
 
-export default ScorecardForm;
+export default فرم ارزیابیForm;

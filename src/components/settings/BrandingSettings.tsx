@@ -4,17 +4,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { بارگذاری, X, Loader2 } from 'lucide-react';
 
-interface BrandingData {
+interface برندینگData {
   platform_name: string;
   logo_url: string | null;
   primary_color: string;
   secondary_color: string;
 }
 
-export const BrandingSettings = () => {
-  const [branding, setBranding] = useState<BrandingData>({
+export const برندینگتنظیمات = () => {
+  const [branding, setبرندینگ] = useState<برندینگData>({
     platform_name: 'HiringPlatform',
     logo_url: null,
     primary_color: '#3B82F6',
@@ -22,15 +22,15 @@ export const BrandingSettings = () => {
   });
   const [isبارگذاری, setIsبارگذاری] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isبارگذاریing, setIsبارگذاریing] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetchBranding();
+    fetchبرندینگ();
   }, []);
 
-  const fetchBranding = async () => {
+  const fetchبرندینگ = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -52,7 +52,7 @@ export const BrandingSettings = () => {
 
       if (org?.branding_json) {
         const brandingJson = org.branding_json as Record<string, unknown>;
-        setBranding({
+        setبرندینگ({
           platform_name: (brandingJson.platform_name as string) || 'HiringPlatform',
           logo_url: (brandingJson.logo_url as string) || null,
           primary_color: (brandingJson.primary_color as string) || '#3B82F6',
@@ -66,7 +66,7 @@ export const BrandingSettings = () => {
     }
   };
 
-  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleلوگوبارگذاری = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !orgId) return;
 
@@ -79,11 +79,11 @@ export const BrandingSettings = () => {
 
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('Logo must be less than 2MB');
+      toast.error('لوگو must be less than 2MB');
       return;
     }
 
-    setIsUploading(true);
+    setIsبارگذاریing(true);
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${orgId}/logo.${fileExt}`;
@@ -98,19 +98,19 @@ export const BrandingSettings = () => {
         .from('logos')
         .getPublicUrl(fileName);
 
-      // Add cache buster
-      const logoUrlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
-      setBranding(prev => ({ ...prev, logo_url: logoUrlWithCacheBuster }));
-      toast.success('Logo uploaded successfully');
+      // افزودن cache buster
+      const logoUrlWithCacheBuster = `${publicUrl}?t=${تاریخ.now()}`;
+      setبرندینگ(prev => ({ ...prev, logo_url: logoUrlWithCacheBuster }));
+      toast.success('لوگو uploaded successfully');
     } catch (error) {
       console.error('Error uploading logo:', error);
       toast.error('Failed to upload logo');
     } finally {
-      setIsUploading(false);
+      setIsبارگذاریing(false);
     }
   };
 
-  const handleRemoveLogo = async () => {
+  const handleحذفلوگو = async () => {
     if (!orgId) return;
 
     try {
@@ -120,12 +120,12 @@ export const BrandingSettings = () => {
         .list(orgId);
 
       if (files && files.length > 0) {
-        const filesToحذف = files.map(f => `${orgId}/${f.name}`);
-        await supabase.storage.from('logos').remove(filesToحذف);
+        const filesگیرندهحذف = files.map(f => `${orgId}/${f.name}`);
+        await supabase.storage.from('logos').remove(filesگیرندهحذف);
       }
 
-      setBranding(prev => ({ ...prev, logo_url: null }));
-      toast.success('Logo removed');
+      setبرندینگ(prev => ({ ...prev, logo_url: null }));
+      toast.success('لوگو removed');
     } catch (error) {
       console.error('Error removing logo:', error);
       toast.error('Failed to remove logo');
@@ -137,7 +137,7 @@ export const BrandingSettings = () => {
 
     setIsSaving(true);
     try {
-      const brandingToذخیره = {
+      const brandingگیرندهذخیره = {
         platform_name: branding.platform_name,
         logo_url: branding.logo_url,
         primary_color: branding.primary_color,
@@ -147,13 +147,13 @@ export const BrandingSettings = () => {
       const { error } = await supabase
         .from('organizations')
         .update({
-          branding_json: brandingToذخیره,
+          branding_json: brandingگیرندهذخیره,
         })
         .eq('id', orgId);
 
       if (error) throw error;
 
-      toast.success('Branding settings saved');
+      toast.success('برندینگ settings saved');
       // Dispatch a custom event so the sidebar can update
       window.dispatchEvent(new CustomEvent('branding-updated', { detail: branding }));
     } catch (error) {
@@ -175,20 +175,20 @@ export const BrandingSettings = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg">Platform Branding</h3>
+        <h3 className="text-lg">Platform برندینگ</h3>
         <p className="text-sm text-muted-foreground">
           Customize how your platform appears to users
         </p>
       </div>
 
       <div className="grid gap-6">
-        {/* Platform Name */}
+        {/* نام سامانه */}
         <div className="space-y-2">
-          <Label htmlFor="platform-name">Platform Name</Label>
+          <Label htmlFor="platform-name">نام سامانه</Label>
           <Input
             id="platform-name"
             value={branding.platform_name}
-            onChange={(e) => setBranding(prev => ({ ...prev, platform_name: e.target.value }))}
+            onChange={(e) => setبرندینگ(prev => ({ ...prev, platform_name: e.target.value }))}
             placeholder="Enter platform name"
             maxLength={50}
           />
@@ -197,9 +197,9 @@ export const BrandingSettings = () => {
           </p>
         </div>
 
-        {/* Logo Upload */}
+        {/* لوگو بارگذاری */}
         <div className="space-y-2">
-          <Label>Platform Logo</Label>
+          <Label>Platform لوگو</Label>
           <div className="flex items-start gap-4">
             {branding.logo_url ? (
               <div className="relative">
@@ -214,7 +214,7 @@ export const BrandingSettings = () => {
                   variant="destructive"
                   size="icon"
                   className="absolute -top-2 -right-2 h-6 w-6"
-                  onClick={handleRemoveLogo}
+                  onClick={handleحذفلوگو}
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -224,10 +224,10 @@ export const BrandingSettings = () => {
                 className="h-16 w-16 rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center cursor-pointer hover:border-muted-foreground/50 transition-colors"
                 onClick={() => fileInputRef.current?.click()}
               >
-                {isUploading ? (
+                {isبارگذاریing ? (
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 ) : (
-                  <Upload className="h-6 w-6 text-muted-foreground" />
+                  <بارگذاری className="h-6 w-6 text-muted-foreground" />
                 )}
               </div>
             )}
@@ -236,9 +236,9 @@ export const BrandingSettings = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
+                disabled={isبارگذاریing}
               >
-                {isUploading ? 'Uploading...' : 'Upload Logo'}
+                {isبارگذاریing ? 'بارگذاریing...' : 'بارگذاری لوگو'}
               </Button>
               <p className="text-xs text-muted-foreground">
                 PNG, JPG, SVG, or WebP. Max 2MB. Recommended: 200x200px
@@ -250,43 +250,43 @@ export const BrandingSettings = () => {
             type="file"
             accept="image/png,image/jpeg,image/svg+xml,image/webp"
             className="hidden"
-            onChange={handleLogoUpload}
+            onChange={handleلوگوبارگذاری}
           />
         </div>
 
         {/* Colors */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="primary-color">Primary Color</Label>
+            <Label htmlFor="primary-color">رنگ اصلی</Label>
             <div className="flex gap-2">
               <Input
                 type="color"
                 id="primary-color"
                 value={branding.primary_color}
-                onChange={(e) => setBranding(prev => ({ ...prev, primary_color: e.target.value }))}
+                onChange={(e) => setبرندینگ(prev => ({ ...prev, primary_color: e.target.value }))}
                 className="w-12 h-10 p-1 cursor-pointer"
               />
               <Input
                 value={branding.primary_color}
-                onChange={(e) => setBranding(prev => ({ ...prev, primary_color: e.target.value }))}
+                onChange={(e) => setبرندینگ(prev => ({ ...prev, primary_color: e.target.value }))}
                 placeholder="#3B82F6"
                 className="flex-1"
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="secondary-color">Secondary Color</Label>
+            <Label htmlFor="secondary-color">رنگ ثانویه</Label>
             <div className="flex gap-2">
               <Input
                 type="color"
                 id="secondary-color"
                 value={branding.secondary_color}
-                onChange={(e) => setBranding(prev => ({ ...prev, secondary_color: e.target.value }))}
+                onChange={(e) => setبرندینگ(prev => ({ ...prev, secondary_color: e.target.value }))}
                 className="w-12 h-10 p-1 cursor-pointer"
               />
               <Input
                 value={branding.secondary_color}
-                onChange={(e) => setBranding(prev => ({ ...prev, secondary_color: e.target.value }))}
+                onChange={(e) => setبرندینگ(prev => ({ ...prev, secondary_color: e.target.value }))}
                 placeholder="#10B981"
                 className="flex-1"
               />
@@ -302,7 +302,7 @@ export const BrandingSettings = () => {
               {branding.logo_url ? (
                 <img
                   src={branding.logo_url}
-                  alt="Logo preview"
+                  alt="لوگو preview"
                   className="h-8 w-8 rounded object-contain"
                 />
               ) : (
@@ -314,7 +314,7 @@ export const BrandingSettings = () => {
                 </div>
               )}
               <span className="font-semibold text-sidebar-foreground">
-                {branding.platform_name || 'Platform Name'}
+                {branding.platform_name || 'نام سامانه'}
               </span>
             </div>
           </div>

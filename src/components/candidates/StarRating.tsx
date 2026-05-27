@@ -1,14 +1,14 @@
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface StarRatingProps {
+interface StarامتیازProps {
   value: number;
   onChange?: (value: number) => void;
   readonly?: boolean;
   size?: 'sm' | 'md';
 }
 
-export const StarRating = ({ value, onChange, readonly = false, size = 'md' }: StarRatingProps) => {
+export const Starامتیاز = ({ value, onChange, readonly = false, size = 'md' }: StarامتیازProps) => {
   const starSize = size === 'sm' ? 'h-3.5 w-3.5' : 'h-5 w-5';
   
   return (

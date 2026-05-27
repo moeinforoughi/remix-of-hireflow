@@ -8,15 +8,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { StarRating } from './StarRating';
+import { Starامتیاز } from './Starامتیاز';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useگیرندهast } from '@/hooks/use-toast';
 
-interface AddCandidateRatingDialogProps {
+interface افزودنCandidateامتیازDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   candidateId: string;
-  existingRating?: {
+  existingامتیاز?: {
     id: string;
     soft_skills: number;
     hard_skills: number;
@@ -29,60 +29,60 @@ interface AddCandidateRatingDialogProps {
 }
 
 const RATING_CATEGORIES = [
-  { key: 'soft_skills', label: 'Soft Skills', description: 'Communication, teamwork, leadership' },
-  { key: 'hard_skills', label: 'Hard Skills', description: 'Technical abilities, expertise' },
+  { key: 'soft_skills', label: 'Soft مهارت‌ها', description: 'Communication, teamwork, leadership' },
+  { key: 'hard_skills', label: 'Hard مهارت‌ها', description: 'Technical abilities, expertise' },
   { key: 'salary_match', label: 'Salary Match', description: 'Expectations vs. budget alignment' },
   { key: 'culture_fit', label: 'Culture Fit', description: 'Values and team compatibility' },
-  { key: 'experience', label: 'Experience', description: 'Relevant background and history' },
+  { key: 'experience', label: 'سابقه کار', description: 'Relevant background and history' },
 ] as const;
 
-type RatingKey = typeof RATING_CATEGORIES[number]['key'];
+type امتیازKey = typeof RATING_CATEGORIES[number]['key'];
 
-export const AddCandidateRatingDialog = ({
+export const افزودنCandidateامتیازDialog = ({
   open,
-  onOpenChange,
+  onبازChange,
   candidateId,
-  existingRating,
+  existingامتیاز,
   onSuccess,
-}: AddCandidateRatingDialogProps) => {
-  const { toast } = useToast();
+}: افزودنCandidateامتیازDialogProps) => {
+  const { toast } = useگیرندهast();
   const [loading, setبارگذاری] = useState(false);
-  const [ratings, setRatings] = useState<Record<RatingKey, number>>({
+  const [ratings, setامتیازs] = useState<Record<امتیازKey, number>>({
     soft_skills: 3,
     hard_skills: 3,
     salary_match: 3,
     culture_fit: 3,
     experience: 3,
   });
-  const [notes, setNotes] = useState('');
+  const [notes, setخیرtes] = useState('');
 
   useEffect(() => {
-    if (existingRating) {
-      setRatings({
-        soft_skills: existingRating.soft_skills,
-        hard_skills: existingRating.hard_skills,
-        salary_match: existingRating.salary_match,
-        culture_fit: existingRating.culture_fit,
-        experience: existingRating.experience,
+    if (existingامتیاز) {
+      setامتیازs({
+        soft_skills: existingامتیاز.soft_skills,
+        hard_skills: existingامتیاز.hard_skills,
+        salary_match: existingامتیاز.salary_match,
+        culture_fit: existingامتیاز.culture_fit,
+        experience: existingامتیاز.experience,
       });
-      setNotes(existingRating.notes || '');
+      setخیرtes(existingامتیاز.notes || '');
     } else {
-      setRatings({
+      setامتیازs({
         soft_skills: 3,
         hard_skills: 3,
         salary_match: 3,
         culture_fit: 3,
         experience: 3,
       });
-      setNotes('');
+      setخیرtes('');
     }
-  }, [existingRating, open]);
+  }, [existingامتیاز, open]);
 
   const handleثبت = async () => {
     setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -90,19 +90,19 @@ export const AddCandidateRatingDialog = ({
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
-      if (existingRating) {
+      if (existingامتیاز) {
         const { error } = await supabase
           .from('candidate_ratings')
           .update({
             ...ratings,
             notes: notes || null,
           })
-          .eq('id', existingRating.id);
+          .eq('id', existingامتیاز.id);
 
         if (error) throw error;
-        toast({ title: 'Rating updated successfully' });
+        toast({ title: 'امتیاز updated successfully' });
       } else {
         const { error } = await supabase
           .from('candidate_ratings')
@@ -115,11 +115,11 @@ export const AddCandidateRatingDialog = ({
           });
 
         if (error) throw error;
-        toast({ title: 'Rating added successfully' });
+        toast({ title: 'امتیاز added successfully' });
       }
 
       onSuccess();
-      onOpenChange(false);
+      onبازChange(false);
     } catch (error: any) {
       toast({
         title: 'Error saving rating',
@@ -132,10 +132,10 @@ export const AddCandidateRatingDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <Dialogعنوان>{existingRating ? 'ویرایش Rating' : 'Rate Candidate'}</Dialogعنوان>
+          <Dialogعنوان>{existingامتیاز ? 'ویرایش امتیاز' : 'Rate Candidate'}</Dialogعنوان>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -145,31 +145,31 @@ export const AddCandidateRatingDialog = ({
                 <Label className="text-sm font-medium">{category.label}</Label>
                 <p className="text-xs text-muted-foreground">{category.description}</p>
               </div>
-              <StarRating
+              <Starامتیاز
                 value={ratings[category.key]}
-                onChange={(value) => setRatings((prev) => ({ ...prev, [category.key]: value }))}
+                onChange={(value) => setامتیازs((prev) => ({ ...prev, [category.key]: value }))}
               />
             </div>
           ))}
 
           <div className="space-y-2 pt-2">
-            <Label htmlFor="notes">Notes (optional)</Label>
+            <Label htmlFor="notes">خیرtes (optional)</Label>
             <Textarea
               id="notes"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Additional comments about this candidate..."
+              onChange={(e) => setخیرtes(e.target.value)}
+              placeholder="افزودنitional comments about this candidate..."
               rows={3}
             />
           </div>
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onبازChange(false)}>
             انصراف
           </Button>
           <Button onClick={handleثبت} disabled={loading}>
-            {loading ? 'در حال ذخیره...' : existingRating ? 'به‌روزرسانی' : 'ذخیره Rating'}
+            {loading ? 'در حال ذخیره...' : existingامتیاز ? 'به‌روزرسانی' : 'ذخیره امتیاز'}
           </Button>
         </div>
       </DialogContent>

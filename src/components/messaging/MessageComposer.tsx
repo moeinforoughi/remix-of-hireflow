@@ -4,22 +4,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from "@/components/ui/select";
+import { useگیرندهast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Send, Loader2, Lock } from "lucide-react";
-import { useUserPermissions } from "@/hooks/useUserPermissions";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ارسال, Loader2, Lock } from "lucide-react";
+import { useUserدسترسی‌ها } from "@/hooks/useUserدسترسی‌ها";
+import { Alert, Alertتوضیحات } from "@/components/ui/alert";
 
-interface MessageComposerProps {
+interface پیامComposerProps {
   candidateId?: string;
   applicationId?: string;
-  defaultTo?: string[];
-  onSent?: () => void;
+  defaultگیرنده?: string[];
+  onارسال شده?: () => void;
   jobId?: string;
 }
 
-interface MessageTemplate {
+interface پیامTemplate {
   id: string;
   name: string;
   subject: string;
@@ -27,21 +27,21 @@ interface MessageTemplate {
   variables: string[];
 }
 
-export const MessageComposer = ({
+export const پیامComposer = ({
   candidateId,
   applicationId,
-  defaultTo = [],
-  onSent,
+  defaultگیرنده = [],
+  onارسال شده,
   jobId,
-}: MessageComposerProps) => {
-  const { toast } = useToast();
-  const { canMessage } = useUserPermissions();
+}: پیامComposerProps) => {
+  const { toast } = useگیرندهast();
+  const { canپیام } = useUserدسترسی‌ها();
   const [loading, setبارگذاری] = useState(false);
-  const [templates, setTemplates] = useState<MessageTemplate[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
-  const [to, setTo] = useState<string>(defaultTo.join(", "));
+  const [templates, setTemplates] = useState<پیامTemplate[]>([]);
+  const [selectedTemplate, setانتخابedTemplate] = useState<string>("");
+  const [to, setگیرنده] = useState<string>(defaultگیرنده.join(", "));
   const [cc, setCc] = useState<string>("");
-  const [subject, setSubject] = useState<string>("");
+  const [subject, setموضوع] = useState<string>("");
   const [body, setBody] = useState<string>("");
   const [variables, setVariables] = useState<Record<string, string>>({});
   const [applicationData, setApplicationData] = useState<any>(null);
@@ -90,11 +90,11 @@ export const MessageComposer = ({
     setTemplates(data || []);
   };
 
-  const handleTemplateSelect = (templateId: string) => {
-    setSelectedTemplate(templateId);
+  const handleTemplateانتخاب = (templateId: string) => {
+    setانتخابedTemplate(templateId);
     const template = templates.find((t) => t.id === templateId);
     if (template) {
-      setSubject(template.subject);
+      setموضوع(template.subject);
       setBody(template.body_html);
       
       // Initialize variables with auto-populated values
@@ -120,7 +120,7 @@ export const MessageComposer = ({
     return result;
   };
 
-  const handleSend = async () => {
+  const handleارسال = async () => {
     if (!to || !subject || !body) {
       toast({
         title: "Missing fields",
@@ -135,7 +135,7 @@ export const MessageComposer = ({
     try {
       // Get user profile for org_id
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error("خیرt authenticated");
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -143,9 +143,9 @@ export const MessageComposer = ({
         .eq("id", user.id)
         .single();
 
-      if (!profile) throw new Error("Profile not found");
+      if (!profile) throw new Error("پروفایل not found");
 
-      const interpolatedSubject = interpolateVariables(subject);
+      const interpolatedموضوع = interpolateVariables(subject);
       const interpolatedBody = interpolateVariables(body);
 
       // ایجاد message record
@@ -158,7 +158,7 @@ export const MessageComposer = ({
           application_id: applicationId,
           to_addresses: to.split(",").map((e) => e.trim()),
           cc_addresses: cc ? cc.split(",").map((e) => e.trim()) : [],
-          subject: interpolatedSubject,
+          subject: interpolatedموضوع,
           body_html: interpolatedBody,
           status: "queued",
         })
@@ -167,7 +167,7 @@ export const MessageComposer = ({
 
       if (messageError) throw messageError;
 
-      // Send email via edge function
+      // ارسال email via edge function
       const { error: sendError } = await supabase.functions.invoke("send-email", {
         body: { messageId: message.id },
       });
@@ -175,19 +175,19 @@ export const MessageComposer = ({
       if (sendError) throw sendError;
 
       toast({
-        title: "Email sent",
+        title: "ایمیل sent",
         description: "Your message has been sent successfully",
       });
 
-      // Reset form
-      setTo(defaultTo.join(", "));
+      // بازنشانی form
+      setگیرنده(defaultگیرنده.join(", "));
       setCc("");
-      setSubject("");
+      setموضوع("");
       setBody("");
-      setSelectedTemplate("");
+      setانتخابedTemplate("");
       setVariables({});
 
-      onSent?.();
+      onارسال شده?.();
     } catch (error: any) {
       console.error("Error sending email:", error);
       toast({
@@ -201,20 +201,20 @@ export const MessageComposer = ({
   };
 
   // Check if user has permission to message
-  const hasPermission = !detectedJobId || canMessage(detectedJobId);
+  const hasPermission = !detectedJobId || canپیام(detectedJobId);
 
   if (!hasPermission) {
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان>Compose Message</Cardعنوان>
+          <Cardعنوان>Compose پیام</Cardعنوان>
         </CardHeader>
         <CardContent>
           <Alert>
             <Lock className="h-4 w-4" />
-            <AlertDescription>
+            <Alertتوضیحات>
               You don't have permission to send messages for this job. Please contact your administrator.
-            </AlertDescription>
+            </Alertتوضیحات>
           </Alert>
         </CardContent>
       </Card>
@@ -224,23 +224,23 @@ export const MessageComposer = ({
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>Compose Message</Cardعنوان>
+        <Cardعنوان>Compose پیام</Cardعنوان>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <Label htmlFor="template">Template (optional)</Label>
-          <Select value={selectedTemplate} onValueChange={handleTemplateSelect}>
-            <SelectTrigger id="template">
-              <SelectValue placeholder="Select a template" />
-            </SelectTrigger>
-            <SelectContent>
+          <انتخاب value={selectedTemplate} onValueChange={handleTemplateانتخاب}>
+            <انتخابTrigger id="template">
+              <انتخابValue placeholder="انتخاب a template" />
+            </انتخابTrigger>
+            <انتخابContent>
               {templates.map((template) => (
-                <SelectItem key={template.id} value={template.id}>
+                <انتخابItem key={template.id} value={template.id}>
                   {template.name}
-                </SelectItem>
+                </انتخابItem>
               ))}
-            </SelectContent>
-          </Select>
+            </انتخابContent>
+          </انتخاب>
         </div>
 
         {selectedTemplate && templates.find((t) => t.id === selectedTemplate)?.variables.length > 0 && (
@@ -261,11 +261,11 @@ export const MessageComposer = ({
         )}
 
         <div>
-          <Label htmlFor="to">To *</Label>
+          <Label htmlFor="to">گیرنده *</Label>
           <Input
             id="to"
             value={to}
-            onChange={(e) => setTo(e.target.value)}
+            onChange={(e) => setگیرنده(e.target.value)}
             placeholder="recipient@email.com"
           />
         </div>
@@ -281,36 +281,36 @@ export const MessageComposer = ({
         </div>
 
         <div>
-          <Label htmlFor="subject">Subject *</Label>
+          <Label htmlFor="subject">موضوع *</Label>
           <Input
             id="subject"
             value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="Email subject"
+            onChange={(e) => setموضوع(e.target.value)}
+            placeholder="ایمیل subject"
           />
         </div>
 
         <div>
-          <Label htmlFor="body">Message *</Label>
+          <Label htmlFor="body">پیام *</Label>
           <Textarea
             id="body"
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            placeholder="Email body (HTML supported)"
+            placeholder="ایمیل body (HTML supported)"
             rows={10}
           />
         </div>
 
-        <Button onClick={handleSend} disabled={loading} className="w-full">
+        <Button onClick={handleارسال} disabled={loading} className="w-full">
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Sending...
+              ارسالing...
             </>
           ) : (
             <>
-              <Send className="mr-2 h-4 w-4" />
-              Send Email
+              <ارسال className="mr-2 h-4 w-4" />
+              ارسال ایمیل
             </>
           )}
         </Button>

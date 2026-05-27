@@ -4,13 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, Cardتوضیحات, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
-import PlatformLogo from '@/components/PlatformLogo';
+import Platformلوگو from '@/components/Platformلوگو';
 
 const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setایمیل] = useState('');
+  const [password, setرمز عبور] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Signup = () => {
         password,
         options: {
           data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectگیرنده: `${window.location.origin}/dashboard`,
         },
       });
 
@@ -48,12 +48,12 @@ const Signup = () => {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <PlatformLogo />
+            <Platformلوگو />
           </div>
           <CardTitle className="text-2xl text-center">ایجاد حساب کاربری</CardTitle>
-          <CardDescription className="text-center">
+          <Cardتوضیحات className="text-center">
             کار با سامانه استخدام را آغاز کنید
-          </CardDescription>
+          </Cardتوضیحات>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
@@ -75,7 +75,7 @@ const Signup = () => {
                 type="email"
                 placeholder="you@company.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setایمیل(e.target.value)}
                 required
                 dir="ltr"
               />
@@ -86,7 +86,7 @@ const Signup = () => {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setرمز عبور(e.target.value)}
                 required
                 minLength={6}
               />

@@ -6,17 +6,17 @@ import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, Formپیام, Formتوضیحات } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useToast } from '@/hooks/use-toast';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { sendOfferNotification } from '@/lib/email-notifications';
+import { sendOfferخیرtification } from '@/lib/email-notifications';
 import { notifyOfferایجادd } from '@/lib/notifications';
 
 const formSchema = z.object({
@@ -35,10 +35,10 @@ type FormValues = z.infer<typeof formSchema>;
 const OfferForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useجستجوParams();
-  const applicationIdFromUrl = searchParams.get('application_id');
-  const { toast } = useToast();
+  const applicationIdفرستندهUrl = searchParams.get('application_id');
+  const { toast } = useگیرندهast();
   const [loading, setبارگذاری] = useState(false);
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setدرخواست‌ها] = useState<any[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -46,22 +46,22 @@ const OfferForm = () => {
       currency: 'USD',
       base_amount: 0,
       variable_amount: 0,
-      application_id: applicationIdFromUrl || '',
+      application_id: applicationIdفرستندهUrl || '',
     },
   });
 
   useEffect(() => {
-    fetchApplications();
+    fetchدرخواست‌ها();
   }, []);
 
   // Set form value when URL param exists and applications are loaded
   useEffect(() => {
-    if (applicationIdFromUrl && applications.length > 0) {
-      form.setValue('application_id', applicationIdFromUrl);
+    if (applicationIdفرستندهUrl && applications.length > 0) {
+      form.setValue('application_id', applicationIdفرستندهUrl);
     }
-  }, [applicationIdFromUrl, applications]);
+  }, [applicationIdفرستندهUrl, applications]);
 
-  const fetchApplications = async () => {
+  const fetchدرخواست‌ها = async () => {
     try {
       // Fetch all active applications
       const { data: apps, error: appsError } = await supabase
@@ -86,12 +86,12 @@ const OfferForm = () => {
       if (offersError) throw offersError;
 
       // ایجاد a Set of application IDs that already have active offers
-      const appsWithActiveOffers = new Set(activeOffers?.map(o => o.application_id) || []);
+      const appsWithفعالOffers = new Set(activeOffers?.map(o => o.application_id) || []);
 
       // فیلتر out applications that already have an active offer
-      const availableApplications = (apps || []).filter(app => !appsWithActiveOffers.has(app.id));
+      const availableدرخواست‌ها = (apps || []).filter(app => !appsWithفعالOffers.has(app.id));
 
-      setApplications(availableApplications);
+      setدرخواست‌ها(availableدرخواست‌ها);
     } catch (error: any) {
       toast({
         title: 'Error loading applications',
@@ -162,7 +162,7 @@ const OfferForm = () => {
 
       <Card>
         <CardHeader>
-          <Cardعنوان>Offer Details</Cardعنوان>
+          <Cardعنوان>جزئیات پیشنهاد</Cardعنوان>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -173,21 +173,21 @@ const OfferForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Candidate Application</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select an application" />
-                        </SelectTrigger>
+                        <انتخابTrigger>
+                          <انتخابValue placeholder="انتخاب an application" />
+                        </انتخابTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <انتخابContent>
                         {applications.map((app) => (
-                          <SelectItem key={app.id} value={app.id}>
+                          <انتخابItem key={app.id} value={app.id}>
                             {app.candidate.full_name} - {app.job.title}
-                          </SelectItem>
+                          </انتخابItem>
                         ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
+                      </انتخابContent>
+                    </انتخاب>
+                    <Formپیام />
                   </FormItem>
                 )}
               />
@@ -198,12 +198,12 @@ const OfferForm = () => {
                   name="base_amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Base Salary</FormLabel>
+                      <FormLabel>حقوق پایه</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="120000" {...field} />
                       </FormControl>
-                      <FormDescription>Annual base salary</FormDescription>
-                      <FormMessage />
+                      <Formتوضیحات>Annual base salary</Formتوضیحات>
+                      <Formپیام />
                     </FormItem>
                   )}
                 />
@@ -213,12 +213,12 @@ const OfferForm = () => {
                   name="variable_amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Variable/Bonus (Optional)</FormLabel>
+                      <FormLabel>Variable/پاداش (اختیاری)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="20000" {...field} />
                       </FormControl>
-                      <FormDescription>Annual bonus/commission</FormDescription>
-                      <FormMessage />
+                      <Formتوضیحات>Annual bonus/commission</Formتوضیحات>
+                      <Formپیام />
                     </FormItem>
                   )}
                 />
@@ -230,21 +230,21 @@ const OfferForm = () => {
                   name="currency"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Currency</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormLabel>واحد پول</FormLabel>
+                      <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
+                          <انتخابTrigger>
+                            <انتخابValue />
+                          </انتخابTrigger>
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="USD">USD</SelectItem>
-                          <SelectItem value="EUR">EUR</SelectItem>
-                          <SelectItem value="GBP">GBP</SelectItem>
-                          <SelectItem value="CAD">CAD</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
+                        <انتخابContent>
+                          <انتخابItem value="USD">USD</انتخابItem>
+                          <انتخابItem value="EUR">EUR</انتخابItem>
+                          <انتخابItem value="GBP">GBP</انتخابItem>
+                          <انتخابItem value="CAD">CAD</انتخابItem>
+                        </انتخابContent>
+                      </انتخاب>
+                      <Formپیام />
                     </FormItem>
                   )}
                 />
@@ -254,11 +254,11 @@ const OfferForm = () => {
                   name="equity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Equity (Optional)</FormLabel>
+                      <FormLabel>سهام (اختیاری)</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., 0.5% stock options" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <Formپیام />
                     </FormItem>
                   )}
                 />
@@ -269,7 +269,7 @@ const OfferForm = () => {
                 name="expires_at"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Offer Expiration (Optional)</FormLabel>
+                    <FormLabel>Offer انقضا (اختیاری)</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -293,17 +293,17 @@ const OfferForm = () => {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
+                          onانتخاب={field.onChange}
+                          disabled={(date) => date < new تاریخ()}
                           initialFocus
                           className={cn('p-3 pointer-events-auto')}
                         />
                       </PopoverContent>
                     </Popover>
-                    <FormDescription>
+                    <Formتوضیحات>
                       When this offer expires (typically 7-14 days)
-                    </FormDescription>
-                    <FormMessage />
+                    </Formتوضیحات>
+                    <Formپیام />
                   </FormItem>
                 )}
               />
@@ -313,7 +313,7 @@ const OfferForm = () => {
                 name="benefits_md"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Benefits (Optional)</FormLabel>
+                    <FormLabel>مزایا (اختیاری)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="• Health, dental, vision insurance&#10;• 401(k) with match&#10;• Unlimited PTO&#10;• دورکاری work options"
@@ -321,10 +321,10 @@ const OfferForm = () => {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
+                    <Formتوضیحات>
                       List benefits included with this offer
-                    </FormDescription>
-                    <FormMessage />
+                    </Formتوضیحات>
+                    <Formپیام />
                   </FormItem>
                 )}
               />
@@ -334,7 +334,7 @@ const OfferForm = () => {
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Internal Notes (Optional)</FormLabel>
+                    <FormLabel>Internal خیرtes (اختیاری)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Internal notes about this offer..."
@@ -342,10 +342,10 @@ const OfferForm = () => {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
+                    <Formتوضیحات>
                       These notes are internal and won't be shared with the candidate
-                    </FormDescription>
-                    <FormMessage />
+                    </Formتوضیحات>
+                    <Formپیام />
                   </FormItem>
                 )}
               />

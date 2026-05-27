@@ -18,7 +18,7 @@ const داشبوردHeader = () => {
         <img
           src="https://api.builder.io/api/v1/image/assets/160bd503595d4b3e818fa7f42e1b117f/b7a98075220a9d99b6e39d82323509e45668de4a?placeholderIfAbsent=true"
           className="aspect-[1] object-contain w-6 self-stretch shrink-0 my-auto"
-          alt="Add icon"
+          alt="افزودن icon"
         />
         <span className="text-white self-stretch my-auto">
           ایجاد موقعیت جدید

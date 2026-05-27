@@ -1,24 +1,24 @@
-// Pipeline Board Component - به‌روزرسانیd Design
+// پایپ‌لاین Board Component - به‌روزرسانیd Design
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useToast } from '@/hooks/use-toast';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { Loader2, ChevronRight, Pencil, X, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { formatDistanceToNow } from 'date-fns';
-import { BulkRejectDialog } from '@/components/pipeline/BulkRejectDialog';
-import { useUserPermissions } from '@/hooks/useUserPermissions';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { formatDistanceگیرندهخیرw } from 'date-fns';
+import { BulkردDialog } from '@/components/pipeline/BulkردDialog';
+import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
+import { Alert, Alertتوضیحات } from '@/components/ui/alert';
 import {
   DndContext,
   DragEndEvent,
   DragOverlay,
-  DragStartEvent,
+  DragشروعEvent,
   PointerSensor,
   useSensor,
   useSensors,
@@ -30,7 +30,7 @@ import { مرتب‌سازیableContext, verticalListمرتب‌سازیingStrat
 import { useمرتب‌سازیable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-interface Stage {
+interface مرحله {
   id: string;
   name: string;
   order_idx: number;
@@ -50,18 +50,18 @@ interface ApplicationCard {
   current_stage_id: string | null;
 }
 
-interface PipelineBoardProps {
+interface پایپ‌لاینBoardProps {
   jobId: string;
 }
 
 interface مرتب‌سازیableApplicationProps {
   application: ApplicationCard;
   onClick: () => void;
-  isSelected: boolean;
-  onToggleSelect: (id: string) => void;
+  isانتخابed: boolean;
+  onگیرندهggleانتخاب: (id: string) => void;
 }
 
-const getStageColor = (index: number) => {
+const getمرحلهColor = (index: number) => {
   const colors = [
     'bg-orange-500',
     'bg-blue-500',
@@ -73,11 +73,11 @@ const getStageColor = (index: number) => {
   return colors[index % colors.length];
 };
 
-const مرتب‌سازیableApplication = ({ application, onClick, isSelected, onToggleSelect }: مرتب‌سازیableApplicationProps) => {
+const مرتب‌سازیableApplication = ({ application, onClick, isانتخابed, onگیرندهggleانتخاب }: مرتب‌سازیableApplicationProps) => {
   const {
     attributes,
     listeners,
-    setNodeRef,
+    setخیرdeRef,
     transform,
     transition,
     isDragging,
@@ -97,19 +97,19 @@ const مرتب‌سازیableApplication = ({ application, onClick, isSelected, 
       .toUpperCase();
   };
 
-  // Safety check - should not render if candidate is null (filtered in fetchPipelineData)
+  // Safety check - should not render if candidate is null (filtered in fetchپایپ‌لاینData)
   if (!application.candidate) {
     return null;
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setخیرdeRef} style={style} {...attributes} {...listeners}>
       <div 
-        className={`bg-card rounded-lg border border-border p-4 cursor-pointer hover:shadow-md transition-all mb-3 ${isSelected ? 'ring-2 ring-primary' : ''}`}
+        className={`bg-card rounded-lg border border-border p-4 cursor-pointer hover:shadow-md transition-all mb-3 ${isانتخابed ? 'ring-2 ring-primary' : ''}`}
         onClick={(e) => {
           if (e.shiftKey || e.ctrlKey || e.metaKey) {
             e.preventDefault();
-            onToggleSelect(application.id);
+            onگیرندهggleانتخاب(application.id);
           } else {
             onClick();
           }
@@ -131,7 +131,7 @@ const مرتب‌سازیableApplication = ({ application, onClick, isSelected, 
         </div>
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}
+            {formatDistanceگیرندهخیرw(new تاریخ(application.applied_at), { addSuffix: true })}
           </p>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -140,62 +140,62 @@ const مرتب‌سازیableApplication = ({ application, onClick, isSelected, 
   );
 };
 
-interface DroppableStageProps {
+interface DroppableمرحلهProps {
   id: string;
-  children: React.ReactNode;
+  children: React.Reactخیرde;
   isOver: boolean;
-  stage: Stage;
+  stage: مرحله;
   stageColor: string;
   candidateCount: number;
-  onویرایشStage: () => void;
+  onویرایشمرحله: () => void;
   isویرایشing: boolean;
-  editingStageName: string;
+  editingمرحلهName: string;
   onویرایشingNameChange: (value: string) => void;
-  onذخیرهStage: () => void;
+  onذخیرهمرحله: () => void;
   onانصرافویرایش: () => void;
 }
 
-const DroppableStage = ({ 
+const Droppableمرحله = ({ 
   id, 
   children, 
   isOver, 
   stage, 
   stageColor, 
   candidateCount,
-  onویرایشStage,
+  onویرایشمرحله,
   isویرایشing,
-  editingStageName,
+  editingمرحلهName,
   onویرایشingNameChange,
-  onذخیرهStage,
+  onذخیرهمرحله,
   onانصرافویرایش
-}: DroppableStageProps) => {
-  const { setNodeRef } = useDroppable({ id });
+}: DroppableمرحلهProps) => {
+  const { setخیرdeRef } = useDroppable({ id });
 
   return (
     <div
-      ref={setNodeRef}
+      ref={setخیرdeRef}
       className={`min-h-[600px] rounded-lg border transition-colors bg-card overflow-hidden ${
         isOver ? 'border-primary' : 'border-border'
       }`}
     >
-      {/* Stage Header */}
+      {/* مرحله Header */}
       <div className="bg-muted/30 p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <div className={`w-2.5 h-2.5 rounded-full ${stageColor}`}></div>
           {isویرایشing ? (
             <>
               <Input
-                value={editingStageName}
+                value={editingمرحلهName}
                 onChange={(e) => onویرایشingNameChange(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') onذخیرهStage();
+                  if (e.key === 'Enter') onذخیرهمرحله();
                   if (e.key === 'Escape') onانصرافویرایش();
                 }}
                 className="h-7 text-sm flex-1"
                 autoFocus
               />
               <button 
-                onClick={onذخیرهStage}
+                onClick={onذخیرهمرحله}
                 className="p-1 hover:bg-green-100 rounded text-green-600"
                 title="ذخیره"
               >
@@ -217,7 +217,7 @@ const DroppableStage = ({
             <>
               <h3 className="text-sm flex-1">{stage.name}</h3>
               <button 
-                onClick={onویرایشStage}
+                onClick={onویرایشمرحله}
                 className="p-1 hover:bg-muted rounded"
                 title="ویرایش stage name"
               >
@@ -231,7 +231,7 @@ const DroppableStage = ({
         </div>
       </div>
       
-      {/* Stage Content */}
+      {/* مرحله Content */}
       <div className="p-4 space-y-3">
         {children}
       </div>
@@ -239,23 +239,23 @@ const DroppableStage = ({
   );
 };
 
-const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
-  const [stages, setStages] = useState<Stage[]>([]);
-  const [applications, setApplications] = useState<ApplicationCard[]>([]);
+const پایپ‌لاینBoard = ({ jobId }: پایپ‌لاینBoardProps) => {
+  const [stages, setمرحلهs] = useState<مرحله[]>([]);
+  const [applications, setدرخواست‌ها] = useState<ApplicationCard[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeId, setفعالId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
-  const [scrollStart, setScrollStart] = useState({ x: 0, scrollLeft: 0 });
-  const [editingStageId, setویرایشingStageId] = useState<string | null>(null);
-  const [editingStageName, setویرایشingStageName] = useState('');
-  const [selectedApplicationIds, setSelectedApplicationIds] = useState<string[]>([]);
-  const [showBulkRejectDialog, setShowBulkRejectDialog] = useState(false);
+  const [scrollشروع, setScrollشروع] = useState({ x: 0, scrollLeft: 0 });
+  const [editingمرحلهId, setویرایشingمرحلهId] = useState<string | null>(null);
+  const [editingمرحلهName, setویرایشingمرحلهName] = useState('');
+  const [selectedApplicationIds, setانتخابedApplicationIds] = useState<string[]>([]);
+  const [showBulkردDialog, setنمایشBulkردDialog] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const navigate = useNavigate();
-  const { canMovePipeline } = useUserPermissions();
-  const hasMovePermission = canMovePipeline(jobId);
+  const { canMoveپایپ‌لاین } = useUserدسترسی‌ها();
+  const hasMovePermission = canMoveپایپ‌لاین(jobId);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -266,7 +266,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
   );
 
   useEffect(() => {
-    fetchPipelineData();
+    fetchپایپ‌لاینData();
 
     // Subscribe to realtime updates
     const channel = supabase
@@ -280,7 +280,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
           filter: `job_id=eq.${jobId}`,
         },
         () => {
-          fetchPipelineData();
+          fetchپایپ‌لاینData();
         }
       )
       .on(
@@ -291,7 +291,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
           table: 'candidates',
         },
         () => {
-          fetchPipelineData();
+          fetchپایپ‌لاینData();
         }
       )
       .subscribe();
@@ -301,7 +301,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     };
   }, [jobId]);
 
-  const fetchPipelineData = async () => {
+  const fetchپایپ‌لاینData = async () => {
     try {
       const [stagesRes, appsRes] = await Promise.all([
         supabase
@@ -324,9 +324,9 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       if (stagesRes.error) throw stagesRes.error;
       if (appsRes.error) throw appsRes.error;
 
-      setStages(stagesRes.data || []);
+      setمرحلهs(stagesRes.data || []);
       // فیلتر out applications with null candidates
-      setApplications((appsRes.data || []).filter(app => app.candidate !== null));
+      setدرخواست‌ها((appsRes.data || []).filter(app => app.candidate !== null));
     } catch (error: any) {
       toast({
         title: 'Error loading pipeline',
@@ -338,12 +338,12 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     }
   };
 
-  const getApplicationsForStage = (stageId: string) => {
+  const getدرخواست‌هاForمرحله = (stageId: string) => {
     return applications.filter((app) => app.current_stage_id === stageId);
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
+  const handleDragشروع = (event: DragشروعEvent) => {
+    setفعالId(event.active.id as string);
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -353,7 +353,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
-    setActiveId(null);
+    setفعالId(null);
     setOverId(null);
 
     if (!over || active.id === over.id) return;
@@ -369,16 +369,16 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     }
 
     const applicationId = active.id as string;
-    const newStageId = over.id as string;
+    const newمرحلهId = over.id as string;
 
     // Check if dropping on a stage
-    const isStage = stages.some((s) => s.id === newStageId);
-    if (!isStage) return;
+    const isمرحله = stages.some((s) => s.id === newمرحلهId);
+    if (!isمرحله) return;
 
     try {
       const { error } = await supabase
         .from('applications')
-        .update({ current_stage_id: newStageId })
+        .update({ current_stage_id: newمرحلهId })
         .eq('id', applicationId);
 
       if (error) throw error;
@@ -388,7 +388,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         description: 'Successfully moved to new stage',
       });
 
-      fetchPipelineData();
+      fetchپایپ‌لاینData();
     } catch (error: any) {
       toast({
         title: 'Error moving application',
@@ -401,7 +401,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!scrollContainerRef.current) return;
     setIsScrolling(true);
-    setScrollStart({
+    setScrollشروع({
       x: e.pageX - scrollContainerRef.current.offsetLeft,
       scrollLeft: scrollContainerRef.current.scrollLeft,
     });
@@ -411,8 +411,8 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     if (!isScrolling || !scrollContainerRef.current) return;
     e.preventDefault();
     const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - scrollStart.x) * 2; // Scroll speed multiplier
-    scrollContainerRef.current.scrollLeft = scrollStart.scrollLeft - walk;
+    const walk = (x - scrollشروع.x) * 2; // Scroll speed multiplier
+    scrollContainerRef.current.scrollLeft = scrollشروع.scrollLeft - walk;
   };
 
   const handleMouseUp = () => {
@@ -423,16 +423,16 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     setIsScrolling(false);
   };
 
-  const handleStartویرایشStage = (stage: Stage) => {
-    setویرایشingStageId(stage.id);
-    setویرایشingStageName(stage.name);
+  const handleشروعویرایشمرحله = (stage: مرحله) => {
+    setویرایشingمرحلهId(stage.id);
+    setویرایشingمرحلهName(stage.name);
   };
 
-  const handleذخیرهStage = async (stageId: string) => {
-    if (!editingStageName.trim()) {
+  const handleذخیرهمرحله = async (stageId: string) => {
+    if (!editingمرحلهName.trim()) {
       toast({
         title: 'خطا',
-        description: 'Stage name cannot be empty',
+        description: 'مرحله name cannot be empty',
         variant: 'destructive',
       });
       return;
@@ -441,19 +441,19 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     try {
       const { error } = await supabase
         .from('job_stages')
-        .update({ name: editingStageName })
+        .update({ name: editingمرحلهName })
         .eq('id', stageId);
 
       if (error) throw error;
 
       toast({
-        title: 'Stage updated',
-        description: 'Stage name has been updated successfully',
+        title: 'مرحله updated',
+        description: 'مرحله name has been updated successfully',
       });
 
-      setویرایشingStageId(null);
-      setویرایشingStageName('');
-      fetchPipelineData();
+      setویرایشingمرحلهId(null);
+      setویرایشingمرحلهName('');
+      fetchپایپ‌لاینData();
     } catch (error: any) {
       toast({
         title: 'Error updating stage',
@@ -464,34 +464,34 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
   };
 
   const handleانصرافویرایش = () => {
-    setویرایشingStageId(null);
-    setویرایشingStageName('');
+    setویرایشingمرحلهId(null);
+    setویرایشingمرحلهName('');
   };
 
-  const handleToggleSelect = (id: string) => {
-    setSelectedApplicationIds((prev) =>
+  const handleگیرندهggleانتخاب = (id: string) => {
+    setانتخابedApplicationIds((prev) =>
       prev.includes(id) ? prev.filter((appId) => appId !== id) : [...prev, id]
     );
   };
 
-  const handleBulkStageChange = async (newStageId: string) => {
+  const handleBulkمرحلهChange = async (newمرحلهId: string) => {
     if (selectedApplicationIds.length === 0) return;
 
     try {
       const { error } = await supabase
         .from('applications')
-        .update({ current_stage_id: newStageId })
+        .update({ current_stage_id: newمرحلهId })
         .in('id', selectedApplicationIds);
 
       if (error) throw error;
 
       toast({
-        title: 'Applications moved',
+        title: 'درخواست‌ها moved',
         description: `Successfully moved ${selectedApplicationIds.length} candidate${selectedApplicationIds.length !== 1 ? 's' : ''} to new stage`,
       });
 
-      setSelectedApplicationIds([]);
-      fetchPipelineData();
+      setانتخابedApplicationIds([]);
+      fetchپایپ‌لاینData();
     } catch (error: any) {
       toast({
         title: 'Error moving applications',
@@ -501,7 +501,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     }
   };
 
-  const handleBulkReject = async (reason: string, note: string) => {
+  const handleBulkرد = async (reason: string, note: string) => {
     if (selectedApplicationIds.length === 0) return;
 
     try {
@@ -517,13 +517,13 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Applications rejected',
+        title: 'درخواست‌ها rejected',
         description: `Successfully rejected ${selectedApplicationIds.length} candidate${selectedApplicationIds.length !== 1 ? 's' : ''}`,
       });
 
-      setSelectedApplicationIds([]);
-      setShowBulkRejectDialog(false);
-      fetchPipelineData();
+      setانتخابedApplicationIds([]);
+      setنمایشBulkردDialog(false);
+      fetchپایپ‌لاینData();
     } catch (error: any) {
       toast({
         title: 'Error rejecting applications',
@@ -548,9 +548,9 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       {!hasMovePermission && (
         <Alert>
           <Lock className="h-4 w-4" />
-          <AlertDescription>
+          <Alertتوضیحات>
             You have view-only access to this pipeline. Contact your administrator to request move permissions.
-          </AlertDescription>
+          </Alertتوضیحات>
         </Alert>
       )}
       
@@ -565,28 +565,28 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setSelectedApplicationIds([])}
+                  onClick={() => setانتخابedApplicationIds([])}
                 >
                   <X className="h-4 w-4 mr-1" />
-                  Clear
+                  پاک کردن
                 </Button>
               </div>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button>Move to Stage</Button>
+                    <Button>Move to مرحله</Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-56">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">Select stage</p>
+                      <p className="text-sm font-medium">انتخاب stage</p>
                       {stages.map((stage, index) => (
                         <Button
                           key={stage.id}
                           variant="ghost"
                           className="w-full justify-start"
-                          onClick={() => handleBulkStageChange(stage.id)}
+                          onClick={() => handleBulkمرحلهChange(stage.id)}
                         >
-                          <div className={`w-2 h-2 rounded-full ${getStageColor(index)} mr-2`} />
+                          <div className={`w-2 h-2 rounded-full ${getمرحلهColor(index)} mr-2`} />
                           {stage.name}
                         </Button>
                       ))}
@@ -595,9 +595,9 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                 </Popover>
                 <Button 
                   variant="destructive" 
-                  onClick={() => setShowBulkRejectDialog(true)}
+                  onClick={() => setنمایشBulkردDialog(true)}
                 >
-                  Reject Selected
+                  رد انتخابed
                 </Button>
               </div>
             </div>
@@ -607,7 +607,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
+        onDragشروع={handleDragشروع}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
@@ -622,8 +622,8 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         >
           <div className="flex gap-6 min-w-max">
             {stages.map((stage, index) => {
-              const stageApplications = getApplicationsForStage(stage.id);
-              const stageColor = getStageColor(index);
+              const stageدرخواست‌ها = getدرخواست‌هاForمرحله(stage.id);
+              const stageColor = getمرحلهColor(index);
               
               return (
                 <div
@@ -632,37 +632,37 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                 >
                   <مرتب‌سازیableContext
                     id={stage.id}
-                    items={stageApplications.map((a) => a.id)}
+                    items={stageدرخواست‌ها.map((a) => a.id)}
                     strategy={verticalListمرتب‌سازیingStrategy}
                   >
-                    <DroppableStage 
+                    <Droppableمرحله 
                       id={stage.id} 
                       isOver={overId === stage.id}
                       stage={stage}
                       stageColor={stageColor}
-                      candidateCount={stageApplications.length}
-                      onویرایشStage={() => handleStartویرایشStage(stage)}
-                      isویرایشing={editingStageId === stage.id}
-                      editingStageName={editingStageName}
-                      onویرایشingNameChange={setویرایشingStageName}
-                      onذخیرهStage={() => handleذخیرهStage(stage.id)}
+                      candidateCount={stageدرخواست‌ها.length}
+                      onویرایشمرحله={() => handleشروعویرایشمرحله(stage)}
+                      isویرایشing={editingمرحلهId === stage.id}
+                      editingمرحلهName={editingمرحلهName}
+                      onویرایشingNameChange={setویرایشingمرحلهName}
+                      onذخیرهمرحله={() => handleذخیرهمرحله(stage.id)}
                       onانصرافویرایش={handleانصرافویرایش}
                     >
-                      {stageApplications.map((app) => (
+                      {stageدرخواست‌ها.map((app) => (
                         <مرتب‌سازیableApplication
                           key={app.id}
                           application={app}
                           onClick={() => navigate(`/applications/${app.id}`)}
-                          isSelected={selectedApplicationIds.includes(app.id)}
-                          onToggleSelect={handleToggleSelect}
+                          isانتخابed={selectedApplicationIds.includes(app.id)}
+                          onگیرندهggleانتخاب={handleگیرندهggleانتخاب}
                         />
                       ))}
-                      {stageApplications.length === 0 && (
+                      {stageدرخواست‌ها.length === 0 && (
                         <div className="text-center py-12">
                           <p className="text-xs text-muted-foreground">Drop candidates here</p>
                         </div>
                       )}
-                    </DroppableStage>
+                    </Droppableمرحله>
                   </مرتب‌سازیableContext>
                 </div>
               );
@@ -702,20 +702,20 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         <Card>
           <CardContent className="py-12">
             <p className="text-center text-muted-foreground">
-              No active applications for this job yet
+              خیر active applications for this job yet
             </p>
           </CardContent>
         </Card>
       )}
 
-      <BulkRejectDialog
-        open={showBulkRejectDialog}
-        onOpenChange={setShowBulkRejectDialog}
-        onتأیید={handleBulkReject}
+      <BulkردDialog
+        open={showBulkردDialog}
+        onبازChange={setنمایشBulkردDialog}
+        onتأیید={handleBulkرد}
         count={selectedApplicationIds.length}
       />
     </div>
   );
 };
 
-export default PipelineBoard;
+export default پایپ‌لاینBoard;

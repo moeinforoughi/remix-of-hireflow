@@ -4,20 +4,20 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, Dialogتوضیحات, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, Alertتوضیحات } from '@/components/ui/alert';
 
 interface حذفAccountDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
 }
 
-export const حذفAccountDialog = ({ open, onOpenChange }: حذفAccountDialogProps) => {
+export const حذفAccountDialog = ({ open, onبازChange }: حذفAccountDialogProps) => {
   const [loading, setبارگذاری] = useState(false);
   const [confirmation, setتأییدation] = useState('');
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const navigate = useNavigate();
 
   const handleحذف = async () => {
@@ -78,22 +78,22 @@ export const حذفAccountDialog = ({ open, onOpenChange }: حذفAccountDialogP
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent>
         <DialogHeader>
           <Dialogعنوان className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-5 w-5" />
             حذف Account
           </Dialogعنوان>
-          <DialogDescription>
+          <Dialogتوضیحات>
             This action cannot be undone. This will permanently delete your account and remove your data from our servers.
-          </DialogDescription>
+          </Dialogتوضیحات>
         </DialogHeader>
         
         <Alert variant="destructive">
-          <AlertDescription>
+          <Alertتوضیحات>
             Warning: All your data including applications, interviews, and offers will be permanently deleted.
-          </AlertDescription>
+          </Alertتوضیحات>
         </Alert>
 
         <div className="space-y-4 py-4">
@@ -111,7 +111,7 @@ export const حذفAccountDialog = ({ open, onOpenChange }: حذفAccountDialogP
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onبازChange(false)}>
             انصراف
           </Button>
           <Button 

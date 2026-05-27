@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceگیرندهخیرw } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 interface ActivityItemProps {
   avatarUrl: string | null;
@@ -79,7 +79,7 @@ const RecentActivityFeed = () => {
           avatarUrl: activity.actor?.avatar_url || null,
           username: activity.actor?.full_name || 'System',
           action,
-          timeAgo: formatDistanceToNow(new Date(activity.created_at), {
+          timeAgo: formatDistanceگیرندهخیرw(new تاریخ(activity.created_at), {
             addSuffix: true
           })
         };
@@ -109,33 +109,33 @@ const RecentActivityFeed = () => {
     // Handle stage_moved for applications
     if (entity === 'application' && action === 'stage_moved') {
       try {
-        const oldStageId = before_json?.current_stage_id;
-        const newStageId = after_json?.current_stage_id;
+        const oldمرحلهId = before_json?.current_stage_id;
+        const newمرحلهId = after_json?.current_stage_id;
         const candidateId = after_json?.candidate_id;
         const jobId = after_json?.job_id;
         console.log('Fetching stage_moved data:', {
-          oldStageId,
-          newStageId,
+          oldمرحلهId,
+          newمرحلهId,
           candidateId,
           jobId
         });
 
         // Fetch old stage, new stage, candidate, and job details
-        const [oldStageData, newStageData, candidateData, jobData] = await Promise.all([oldStageId ? supabase.from('job_stages').select('name').eq('id', oldStageId).single() : Promise.resolve(null), newStageId ? supabase.from('job_stages').select('name').eq('id', newStageId).single() : Promise.resolve(null), candidateId ? supabase.from('candidates').select('full_name').eq('id', candidateId).single() : Promise.resolve(null), jobId ? supabase.from('jobs').select('title').eq('id', jobId).single() : Promise.resolve(null)]);
+        const [oldمرحلهData, newمرحلهData, candidateData, jobData] = await Promise.all([oldمرحلهId ? supabase.from('job_stages').select('name').eq('id', oldمرحلهId).single() : Promise.resolve(null), newمرحلهId ? supabase.from('job_stages').select('name').eq('id', newمرحلهId).single() : Promise.resolve(null), candidateId ? supabase.from('candidates').select('full_name').eq('id', candidateId).single() : Promise.resolve(null), jobId ? supabase.from('jobs').select('title').eq('id', jobId).single() : Promise.resolve(null)]);
         console.log('Fetched stage_moved details:', {
-          oldStage: oldStageData,
-          newStage: newStageData,
+          oldمرحله: oldمرحلهData,
+          newمرحله: newمرحلهData,
           candidate: candidateData,
           job: jobData
         });
-        const oldStageName = oldStageData?.data?.name;
-        const newStageName = newStageData?.data?.name || 'new stage';
+        const oldمرحلهName = oldمرحلهData?.data?.name;
+        const newمرحلهName = newمرحلهData?.data?.name || 'new stage';
         const candidateName = candidateData?.data?.full_name || 'candidate';
         const jobعنوان = jobData?.data?.title || 'job';
-        if (oldStageName) {
-          return `moved ${candidateName} from "${oldStageName}" to "${newStageName}" for ${jobعنوان}`;
+        if (oldمرحلهName) {
+          return `moved ${candidateName} from "${oldمرحلهName}" to "${newمرحلهName}" for ${jobعنوان}`;
         }
-        return `moved ${candidateName} to "${newStageName}" for ${jobعنوان}`;
+        return `moved ${candidateName} to "${newمرحلهName}" for ${jobعنوان}`;
       } catch (error) {
         console.error('Error formatting stage_moved action:', error);
         return 'یک درخواست را به مرحله جدید منتقل کرد';
@@ -193,8 +193,8 @@ const RecentActivityFeed = () => {
         return `posted "${jobعنوان}"`;
       }
       if (action === 'status_changed' && jobعنوان) {
-        const newStatus = after_json?.status || 'updated';
-        return `changed "${jobعنوان}" status to ${newStatus}`;
+        const newوضعیت = after_json?.status || 'updated';
+        return `changed "${jobعنوان}" status to ${newوضعیت}`;
       }
     }
 

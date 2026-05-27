@@ -2,7 +2,7 @@ import React from 'react';
 import Sidebar from '@/components/dashboard/Sidebar';
 import داشبوردHeader from '@/components/dashboard/داشبوردHeader';
 import StatsCards from '@/components/dashboard/StatsCards';
-import وظایفPanel from '@/components/dashboard/وظایفPanel';
+import وظایفهیئت مصاحبه from '@/components/dashboard/وظایفهیئت مصاحبه';
 import JobListingsTable from '@/components/dashboard/JobListingsTable';
 import بعدیMeetingCard from '@/components/dashboard/بعدیMeetingCard';
 import RecentActivityFeed from '@/components/dashboard/RecentActivityFeed';
@@ -23,7 +23,7 @@ const Index = () => {
               <StatsCards />
               
               <div className="flex w-full items-stretch gap-5 flex-1 flex-wrap h-full mt-5 max-md:max-w-full">
-                <وظایفPanel />
+                <وظایفهیئت مصاحبه />
                 <JobListingsTable />
               </div>
               

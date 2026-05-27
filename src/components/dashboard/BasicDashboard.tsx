@@ -15,7 +15,7 @@ import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { CandidatesCardSkeleton } from "@/components/dashboard/CandidatesCardSkeleton";
 import { JobListingsCardSkeleton } from "@/components/dashboard/JobListingsCardSkeleton";
 
-export function Basicداشبورد() {
+export function پایهداشبورد() {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
@@ -41,7 +41,7 @@ export function Basicداشبورد() {
         .eq('user_id', user.id)
         .single();
 
-      const userRole = roleData?.role;
+      const userنقش = roleData?.role;
 
       // Fetch assigned jobs through job_acl
       const { data: aclData } = await supabase
@@ -65,8 +65,8 @@ export function Basicداشبورد() {
           .order('applied_at', { ascending: false })
           .limit(10);
 
-        // For basic users (Collaborators), only show candidates assigned to them
-        if (userRole === 'basic') {
+        // For basic users (همکارs), only show candidates assigned to them
+        if (userنقش === 'basic') {
           applicationsQuery = applicationsQuery.eq('owner_user_id', user.id);
         }
 
@@ -80,23 +80,23 @@ export function Basicداشبورد() {
           .in('job_id', jobIds);
 
         // For basic users, only count their assigned candidates
-        if (userRole === 'basic') {
+        if (userنقش === 'basic') {
           metricsQuery = metricsQuery.eq('owner_user_id', user.id);
         }
 
-        const { data: allApplications } = await metricsQuery;
+        const { data: allدرخواست‌ها } = await metricsQuery;
 
-        const activeApplications = allApplications?.filter(a => a.state === 'active') || [];
-        const interviewing = activeApplications.filter(a => 
+        const activeدرخواست‌ها = allدرخواست‌ها?.filter(a => a.state === 'active') || [];
+        const interviewing = activeدرخواست‌ها.filter(a => 
           ['phone', 'onsite'].includes(a.job_stages?.type || '')
         ).length;
-        const shortlisted = activeApplications.filter(a => 
+        const shortlisted = activeدرخواست‌ها.filter(a => 
           a.job_stages?.type === 'offer'
         ).length;
 
         setMetrics({
           currentListings: assignedJobs.length,
-          totalApplicants: allApplications?.length || 0,
+          totalApplicants: allدرخواست‌ها?.length || 0,
           interviewing,
           shortlisted,
         });
@@ -105,22 +105,22 @@ export function Basicداشبورد() {
 
     // If demo reset in progress, wait for the event
     if (isبارگذاریDemo) {
-      const handleDemoDataRefresh = () => {
+      const handleDemoDataبه‌روزرسانی = () => {
         setIsبارگذاریDemo(false);
         fetchData();
       };
-      window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
-      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
+      window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
+      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
     } else {
       fetchData();
     }
 
     // Also listen for future demo data refresh events
-    const handleDemoDataRefresh = () => {
+    const handleDemoDataبه‌روزرسانی = () => {
       fetchData();
     };
-    window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
-    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
+    window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
+    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
   }, [isبارگذاریDemo]);
 
   const metricCards = [
@@ -284,7 +284,7 @@ export function Basicداشبورد() {
                     <div className="font-medium">{job.title}</div>
                     <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new Date(job.created_at).toLocaleDateString()}
+                      {new تاریخ(job.created_at).toLocaleتاریخString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">

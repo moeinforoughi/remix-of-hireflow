@@ -3,26 +3,26 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
-import { useToast } from '@/hooks/use-toast';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
 import { ویرایشAccountDialog } from './ویرایشAccountDialog';
 
 export const AccountInformation = () => {
-  const [profile, setProfile] = useState<any>(null);
-  const [role, setRole] = useState<string>('');
+  const [profile, setپروفایل] = useState<any>(null);
+  const [role, setنقش] = useState<string>('');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [loading, setبارگذاری] = useState(true);
-  const [editDialogOpen, setویرایشDialogOpen] = useState(false);
-  const { toast } = useToast();
+  const [editDialogباز, setویرایشDialogباز] = useState(false);
+  const { toast } = useگیرندهast();
 
   useEffect(() => {
-    fetchProfile();
+    fetchپروفایل();
   }, []);
 
-  const fetchProfile = async () => {
+  const fetchپروفایل = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       const { data: profileData } = await supabase
         .from('profiles')
@@ -36,9 +36,9 @@ export const AccountInformation = () => {
         .eq('user_id', user.id)
         .single();
 
-      setProfile(profileData);
-      setRole(roleData?.role === 'site_admin' ? 'Organization Admin' : 
-              roleData?.role === 'job_admin' ? 'Job Admin' : 'Basic User');
+      setپروفایل(profileData);
+      setنقش(roleData?.role === 'site_admin' ? 'سازمان مدیر کل' : 
+              roleData?.role === 'job_admin' ? 'Job مدیر کل' : 'پایه User');
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -50,7 +50,7 @@ export const AccountInformation = () => {
     }
   };
 
-  const handleTwoFactorToggle = async (enabled: boolean) => {
+  const handleTwoFactorگیرندهggle = async (enabled: boolean) => {
     setTwoFactorEnabled(enabled);
     toast({
       title: 'Two-Factor Authentication',
@@ -71,7 +71,7 @@ export const AccountInformation = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg">Account Information</h3>
+        <h3 className="text-lg">اطلاعات حساب</h3>
       </div>
 
       <div className="space-y-6">
@@ -84,7 +84,7 @@ export const AccountInformation = () => {
             </Avatar>
             <h2 className="text-2xl">{profile?.full_name || 'User'}</h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogOpen(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogباز(true)}>
             <Pencil className="h-4 w-4 mr-2" />
             ویرایش
           </Button>
@@ -93,27 +93,27 @@ export const AccountInformation = () => {
         {/* Account Details */}
         <div className="space-y-4">
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Email Address</span>
+            <span className="text-sm text-muted-foreground">ایمیل آدرس</span>
             <span className="text-sm font-medium text-primary">{profile?.email}</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Phone Number</span>
+            <span className="text-sm text-muted-foreground">تلفن Number</span>
             <span className="text-sm font-medium text-primary">(123) 456-7890</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Role</span>
+            <span className="text-sm text-muted-foreground">نقش</span>
             <span className="text-sm font-medium">{role}</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Password</span>
+            <span className="text-sm text-muted-foreground">رمز عبور</span>
             <span className="text-sm font-medium">••••••••••••</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Recovery Email Address</span>
+            <span className="text-sm text-muted-foreground">Recovery ایمیل آدرس</span>
             <span className="text-sm font-medium text-primary">{profile?.email}</span>
           </div>
 
@@ -121,16 +121,16 @@ export const AccountInformation = () => {
             <span className="text-sm text-muted-foreground">Two-Factor Authentication</span>
             <Switch
               checked={twoFactorEnabled}
-              onCheckedChange={handleTwoFactorToggle}
+              onCheckedChange={handleTwoFactorگیرندهggle}
             />
           </div>
         </div>
       </div>
 
       <ویرایشAccountDialog 
-        open={editDialogOpen}
-        onOpenChange={setویرایشDialogOpen}
-        onSuccess={fetchProfile}
+        open={editDialogباز}
+        onبازChange={setویرایشDialogباز}
+        onSuccess={fetchپروفایل}
       />
     </div>
   );

@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useگیرندهast } from "@/hooks/use-toast";
 import { Plus, ویرایش, Trash2 } from "lucide-react";
 import { تأییدDialog } from "@/components/shared/تأییدDialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { گیرندهoltip, گیرندهoltipContent, گیرندهoltipProvider, گیرندهoltipTrigger } from "@/components/ui/tooltip";
 
 interface Template {
   id: string;
@@ -20,19 +20,19 @@ interface Template {
 
 export default function TemplatesList() {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const [deleteDialogOpen, setحذفDialogOpen] = useState(false);
-  const [templateToحذف, setTemplateToحذف] = useState<string | null>(null);
-  const [isSiteAdmin, setIsSiteAdmin] = useState(false);
+  const [deleteDialogباز, setحذفDialogباز] = useState(false);
+  const [templateگیرندهحذف, setTemplateگیرندهحذف] = useState<string | null>(null);
+  const [isSiteمدیر کل, setIsSiteمدیر کل] = useState(false);
 
   useEffect(() => {
     fetchTemplates();
-    checkUserRole();
+    checkUserنقش();
   }, []);
 
-  const checkUserRole = async () => {
+  const checkUserنقش = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -43,7 +43,7 @@ export default function TemplatesList() {
       .eq("role", "site_admin")
       .single();
 
-    setIsSiteAdmin(!!data);
+    setIsSiteمدیر کل(!!data);
   };
 
   const fetchTemplates = async () => {
@@ -68,18 +68,18 @@ export default function TemplatesList() {
   };
 
   const handleحذفClick = (id: string) => {
-    setTemplateToحذف(id);
-    setحذفDialogOpen(true);
+    setTemplateگیرندهحذف(id);
+    setحذفDialogباز(true);
   };
 
   const handleحذفتأیید = async () => {
-    if (!templateToحذف) return;
+    if (!templateگیرندهحذف) return;
 
     try {
       const { error } = await supabase
         .from("message_templates")
         .delete()
-        .eq("id", templateToحذف);
+        .eq("id", templateگیرندهحذف);
 
       if (error) throw error;
 
@@ -96,8 +96,8 @@ export default function TemplatesList() {
         variant: "destructive",
       });
     } finally {
-      setحذفDialogOpen(false);
-      setTemplateToحذف(null);
+      setحذفDialogباز(false);
+      setTemplateگیرندهحذف(null);
     }
   };
 
@@ -109,7 +109,7 @@ export default function TemplatesList() {
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl">Message Templates</h1>
+          <h1 className="text-3xl">پیام Templates</h1>
         </div>
         <Button onClick={() => navigate("/templates/new")}>
           <Plus className="mr-2 h-4 w-4" />
@@ -120,7 +120,7 @@ export default function TemplatesList() {
       {templates.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground mb-4">No templates yet</p>
+            <p className="text-muted-foreground mb-4">خیر templates yet</p>
             <Button onClick={() => navigate("/templates/new")}>
               <Plus className="mr-2 h-4 w-4" />
               ایجاد your first template
@@ -142,27 +142,27 @@ export default function TemplatesList() {
                     >
                       <ویرایش className="h-4 w-4" />
                     </Button>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
+                    <گیرندهoltipProvider>
+                      <گیرندهoltip>
+                        <گیرندهoltipTrigger asChild>
                           <span>
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => handleحذفClick(template.id)}
-                              disabled={!isSiteAdmin}
+                              disabled={!isSiteمدیر کل}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </span>
-                        </TooltipTrigger>
-                        {!isSiteAdmin && (
-                          <TooltipContent>
+                        </گیرندهoltipTrigger>
+                        {!isSiteمدیر کل && (
+                          <گیرندهoltipContent>
                             <p>Only site administrators can delete templates</p>
-                          </TooltipContent>
+                          </گیرندهoltipContent>
                         )}
-                      </Tooltip>
-                    </TooltipProvider>
+                      </گیرندهoltip>
+                    </گیرندهoltipProvider>
                   </div>
                 </Cardعنوان>
               </CardHeader>
@@ -190,8 +190,8 @@ export default function TemplatesList() {
       )}
 
       <تأییدDialog
-        open={deleteDialogOpen}
-        onOpenChange={setحذفDialogOpen}
+        open={deleteDialogباز}
+        onبازChange={setحذفDialogباز}
         onتأیید={handleحذفتأیید}
         title="حذف Template"
         description="Are you sure you want to delete this template? This action cannot be undone."

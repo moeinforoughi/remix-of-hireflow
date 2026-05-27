@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/c
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send } from 'lucide-react';
+import { ارسال } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface Comment {
+interface نظر {
   id: string;
   content: string;
   created_at: string;
@@ -19,21 +19,21 @@ interface Comment {
   };
 }
 
-interface CommentsSectionProps {
+interface نظراتSectionProps {
   candidateId: string;
   applicationId?: string;
 }
 
-export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState('');
+export const نظراتSection = ({ candidateId, applicationId }: نظراتSectionProps) => {
+  const [comments, setنظرات] = useState<نظر[]>([]);
+  const [newنظر, setNewنظر] = useState('');
   const [loading, setبارگذاری] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCurrentUser();
-    fetchComments();
+    fetchنظرات();
   }, [candidateId]);
 
   const fetchCurrentUser = async () => {
@@ -54,7 +54,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
     }
   };
 
-  const fetchComments = async () => {
+  const fetchنظرات = async () => {
     try {
       const { data, error } = await supabase
         .from('candidate_comments')
@@ -69,14 +69,14 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
 
       if (error) throw error;
 
-      const formattedComments = (data || []).map((comment: any) => ({
+      const formattedنظرات = (data || []).map((comment: any) => ({
         id: comment.id,
         content: comment.content,
         created_at: comment.created_at,
         user: comment.user,
       }));
 
-      setComments(formattedComments);
+      setنظرات(formattedنظرات);
     } catch (error: any) {
       console.error('Error fetching comments:', error);
     } finally {
@@ -84,8 +84,8 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
     }
   };
 
-  const handleAddComment = async () => {
-    if (!newComment.trim() || !currentUserId || !orgId) return;
+  const handleافزودننظر = async () => {
+    if (!newنظر.trim() || !currentUserId || !orgId) return;
 
     try {
       const { error } = await supabase
@@ -95,18 +95,18 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
           application_id: applicationId,
           user_id: currentUserId,
           org_id: orgId,
-          content: newComment.trim(),
+          content: newنظر.trim(),
         });
 
       if (error) throw error;
 
       toast({
         title: 'موفقیت',
-        description: 'Comment added successfully',
+        description: 'نظر added successfully',
       });
 
-      setNewComment('');
-      fetchComments();
+      setNewنظر('');
+      fetchنظرات();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -119,14 +119,14 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
   return (
     <Card className="flex flex-col max-h-[600px]">
       <CardHeader>
-        <Cardعنوان className="text-lg">Comments</Cardعنوان>
+        <Cardعنوان className="text-lg">نظرات</Cardعنوان>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="flex-1 space-y-4 mb-4 overflow-y-auto min-h-0">
           {loading ? (
             <p className="text-sm text-muted-foreground">بارگذاری comments...</p>
           ) : comments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No comments yet. Be the first to comment!</p>
+            <p className="text-sm text-muted-foreground">خیر comments yet. Be the first to comment!</p>
           ) : (
             comments.map((comment) => {
               const isCurrentUser = comment.user.id === currentUserId;
@@ -155,7 +155,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
                       <p className="text-sm">{comment.content}</p>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1 px-1">
-                      {format(new Date(comment.created_at), 'MMM d, h:mm a')}
+                      {format(new تاریخ(comment.created_at), 'MMM d, h:mm a')}
                     </p>
                   </div>
                 </div>
@@ -166,24 +166,24 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
 
         <div className="flex gap-2 pt-4 border-t">
           <Textarea
-            placeholder="Add a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="افزودن a comment..."
+            value={newنظر}
+            onChange={(e) => setNewنظر(e.target.value)}
             className="min-h-[60px] resize-none"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleAddComment();
+                handleافزودننظر();
               }
             }}
           />
           <Button
-            onClick={handleAddComment}
+            onClick={handleافزودننظر}
             size="icon"
-            disabled={!newComment.trim()}
+            disabled={!newنظر.trim()}
             className="flex-shrink-0"
           >
-            <Send className="h-4 w-4" />
+            <ارسال className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

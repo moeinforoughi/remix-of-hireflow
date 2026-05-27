@@ -4,10 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useگیرندهast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
-interface در انتظارApproval {
+interface در انتظارتأیید {
   id: string;
   offer_id: string;
   approver_user_id: string;
@@ -22,24 +22,24 @@ interface در انتظارApproval {
   offer_created_at: string;
 }
 
-interface ApprovalRequestedDialogProps {
+interface تأییدRequestedDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
 }
 
-export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequestedDialogProps) {
-  const [approvals, setApprovals] = useState<در انتظارApproval[]>([]);
+export function تأییدRequestedDialog({ open, onبازChange }: تأییدRequestedDialogProps) {
+  const [approvals, setتأییدs] = useState<در انتظارتأیید[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
-      fetchدر انتظارApprovals();
+      fetchدر انتظارتأییدs();
     }
   }, [open]);
 
-  const fetchدر انتظارApprovals = async () => {
+  const fetchدر انتظارتأییدs = async () => {
     setبارگذاری(true);
     try {
       // Get current user's org_id
@@ -100,7 +100,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
 
       if (error) throw error;
 
-      const formattedData: در انتظارApproval[] = (data || []).map((approval: any) => ({
+      const formattedData: در انتظارتأیید[] = (data || []).map((approval: any) => ({
         id: approval.id,
         offer_id: approval.offers.id,
         approver_user_id: approval.approver_user_id,
@@ -115,7 +115,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
         offer_created_at: approval.offers.created_at,
       }));
 
-      setApprovals(formattedData);
+      setتأییدs(formattedData);
     } catch (error: any) {
       console.error('Error fetching approvals:', error);
       toast({
@@ -128,13 +128,13 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
     }
   };
 
-  const handleApprovalAction = async (approvalId: string, offerId: string, action: 'approved' | 'rejected') => {
+  const handleتأییدAction = async (approvalId: string, offerId: string, action: 'approved' | 'rejected') => {
     try {
       const { error } = await supabase
         .from('approvals')
         .update({ 
           state: action,
-          acted_at: new Date().toISOString()
+          acted_at: new تاریخ().toISOString()
         })
         .eq('id', approvalId);
 
@@ -151,13 +151,13 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
       }
 
       toast({
-        title: action === 'approved' ? "Offer Approved" : "Offer Rejected",
+        title: action === 'approved' ? "Offer تأییدd" : "Offer ردed",
         description: action === 'approved' 
           ? "The offer has been approved successfully" 
           : "The offer has been rejected",
       });
 
-      fetchدر انتظارApprovals();
+      fetchدر انتظارتأییدs();
     } catch (error: any) {
       console.error('Error updating approval:', error);
       toast({
@@ -173,13 +173,13 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
     return `${currency === 'USD' ? '$' : currency}${total.toLocaleString()}/yr`;
   };
 
-  const formatStartDate = (createdAt: string) => {
-    const date = new Date(createdAt);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const formatشروعتاریخ = (createdAt: string) => {
+    const date = new تاریخ(createdAt);
+    return date.toLocaleتاریخString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent className="w-[790px] max-w-[90vw] p-5 max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <Dialogعنوان className="text-2xl">در انتظار تأیید</Dialogعنوان>
@@ -189,7 +189,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
           {loading ? (
             <div className="text-center text-muted-foreground">بارگذاری approvals...</div>
           ) : approvals.length === 0 ? (
-            <div className="text-center text-muted-foreground">No pending approvals</div>
+            <div className="text-center text-muted-foreground">خیر pending approvals</div>
           ) : (
             approvals.map((approval) => (
               <div key={approval.id} className="flex flex-col gap-4">
@@ -213,7 +213,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
                         {formatSalary(approval.base_amount, approval.variable_amount, approval.currency)}
                       </div>
                       <div className="text-sm text-[#5d6174] leading-[18.20px]">
-                        Starting: {formatStartDate(approval.offer_created_at)}
+                        شروعing: {formatشروعتاریخ(approval.offer_created_at)}
                       </div>
                     </div>
 
@@ -231,15 +231,15 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
                     <Button
                       variant="outline"
                       className="flex-1 h-[41px] text-lg font-bold"
-                      onClick={() => handleApprovalAction(approval.id, approval.offer_id, 'rejected')}
+                      onClick={() => handleتأییدAction(approval.id, approval.offer_id, 'rejected')}
                     >
-                      Reject
+                      رد
                     </Button>
                     <Button
                       className="flex-1 h-[41px] text-base font-bold bg-[#45ce99]/30 text-foreground border-2 border-[#45ce99] hover:bg-[#45ce99]/40"
-                      onClick={() => handleApprovalAction(approval.id, approval.offer_id, 'approved')}
+                      onClick={() => handleتأییدAction(approval.id, approval.offer_id, 'approved')}
                     >
-                      Approve & Send
+                      تأیید & ارسال
                     </Button>
                   </div>
                 </div>

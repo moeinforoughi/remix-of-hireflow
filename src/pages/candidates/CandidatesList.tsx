@@ -5,11 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Plus, Users, ChevronRight, فیلتر } from 'lucide-react';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  انتخاب,
+  انتخابContent,
+  انتخابItem,
+  انتخابTrigger,
+  انتخابValue,
 } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -20,11 +20,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AddCandidateDialog } from '@/components/pipeline/AddCandidateDialog';
-import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { افزودنCandidateDialog } from '@/components/pipeline/افزودنCandidateDialog';
+import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
 import { CandidatesListSkeleton } from '@/components/candidates/CandidatesListSkeleton';
 import { ManagerAssignmentDropdown } from '@/components/candidates/ManagerAssignmentDropdown';
-import { getStageColorClasses } from '@/lib/stage-colors';
+import { getمرحلهColorClasses } from '@/lib/stage-colors';
 
 interface ApplicationWithDetails {
   id: string;
@@ -51,26 +51,26 @@ interface ApplicationWithDetails {
 }
 
 const CandidatesList = () => {
-  const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
+  const [applications, setدرخواست‌ها] = useState<ApplicationWithDetails[]>([]);
   const [loading, setبارگذاری] = useState(true);
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userنقش, setUserنقش] = useState<string | null>(null);
   const [jobs, setJobs] = useState<Array<{ id: string; title: string }>>([]);
-  const [stages, setStages] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
-  const [statusفیلتر, setStatusفیلتر] = useState<string>('all');
-  const { role, assignedJobIds, loading: permissionsبارگذاری } = useUserPermissions();
+  const [stages, setمرحلهs] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
+  const [statusفیلتر, setوضعیتفیلتر] = useState<string>('all');
+  const { role, assignedJobIds, loading: permissionsبارگذاری } = useUserدسترسی‌ها();
 
   useEffect(() => {
-    fetchUserRole();
+    fetchUserنقش();
     fetchJobs();
   }, []);
 
   useEffect(() => {
     if (!permissionsبارگذاری) {
-      fetchApplications();
+      fetchدرخواست‌ها();
     }
   }, [permissionsبارگذاری, role, assignedJobIds, statusفیلتر]);
 
-  const fetchUserRole = async () => {
+  const fetchUserنقش = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -81,7 +81,7 @@ const CandidatesList = () => {
         .eq('user_id', user.id);
 
       if (rolesData && rolesData.length > 0) {
-        setUserRole(rolesData[0].role);
+        setUserنقش(rolesData[0].role);
       }
     } catch (error: any) {
       console.error('Error fetching user role:', error);
@@ -117,14 +117,14 @@ const CandidatesList = () => {
     }
   };
 
-  const fetchApplications = async () => {
+  const fetchدرخواست‌ها = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Non-site_admin users with no job assignments see nothing
+      // خیرn-site_admin users with no job assignments see nothing
       if (role !== 'site_admin' && assignedJobIds.length === 0) {
-        setApplications([]);
+        setدرخواست‌ها([]);
         setبارگذاری(false);
         return;
       }
@@ -144,7 +144,7 @@ const CandidatesList = () => {
           owner:profiles!applications_owner_user_id_fkey(full_name)
         `);
 
-      // Basic users (Collaborators) - only see candidates assigned to them
+      // پایه users (همکارs) - only see candidates assigned to them
       if (role === 'basic') {
         query = query.eq('owner_user_id', user.id);
         // Also filter by their accessible jobs
@@ -158,7 +158,7 @@ const CandidatesList = () => {
       }
       // Site admins - no filter (see all)
 
-      // Apply status filter
+      // ثبت درخواست status filter
       if (statusفیلتر === 'active') {
         query = query.eq('state', 'active');
       } else if (statusفیلتر === 'rejected') {
@@ -166,7 +166,7 @@ const CandidatesList = () => {
       } else if (statusفیلتر === 'withdrawn') {
         query = query.eq('state', 'withdrawn');
       }
-      // Note: 'hired' filter is handled post-query since we need to check stage type
+      // خیرte: 'hired' filter is handled post-query since we need to check stage type
 
       const { data, error } = await query.order('applied_at', { ascending: false });
 
@@ -187,14 +187,14 @@ const CandidatesList = () => {
         );
       }
       
-      // Exclude hired candidates from "Active" filter
+      // Exclude hired candidates from "فعال" filter
       if (statusفیلتر === 'active') {
         filteredData = filteredData.filter((app: any) => 
           app.current_stage?.type !== 'hired'
         );
       }
 
-      setApplications(filteredData);
+      setدرخواست‌ها(filteredData);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -212,24 +212,24 @@ const CandidatesList = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-3xl">Candidates</h1>
-          <Select value={statusفیلتر} onValueChange={setStatusفیلتر}>
-            <SelectTrigger className="w-[160px]">
+          <انتخاب value={statusفیلتر} onValueChange={setوضعیتفیلتر}>
+            <انتخابTrigger className="w-[160px]">
               <فیلتر className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="فیلتر by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Candidates</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="hired">Hired</SelectItem>
-              <SelectItem value="withdrawn">Withdrawn</SelectItem>
-            </SelectContent>
-          </Select>
+              <انتخابValue placeholder="فیلتر by status" />
+            </انتخابTrigger>
+            <انتخابContent>
+              <انتخابItem value="all">همه کاندیداها</انتخابItem>
+              <انتخابItem value="active">فعال</انتخابItem>
+              <انتخابItem value="rejected">ردed</انتخابItem>
+              <انتخابItem value="hired">استخدامd</انتخابItem>
+              <انتخابItem value="withdrawn">پس گرفتنn</انتخابItem>
+            </انتخابContent>
+          </انتخاب>
         </div>
-        {userRole && userRole !== 'basic' && (
-          <AddCandidateDialog 
+        {userنقش && userنقش !== 'basic' && (
+          <افزودنCandidateDialog 
             jobs={jobs}
-            onSuccess={fetchApplications}
+            onSuccess={fetchدرخواست‌ها}
           />
         )}
       </div>
@@ -239,12 +239,12 @@ const CandidatesList = () => {
       ) : applications.length === 0 ? (
         <div className="text-center py-12">
           <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg mb-2">No candidates found</h3>
+          <h3 className="text-lg mb-2">خیر candidates found</h3>
           <p className="text-muted-foreground">
             {role !== 'site_admin' && assignedJobIds.length === 0
               ? "You haven't been assigned to any jobs yet. Contact your administrator to get access."
               : statusفیلتر !== 'all' 
-                ? `No ${statusفیلتر} candidates found`
+                ? `خیر ${statusفیلتر} candidates found`
                 : "Get started by adding your first candidate"}
           </p>
         </div>
@@ -254,9 +254,9 @@ const CandidatesList = () => {
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b-0">
                 <TableHead className="w-[220px]">Candidate</TableHead>
-                <TableHead className="w-[240px]">Position Applied for</TableHead>
-                <TableHead className="w-[160px]">Date Applied</TableHead>
-                <TableHead className="w-[140px]">Status</TableHead>
+                <TableHead className="w-[240px]">Position ثبت درخواست شده for</TableHead>
+                <TableHead className="w-[160px]">تاریخ ثبت درخواست شده</TableHead>
+                <TableHead className="w-[140px]">وضعیت</TableHead>
                 <TableHead className="w-[180px]">Manager</TableHead>
                 <TableHead className="w-[40px]"></TableHead>
               </TableRow>
@@ -288,7 +288,7 @@ const CandidatesList = () => {
                     {application.job?.title || 'Unknown Position'}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new Date(application.applied_at).toLocaleDateString('en-US', { 
+                    {new تاریخ(application.applied_at).toLocaleتاریخString('en-US', { 
                       month: '2-digit', 
                       day: '2-digit', 
                       year: 'numeric' 
@@ -297,9 +297,9 @@ const CandidatesList = () => {
                   <TableCell>
                     <Badge 
                       variant="outline" 
-                      className={`capitalize border ${getStageColorClasses(application.current_stage?.name || 'Applied')}`}
+                      className={`capitalize border ${getمرحلهColorClasses(application.current_stage?.name || 'ثبت درخواست شده')}`}
                     >
-                      {application.current_stage?.name || 'Applied'}
+                      {application.current_stage?.name || 'ثبت درخواست شده'}
                     </Badge>
                   </TableCell>
                   <TableCell className="font-medium" onClick={(e) => e.stopPropagation()}>
@@ -307,7 +307,7 @@ const CandidatesList = () => {
                       applicationId={application.id}
                       currentManagerId={application.owner_user_id}
                       currentManagerName={application.owner?.full_name || null}
-                      onبه‌روزرسانی={fetchApplications}
+                      onبه‌روزرسانی={fetchدرخواست‌ها}
                     />
                   </TableCell>
                   <TableCell className="rounded-r-lg">

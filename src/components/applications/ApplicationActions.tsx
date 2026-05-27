@@ -1,32 +1,32 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { UserX, UserCheck, UserMinus } from 'lucide-react';
-import { RejectDialog } from './RejectDialog';
-import { WithdrawDialog } from './WithdrawDialog';
-import { HireDialog } from './HireDialog';
+import { ردDialog } from './ردDialog';
+import { پس گرفتنDialog } from './پس گرفتنDialog';
+import { استخدامDialog } from './استخدامDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 
 interface ApplicationActionsProps {
   applicationState: string;
-  onReject: (reason: string, note: string) => void;
-  onWithdraw: () => void;
-  onHire: () => void;
+  onرد: (reason: string, note: string) => void;
+  onپس گرفتن: () => void;
+  onاستخدام: () => void;
   offerState?: string;
   applicationId?: string;
 }
 
 export const ApplicationActions = ({
   applicationState,
-  onReject,
-  onWithdraw,
-  onHire,
+  onرد,
+  onپس گرفتن,
+  onاستخدام,
   offerState,
   applicationId,
 }: ApplicationActionsProps) => {
-  const [rejectOpen, setRejectOpen] = useState(false);
-  const [withdrawOpen, setWithdrawOpen] = useState(false);
-  const [hireOpen, setHireOpen] = useState(false);
+  const [rejectباز, setردباز] = useState(false);
+  const [withdrawباز, setپس گرفتنباز] = useState(false);
+  const [hireباز, setاستخدامباز] = useState(false);
   const [offerId, setOfferId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,8 +60,8 @@ export const ApplicationActions = ({
   if (offerState === 'accepted') {
     return (
       <div className="flex gap-2">
-        <Button onClick={onHire} variant="default">
-          Mark as Hired
+        <Button onClick={onاستخدام} variant="default">
+          Mark as استخدامd
         </Button>
         {offerId && (
           <Button asChild variant="outline">
@@ -80,53 +80,53 @@ export const ApplicationActions = ({
         <Button
           variant="destructive"
           size="sm"
-          onClick={() => setRejectOpen(true)}
+          onClick={() => setردباز(true)}
         >
           <UserX className="h-4 w-4 mr-2" />
-          Reject
+          رد
         </Button>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => setWithdrawOpen(true)}
+          onClick={() => setپس گرفتنباز(true)}
         >
           <UserMinus className="h-4 w-4 mr-2" />
-          Withdraw
+          پس گرفتن
         </Button>
         <Button
           variant="default"
           size="sm"
-          onClick={() => setHireOpen(true)}
+          onClick={() => setاستخدامباز(true)}
         >
           <UserCheck className="h-4 w-4 mr-2" />
-          Hire
+          استخدام
         </Button>
       </div>
 
-      <RejectDialog
-        open={rejectOpen}
-        onOpenChange={setRejectOpen}
+      <ردDialog
+        open={rejectباز}
+        onبازChange={setردباز}
         onتأیید={(reason, note) => {
-          onReject(reason, note);
-          setRejectOpen(false);
+          onرد(reason, note);
+          setردباز(false);
         }}
       />
 
-      <WithdrawDialog
-        open={withdrawOpen}
-        onOpenChange={setWithdrawOpen}
+      <پس گرفتنDialog
+        open={withdrawباز}
+        onبازChange={setپس گرفتنباز}
         onتأیید={() => {
-          onWithdraw();
-          setWithdrawOpen(false);
+          onپس گرفتن();
+          setپس گرفتنباز(false);
         }}
       />
 
-      <HireDialog
-        open={hireOpen}
-        onOpenChange={setHireOpen}
+      <استخدامDialog
+        open={hireباز}
+        onبازChange={setاستخدامباز}
         onتأیید={() => {
-          onHire();
-          setHireOpen(false);
+          onاستخدام();
+          setاستخدامباز(false);
         }}
       />
     </>

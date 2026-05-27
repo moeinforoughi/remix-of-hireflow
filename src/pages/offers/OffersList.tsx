@@ -6,10 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Loader2, DollarSign, ChevronRight } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { format, isPast } from 'date-fns';
-import { ExpirationBadge } from '@/components/offers/ExpirationWarning';
-import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { انقضاBadge } from '@/components/offers/انقضاWarning';
+import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
 
 interface Offer {
   id: string;
@@ -36,8 +36,8 @@ const OffersList = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setبارگذاری] = useState(true);
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { role, canViewOffer, loading: permissionsبارگذاری } = useUserPermissions();
+  const { toast } = useگیرندهast();
+  const { role, canViewOffer, loading: permissionsبارگذاری } = useUserدسترسی‌ها();
 
   useEffect(() => {
     // Only fetch offers once permissions are loaded
@@ -103,20 +103,20 @@ const OffersList = () => {
       if (error) throw error;
 
       // به‌روزرسانی expired offers
-      const now = new Date();
-      const offersToExpire = expiredOffers?.filter(
-        offer => offer.expires_at && isPast(new Date(offer.expires_at))
+      const now = new تاریخ();
+      const offersگیرندهExpire = expiredOffers?.filter(
+        offer => offer.expires_at && isPast(new تاریخ(offer.expires_at))
       ) || [];
 
-      if (offersToExpire.length > 0) {
+      if (offersگیرندهExpire.length > 0) {
         const { error: updateError } = await supabase
           .from('offers')
           .update({ state: 'expired' })
-          .in('id', offersToExpire.map(o => o.id));
+          .in('id', offersگیرندهExpire.map(o => o.id));
 
         if (updateError) throw updateError;
         
-        // Refresh the list
+        // به‌روزرسانی the list
         fetchOffers();
       }
     } catch (error: any) {
@@ -127,17 +127,17 @@ const OffersList = () => {
   const getStateBadge = (state: string) => {
     switch (state) {
       case 'draft':
-        return <Badge variant="outline">Draft</Badge>;
+        return <Badge variant="outline">پیش‌نویس</Badge>;
       case 'pending_approval':
-        return <Badge variant="secondary">در انتظار Approval</Badge>;
+        return <Badge variant="secondary">در انتظار تأیید</Badge>;
       case 'approved':
-        return <Badge variant="success">Approved</Badge>;
+        return <Badge variant="success">تأییدd</Badge>;
       case 'sent':
-        return <Badge>Sent</Badge>;
+        return <Badge>ارسال شده</Badge>;
       case 'accepted':
-        return <Badge variant="default">Accepted</Badge>;
+        return <Badge variant="default">پذیرفته شده</Badge>;
       case 'declined':
-        return <Badge variant="destructive">Declined</Badge>;
+        return <Badge variant="destructive">رد شده</Badge>;
       case 'expired':
         return <Badge variant="destructive">Expired</Badge>;
       default:
@@ -178,7 +178,7 @@ const OffersList = () => {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <DollarSign className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">No offers created yet</p>
+            <p className="text-muted-foreground mb-4">خیر offers created yet</p>
             <Button onClick={() => navigate('/offers/new')}>
               <Plus className="h-4 w-4 mr-2" />
               ایجاد First Offer
@@ -191,11 +191,11 @@ const OffersList = () => {
             <TableRow className="border-b-0 hover:bg-transparent">
               <TableHead>Candidate</TableHead>
               <TableHead>Position</TableHead>
-              <TableHead>Total Compensation</TableHead>
-              <TableHead>Base Salary</TableHead>
+              <TableHead>گیرندهtal Compensation</TableHead>
+              <TableHead>حقوق پایه</TableHead>
               <TableHead>ایجادd</TableHead>
               <TableHead>Expires</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>وضعیت</TableHead>
               <TableHead className="w-12"></TableHead>
             </TableRow>
           </TableHeader>
@@ -228,14 +228,14 @@ const OffersList = () => {
                     minimumFractionDigits: 0,
                   }).format(offer.base_amount)}
                 </TableCell>
-                <TableCell>{format(new Date(offer.created_at), 'MMM d, yyyy')}</TableCell>
+                <TableCell>{format(new تاریخ(offer.created_at), 'MMM d, yyyy')}</TableCell>
                 <TableCell>
-                  {offer.expires_at ? format(new Date(offer.expires_at), 'MMM d, yyyy') : '-'}
+                  {offer.expires_at ? format(new تاریخ(offer.expires_at), 'MMM d, yyyy') : '-'}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     {getStateBadge(offer.state)}
-                    <ExpirationBadge expiresAt={offer.expires_at} state={offer.state} />
+                    <انقضاBadge expiresAt={offer.expires_at} state={offer.state} />
                   </div>
                 </TableCell>
                 <TableCell className="rounded-r-lg">

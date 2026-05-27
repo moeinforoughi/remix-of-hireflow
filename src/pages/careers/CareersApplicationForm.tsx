@@ -6,16 +6,16 @@ import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, Formپیام, Formتوضیحات } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, Upload, CheckCircle } from 'lucide-react';
+import { useگیرندهast } from '@/hooks/use-toast';
+import { ArrowLeft, Loader2, بارگذاری, CheckCircle } from 'lucide-react';
 import { sendApplicationتأییدation } from '@/lib/email-notifications';
-import { parseResume } from '@/lib/resume-parser';
+import { parseرزومه } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -33,10 +33,10 @@ const formSchema = z.object({
   linkedin_url: z.string().url().optional().or(z.literal('')),
   resume: z.any().refine(
     (file) => file?.length > 0,
-    'Resume is required'
+    'رزومه is required'
   ).refine(
     (file) => file?.[0]?.size <= MAX_FILE_SIZE,
-    'Resume must be less than 5MB'
+    'رزومه must be less than 5MB'
   ).refine(
     (file) => ACCEPTED_FILE_TYPES.includes(file?.[0]?.type),
     'Only PDF and Word documents are accepted'
@@ -49,15 +49,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const CareersApplicationForm = () => {
+const فرصت‌های شغلیApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const [loading, setبارگذاری] = useState(false);
   const [submitted, setثبتted] = useState(false);
   const [job, setJob] = useState<any>(null);
   const [orgId, setOrgId] = useState<string>('');
-  const [customQuestions, setCustomQuestions] = useState<any[]>([]);
+  const [customسؤالs, setCustomسؤالs] = useState<any[]>([]);
   const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
 
   const form = useForm<FormValues>({
@@ -100,7 +100,7 @@ const CareersApplicationForm = () => {
         .order('order_idx');
 
       if (questionsError) throw questionsError;
-      setCustomQuestions(questions || []);
+      setCustomسؤالs(questions || []);
     } catch (error) {
       console.error('Error fetching job:', error);
       navigate('/careers');
@@ -188,7 +188,7 @@ const CareersApplicationForm = () => {
                 className="w-full"
                 onClick={() => navigate('/careers')}
               >
-                View More Jobs
+                View بیشتر Jobs
               </Button>
               <Button
                 variant="outline"
@@ -218,7 +218,7 @@ const CareersApplicationForm = () => {
 
         <Card>
           <CardHeader>
-            <Cardعنوان className="text-2xl">Apply for {job.title}</Cardعنوان>
+            <Cardعنوان className="text-2xl">ثبت درخواست for {job.title}</Cardعنوان>
             <p className="text-muted-foreground">
               Fill out the form below to submit your application
             </p>
@@ -231,11 +231,11 @@ const CareersApplicationForm = () => {
                   name="full_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name *</FormLabel>
+                      <FormLabel>نام و نام خانوادگی *</FormLabel>
                       <FormControl>
                         <Input placeholder="John Doe" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <Formپیام />
                     </FormItem>
                   )}
                 />
@@ -246,11 +246,11 @@ const CareersApplicationForm = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email *</FormLabel>
+                        <FormLabel>ایمیل *</FormLabel>
                         <FormControl>
                           <Input type="email" placeholder="john@example.com" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <Formپیام />
                       </FormItem>
                     )}
                   />
@@ -260,11 +260,11 @@ const CareersApplicationForm = () => {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone</FormLabel>
+                        <FormLabel>تلفن</FormLabel>
                         <FormControl>
                           <Input placeholder="+1 (555) 000-0000" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <Formپیام />
                       </FormItem>
                     )}
                   />
@@ -280,7 +280,7 @@ const CareersApplicationForm = () => {
                         <FormControl>
                           <Input placeholder="San Francisco, CA" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <Formپیام />
                       </FormItem>
                     )}
                   />
@@ -290,11 +290,11 @@ const CareersApplicationForm = () => {
                     name="linkedin_url"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>LinkedIn Profile</FormLabel>
+                        <FormLabel>لینکدین پروفایل</FormLabel>
                         <FormControl>
                           <Input placeholder="https://linkedin.com/in/..." {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <Formپیام />
                       </FormItem>
                     )}
                   />
@@ -305,7 +305,7 @@ const CareersApplicationForm = () => {
                   name="resume"
                   render={({ field: { onChange, value, ...field } }) => (
                     <FormItem>
-                      <FormLabel>Resume *</FormLabel>
+                      <FormLabel>رزومه *</FormLabel>
                       <FormControl>
                         <div className="flex items-center gap-2">
                           <Input
@@ -314,13 +314,13 @@ const CareersApplicationForm = () => {
                             onChange={(e) => onChange(e.target.files)}
                             {...field}
                           />
-                          <Upload className="h-4 w-4 text-muted-foreground" />
+                          <بارگذاری className="h-4 w-4 text-muted-foreground" />
                         </div>
                       </FormControl>
-                      <FormDescription>
+                      <Formتوضیحات>
                         PDF or Word document (max 5MB)
-                      </FormDescription>
-                      <FormMessage />
+                      </Formتوضیحات>
+                      <Formپیام />
                     </FormItem>
                   )}
                 />
@@ -330,7 +330,7 @@ const CareersApplicationForm = () => {
                   name="cover_letter"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cover Letter (Optional)</FormLabel>
+                      <FormLabel>کاور لتر (اختیاری)</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Tell us why you're a great fit for this role..."
@@ -338,15 +338,15 @@ const CareersApplicationForm = () => {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <Formپیام />
                     </FormItem>
                   )}
                 />
 
-                {customQuestions.length > 0 && (
+                {customسؤالs.length > 0 && (
                   <div className="pt-4 border-t space-y-4">
-                    <h3 className="">Additional Questions</h3>
-                    {customQuestions.map((question) => (
+                    <h3 className="">افزودنitional سؤالs</h3>
+                    {customسؤالs.map((question) => (
                       <div key={question.id} className="space-y-2">
                         <Label>
                           {question.question_text}
@@ -371,38 +371,38 @@ const CareersApplicationForm = () => {
                         )}
 
                         {question.question_type === 'yes_no' && (
-                          <Select
+                          <انتخاب
                             value={customAnswers[question.id] || ''}
                             onValueChange={(value) => setCustomAnswers({ ...customAnswers, [question.id]: value })}
                             required={question.is_required}
                           >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="yes">Yes</SelectItem>
-                              <SelectItem value="no">No</SelectItem>
-                            </SelectContent>
-                          </Select>
+                            <انتخابTrigger>
+                              <انتخابValue placeholder="انتخاب..." />
+                            </انتخابTrigger>
+                            <انتخابContent>
+                              <انتخابItem value="yes">بله</انتخابItem>
+                              <انتخابItem value="no">خیر</انتخابItem>
+                            </انتخابContent>
+                          </انتخاب>
                         )}
 
                         {question.question_type === 'multiple_choice' && question.options && (
-                          <Select
+                          <انتخاب
                             value={customAnswers[question.id] || ''}
                             onValueChange={(value) => setCustomAnswers({ ...customAnswers, [question.id]: value })}
                             required={question.is_required}
                           >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select an option..." />
-                            </SelectTrigger>
-                            <SelectContent>
+                            <انتخابTrigger>
+                              <انتخابValue placeholder="انتخاب an option..." />
+                            </انتخابTrigger>
+                            <انتخابContent>
                               {question.options.map((option: string, index: number) => (
-                                <SelectItem key={index} value={option}>
+                                <انتخابItem key={index} value={option}>
                                   {option}
-                                </SelectItem>
+                                </انتخابItem>
                               ))}
-                            </SelectContent>
-                          </Select>
+                            </انتخابContent>
+                          </انتخاب>
                         )}
                       </div>
                     ))}
@@ -424,10 +424,10 @@ const CareersApplicationForm = () => {
                         <FormLabel>
                           I agree to the processing of my personal data *
                         </FormLabel>
-                        <FormDescription>
+                        <Formتوضیحات>
                           We'll use your information only for recruitment purposes
-                        </FormDescription>
-                        <FormMessage />
+                        </Formتوضیحات>
+                        <Formپیام />
                       </div>
                     </FormItem>
                   )}
@@ -446,4 +446,4 @@ const CareersApplicationForm = () => {
   );
 };
 
-export default CareersApplicationForm;
+export default فرصت‌های شغلیApplicationForm;

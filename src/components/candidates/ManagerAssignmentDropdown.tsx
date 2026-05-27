@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  انتخاب,
+  انتخابContent,
+  انتخابItem,
+  انتخابTrigger,
+  انتخابValue,
 } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import { User } from 'lucide-react';
@@ -31,13 +31,13 @@ export const ManagerAssignmentDropdown = ({
 }: ManagerAssignmentDropdownProps) => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setبارگذاری] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isباز, setIsباز] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isباز) {
       fetchTeamMembers();
     }
-  }, [isOpen]);
+  }, [isباز]);
 
   const fetchTeamMembers = async () => {
     try {
@@ -98,35 +98,35 @@ export const ManagerAssignmentDropdown = ({
   };
 
   return (
-    <Select
+    <انتخاب
       value={currentManagerId || ''}
       onValueChange={handleAssign}
-      onOpenChange={setIsOpen}
+      onبازChange={setIsباز}
       disabled={loading}
     >
-      <SelectTrigger 
+      <انتخابTrigger 
         className="w-[160px] h-8 text-sm border-none bg-transparent hover:bg-accent/50 focus:ring-0"
         onClick={(e) => e.stopPropagation()}
       >
-        <SelectValue>
+        <انتخابValue>
           <div className="flex items-center gap-2 text-left">
             <User className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             <span className={`truncate ${currentManagerName ? 'font-medium' : 'text-muted-foreground'}`}>
               {currentManagerName || 'Assign...'}
             </span>
           </div>
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent onClick={(e) => e.stopPropagation()}>
-        <SelectItem value="unassign">
+        </انتخابValue>
+      </انتخابTrigger>
+      <انتخابContent onClick={(e) => e.stopPropagation()}>
+        <انتخابItem value="unassign">
           <span className="text-muted-foreground">Unassign</span>
-        </SelectItem>
+        </انتخابItem>
         {teamMembers.map((member) => (
-          <SelectItem key={member.id} value={member.id}>
+          <انتخابItem key={member.id} value={member.id}>
             {member.full_name}
-          </SelectItem>
+          </انتخابItem>
         ))}
-      </SelectContent>
-    </Select>
+      </انتخابContent>
+    </انتخاب>
   );
 };

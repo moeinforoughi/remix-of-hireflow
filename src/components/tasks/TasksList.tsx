@@ -12,7 +12,7 @@ import {
   AlertDialogAction,
   AlertDialogانصراف,
   AlertDialogContent,
-  AlertDialogDescription,
+  AlertDialogتوضیحات,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogعنوان,
@@ -36,11 +36,11 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
   const [deleteTaskId, setحذفTaskId] = useState<string | null>(null);
   const [editTask, setویرایشTask] = useState<Task | null>(null);
 
-  const handleToggleStatus = async (task: Task) => {
-    const newStatus = task.status === "pending" ? "completed" : "pending";
+  const handleگیرندهggleوضعیت = async (task: Task) => {
+    const newوضعیت = task.status === "pending" ? "completed" : "pending";
     const { error } = await supabase
       .from("tasks")
-      .update({ status: newStatus })
+      .update({ status: newوضعیت })
       .eq("id", task.id);
 
     if (error) {
@@ -49,7 +49,7 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
       return;
     }
 
-    toast.success(`Task marked as ${newStatus}`);
+    toast.success(`Task marked as ${newوضعیت}`);
     onوظایفChange();
   };
 
@@ -73,7 +73,7 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
     return (
       <Card>
         <CardContent className="pt-6">
-          <p className="text-center text-muted-foreground">No tasks yet</p>
+          <p className="text-center text-muted-foreground">خیر tasks yet</p>
         </CardContent>
       </Card>
     );
@@ -103,7 +103,7 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
                   </div>
                   {task.due_date && (
                     <p className="text-sm text-muted-foreground">
-                      Due: {format(new Date(task.due_date), "PPp")}
+                      Due: {format(new تاریخ(task.due_date), "PPp")}
                     </p>
                   )}
                 </div>
@@ -112,7 +112,7 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleToggleStatus(task)}
+                    onClick={() => handleگیرندهggleوضعیت(task)}
                     title={
                       task.status === "pending" ? "Mark as completed" : "Mark as pending"
                     }
@@ -148,18 +148,18 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
         <ویرایشTaskDialog
           task={editTask}
           open={!!editTask}
-          onOpenChange={(open) => !open && setویرایشTask(null)}
+          onبازChange={(open) => !open && setویرایشTask(null)}
           onTaskبه‌روزرسانیd={onوظایفChange}
         />
       )}
 
-      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setحذفTaskId(null)}>
+      <AlertDialog open={!!deleteTaskId} onبازChange={() => setحذفTaskId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogعنوان>حذف Task</AlertDialogعنوان>
-            <AlertDialogDescription>
+            <AlertDialogتوضیحات>
               Are you sure you want to delete this task? This action cannot be undone.
-            </AlertDialogDescription>
+            </AlertDialogتوضیحات>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogانصراف>انصراف</AlertDialogانصراف>

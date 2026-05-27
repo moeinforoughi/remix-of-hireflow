@@ -10,64 +10,64 @@ import { ChevronDown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { getStageColorClasses } from '@/lib/stage-colors';
+import { getمرحلهColorClasses } from '@/lib/stage-colors';
 
-interface StatusDropdownProps {
-  currentStage: {
+interface وضعیتDropdownProps {
+  currentمرحله: {
     id: string;
     name: string;
     type: string;
   } | null;
   applicationId: string;
   applicationState?: 'active' | 'rejected' | 'withdrawn' | 'hired';
-  availableStages: Array<{
+  availableمرحلهs: Array<{
     id: string;
     name: string;
     type: string;
   }>;
-  onStageChange?: () => Promise<void> | void;
+  onمرحلهChange?: () => Promise<void> | void;
 }
 
-export const StatusDropdown = ({
-  currentStage,
+export const وضعیتDropdown = ({
+  currentمرحله,
   applicationId,
   applicationState = 'active',
-  availableStages,
-  onStageChange,
-}: StatusDropdownProps) => {
+  availableمرحلهs,
+  onمرحلهChange,
+}: وضعیتDropdownProps) => {
   const [updating, setUpdating] = useState(false);
-  const [optimisticStageId, setOptimisticStageId] = useState<string | null>(currentStage?.id ?? null);
+  const [optimisticمرحلهId, setOptimisticمرحلهId] = useState<string | null>(currentمرحله?.id ?? null);
 
   useEffect(() => {
-    setOptimisticStageId(currentStage?.id ?? null);
-  }, [currentStage?.id]);
+    setOptimisticمرحلهId(currentمرحله?.id ?? null);
+  }, [currentمرحله?.id]);
 
   const stageById = useMemo(() => {
     const map = new Map<string, { id: string; name: string; type: string }>();
-    availableStages.forEach((s) => map.set(s.id, s));
+    availableمرحلهs.forEach((s) => map.set(s.id, s));
     return map;
-  }, [availableStages]);
+  }, [availableمرحلهs]);
 
-  const displayedStage = optimisticStageId ? stageById.get(optimisticStageId) ?? currentStage : currentStage;
+  const displayedمرحله = optimisticمرحلهId ? stageById.get(optimisticمرحلهId) ?? currentمرحله : currentمرحله;
   
-  // Show application state if not active, otherwise show stage name
+  // نمایش application state if not active, otherwise show stage name
   const getDisplayName = () => {
-    if (applicationState === 'withdrawn') return 'Withdrawn';
-    if (applicationState === 'rejected') return 'Rejected';
-    return displayedStage?.name || 'No Stage';
+    if (applicationState === 'withdrawn') return 'پس گرفتنn';
+    if (applicationState === 'rejected') return 'ردed';
+    return displayedمرحله?.name || 'خیر مرحله';
   };
   
-  const displayedStageName = getDisplayName();
+  const displayedمرحلهName = getDisplayName();
   
   // Disable dropdown if application is withdrawn or rejected
   const isDisabled = updating || applicationState === 'withdrawn' || applicationState === 'rejected';
 
-  const handleStageChange = async (stageId: string) => {
+  const handleمرحلهChange = async (stageId: string) => {
     // Don't update if selecting the same stage
-    if ((optimisticStageId ?? currentStage?.id) === stageId) return;
+    if ((optimisticمرحلهId ?? currentمرحله?.id) === stageId) return;
 
-    const previousStageId = optimisticStageId ?? currentStage?.id ?? null;
-    setOptimisticStageId(stageId);
+    const previousمرحلهId = optimisticمرحلهId ?? currentمرحله?.id ?? null;
+    setOptimisticمرحلهId(stageId);
 
     setUpdating(true);
     try {
@@ -79,21 +79,21 @@ export const StatusDropdown = ({
 
       if (error) throw error;
       if (!data || data.length === 0) {
-        throw new Error('Status update was blocked (no rows updated). Check your permissions for this job.');
+        throw new Error('وضعیت update was blocked (no rows updated). Check your permissions for this job.');
       }
 
-      // Refresh parent data (authoritative state)
-      if (onStageChange) {
-        await onStageChange();
+      // به‌روزرسانی parent data (authoritative state)
+      if (onمرحلهChange) {
+        await onمرحلهChange();
       }
 
       toast({
         title: 'موفقیت',
-        description: 'Status updated successfully',
+        description: 'وضعیت updated successfully',
       });
     } catch (error: any) {
       // Revert optimistic UI on failure
-      setOptimisticStageId(previousStageId);
+      setOptimisticمرحلهId(previousمرحلهId);
       toast({
         title: 'خطا',
         description: error.message,
@@ -111,24 +111,24 @@ export const StatusDropdown = ({
           className={cn(
             'w-[184px] px-3 py-2 rounded-md inline-flex justify-center items-center gap-1 cursor-pointer transition-all border',
             'hover:shadow-md hover:scale-[1.02] active:scale-[0.98]',
-            getStageColorClasses(displayedStageName)
+            getمرحلهColorClasses(displayedمرحلهName)
           )}
           aria-label="Change candidate status"
         >
-          <div className="flex-1 text-center text-base font-medium">{displayedStageName}</div>
+          <div className="flex-1 text-center text-base font-medium">{displayedمرحلهName}</div>
           <ChevronDown className="h-4 w-4" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48 bg-background z-50">
-        {availableStages.map((stage) => (
+        {availableمرحلهs.map((stage) => (
           <DropdownMenuItem
             key={stage.id}
-            onClick={() => handleStageChange(stage.id)}
+            onClick={() => handleمرحلهChange(stage.id)}
             className="cursor-pointer"
           >
             <Badge
               variant="outline"
-              className={cn('capitalize w-full justify-center border', getStageColorClasses(stage.name))}
+              className={cn('capitalize w-full justify-center border', getمرحلهColorClasses(stage.name))}
             >
               {stage.name}
             </Badge>

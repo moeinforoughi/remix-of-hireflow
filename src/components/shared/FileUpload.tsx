@@ -1,10 +1,10 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, X, FileText } from 'lucide-react';
+import { بارگذاری, X, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
-interface FileUploadProps {
+interface FileبارگذاریProps {
   value?: File | null;
   onChange: (file: File | null) => void;
   accept?: string;
@@ -15,13 +15,13 @@ interface FileUploadProps {
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_TYPES = '.pdf,.doc,.docx';
 
-export const FileUpload = ({
+export const Fileبارگذاری = ({
   value,
   onChange,
   accept = ACCEPTED_TYPES,
   maxSize = MAX_FILE_SIZE,
   disabled = false,
-}: FileUploadProps) => {
+}: FileبارگذاریProps) => {
   const [error, setError] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +41,7 @@ export const FileUpload = ({
     }
 
     // Validate file type
-    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    const fileExtension = '.' + file.name.split('.').pop()?.toکمerCase();
     const acceptedTypes = accept.split(',').map(t => t.trim());
     
     if (!acceptedTypes.includes(fileExtension)) {
@@ -53,7 +53,7 @@ export const FileUpload = ({
     onChange(file);
   };
 
-  const handleRemove = () => {
+  const handleحذف = () => {
     onChange(null);
     setError('');
   };
@@ -69,7 +69,7 @@ export const FileUpload = ({
             disabled={disabled}
             className="cursor-pointer"
           />
-          <Upload className="h-4 w-4 text-muted-foreground" />
+          <بارگذاری className="h-4 w-4 text-muted-foreground" />
         </div>
       ) : (
         <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
@@ -82,7 +82,7 @@ export const FileUpload = ({
             type="button"
             variant="ghost"
             size="sm"
-            onClick={handleRemove}
+            onClick={handleحذف}
             disabled={disabled}
           >
             <X className="h-4 w-4" />

@@ -5,50 +5,50 @@ import { Mail, Trash2 } from 'lucide-react';
 import { حذفAccountDialog } from './حذفAccountDialog';
 import { supabase } from '@/integrations/supabase/client';
 
-interface NotificationPreference {
+interface خیرtificationPreference {
   type: string;
   email: boolean;
   push: boolean;
 }
 
-export const NotificationSettings = () => {
-  const [notifications, setNotifications] = useState<NotificationPreference[]>([
-    { type: 'New Candidate', email: true, push: true },
-    { type: 'Candidate Applied', email: true, push: true },
-    { type: 'Candidate Moved Stage', email: false, push: true },
+export const خیرtificationتنظیمات = () => {
+  const [notifications, setخیرtifications] = useState<خیرtificationPreference[]>([
+    { type: 'کاندیدای جدید', email: true, push: true },
+    { type: 'Candidate ثبت درخواست شده', email: true, push: true },
+    { type: 'Candidate Moved مرحله', email: false, push: true },
     { type: 'Offer Made', email: false, push: true },
-    { type: 'Offer Accepted', email: true, push: true },
+    { type: 'Offer پذیرفته شده', email: true, push: true },
   ]);
-  const [deleteDialogOpen, setحذفDialogOpen] = useState(false);
+  const [deleteDialogباز, setحذفDialogباز] = useState(false);
   const [isDemoAccount, setIsDemoAccount] = useState(false);
 
   useEffect(() => {
     const checkDemoAccount = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user?.email?.toLowerCase().includes('demo')) {
+      if (user?.email?.toکمerCase().includes('demo')) {
         setIsDemoAccount(true);
       }
     };
     checkDemoAccount();
   }, []);
 
-  const handleToggle = (index: number, channel: 'email' | 'push', value: boolean) => {
+  const handleگیرندهggle = (index: number, channel: 'email' | 'push', value: boolean) => {
     const updated = [...notifications];
     updated[index][channel] = value;
-    setNotifications(updated);
+    setخیرtifications(updated);
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg">Notifications</h3>
+        <h3 className="text-lg">خیرtifications</h3>
       </div>
 
       <div className="border rounded-lg overflow-hidden">
         {/* Header */}
         <div className="grid grid-cols-[2fr,1fr,1fr] gap-4 bg-muted px-6 py-3 border-b">
-          <div className="text-sm font-medium">Notification Type</div>
-          <div className="text-sm font-medium text-center">Email</div>
+          <div className="text-sm font-medium">خیرtification Type</div>
+          <div className="text-sm font-medium text-center">ایمیل</div>
           <div className="text-sm font-medium text-center">Push</div>
         </div>
 
@@ -62,13 +62,13 @@ export const NotificationSettings = () => {
             <div className="flex justify-center">
               <Switch
                 checked={notification.email}
-                onCheckedChange={(value) => handleToggle(index, 'email', value)}
+                onCheckedChange={(value) => handleگیرندهggle(index, 'email', value)}
               />
             </div>
             <div className="flex justify-center">
               <Switch
                 checked={notification.push}
-                onCheckedChange={(value) => handleToggle(index, 'push', value)}
+                onCheckedChange={(value) => handleگیرندهggle(index, 'push', value)}
               />
             </div>
           </div>
@@ -89,7 +89,7 @@ export const NotificationSettings = () => {
           <Button 
             variant="outline" 
             className="flex-1 text-destructive hover:text-destructive"
-            onClick={() => setحذفDialogOpen(true)}
+            onClick={() => setحذفDialogباز(true)}
           >
             <Trash2 className="h-4 w-4 mr-2" />
             حذف Account
@@ -98,8 +98,8 @@ export const NotificationSettings = () => {
       </div>
 
       <حذفAccountDialog 
-        open={deleteDialogOpen}
-        onOpenChange={setحذفDialogOpen}
+        open={deleteDialogباز}
+        onبازChange={setحذفDialogباز}
       />
     </div>
   );

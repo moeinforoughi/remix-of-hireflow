@@ -6,10 +6,10 @@ import {
   DialogContent,
   DialogHeader,
   Dialogعنوان,
-  DialogDescription,
+  Dialogتوضیحات,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Briefcase, Loader2 } from 'lucide-react';
 import { notifyNewApplication } from '@/lib/notifications';
@@ -21,25 +21,25 @@ interface Job {
   status: string;
 }
 
-interface ApplyToJobDialogProps {
+interface ثبت درخواستگیرندهJobDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onبازChange: (open: boolean) => void;
   candidateId: string;
   candidateName: string;
   existingJobIds: string[];
   onSuccess?: () => void;
 }
 
-export const ApplyToJobDialog = ({
+export const ثبت درخواستگیرندهJobDialog = ({
   open,
-  onOpenChange,
+  onبازChange,
   candidateId,
   candidateName,
   existingJobIds,
   onSuccess,
-}: ApplyToJobDialogProps) => {
+}: ثبت درخواستگیرندهJobDialogProps) => {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [selectedJobId, setSelectedJobId] = useState<string>('');
+  const [selectedJobId, setانتخابedJobId] = useState<string>('');
   const [loading, setبارگذاری] = useState(false);
   const [fetching, setFetching] = useState(true);
 
@@ -70,11 +70,11 @@ export const ApplyToJobDialog = ({
         .eq('user_id', user.id)
         .single();
 
-      const isSiteAdmin = roleData?.role === 'site_admin';
+      const isSiteمدیر کل = roleData?.role === 'site_admin';
 
       let availableJobs: Job[] = [];
 
-      if (isSiteAdmin) {
+      if (isSiteمدیر کل) {
         // Site admins can see all open jobs
         const { data, error } = await supabase
           .from('jobs')
@@ -126,7 +126,7 @@ export const ApplyToJobDialog = ({
     }
   };
 
-  const handleApply = async () => {
+  const handleثبت درخواست = async () => {
     if (!selectedJobId) {
       toast({
         title: 'خطا',
@@ -139,7 +139,7 @@ export const ApplyToJobDialog = ({
     setبارگذاری(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) throw new Error('خیرt authenticated');
 
       // Get the first stage for the job
       const { data: stages, error: stagesError } = await supabase
@@ -150,10 +150,10 @@ export const ApplyToJobDialog = ({
 
       if (stagesError) throw stagesError;
 
-      const firstStage = stages?.find(s => s.name.toLowerCase().includes('applied')) || stages?.[0];
+      const firstمرحله = stages?.find(s => s.name.toکمerCase().includes('applied')) || stages?.[0];
 
-      if (!firstStage) {
-        throw new Error('No pipeline stage found for this job');
+      if (!firstمرحله) {
+        throw new Error('خیر pipeline stage found for this job');
       }
 
       // ایجاد the application
@@ -162,17 +162,17 @@ export const ApplyToJobDialog = ({
         .insert({
           candidate_id: candidateId,
           job_id: selectedJobId,
-          current_stage_id: firstStage.id,
+          current_stage_id: firstمرحله.id,
           state: 'active',
           owner_user_id: user.id,
-          applied_at: new Date().toISOString(),
+          applied_at: new تاریخ().toISOString(),
         })
         .select('id')
         .single();
 
       if (applicationError) throw applicationError;
 
-      // Send notification
+      // ارسال notification
       if (applicationData) {
         notifyNewApplication(selectedJobId, candidateName, applicationData.id).catch(console.error);
       }
@@ -183,8 +183,8 @@ export const ApplyToJobDialog = ({
         description: `${candidateName} has been applied to ${selectedJob?.title}`,
       });
 
-      setSelectedJobId('');
-      onOpenChange(false);
+      setانتخابedJobId('');
+      onبازChange(false);
       onSuccess?.();
     } catch (error: any) {
       toast({
@@ -198,16 +198,16 @@ export const ApplyToJobDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onبازChange={onبازChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <Dialogعنوان className="flex items-center gap-2">
             <Briefcase className="h-5 w-5" />
-            Apply to Job
+            ثبت درخواست to Job
           </Dialogعنوان>
-          <DialogDescription>
-            Select a job to apply {candidateName} to.
-          </DialogDescription>
+          <Dialogتوضیحات>
+            انتخاب a job to apply {candidateName} to.
+          </Dialogتوضیحات>
         </DialogHeader>
 
         <div className="space-y-4 pt-4">
@@ -217,52 +217,52 @@ export const ApplyToJobDialog = ({
             </div>
           ) : jobs.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>No available jobs to apply to.</p>
+              <p>خیر available jobs to apply to.</p>
               <p className="text-sm mt-1">This candidate may already be applied to all open positions.</p>
             </div>
           ) : (
             <>
               <div className="space-y-2">
-                <Label htmlFor="job">Select Job Position</Label>
-                <Select value={selectedJobId} onValueChange={setSelectedJobId}>
-                  <SelectTrigger className="h-11">
-                    <SelectValue placeholder="Choose a job..." />
-                  </SelectTrigger>
-                  <SelectContent>
+                <Label htmlFor="job">انتخاب Job Position</Label>
+                <انتخاب value={selectedJobId} onValueChange={setانتخابedJobId}>
+                  <انتخابTrigger className="h-11">
+                    <انتخابValue placeholder="Choose a job..." />
+                  </انتخابTrigger>
+                  <انتخابContent>
                     {jobs.map((job) => (
-                      <SelectItem key={job.id} value={job.id}>
+                      <انتخابItem key={job.id} value={job.id}>
                         <div className="flex flex-col items-start">
                           <span>{job.title}</span>
                           {job.location && (
                             <span className="text-xs text-muted-foreground">{job.location}</span>
                           )}
                         </div>
-                      </SelectItem>
+                      </انتخابItem>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </انتخابContent>
+                </انتخاب>
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => onOpenChange(false)}
+                  onClick={() => onبازChange(false)}
                   disabled={loading}
                 >
                   انصراف
                 </Button>
                 <Button
-                  onClick={handleApply}
+                  onClick={handleثبت درخواست}
                   disabled={loading || !selectedJobId}
                 >
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Applying...
+                      ثبت درخواستing...
                     </>
                   ) : (
-                    'Apply to Job'
+                    'ثبت درخواست to Job'
                   )}
                 </Button>
               </div>

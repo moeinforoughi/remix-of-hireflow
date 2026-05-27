@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/c
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceگیرندهخیرw } from "date-fns";
 import { Mail, Clock, CheckCircle, XCircle } from "lucide-react";
 
-interface Message {
+interface پیام {
   id: string;
   subject: string;
   to_addresses: string[];
@@ -17,17 +17,17 @@ interface Message {
   body_html: string;
 }
 
-interface MessageTimelineProps {
+interface پیامزمانlineProps {
   applicationId?: string;
   candidateId?: string;
 }
 
-export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+export const پیامزمانline = ({ applicationId, candidateId }: پیامزمانlineProps) => {
+  const [messages, setپیامs] = useState<پیام[]>([]);
   const [loading, setبارگذاری] = useState(true);
 
   useEffect(() => {
-    fetchMessages();
+    fetchپیامs();
 
     // Set up realtime subscription for inserts and updates
     const channel = supabase
@@ -45,7 +45,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
             : undefined,
         },
         (payload) => {
-          setMessages((current) => [payload.new as Message, ...current]);
+          setپیامs((current) => [payload.new as پیام, ...current]);
         }
       )
       .on(
@@ -61,9 +61,9 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
             : undefined,
         },
         (payload) => {
-          setMessages((current) =>
+          setپیامs((current) =>
             current.map((msg) =>
-              msg.id === payload.new.id ? (payload.new as Message) : msg
+              msg.id === payload.new.id ? (payload.new as پیام) : msg
             )
           );
         }
@@ -75,7 +75,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     };
   }, [applicationId, candidateId]);
 
-  const fetchMessages = async () => {
+  const fetchپیامs = async () => {
     setبارگذاری(true);
     try {
       let query = supabase
@@ -92,7 +92,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
       const { data, error } = await query;
 
       if (error) throw error;
-      setMessages(data || []);
+      setپیامs(data || []);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
@@ -100,7 +100,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getوضعیتIcon = (status: string) => {
     switch (status) {
       case "sent":
         return <CheckCircle className="h-4 w-4 text-green-500" />;
@@ -113,7 +113,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const getوضعیتBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
       sent: "default",
       failed: "destructive",
@@ -126,7 +126,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان>Message History</Cardعنوان>
+          <Cardعنوان>پیام History</Cardعنوان>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">بارگذاری messages...</p>
@@ -138,11 +138,11 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>Message History</Cardعنوان>
+        <Cardعنوان>پیام History</Cardعنوان>
       </CardHeader>
       <CardContent>
         {messages.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No messages sent yet</p>
+          <p className="text-sm text-muted-foreground">خیر messages sent yet</p>
         ) : (
           <ScrollArea className="h-[600px]">
             <div className="space-y-4 min-h-full">
@@ -153,20 +153,20 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      {getStatusIcon(message.status)}
+                      {getوضعیتIcon(message.status)}
                       <h4 className="text-sm">{message.subject}</h4>
                     </div>
-                    {getStatusBadge(message.status)}
+                    {getوضعیتBadge(message.status)}
                   </div>
                   
                   <p className="text-xs text-muted-foreground mb-2">
-                    To: {message.to_addresses.join(", ")}
+                    گیرنده: {message.to_addresses.join(", ")}
                   </p>
                   
                   <p className="text-xs text-muted-foreground">
                     {message.sent_at
-                      ? `Sent ${formatDistanceToNow(new Date(message.sent_at))} ago`
-                      : `ایجادd ${formatDistanceToNow(new Date(message.created_at))} ago`}
+                      ? `ارسال شده ${formatDistanceگیرندهخیرw(new تاریخ(message.sent_at))} ago`
+                      : `ایجادd ${formatDistanceگیرندهخیرw(new تاریخ(message.created_at))} ago`}
                   </p>
                   
                   <details className="mt-2">

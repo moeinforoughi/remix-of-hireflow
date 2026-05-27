@@ -6,9 +6,9 @@ import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { Form, FormControl, FormField, FormItem, FormLabel, Formپیام } from '@/components/ui/form';
+import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { useگیرندهast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -21,7 +21,7 @@ type FormValues = z.infer<typeof formSchema>;
 const ApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast } = useگیرندهast();
   const [loading, setبارگذاری] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
@@ -120,7 +120,7 @@ const ApplicationForm = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl">New Application</h1>
+        <h1 className="text-3xl">درخواست جدید</h1>
         <p className="text-muted-foreground">ایجاد a new job application</p>
       </div>
 
@@ -137,27 +137,27 @@ const ApplicationForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Candidate</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a candidate" />
-                        </SelectTrigger>
+                        <انتخابTrigger>
+                          <انتخابValue placeholder="انتخاب a candidate" />
+                        </انتخابTrigger>
                       </FormControl>
-                      <SelectContent className="bg-background z-50">
+                      <انتخابContent className="bg-background z-50">
                         {candidates.length === 0 ? (
                           <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-                            No candidates found
+                            خیر candidates found
                           </div>
                         ) : (
                           candidates.map((candidate) => (
-                            <SelectItem key={candidate.id} value={candidate.id}>
+                            <انتخابItem key={candidate.id} value={candidate.id}>
                               {candidate.full_name} ({candidate.email})
-                            </SelectItem>
+                            </انتخابItem>
                           ))
                         )}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
+                      </انتخابContent>
+                    </انتخاب>
+                    <Formپیام />
                   </FormItem>
                 )}
               />
@@ -168,28 +168,28 @@ const ApplicationForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Job</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a job" />
-                        </SelectTrigger>
+                        <انتخابTrigger>
+                          <انتخابValue placeholder="انتخاب a job" />
+                        </انتخابTrigger>
                       </FormControl>
-                      <SelectContent className="bg-background z-50">
+                      <انتخابContent className="bg-background z-50">
                         {jobs.length === 0 ? (
                           <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-                            No jobs found
+                            خیر jobs found
                           </div>
                         ) : (
                           jobs.map((job) => (
-                            <SelectItem key={job.id} value={job.id}>
+                            <انتخابItem key={job.id} value={job.id}>
                               {job.title} {job.department && `- ${job.department}`}
                               {job.status !== 'open' && ` (${job.status})`}
-                            </SelectItem>
+                            </انتخابItem>
                           ))
                         )}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
+                      </انتخابContent>
+                    </انتخاب>
+                    <Formپیام />
                   </FormItem>
                 )}
               />
