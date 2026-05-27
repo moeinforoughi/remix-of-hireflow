@@ -12,16 +12,19 @@ import { Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const routeNames: Record<string, string> = {
-  dashboard: 'Dashboard',
-  jobs: 'Jobs',
-  candidates: 'Candidates',
-  applications: 'Applications',
-  interviews: 'Interviews',
-  offers: 'Offers',
-  settings: 'Settings',
-  templates: 'Templates',
-  new: 'New',
-  edit: 'Edit',
+  dashboard: 'داشبورد',
+  jobs: 'موقعیت‌های شغلی',
+  candidates: 'کاندیداها',
+  applications: 'درخواست‌های شغل',
+  interviews: 'مصاحبه‌ها',
+  offers: 'پیشنهادهای شغلی',
+  settings: 'تنظیمات',
+  templates: 'قالب‌ها',
+  tasks: 'وظایف',
+  'team-members': 'اعضای تیم',
+  new: 'جدید',
+  edit: 'ویرایش',
+  scorecard: 'فرم ارزیابی',
 };
 
 const isUUID = (str: string) => {
@@ -81,7 +84,7 @@ export const DynamicBreadcrumb = () => {
                 .single();
               if (data && data.applications) {
                 const app = data.applications as any;
-                if (app.candidates) names[segment] = `Offer - ${app.candidates.full_name}`;
+                if (app.candidates) names[segment] = `پیشنهاد - ${app.candidates.full_name}`;
               }
             }
           } catch (error) {

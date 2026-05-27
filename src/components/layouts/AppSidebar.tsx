@@ -31,35 +31,33 @@ const getMenuItemsForRole = (roles: string[]) => {
   const isJobAdmin = roles.includes('job_admin');
   
   const baseItems = [
-    { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
+    { title: 'داشبورد', url: '/dashboard', icon: LayoutDashboard },
   ];
   
   if (isSiteAdmin) {
     return [
       ...baseItems,
-      { title: 'Team Members', url: '/team-members', icon: Shield },
-      { title: 'Jobs', url: '/jobs', icon: Briefcase },
-      { title: 'Candidates', url: '/candidates', icon: Users },
-      { title: 'Tasks', url: '/tasks', icon: CheckSquare },
-      { title: 'Offers', url: '/offers', icon: DollarSign },
-      { title: 'Settings', url: '/settings', icon: Settings },
+      { title: 'اعضای تیم', url: '/team-members', icon: Shield },
+      { title: 'موقعیت‌های شغلی', url: '/jobs', icon: Briefcase },
+      { title: 'کاندیداها', url: '/candidates', icon: Users },
+      { title: 'وظایف', url: '/tasks', icon: CheckSquare },
+      { title: 'پیشنهادها', url: '/offers', icon: DollarSign },
+      { title: 'تنظیمات', url: '/settings', icon: Settings },
     ];
   }
   
-  // Job Admin and Basic users menu
   const items = [
     ...baseItems,
-    { title: 'Jobs', url: '/jobs', icon: Briefcase },
-    { title: 'Candidates', url: '/candidates', icon: Users },
-    { title: 'Tasks', url: '/tasks', icon: CheckSquare },
+    { title: 'موقعیت‌های شغلی', url: '/jobs', icon: Briefcase },
+    { title: 'کاندیداها', url: '/candidates', icon: Users },
+    { title: 'وظایف', url: '/tasks', icon: CheckSquare },
   ];
   
-  // Add Offers for job admins
   if (isJobAdmin) {
-    items.push({ title: 'Offers', url: '/offers', icon: DollarSign });
+    items.push({ title: 'پیشنهادها', url: '/offers', icon: DollarSign });
   }
   
-  items.push({ title: 'Settings', url: '/settings', icon: Settings });
+  items.push({ title: 'تنظیمات', url: '/settings', icon: Settings });
   
   return items;
 };
@@ -156,27 +154,27 @@ export function AppSidebar() {
 
   const getRoleBadge = () => {
     if (userRoles.includes('site_admin')) {
-      return <Badge variant="default" className="text-xs">Admin</Badge>;
+      return <Badge variant="default" className="text-xs">مدیر کل</Badge>;
     }
     if (userRoles.includes('job_admin')) {
-      return <Badge variant="secondary" className="text-xs">Job Admin</Badge>;
+      return <Badge variant="secondary" className="text-xs">مدیر شغل</Badge>;
     }
-    return <Badge variant="outline" className="text-xs">Collaborator</Badge>;
+    return <Badge variant="outline" className="text-xs">همکار</Badge>;
   };
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
       toast({
-        title: "Logged out",
-        description: "You have been logged out successfully",
+        title: 'خروج موفق',
+        description: 'با موفقیت از حساب خود خارج شدید',
       });
       navigate('/auth/login');
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: 'خطا',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -191,19 +189,18 @@ export function AppSidebar() {
       if (error) throw error;
       
       toast({
-        title: "Demo data reset",
-        description: "All demo content has been reset successfully. Refreshing...",
+        title: 'داده‌های آزمایشی بازنشانی شد',
+        description: 'تمام محتوای آزمایشی با موفقیت بازنشانی شد. در حال بارگذاری مجدد...',
       });
       
-      // Refresh the page to show updated data
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to reset demo data",
-        variant: "destructive",
+        title: 'خطا',
+        description: error.message || 'بازنشانی داده‌های آزمایشی ناموفق بود',
+        variant: 'destructive',
       });
     } finally {
       setIsResetting(false);
@@ -273,9 +270,9 @@ export function AppSidebar() {
                 </AvatarFallback>
               </Avatar>
               {open && (
-                <div className="flex-1 text-left overflow-hidden">
+                <div className="flex-1 text-right overflow-hidden">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="font-medium text-sm">{userProfile?.full_name?.split(' ')[0] || 'User'}</p>
+                    <p className="font-medium text-sm">{userProfile?.full_name?.split(' ')[0] || 'کاربر'}</p>
                     {getRoleBadge()}
                   </div>
                   <p className="text-xs text-muted-foreground truncate">{userProfile?.email || ''}</p>
@@ -294,7 +291,7 @@ export function AppSidebar() {
                 </Avatar>
                 <div className="flex-1 overflow-hidden">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="font-semibold text-sm">{userProfile?.full_name?.split(' ')[0] || 'User'}</p>
+                    <p className="font-semibold text-sm">{userProfile?.full_name?.split(' ')[0] || 'کاربر'}</p>
                     {getRoleBadge()}
                   </div>
                   <p className="text-xs text-muted-foreground truncate">{userProfile?.email || ''}</p>
@@ -303,22 +300,22 @@ export function AppSidebar() {
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/settings')}>
-              <User className="mr-2 h-4 w-4" />
-              Profile Settings
+              <User className="ml-2 h-4 w-4" />
+              تنظیمات حساب
             </DropdownMenuItem>
             {isDemoUser && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleResetDemoData} disabled={isResetting}>
-                  <RefreshCw className={`mr-2 h-4 w-4 ${isResetting ? 'animate-spin' : ''}`} />
-                  Reset Demo Content
+                  <RefreshCw className={`ml-2 h-4 w-4 ${isResetting ? 'animate-spin' : ''}`} />
+                  بازنشانی محتوای آزمایشی
                 </DropdownMenuItem>
               </>
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
+              <LogOut className="ml-2 h-4 w-4" />
+              خروج از حساب
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
