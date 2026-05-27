@@ -76,7 +76,7 @@ export function ViewJobDialog({
             <DialogTitle className="text-2xl font-semibold">{job.title}</DialogTitle>
             {canEdit && (
               <Button onClick={handleEditClick} variant="outline" className="bg-foreground text-background hover:bg-foreground/90">
-                Edit Listing
+                ویرایش Listing
               </Button>
             )}
           </DialogHeader>
@@ -108,7 +108,7 @@ export function ViewJobDialog({
                 </div>}
               
               {job.role_overview && <div>
-                  <h3 className="text-lg mb-3 text-foreground">Role Overview</h3>
+                  <h3 className="text-lg mb-3 text-foreground">نقش Overview</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{job.role_overview}</p>
                 </div>}
               
@@ -118,14 +118,14 @@ export function ViewJobDialog({
                 </div>}
 
               {job.description_md && !job.about_us && !job.role_overview && !job.what_you_will_do && <div>
-                  <h3 className="text-lg mb-3 text-foreground">Description</h3>
+                  <h3 className="text-lg mb-3 text-foreground">توضیحات</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{job.description_md}</p>
                 </div>}
             </div>
 
             <div className="space-y-8">
               {job.requirements_md && <div>
-                  <h3 className="text-lg mb-3 text-foreground">Requirements</h3>
+                  <h3 className="text-lg mb-3 text-foreground">نیازمندی‌ها</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{job.requirements_md}</p>
                 </div>}
               
@@ -135,7 +135,7 @@ export function ViewJobDialog({
                 </div>}
               
               {job.benefits && <div>
-                  <h3 className="text-lg mb-3 text-foreground">Benefits</h3>
+                  <h3 className="text-lg mb-3 text-foreground">مزایا</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{job.benefits}</p>
                 </div>}
             </div>

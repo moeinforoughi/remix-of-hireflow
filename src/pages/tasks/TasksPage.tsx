@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Pencil, Trash2, Check, X, Plus, Search, Calendar, User } from "lucide-react";
+import { Pencil, Trash2, Check, X, Plus, جستجو, Calendar, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
+  انتخاب,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -67,10 +67,10 @@ interface Candidate {
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "completed">("all");
-  const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
+  const [deleteTaskId, setRemoveTaskId] = useState<string | null>(null);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
@@ -78,14 +78,14 @@ export default function TasksPage() {
   // Form states
   const [formTitle, setFormTitle] = useState("");
   const [formLabel, setFormLabel] = useState("");
-  const [formDueDate, setFormDueDate] = useState<Date | undefined>();
+  const [formDueDate, setFormDueDate] = useState<تاریخ | undefined>();
   const [formDueTime, setFormDueTime] = useState<string>("09:00");
   const [formStatus, setFormStatus] = useState<"pending" | "completed">("pending");
   const [formCandidateId, setFormCandidateId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchData = async () => {
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -123,7 +123,7 @@ export default function TasksPage() {
       console.error("Error fetching data:", error);
       toast.error("Failed to load tasks");
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -148,7 +148,7 @@ export default function TasksPage() {
     fetchData();
   };
 
-  const handleDelete = async () => {
+  const handleRemove = async () => {
     if (!deleteTaskId) return;
 
     const { error } = await supabase.from("tasks").delete().eq("id", deleteTaskId);
@@ -160,7 +160,7 @@ export default function TasksPage() {
     }
 
     toast.success("Task deleted successfully");
-    setDeleteTaskId(null);
+    setRemoveTaskId(null);
     fetchData();
   };
 
@@ -183,7 +183,7 @@ export default function TasksPage() {
     try {
       let dueDateTime: string | null = null;
       if (formDueDate) {
-        const date = new Date(formDueDate);
+        const date = new تاریخ(formDueDate);
         if (formDueTime) {
           const [hours, minutes] = formDueTime.split(":").map(Number);
           date.setHours(hours, minutes);
@@ -224,7 +224,7 @@ export default function TasksPage() {
     try {
       let dueDateTime: string | null = null;
       if (formDueDate) {
-        const date = new Date(formDueDate);
+        const date = new تاریخ(formDueDate);
         if (formDueTime) {
           const [hours, minutes] = formDueTime.split(":").map(Number);
           date.setHours(hours, minutes);
@@ -262,7 +262,7 @@ export default function TasksPage() {
     setFormLabel(task.label || "");
     setFormStatus(task.status);
     if (task.due_date) {
-      const date = new Date(task.due_date);
+      const date = new تاریخ(task.due_date);
       setFormDueDate(date);
       const hours = date.getHours().toString().padStart(2, "0");
       const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -305,22 +305,22 @@ export default function TasksPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl">Tasks</h1>
+          <h1 className="text-2xl">وظایف</h1>
           <p className="text-muted-foreground">
             {pendingCount} pending, {completedCount} completed
           </p>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Task
+          افزودن وظیفه
         </Button>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search tasks..."
+            placeholder="جستجو tasks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -329,8 +329,8 @@ export default function TasksPage() {
         <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
           <TabsList>
             <TabsTrigger value="all">All ({tasks.length})</TabsTrigger>
-            <TabsTrigger value="pending">Pending ({pendingCount})</TabsTrigger>
-            <TabsTrigger value="completed">Completed ({completedCount})</TabsTrigger>
+            <TabsTrigger value="pending">در انتظار ({pendingCount})</TabsTrigger>
+            <TabsTrigger value="completed">انجام شده ({completedCount})</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -339,7 +339,7 @@ export default function TasksPage() {
         <Card>
           <CardContent className="pt-6">
             <p className="text-center text-muted-foreground">
-              {tasks.length === 0 ? "No tasks yet. Create your first task!" : "No tasks match your filters"}
+              {tasks.length === 0 ? "خیر tasks yet. ایجاد your first task!" : "خیر tasks match your filters"}
             </p>
           </CardContent>
         </Card>
@@ -370,7 +370,7 @@ export default function TasksPage() {
                       {task.due_date && (
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {format(new Date(task.due_date), "PPp")}
+                          {format(new تاریخ(task.due_date), "PPp")}
                         </span>
                       )}
                       {task.candidate && (
@@ -408,7 +408,7 @@ export default function TasksPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setDeleteTaskId(task.id)}
+                      onClick={() => setRemoveTaskId(task.id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -420,18 +420,18 @@ export default function TasksPage() {
         </div>
       )}
 
-      {/* Add Task Dialog */}
+      {/* افزودن وظیفه Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Task</DialogTitle>
+            <DialogTitle>افزودن وظیفه جدید</DialogTitle>
             <DialogDescription>
-              Create a new task linked to a candidate.
+              ایجاد a new task linked to a candidate.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">عنوان *</Label>
               <Input
                 id="title"
                 value={formTitle}
@@ -441,9 +441,9 @@ export default function TasksPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="candidate">Candidate *</Label>
-              <Select value={formCandidateId} onValueChange={setFormCandidateId}>
+              <انتخاب value={formCandidateId} onValueChange={setFormCandidateId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a candidate" />
+                  <SelectValue placeholder="انتخاب a candidate" />
                 </SelectTrigger>
                 <SelectContent>
                   {candidates.map((candidate) => (
@@ -452,7 +452,7 @@ export default function TasksPage() {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </انتخاب>
             </div>
             <div className="space-y-2">
               <Label htmlFor="label">Label</Label>
@@ -465,7 +465,7 @@ export default function TasksPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Due Date</Label>
+                <Label>Due تاریخ</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
@@ -484,46 +484,46 @@ export default function TasksPage() {
                 </Popover>
               </div>
               <div className="space-y-2">
-                <Label>Due Time</Label>
+                <Label>Due زمان</Label>
                 <TimePickerAMPM value={formDueTime} onChange={setFormDueTime} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
+              <Label>وضعیت</Label>
+              <انتخاب value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="pending">در انتظار</SelectItem>
+                  <SelectItem value="completed">انجام شده</SelectItem>
                 </SelectContent>
-              </Select>
+              </انتخاب>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setIsAddDialogOpen(false); resetForm(); }}>
-              Cancel
+              انصراف
             </Button>
             <Button onClick={handleAddTask} disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Task"}
+              {isSubmitting ? "در حال ایجاد..." : "ایجاد Task"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Edit Task Dialog */}
+      {/* ویرایش Task Dialog */}
       <Dialog open={!!editTask} onOpenChange={(open) => { if (!open) { setEditTask(null); resetForm(); } }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Task</DialogTitle>
+            <DialogTitle>ویرایش Task</DialogTitle>
             <DialogDescription>
-              Update the task details.
+              به‌روزرسانی the task details.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-title">Title *</Label>
+              <Label htmlFor="edit-title">عنوان *</Label>
               <Input
                 id="edit-title"
                 value={formTitle}
@@ -542,7 +542,7 @@ export default function TasksPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Due Date</Label>
+                <Label>Due تاریخ</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
@@ -561,46 +561,46 @@ export default function TasksPage() {
                 </Popover>
               </div>
               <div className="space-y-2">
-                <Label>Due Time</Label>
+                <Label>Due زمان</Label>
                 <TimePickerAMPM value={formDueTime} onChange={setFormDueTime} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
+              <Label>وضعیت</Label>
+              <انتخاب value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="pending">در انتظار</SelectItem>
+                  <SelectItem value="completed">انجام شده</SelectItem>
                 </SelectContent>
-              </Select>
+              </انتخاب>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setEditTask(null); resetForm(); }}>
-              Cancel
+              انصراف
             </Button>
             <Button onClick={handleEditTask} disabled={isSubmitting}>
-              {isSubmitting ? "Updating..." : "Update Task"}
+              {isSubmitting ? "در حال به‌روزرسانی..." : "به‌روزرسانی Task"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setDeleteTaskId(null)}>
+      {/* حذف Confirmation Dialog */}
+      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setRemoveTaskId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Task</AlertDialogTitle>
+            <AlertDialogTitle>حذف Task</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this task? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemove}>حذف</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { Mail, Clock, CheckCircle, XCircle } from "lucide-react";
 
-interface Message {
+interface پیام {
   id: string;
   subject: string;
   to_addresses: string[];
@@ -23,8 +23,8 @@ interface MessageTimelineProps {
 }
 
 export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState<پیام[]>([]);
+  const [loading, setUpload] = useState(true);
 
   useEffect(() => {
     fetchMessages();
@@ -45,7 +45,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
             : undefined,
         },
         (payload) => {
-          setMessages((current) => [payload.new as Message, ...current]);
+          setMessages((current) => [payload.new as پیام, ...current]);
         }
       )
       .on(
@@ -63,7 +63,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
         (payload) => {
           setMessages((current) =>
             current.map((msg) =>
-              msg.id === payload.new.id ? (payload.new as Message) : msg
+              msg.id === payload.new.id ? (payload.new as پیام) : msg
             )
           );
         }
@@ -76,7 +76,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
   }, [applicationId, candidateId]);
 
   const fetchMessages = async () => {
-    setLoading(true);
+    setUpload(true);
     try {
       let query = supabase
         .from("messages")
@@ -96,7 +96,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -126,10 +126,10 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Message History</CardTitle>
+          <CardTitle>پیام History</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Loading messages...</p>
+          <p className="text-sm text-muted-foreground">بارگذاری messages...</p>
         </CardContent>
       </Card>
     );
@@ -138,11 +138,11 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Message History</CardTitle>
+        <CardTitle>پیام History</CardTitle>
       </CardHeader>
       <CardContent>
         {messages.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No messages sent yet</p>
+          <p className="text-sm text-muted-foreground">خیر messages sent yet</p>
         ) : (
           <ScrollArea className="h-[600px]">
             <div className="space-y-4 min-h-full">
@@ -160,13 +160,13 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
                   </div>
                   
                   <p className="text-xs text-muted-foreground mb-2">
-                    To: {message.to_addresses.join(", ")}
+                    گیرنده: {message.to_addresses.join(", ")}
                   </p>
                   
                   <p className="text-xs text-muted-foreground">
                     {message.sent_at
-                      ? `Sent ${formatDistanceToNow(new Date(message.sent_at))} ago`
-                      : `Created ${formatDistanceToNow(new Date(message.created_at))} ago`}
+                      ? `ارسال شده ${formatDistanceToNow(new تاریخ(message.sent_at))} ago`
+                      : `Created ${formatDistanceToNow(new تاریخ(message.created_at))} ago`}
                   </p>
                   
                   <details className="mt-2">

@@ -23,7 +23,7 @@ const CareersJobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [job, setJob] = useState<Job | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
 
   useEffect(() => {
     if (id) {
@@ -45,7 +45,7 @@ const CareersJobDetail = () => {
     } catch (error) {
       console.error('Error fetching job:', error);
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -71,7 +71,7 @@ const CareersJobDetail = () => {
           <p className="text-muted-foreground">This position may no longer be available</p>
           <Button onClick={() => navigate('/careers')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Careers
+            بازگشت to فرصت‌های شغلی
           </Button>
         </div>
       </div>
@@ -89,7 +89,7 @@ const CareersJobDetail = () => {
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to all jobs
+            بازگشت to all jobs
           </Button>
           
           <h1 className="text-3xl md:text-4xl mb-4">{job.title}</h1>
@@ -113,7 +113,7 @@ const CareersJobDetail = () => {
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              <span>Posted {format(new Date(job.created_at), 'MMM d, yyyy')}</span>
+              <span>منتشرشده {format(new تاریخ(job.created_at), 'MMM d, yyyy')}</span>
             </div>
           </div>
 
@@ -131,7 +131,7 @@ const CareersJobDetail = () => {
             {job.description_md && (
               <Card>
                 <CardHeader>
-                  <CardTitle>About the Role</CardTitle>
+                  <CardTitle>About the نقش</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-sm max-w-none whitespace-pre-wrap">
@@ -144,7 +144,7 @@ const CareersJobDetail = () => {
             {job.requirements_md && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Requirements</CardTitle>
+                  <CardTitle>نیازمندی‌ها</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-sm max-w-none whitespace-pre-wrap">
@@ -155,11 +155,11 @@ const CareersJobDetail = () => {
             )}
           </div>
 
-          {/* Sidebar - Apply CTA */}
+          {/* Sidebar - ثبت درخواست CTA */}
           <div>
             <Card className="sticky top-4">
               <CardHeader>
-                <CardTitle>Apply for this position</CardTitle>
+                <CardTitle>ثبت درخواست for this position</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
@@ -170,7 +170,7 @@ const CareersJobDetail = () => {
                   size="lg"
                   onClick={() => navigate(`/careers/jobs/${job.id}/apply`)}
                 >
-                  Apply Now
+                  ثبت درخواست Now
                 </Button>
               </CardContent>
             </Card>

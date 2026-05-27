@@ -10,11 +10,11 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Star } from 'lucide-react';
 
 const RATING_CATEGORIES = [
-  { key: 'technical_skills', label: 'Technical Skills' },
+  { key: 'technical_skills', label: 'Technical مهارت‌ها' },
   { key: 'communication', label: 'Communication' },
   { key: 'problem_solving', label: 'Problem Solving' },
   { key: 'culture_fit', label: 'Culture Fit' },
-  { key: 'experience', label: 'Relevant Experience' },
+  { key: 'experience', label: 'Relevant سابقه کار' },
 ];
 
 const ScorecardForm = () => {
@@ -45,7 +45,7 @@ const ScorecardForm = () => {
     
     if (!recommendation) {
       toast({
-        title: 'Recommendation Required',
+        title: 'توصیه اجباری',
         description: 'Please select a recommendation',
         variant: 'destructive',
       });
@@ -63,13 +63,13 @@ const ScorecardForm = () => {
         recommendation: recommendation as 'advance' | 'hold' | 'no',
         ratings_json: ratings as any,
         notes: overallNotes,
-        submitted_at: new Date().toISOString(),
+        submitted_at: new تاریخ().toISOString(),
       }]);
 
       if (error) throw error;
 
       toast({
-        title: 'Scorecard Submitted',
+        title: 'فرم ارزیابی Submitted',
         description: 'Your interview feedback has been recorded.',
       });
 
@@ -91,13 +91,13 @@ const ScorecardForm = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate(`/interviews/${id}`)}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-3xl">Interview Scorecard</h1>
+        <h1 className="text-3xl">Interview فرم ارزیابی</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Rating Categories</CardTitle>
+            <CardTitle>امتیاز Categories</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {RATING_CATEGORIES.map((category) => (
@@ -125,7 +125,7 @@ const ScorecardForm = () => {
                   </span>
                 </div>
                 <Textarea
-                  placeholder="Add comments about this area..."
+                  placeholder="افزودن comments about this area..."
                   value={ratings[category.key]?.comment || ''}
                   onChange={(e) => handleCommentChange(category.key, e.target.value)}
                   rows={2}
@@ -137,7 +137,7 @@ const ScorecardForm = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recommendation</CardTitle>
+            <CardTitle>توصیه</CardTitle>
           </CardHeader>
           <CardContent>
             <RadioGroup value={recommendation} onValueChange={setRecommendation}>
@@ -179,14 +179,14 @@ const ScorecardForm = () => {
 
         <div className="flex gap-4">
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Submit Scorecard'}
+            {submitting ? 'Submitting...' : 'ثبت فرم ارزیابی'}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => navigate(`/interviews/${id}`)}
           >
-            Cancel
+            انصراف
           </Button>
         </div>
       </form>

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface RejectDialogProps {
   open: boolean;
@@ -20,7 +20,7 @@ interface RejectDialogProps {
 }
 
 const REJECTION_REASONS = [
-  'Qualifications not met',
+  'شرایط احراز not met',
   'Position filled',
   'Salary expectations mismatch',
   'Cultural fit concerns',
@@ -41,7 +41,7 @@ export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProp
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Reject Application</AlertDialogTitle>
+          <AlertDialogTitle>رد Application</AlertDialogTitle>
           <AlertDialogDescription>
             This will mark the application as rejected. This action can be reversed later if needed.
           </AlertDialogDescription>
@@ -49,9 +49,9 @@ export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProp
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label>Rejection Reason</Label>
-            <Select value={reason} onValueChange={setReason}>
+            <انتخاب value={reason} onValueChange={setReason}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a reason" />
+                <SelectValue placeholder="انتخاب a reason" />
               </SelectTrigger>
               <SelectContent>
                 {REJECTION_REASONS.map((r) => (
@@ -60,22 +60,22 @@ export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProp
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </انتخاب>
           </div>
           <div className="space-y-2">
-            <Label>Additional Notes (Optional)</Label>
+            <Label>Additional Notes (اختیاری)</Label>
             <Textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Add any additional context..."
+              placeholder="افزودن any additional context..."
               rows={4}
             />
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirm} disabled={!reason}>
-            Reject Application
+            رد Application
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

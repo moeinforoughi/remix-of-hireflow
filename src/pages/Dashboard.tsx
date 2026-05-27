@@ -40,7 +40,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">در حال بارگذاری...</div>
       </div>
     );
   }

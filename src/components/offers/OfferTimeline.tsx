@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, CheckCircle2, XCircle, Clock, Send, FileCheck, FileX, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle, Clock, ارسال, FileCheck, FileX, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Activity {
@@ -23,7 +23,7 @@ interface OfferTimelineProps {
 
 export function OfferTimeline({ offerId }: OfferTimelineProps) {
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -51,7 +51,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
     } catch (error: any) {
       console.error('Error fetching activities:', error);
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -60,7 +60,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
       draft: <Clock className="h-5 w-5 text-muted-foreground" />,
       pending_approval: <AlertCircle className="h-5 w-5 text-yellow-500" />,
       approved: <CheckCircle2 className="h-5 w-5 text-green-500" />,
-      sent: <Send className="h-5 w-5 text-blue-500" />,
+      sent: <ارسال className="h-5 w-5 text-blue-500" />,
       accepted: <FileCheck className="h-5 w-5 text-green-600" />,
       declined: <FileX className="h-5 w-5 text-red-500" />,
       expired: <XCircle className="h-5 w-5 text-gray-500" />,
@@ -101,7 +101,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
     if (activity.action === 'update' && beforeState !== afterState) {
       return (
         <div>
-          <p className="font-medium">Status changed</p>
+          <p className="font-medium">وضعیت changed</p>
           <div className="flex items-center gap-2 mt-1">
             {beforeState && getStateBadge(beforeState)}
             <span className="text-muted-foreground">→</span>
@@ -141,7 +141,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
     return (
       <Card>
         <CardContent className="py-12 text-center">
-          <p className="text-muted-foreground">No activity history available</p>
+          <p className="text-muted-foreground">خیر activity history available</p>
         </CardContent>
       </Card>
     );
@@ -150,7 +150,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Status History</CardTitle>
+        <CardTitle>وضعیت History</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
@@ -170,7 +170,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
                 <div className="flex-1 pb-6">
                   {getActivityDescription(activity)}
                   <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                    <span>{format(new Date(activity.created_at), 'MMM d, yyyy · h:mm a')}</span>
+                    <span>{format(new تاریخ(activity.created_at), 'MMM d, yyyy · h:mm a')}</span>
                     {activity.profiles?.full_name && (
                       <span>by {activity.profiles.full_name}</span>
                     )}

@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Briefcase, Search, Loader2, X } from 'lucide-react';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MapPin, Briefcase, جستجو, Loader2, X } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Job {
@@ -21,7 +21,7 @@ interface Job {
 
 const CareersHome = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
   const [locationFilter, setLocationFilter] = useState<string>('all');
@@ -45,7 +45,7 @@ const CareersHome = () => {
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -99,14 +99,14 @@ const CareersHome = () => {
             Discover opportunities to grow your career with us
           </p>
           
-          {/* Filters and Search */}
+          {/* Filters and جستجو */}
           <div className="max-w-4xl mx-auto space-y-4">
-            {/* Search Bar */}
+            {/* جستجو Bar */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search by job title, department, or location..."
+                placeholder="جستجو by job title, department, or location..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 h-12 text-lg"
@@ -115,9 +115,9 @@ const CareersHome = () => {
 
             {/* Dropdown Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <انتخاب value={departmentFilter} onValueChange={setDepartmentFilter}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
-                  <SelectValue placeholder="Department" />
+                  <SelectValue placeholder="بخش" />
                 </SelectTrigger>
                 <SelectContent className="bg-background">
                   <SelectItem value="all">All Departments</SelectItem>
@@ -127,11 +127,11 @@ const CareersHome = () => {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </انتخاب>
 
-              <Select value={locationFilter} onValueChange={setLocationFilter}>
+              <انتخاب value={locationFilter} onValueChange={setLocationFilter}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
-                  <SelectValue placeholder="Location" />
+                  <SelectValue placeholder="مکان" />
                 </SelectTrigger>
                 <SelectContent className="bg-background">
                   <SelectItem value="all">All Locations</SelectItem>
@@ -141,11 +141,11 @@ const CareersHome = () => {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </انتخاب>
 
-              <Select value={employmentTypeFilter} onValueChange={setEmploymentTypeFilter}>
+              <انتخاب value={employmentTypeFilter} onValueChange={setEmploymentTypeFilter}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
-                  <SelectValue placeholder="Employment Type" />
+                  <SelectValue placeholder="نوع همکاری" />
                 </SelectTrigger>
                 <SelectContent className="bg-background">
                   <SelectItem value="all">All Types</SelectItem>
@@ -155,12 +155,12 @@ const CareersHome = () => {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </انتخاب>
 
               {hasActiveFilters && (
                 <Button variant="outline" onClick={clearFilters} className="bg-background">
                   <X className="h-4 w-4 mr-2" />
-                  Clear
+                  پاک کردن
                 </Button>
               )}
             </div>
@@ -168,11 +168,11 @@ const CareersHome = () => {
         </div>
       </div>
 
-      {/* Job Listings */}
+      {/* موقعیت‌های شغلی */}
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="mb-6">
           <h2 className="text-2xl">
-            Open Positions {filteredJobs.length > 0 && `(${filteredJobs.length})`}
+            باز Positions {filteredJobs.length > 0 && `(${filteredJobs.length})`}
           </h2>
         </div>
 
@@ -180,7 +180,7 @@ const CareersHome = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">
-                {hasActiveFilters ? 'No jobs match your filters.' : 'No open positions at this time.'}
+                {hasActiveFilters ? 'خیر jobs match your filters.' : 'خیر open positions at this time.'}
               </p>
               {hasActiveFilters && (
                 <Button
@@ -188,7 +188,7 @@ const CareersHome = () => {
                   className="mt-4"
                   onClick={clearFilters}
                 >
-                  Clear Filters
+                  پاک کردن Filters
                 </Button>
               )}
             </CardContent>
@@ -235,9 +235,9 @@ const CareersHome = () => {
                 <CardContent>
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      Posted {format(new Date(job.created_at), 'MMM d, yyyy')}
+                      منتشرشده {format(new تاریخ(job.created_at), 'MMM d, yyyy')}
                     </p>
-                    <Button>Apply Now</Button>
+                    <Button>ثبت درخواست Now</Button>
                   </div>
                 </CardContent>
               </Card>

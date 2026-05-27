@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Briefcase, Loader2 } from 'lucide-react';
 import { notifyNewApplication } from '@/lib/notifications';
@@ -40,7 +40,7 @@ export const ApplyToJobDialog = ({
 }: ApplyToJobDialogProps) => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string>('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -111,13 +111,13 @@ export const ApplyToJobDialog = ({
         }
       }
 
-      // Filter out jobs the candidate has already applied to
+      // فیلتر out jobs the candidate has already applied to
       availableJobs = availableJobs.filter(job => !existingJobIds.includes(job.id));
       setJobs(availableJobs);
     } catch (error: any) {
       console.error('Error fetching jobs:', error);
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to load available jobs',
         variant: 'destructive',
       });
@@ -129,14 +129,14 @@ export const ApplyToJobDialog = ({
   const handleApply = async () => {
     if (!selectedJobId) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Please select a job',
         variant: 'destructive',
       });
       return;
     }
 
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -153,10 +153,10 @@ export const ApplyToJobDialog = ({
       const firstStage = stages?.find(s => s.name.toLowerCase().includes('applied')) || stages?.[0];
 
       if (!firstStage) {
-        throw new Error('No pipeline stage found for this job');
+        throw new Error('خیر pipeline stage found for this job');
       }
 
-      // Create the application
+      // ایجاد the application
       const { data: applicationData, error: applicationError } = await supabase
         .from('applications')
         .insert({
@@ -165,14 +165,14 @@ export const ApplyToJobDialog = ({
           current_stage_id: firstStage.id,
           state: 'active',
           owner_user_id: user.id,
-          applied_at: new Date().toISOString(),
+          applied_at: new تاریخ().toISOString(),
         })
         .select('id')
         .single();
 
       if (applicationError) throw applicationError;
 
-      // Send notification
+      // ارسال notification
       if (applicationData) {
         notifyNewApplication(selectedJobId, candidateName, applicationData.id).catch(console.error);
       }
@@ -188,12 +188,12 @@ export const ApplyToJobDialog = ({
       onSuccess?.();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -203,10 +203,10 @@ export const ApplyToJobDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Briefcase className="h-5 w-5" />
-            Apply to Job
+            ثبت درخواست to Job
           </DialogTitle>
           <DialogDescription>
-            Select a job to apply {candidateName} to.
+            انتخاب a job to apply {candidateName} to.
           </DialogDescription>
         </DialogHeader>
 
@@ -217,14 +217,14 @@ export const ApplyToJobDialog = ({
             </div>
           ) : jobs.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>No available jobs to apply to.</p>
+              <p>خیر available jobs to apply to.</p>
               <p className="text-sm mt-1">This candidate may already be applied to all open positions.</p>
             </div>
           ) : (
             <>
               <div className="space-y-2">
-                <Label htmlFor="job">Select Job Position</Label>
-                <Select value={selectedJobId} onValueChange={setSelectedJobId}>
+                <Label htmlFor="job">انتخاب Job Position</Label>
+                <انتخاب value={selectedJobId} onValueChange={setSelectedJobId}>
                   <SelectTrigger className="h-11">
                     <SelectValue placeholder="Choose a job..." />
                   </SelectTrigger>
@@ -240,7 +240,7 @@ export const ApplyToJobDialog = ({
                       </SelectItem>
                     ))}
                   </SelectContent>
-                </Select>
+                </انتخاب>
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
@@ -250,7 +250,7 @@ export const ApplyToJobDialog = ({
                   onClick={() => onOpenChange(false)}
                   disabled={loading}
                 >
-                  Cancel
+                  انصراف
                 </Button>
                 <Button
                   onClick={handleApply}
@@ -262,7 +262,7 @@ export const ApplyToJobDialog = ({
                       Applying...
                     </>
                   ) : (
-                    'Apply to Job'
+                    'ثبت درخواست to Job'
                   )}
                 </Button>
               </div>

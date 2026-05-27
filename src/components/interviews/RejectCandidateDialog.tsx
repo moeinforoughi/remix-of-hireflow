@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  Select,
+  انتخاب,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -28,9 +28,9 @@ const REJECTION_REASONS = [
   { value: 'not_qualified', label: 'Not Qualified for Position' },
   { value: 'failed_technical', label: 'Failed Technical Assessment' },
   { value: 'cultural_fit', label: 'Not a Cultural Fit' },
-  { value: 'communication_skills', label: 'Poor Communication Skills' },
-  { value: 'experience_mismatch', label: 'Experience Mismatch' },
-  { value: 'salary_expectations', label: 'Salary Expectations Too High' },
+  { value: 'communication_skills', label: 'Poor Communication مهارت‌ها' },
+  { value: 'experience_mismatch', label: 'سابقه کار Mismatch' },
+  { value: 'salary_expectations', label: 'Salary Expectations Too زیاد' },
   { value: 'availability', label: 'Availability Issues' },
   { value: 'other', label: 'Other' },
 ];
@@ -55,7 +55,7 @@ export const RejectCandidateDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Reject Candidate</DialogTitle>
+          <DialogTitle>رد Candidate</DialogTitle>
           <DialogDescription>
             Please select a reason for rejecting this candidate and provide any additional notes.
           </DialogDescription>
@@ -64,9 +64,9 @@ export const RejectCandidateDialog = ({
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="reason">Rejection Reason *</Label>
-            <Select value={reason} onValueChange={setReason}>
+            <انتخاب value={reason} onValueChange={setReason}>
               <SelectTrigger id="reason">
-                <SelectValue placeholder="Select a reason" />
+                <SelectValue placeholder="انتخاب a reason" />
               </SelectTrigger>
               <SelectContent>
                 {REJECTION_REASONS.map((r) => (
@@ -75,14 +75,14 @@ export const RejectCandidateDialog = ({
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </انتخاب>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Additional Notes (Optional)</Label>
+            <Label htmlFor="notes">Additional Notes (اختیاری)</Label>
             <Textarea
               id="notes"
-              placeholder="Add any additional context or notes..."
+              placeholder="افزودن any additional context or notes..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
@@ -92,14 +92,14 @@ export const RejectCandidateDialog = ({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
           <Button 
             variant="destructive" 
             onClick={handleConfirm}
             disabled={!reason}
           >
-            Reject Candidate
+            رد Candidate
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Download, ExternalLink } from 'lucide-react';
+import { دانلود, ExternalLink } from 'lucide-react';
 
 interface ResumeViewerProps {
   open: boolean;
@@ -45,7 +45,7 @@ export const ResumeViewer = ({
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0">
         <DialogHeader className="px-6 py-4 border-b flex flex-row items-center justify-between space-y-0">
           <DialogTitle className="text-xl font-semibold">
-            {candidateName}'s Resume
+            {candidateName}'s رزومه
           </DialogTitle>
           <div className="flex items-center gap-2 mr-12">
             <Button
@@ -54,8 +54,8 @@ export const ResumeViewer = ({
               onClick={handleDownload}
               className="gap-2"
             >
-              <Download className="h-4 w-4" />
-              Download
+              <دانلود className="h-4 w-4" />
+              دانلود
             </Button>
             <Button
               variant="outline"
@@ -64,7 +64,7 @@ export const ResumeViewer = ({
               className="gap-2"
             >
               <ExternalLink className="h-4 w-4" />
-              Open
+              باز
             </Button>
           </div>
         </DialogHeader>
@@ -74,7 +74,7 @@ export const ResumeViewer = ({
             <iframe
               src={resumeUrl}
               className="w-full h-full border-0"
-              title={`${candidateName}'s Resume`}
+              title={`${candidateName}'s رزومه`}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-muted/20">
@@ -83,8 +83,8 @@ export const ResumeViewer = ({
                   Preview not available for this file type
                 </p>
                 <Button onClick={handleDownload} className="gap-2">
-                  <Download className="h-4 w-4" />
-                  Download Resume
+                  <دانلود className="h-4 w-4" />
+                  دانلود رزومه
                 </Button>
               </div>
             </div>

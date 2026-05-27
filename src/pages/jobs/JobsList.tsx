@@ -23,17 +23,17 @@ interface Job {
   shortlistedCount?: number;
   hiredCount?: number;
 }
-type StatusFilter = 'all' | 'open' | 'paused' | 'filled' | 'closed';
+type وضعیتفیلتر = 'all' | 'open' | 'paused' | 'filled' | 'closed';
 
 const JobsList = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [userRole, setUserRole] = useState<string | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const { role, assignedJobIds, loading: permissionsLoading } = useUserPermissions();
+  const [statusFilter, setStatusFilter] = useState<وضعیتفیلتر>('all');
+  const { role, assignedJobIds, loading: permissionsUpload } = useUserPermissions();
 
   const filteredJobs = statusFilter === 'all' 
     ? jobs 
@@ -43,10 +43,10 @@ const JobsList = () => {
   }, []);
 
   useEffect(() => {
-    if (!permissionsLoading) {
+    if (!permissionsUpload) {
       fetchJobs();
     }
-  }, [permissionsLoading, role, assignedJobIds]);
+  }, [permissionsUpload, role, assignedJobIds]);
   const fetchUserRole = async () => {
     try {
       const {
@@ -70,7 +70,7 @@ const JobsList = () => {
       // Get user's org_id first
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setLoading(false);
+        setUpload(false);
         return;
       }
 
@@ -81,11 +81,11 @@ const JobsList = () => {
         .single();
 
       if (!profile) {
-        setLoading(false);
+        setUpload(false);
         return;
       }
 
-      // Filter by organization for ALL users
+      // فیلتر by organization for ALL users
       let query = supabase
         .from('jobs')
         .select('*')
@@ -95,7 +95,7 @@ const JobsList = () => {
       if (role === 'basic') {
         if (assignedJobIds.length === 0) {
           setJobs([]);
-          setLoading(false);
+          setUpload(false);
           return;
         }
         query = query.in('id', assignedJobIds);
@@ -134,12 +134,12 @@ const JobsList = () => {
       setJobs(jobsWithCounts);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive'
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
   const formatStatusLabel = (status: string) => {
@@ -177,19 +177,19 @@ const JobsList = () => {
           {userRole && userRole !== 'basic' && (
             <Button onClick={() => setCreateDialogOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              New Job
+              موقعیت جدید
             </Button>
           )}
         </div>
       </div>
 
-      {/* Status Filters */}
+      {/* وضعیت Filters */}
       <div className="flex items-center gap-2">
-        {(['all', 'open', 'paused', 'filled', 'closed'] as StatusFilter[]).map((status) => {
+        {(['all', 'open', 'paused', 'filled', 'closed'] as وضعیتفیلتر[]).map((status) => {
           const count = status === 'all' ? jobs.length : jobs.filter(j => j.status === status).length;
-          const labels: Record<StatusFilter, string> = {
+          const labels: Record<وضعیتفیلتر, string> = {
             all: 'All',
-            open: 'Open',
+            open: 'باز',
             paused: 'Paused',
             filled: 'Filled',
             closed: 'Closed'
@@ -211,11 +211,11 @@ const JobsList = () => {
         })}
       </div>
 
-      {loading || permissionsLoading ? <div className="text-center py-12">Loading jobs...</div> : filteredJobs.length === 0 ? <Card>
+      {loading || permissionsUpload ? <div className="text-center py-12">بارگذاری jobs...</div> : filteredJobs.length === 0 ? <Card>
           <CardContent className="py-12 text-center">
             <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg mb-2">
-              {jobs.length === 0 ? 'No jobs found' : `No ${statusFilter} jobs`}
+              {jobs.length === 0 ? 'خیر jobs found' : `خیر ${statusFilter} jobs`}
             </h3>
             <p className="text-muted-foreground mb-4">
               {jobs.length === 0 
@@ -227,7 +227,7 @@ const JobsList = () => {
             {jobs.length === 0 && userRole && userRole !== 'basic' && (
               <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                Create Job
+                ایجاد Job
               </Button>
             )}
           </CardContent>
@@ -271,10 +271,10 @@ const JobsList = () => {
           <Table className="border-separate border-spacing-y-2">
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b-0">
-                <TableHead className="w-[200px]">Title</TableHead>
-                <TableHead className="w-[100px]">Status</TableHead>
+                <TableHead className="w-[200px]">عنوان</TableHead>
+                <TableHead className="w-[100px]">وضعیت</TableHead>
                 <TableHead className="w-[120px]">Positions</TableHead>
-                <TableHead className="w-[140px]">Date Opened</TableHead>
+                <TableHead className="w-[140px]">تاریخ ایجاد</TableHead>
                 <TableHead className="w-[100px] text-center">Candidates</TableHead>
                 <TableHead className="w-[40px]"></TableHead>
               </TableRow>
@@ -297,7 +297,7 @@ const JobsList = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {format(new Date(job.created_at), 'MM/dd/yyyy')}
+                    {format(new تاریخ(job.created_at), 'MM/dd/yyyy')}
                   </TableCell>
                   <TableCell className="text-primary font-bold text-center">{job.candidatesCount || 0}</TableCell>
                   <TableCell className="rounded-r-lg">

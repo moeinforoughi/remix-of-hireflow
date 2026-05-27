@@ -80,7 +80,7 @@ export const SkillMatchCard = ({ candidateSkills, requiredSkills = [] }: SkillMa
         </div>
       </div>
 
-      {/* Skills section */}
+      {/* مهارت‌ها section */}
       <div className="flex flex-col justify-center items-start gap-3 flex-1">
         <div className="text-black text-center font-semibold text-base leading-normal tracking-[-0.8px]">
           {matchedSkills.length} out of {requiredSkills.length} required skills met

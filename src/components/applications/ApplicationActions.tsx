@@ -83,7 +83,7 @@ export const ApplicationActions = ({
           onClick={() => setRejectOpen(true)}
         >
           <UserX className="h-4 w-4 mr-2" />
-          Reject
+          رد
         </Button>
         <Button
           variant="outline"
@@ -91,7 +91,7 @@ export const ApplicationActions = ({
           onClick={() => setWithdrawOpen(true)}
         >
           <UserMinus className="h-4 w-4 mr-2" />
-          Withdraw
+          پس گرفتن
         </Button>
         <Button
           variant="default"
@@ -99,7 +99,7 @@ export const ApplicationActions = ({
           onClick={() => setHireOpen(true)}
         >
           <UserCheck className="h-4 w-4 mr-2" />
-          Hire
+          استخدام
         </Button>
       </div>
 

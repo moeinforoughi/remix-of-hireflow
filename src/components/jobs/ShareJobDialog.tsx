@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Copy, Mail, Check, Link as LinkIcon } from 'lucide-react';
+import { کپی, Mail, Check, Link as LinkIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -44,7 +44,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to copy link',
         variant: 'destructive',
       });
@@ -76,11 +76,11 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
       if (error) throw error;
 
       toast({
-        title: 'Email sent!',
+        title: 'ایمیل sent!',
         description: `Job posting shared with ${emailData.recipientEmail}`,
       });
 
-      // Reset form
+      // بازنشانی form
       setEmailData({
         recipientEmail: '',
         recipientName: '',
@@ -89,7 +89,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message || 'Failed to send email',
         variant: 'destructive',
       });
@@ -102,11 +102,11 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold">Share Job Posting</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold">اشتراک‌گذاری موقعیت Posting</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 pt-4">
-          {/* Copy Link Section */}
+          {/* کپی Link Section */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm font-medium">
               <LinkIcon className="h-4 w-4" />
@@ -128,7 +128,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
                 {copied ? (
                   <Check className="h-4 w-4 text-green-600" />
                 ) : (
-                  <Copy className="h-4 w-4" />
+                  <کپی className="h-4 w-4" />
                 )}
               </Button>
             </div>
@@ -147,15 +147,15 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
             </div>
           </div>
 
-          {/* Email Form Section */}
+          {/* ایمیل Form Section */}
           <form onSubmit={handleSendEmail} className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium">
               <Mail className="h-4 w-4" />
-              <span>Send via Email</span>
+              <span>ارسال via ایمیل</span>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="recipientEmail">Recipient Email *</Label>
+              <Label htmlFor="recipientEmail">Recipient ایمیل *</Label>
               <Input
                 id="recipientEmail"
                 type="email"
@@ -178,7 +178,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="message">Personal Message (Optional)</Label>
+              <Label htmlFor="message">Personal پیام (اختیاری)</Label>
               <Textarea
                 id="message"
                 placeholder="I thought you might be interested in this opportunity..."
@@ -193,7 +193,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
               disabled={sendingEmail}
               className="w-full bg-foreground text-background hover:bg-foreground/90"
             >
-              {sendingEmail ? 'Sending...' : 'Send Email'}
+              {sendingEmail ? 'Sending...' : 'ارسال ایمیل'}
             </Button>
           </form>
         </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Mail, Trash2 } from 'lucide-react';
-import { DeleteAccountDialog } from './DeleteAccountDialog';
+import { RemoveAccountDialog } from './RemoveAccountDialog';
 import { supabase } from '@/integrations/supabase/client';
 
 interface NotificationPreference {
@@ -13,13 +13,13 @@ interface NotificationPreference {
 
 export const NotificationSettings = () => {
   const [notifications, setNotifications] = useState<NotificationPreference[]>([
-    { type: 'New Candidate', email: true, push: true },
-    { type: 'Candidate Applied', email: true, push: true },
-    { type: 'Candidate Moved Stage', email: false, push: true },
+    { type: 'کاندیدای جدید', email: true, push: true },
+    { type: 'Candidate ثبت درخواست شده', email: true, push: true },
+    { type: 'Candidate Moved مرحله', email: false, push: true },
     { type: 'Offer Made', email: false, push: true },
-    { type: 'Offer Accepted', email: true, push: true },
+    { type: 'Offer پذیرفته شده', email: true, push: true },
   ]);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteDialogOpen, setRemoveDialogOpen] = useState(false);
   const [isDemoAccount, setIsDemoAccount] = useState(false);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const NotificationSettings = () => {
         {/* Header */}
         <div className="grid grid-cols-[2fr,1fr,1fr] gap-4 bg-muted px-6 py-3 border-b">
           <div className="text-sm font-medium">Notification Type</div>
-          <div className="text-sm font-medium text-center">Email</div>
+          <div className="text-sm font-medium text-center">ایمیل</div>
           <div className="text-sm font-medium text-center">Push</div>
         </div>
 
@@ -89,17 +89,17 @@ export const NotificationSettings = () => {
           <Button 
             variant="outline" 
             className="flex-1 text-destructive hover:text-destructive"
-            onClick={() => setDeleteDialogOpen(true)}
+            onClick={() => setRemoveDialogOpen(true)}
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Delete Account
+            حذف Account
           </Button>
         )}
       </div>
 
-      <DeleteAccountDialog 
+      <RemoveAccountDialog 
         open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
+        onOpenChange={setRemoveDialogOpen}
       />
     </div>
   );

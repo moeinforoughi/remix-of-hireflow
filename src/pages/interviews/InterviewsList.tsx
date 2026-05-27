@@ -33,11 +33,11 @@ interface Interview {
 
 const InterviewsList = () => {
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const [showQuickView, setShowQuickView] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
-  const [interviewers, setInterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
+  const [مصاحبه‌کننده, setinterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -70,18 +70,18 @@ const InterviewsList = () => {
       setInterviews(data || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
-  const fetchInterviewers = async (panelUserIds: string[]) => {
+  const fetchinterviewers = async (panelUserIds: string[]) => {
     if (!panelUserIds || panelUserIds.length === 0) {
-      setInterviewers([]);
+      setinterviewers([]);
       return;
     }
 
@@ -92,43 +92,43 @@ const InterviewsList = () => {
         .in("id", panelUserIds);
 
       if (error) throw error;
-      setInterviewers(data || []);
+      setinterviewers(data || []);
     } catch (error) {
-      console.error("Error fetching interviewers:", error);
+      console.error("Error fetching مصاحبه‌کننده:", error);
     }
   };
 
   const handleInterviewClick = async (interview: Interview) => {
     setSelectedInterview(interview);
     if (interview.panel_user_ids && interview.panel_user_ids.length > 0) {
-      await fetchInterviewers(interview.panel_user_ids);
+      await fetchinterviewers(interview.panel_user_ids);
     } else {
-      setInterviewers([]);
+      setinterviewers([]);
     }
     setShowQuickView(true);
   };
 
   const getStatusBadge = (interview: Interview) => {
     if (interview.status === 'completed') {
-      return <Badge variant="secondary">Completed</Badge>;
+      return <Badge variant="secondary">انجام شده</Badge>;
     }
     if (interview.status === 'cancelled') {
       return <Badge variant="destructive">Cancelled</Badge>;
     }
     if (interview.status === 'no_show') {
-      return <Badge variant="outline">No Show</Badge>;
+      return <Badge variant="outline">خیر نمایش</Badge>;
     }
-    if (isPast(new Date(interview.start_at))) {
+    if (isPast(new تاریخ(interview.start_at))) {
       return <Badge variant="outline">Past</Badge>;
     }
     return <Badge>Scheduled</Badge>;
   };
 
   const upcomingInterviews = interviews.filter(i => 
-    isFuture(new Date(i.start_at)) && i.status === 'scheduled'
+    isFuture(new تاریخ(i.start_at)) && i.status === 'scheduled'
   );
   const pastInterviews = interviews.filter(i => 
-    isPast(new Date(i.start_at)) || i.status !== 'scheduled'
+    isPast(new تاریخ(i.start_at)) || i.status !== 'scheduled'
   );
 
   if (loading) {
@@ -147,7 +147,7 @@ const InterviewsList = () => {
         </div>
         <Button onClick={() => setShowScheduleDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Schedule Interview
+          برنامه‌ریزی مصاحبه
         </Button>
       </div>
 
@@ -161,7 +161,7 @@ const InterviewsList = () => {
         open={showQuickView}
         onOpenChange={setShowQuickView}
         interview={selectedInterview}
-        interviewers={interviewers}
+        مصاحبه‌کننده={مصاحبه‌کننده}
       />
 
       {upcomingInterviews.length > 0 && (
@@ -197,10 +197,10 @@ const InterviewsList = () => {
                     <Calendar className="h-4 w-4 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground">
-                        {format(new Date(interview.start_at), 'MMM d, yyyy')}
+                        {format(new تاریخ(interview.start_at), 'MMM d, yyyy')}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
+                        {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
                       </p>
                     </div>
                   </div>
@@ -208,7 +208,7 @@ const InterviewsList = () => {
                   {interview.meeting_link && (
                     <div className="flex items-center gap-2 text-sm bg-primary/5 rounded-lg p-2.5">
                       <Video className="h-4 w-4 text-primary shrink-0" />
-                      <p className="font-medium text-primary">Virtual Interview</p>
+                      <p className="font-medium text-primary">آنلاین Interview</p>
                     </div>
                   )}
                   
@@ -257,7 +257,7 @@ const InterviewsList = () => {
                   <div className="flex items-center gap-2 text-sm bg-muted/50 rounded-lg p-3">
                     <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div className="text-muted-foreground font-medium">
-                      {format(new Date(interview.start_at), 'MMM d, yyyy · h:mm a')}
+                      {format(new تاریخ(interview.start_at), 'MMM d, yyyy · h:mm a')}
                     </div>
                   </div>
                 </CardContent>
@@ -271,7 +271,7 @@ const InterviewsList = () => {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">No interviews scheduled</p>
+            <p className="text-muted-foreground mb-4">خیر interviews scheduled</p>
             <Button onClick={() => setShowScheduleDialog(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Schedule First Interview

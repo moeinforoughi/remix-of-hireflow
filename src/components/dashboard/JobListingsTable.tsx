@@ -40,7 +40,7 @@ const JobListingRow: React.FC<JobListingProps> = ({
           <img
             src="https://api.builder.io/api/v1/image/assets/160bd503595d4b3e818fa7f42e1b117f/e6eb34be971f13c6ffa94328c5e566f7cee4dd59?placeholderIfAbsent=true"
             className="aspect-[1/1] object-contain w-4 absolute z-0 shrink-0 translate-x-[0%] -translate-y-2/4 h-4 right-[11px] top-2/4"
-            alt="More options"
+            alt="بیشتر options"
           />
         </>
       )}
@@ -50,36 +50,36 @@ const JobListingRow: React.FC<JobListingProps> = ({
 
 const JobListingsTable = () => {
   const jobListings = [
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" },
-    { title: "Front-End Developer", location: "Remote", dateOpened: "10/01/2025", candidates: "13" }
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" },
+    { title: "Front-End Developer", location: "دورکاری", dateOpened: "10/01/2025", candidates: "13" }
   ];
 
   return (
     <section className="min-w-60 overflow-hidden text-sm flex-1 shrink basis-[0%] bg-card pb-[17px] rounded-xl max-md:max-w-full">
       <div className="flex min-h-[50px] items-center gap-2.5 text-foreground font-[590] px-4 py-[17px]">
         <h2 className="text-foreground self-stretch my-auto">
-          Job Listings
+          موقعیت‌های شغلی
         </h2>
       </div>
       <div className="h-[481px] text-muted-foreground font-normal mx-4 rounded-lg max-md:max-w-full max-md:mr-2.5">
         <div className="flex w-full items-center gap-8 text-xs flex-wrap px-4 max-md:max-w-full">
           <div className="text-muted-foreground self-stretch w-[243px] my-auto">
-            Title
+            عنوان
           </div>
           <div className="text-muted-foreground self-stretch flex-1 shrink basis-[0%] my-auto">
-            Location
+            مکان
           </div>
           <div className="text-muted-foreground self-stretch flex-1 shrink basis-[0%] my-auto">
-            Date Opened
+            تاریخ ایجاد
           </div>
           <div className="text-muted-foreground self-stretch flex-1 shrink basis-[0%] my-auto">
-            # of Candidates
+            تعداد کاندیداها
           </div>
         </div>
         
@@ -95,7 +95,7 @@ const JobListingsTable = () => {
         
         <JobListingRow
           title="Front-End Developer"
-          location="Remote"
+          location="دورکاری"
           dateOpened="10/01/2025"
           candidates=""
           isLast={true}

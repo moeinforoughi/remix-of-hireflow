@@ -13,8 +13,8 @@ export const ExpirationWarning = ({ expiresAt, state }: ExpirationWarningProps) 
     return null;
   }
 
-  const expirationDate = new Date(expiresAt);
-  const daysUntilExpiry = differenceInDays(expirationDate, new Date());
+  const expirationDate = new تاریخ(expiresAt);
+  const daysUntilExpiry = differenceInDays(expirationDate, new تاریخ());
 
   if (isPast(expirationDate)) {
     return (
@@ -74,8 +74,8 @@ export const ExpirationBadge = ({ expiresAt, state }: ExpirationWarningProps) =>
     return null;
   }
 
-  const expirationDate = new Date(expiresAt);
-  const daysUntilExpiry = differenceInDays(expirationDate, new Date());
+  const expirationDate = new تاریخ(expiresAt);
+  const daysUntilExpiry = differenceInDays(expirationDate, new تاریخ());
 
   if (isPast(expirationDate)) {
     return <Badge variant="destructive">Expired</Badge>;

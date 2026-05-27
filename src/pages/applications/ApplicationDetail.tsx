@@ -66,9 +66,9 @@ const ApplicationDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [application, setApplication] = useState<ApplicationDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loadingInterviews, setLoadingInterviews] = useState(false);
+  const [loadingInterviews, setUploadInterviews] = useState(false);
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
   const [scorecardsDialogOpen, setScorecardsDialogOpen] = useState(false);
   const [offer, setOffer] = useState<Offer | null>(null);
@@ -110,12 +110,12 @@ const ApplicationDetail = () => {
       setApplication(data);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -123,7 +123,7 @@ const ApplicationDetail = () => {
     if (!id) return;
     
     try {
-      setLoadingInterviews(true);
+      setUploadInterviews(true);
       const { data, error } = await supabase
         .from('interviews')
         .select('*')
@@ -135,12 +135,12 @@ const ApplicationDetail = () => {
     } catch (error: any) {
       console.error('Error fetching interviews:', error);
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to load interviews',
         variant: 'destructive',
       });
     } finally {
-      setLoadingInterviews(false);
+      setUploadInterviews(false);
     }
   };
 
@@ -206,9 +206,9 @@ const ApplicationDetail = () => {
       case 'compensation':
         return 'Compensation Mismatch';
       case 'experience':
-        return 'Insufficient Experience';
+        return 'Insufficient سابقه کار';
       case 'skills':
-        return 'Skills Mismatch';
+        return 'مهارت‌ها Mismatch';
       case 'other':
         return 'Other';
       default:
@@ -237,7 +237,7 @@ const ApplicationDetail = () => {
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -261,7 +261,7 @@ const ApplicationDetail = () => {
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -305,13 +305,13 @@ const ApplicationDetail = () => {
 
       toast({
         title: 'Candidate Hired',
-        description: hiredStageId ? 'Moved to the Hired stage.' : 'Marked as hired. (No Hired stage configured)'
+        description: hiredStageId ? 'Moved to the Hired stage.' : 'Marked as hired. (خیر Hired stage configured)'
       });
 
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -328,14 +328,14 @@ const ApplicationDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Contract Ended',
+        title: 'قراردادی Ended',
         description: 'The employment contract has been terminated.',
       });
 
       fetchApplication();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -360,7 +360,7 @@ const ApplicationDetail = () => {
         </p>
         <Button onClick={() => navigate('/applications')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Applications
+          بازگشت to درخواست‌ها
         </Button>
       </div>
     );
@@ -384,12 +384,12 @@ const ApplicationDetail = () => {
               {offer && (
                 <Button asChild variant="default">
                   <Link to={`/offers/${offer.id}`}>
-                    View Offer Details
+                    View جزئیات پیشنهاد
                   </Link>
                 </Button>
               )}
               <Button variant="outline" onClick={handleEndContract}>
-                End Contract
+                End قراردادی
               </Button>
             </>
           ) : (
@@ -413,7 +413,7 @@ const ApplicationDetail = () => {
       <Tabs defaultValue="overview">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="tasks">Tasks ({tasks.length})</TabsTrigger>
+          <TabsTrigger value="tasks">وظایف ({tasks.length})</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="timeline">Timeline</TabsTrigger>
           <TabsTrigger value="interviews">Interviews</TabsTrigger>
@@ -427,31 +427,31 @@ const ApplicationDetail = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
+                  <p className="text-sm text-muted-foreground">ایمیل</p>
                   <p className="font-medium">{application.candidate.email}</p>
                 </div>
                 {application.candidate.phone && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Phone</p>
+                    <p className="text-sm text-muted-foreground">تلفن</p>
                     <p className="font-medium">{application.candidate.phone}</p>
                   </div>
                 )}
                 {application.candidate.location && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Location</p>
+                    <p className="text-sm text-muted-foreground">مکان</p>
                     <p className="font-medium">{application.candidate.location}</p>
                   </div>
                 )}
                 {application.candidate.linkedin_url && (
                   <div>
-                    <p className="text-sm text-muted-foreground">LinkedIn</p>
+                    <p className="text-sm text-muted-foreground">لینکدین</p>
                     <a
                       href={application.candidate.linkedin_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-medium text-primary hover:underline"
                     >
-                      View Profile
+                      View پروفایل
                     </a>
                   </div>
                 )}
@@ -468,17 +468,17 @@ const ApplicationDetail = () => {
                   <p className="font-medium">{application.job.title}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Department</p>
+                  <p className="text-sm text-muted-foreground">بخش</p>
                   <p className="font-medium">{application.job.department || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Current Stage</p>
+                  <p className="text-sm text-muted-foreground">Current مرحله</p>
                   <p className="font-medium">{application.current_stage?.name || 'Not assigned'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Applied Date</p>
+                  <p className="text-sm text-muted-foreground">ثبت درخواست شده تاریخ</p>
                   <p className="font-medium">
-                    {format(new Date(application.applied_at), 'MMMM d, yyyy')}
+                    {format(new تاریخ(application.applied_at), 'MMMM d, yyyy')}
                   </p>
                 </div>
               </CardContent>
@@ -488,7 +488,7 @@ const ApplicationDetail = () => {
           {application.cover_letter && (
             <Card>
               <CardHeader>
-                <CardTitle>Cover Letter</CardTitle>
+                <CardTitle>کاور لتر</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="prose prose-sm max-w-none dark:prose-invert">
@@ -524,7 +524,7 @@ const ApplicationDetail = () => {
         <TabsContent value="tasks" className="space-y-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Tasks</CardTitle>
+              <CardTitle>وظایف</CardTitle>
               <AddTaskDialog 
                 candidateId={application.candidate.id} 
                 orgId={application.candidate.org_id} 
@@ -559,7 +559,7 @@ const ApplicationDetail = () => {
               <Button asChild size="sm">
                 <Link to={`/interviews/new?applicationId=${application.id}`}>
                   <Calendar className="h-4 w-4 mr-2" />
-                  Schedule Interview
+                  برنامه‌ریزی مصاحبه
                 </Link>
               </Button>
             </CardHeader>
@@ -571,7 +571,7 @@ const ApplicationDetail = () => {
               ) : interviews.length === 0 ? (
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground mb-4">No interviews scheduled yet</p>
+                  <p className="text-muted-foreground mb-4">خیر interviews scheduled yet</p>
                   <Button asChild variant="outline">
                     <Link to={`/interviews/new?applicationId=${application.id}`}>
                       Schedule First Interview
@@ -604,13 +604,13 @@ const ApplicationDetail = () => {
                         <div className="flex flex-wrap items-center gap-4 text-sm">
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Calendar className="h-4 w-4 shrink-0" />
-                            <span>{format(new Date(interview.start_at), 'MMM d, yyyy')}</span>
+                            <span>{format(new تاریخ(interview.start_at), 'MMM d, yyyy')}</span>
                           </div>
                           
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Clock className="h-4 w-4 shrink-0" />
                             <span>
-                              {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
+                              {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
                               {interview.timezone && ` (${interview.timezone})`}
                             </span>
                           </div>
@@ -631,7 +631,7 @@ const ApplicationDetail = () => {
                                 rel="noopener noreferrer"
                                 className="text-primary hover:underline truncate"
                               >
-                                Join Virtual Meeting
+                                Join آنلاین Meeting
                               </a>
                             </div>
                           )}
@@ -640,7 +640,7 @@ const ApplicationDetail = () => {
                         <div className="mt-4 grid grid-cols-2 gap-2">
                           <Button asChild variant="outline" size="sm" className="w-full">
                             <Link to={`/interviews/${interview.id}`}>
-                              View Details
+                              مشاهده جزئیات
                             </Link>
                           </Button>
                           {interview.status === 'completed' && (

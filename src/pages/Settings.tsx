@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { AccountInformation } from '@/components/settings/AccountInformation';
 import { NotificationSettings } from '@/components/settings/NotificationSettings';
-import { OrganizationProfile } from '@/components/settings/OrganizationProfile';
-import { BrandingSettings } from '@/components/settings/BrandingSettings';
+import { سازمانپروفایل } from '@/components/settings/سازمانپروفایل';
+import { برندینگتنظیمات } from '@/components/settings/برندینگتنظیمات';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const Settings = () => {
+const تنظیمات = () => {
   const navigate = useNavigate();
   const [isSiteAdmin, setIsSiteAdmin] = useState(false);
 
@@ -38,7 +38,7 @@ const Settings = () => {
     if (error) {
       toast.error('Failed to log out');
     } else {
-      toast.success('Logged out successfully');
+      toast.success('خروج موفق successfully');
       navigate('/auth/login');
     }
   };
@@ -46,7 +46,7 @@ const Settings = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl">Settings</h1>
+        <h1 className="text-3xl">تنظیمات</h1>
         <Button 
           variant="outline" 
           onClick={handleLogout}
@@ -58,7 +58,7 @@ const Settings = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column - Account Information */}
+        {/* Left Column - اطلاعات حساب */}
         <div className="bg-card border rounded-lg p-6">
           <AccountInformation />
         </div>
@@ -69,21 +69,21 @@ const Settings = () => {
         </div>
       </div>
 
-      {/* Full Width - Organization Profile - Site Admin Only */}
+      {/* Full Width - سازمان پروفایل - Site مدیر کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
-          <OrganizationProfile />
+          <سازمانپروفایل />
         </div>
       )}
 
-      {/* Full Width - Branding Settings - Site Admin Only */}
+      {/* Full Width - برندینگ تنظیمات - Site مدیر کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
-          <BrandingSettings />
+          <برندینگتنظیمات />
         </div>
       )}
     </div>
   );
 };
 
-export default Settings;
+export default تنظیمات;

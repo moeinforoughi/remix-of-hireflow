@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, X, FileText } from 'lucide-react';
+import { بارگذاری, X, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
@@ -69,7 +69,7 @@ export const FileUpload = ({
             disabled={disabled}
             className="cursor-pointer"
           />
-          <Upload className="h-4 w-4 text-muted-foreground" />
+          <بارگذاری className="h-4 w-4 text-muted-foreground" />
         </div>
       ) : (
         <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">

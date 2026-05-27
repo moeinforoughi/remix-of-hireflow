@@ -26,8 +26,8 @@ export const ConfirmDialog = ({
   onConfirm,
   title,
   description,
-  confirmText = 'Continue',
-  cancelText = 'Cancel',
+  confirmText = 'ادامه',
+  cancelText = 'انصراف',
   variant = 'default',
 }: ConfirmDialogProps) => {
   return (

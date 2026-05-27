@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
@@ -25,17 +25,17 @@ interface EditTaskDialogProps {
   task: Task;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onTaskUpdated: () => void;
+  onTaskRefreshd: () => void;
 }
 
-export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: EditTaskDialogProps) {
+export function EditTaskDialog({ task, open, onOpenChange, onTaskRefreshd }: EditTaskDialogProps) {
   const [title, setTitle] = useState(task.title);
   const [label, setLabel] = useState(task.label || "");
-  const [dueDate, setDueDate] = useState<Date | undefined>(
-    task.due_date ? new Date(task.due_date) : undefined
+  const [dueDate, setDueDate] = useState<تاریخ | undefined>(
+    task.due_date ? new تاریخ(task.due_date) : undefined
   );
   const [dueTime, setDueTime] = useState(
-    task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00"
+    task.due_date ? format(new تاریخ(task.due_date), "HH:mm") : "12:00"
   );
   const [status, setStatus] = useState<"pending" | "completed">(task.status);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,15 +43,15 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
   useEffect(() => {
     setTitle(task.title);
     setLabel(task.label || "");
-    setDueDate(task.due_date ? new Date(task.due_date) : undefined);
-    setDueTime(task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00");
+    setDueDate(task.due_date ? new تاریخ(task.due_date) : undefined);
+    setDueTime(task.due_date ? format(new تاریخ(task.due_date), "HH:mm") : "12:00");
     setStatus(task.status);
   }, [task]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error("Title is required");
+      toast.error("عنوان is required");
       return;
     }
 
@@ -60,7 +60,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
     let dueDatetime = null;
     if (dueDate) {
       const [hours, minutes] = dueTime.split(":");
-      const datetime = new Date(dueDate);
+      const datetime = new تاریخ(dueDate);
       datetime.setHours(parseInt(hours), parseInt(minutes), 0);
       dueDatetime = datetime.toISOString();
     }
@@ -85,18 +85,18 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
 
     toast.success("Task updated successfully");
     onOpenChange(false);
-    onTaskUpdated();
+    onTaskRefreshd();
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
+          <DialogTitle>ویرایش Task</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">عنوان *</Label>
             <Input
               id="title"
               value={title}
@@ -112,13 +112,13 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
               id="label"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              placeholder="Optional label"
+              placeholder="اختیاری label"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Due Date</Label>
+              <Label>Due تاریخ</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -144,7 +144,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
             </div>
 
             <div className="space-y-2">
-              <Label>Time</Label>
+              <Label>زمان</Label>
               <TimePickerAMPM
                 value={dueTime}
                 onChange={setDueTime}
@@ -154,24 +154,24 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
+            <Label htmlFor="status">وضعیت</Label>
+            <انتخاب value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="pending">در انتظار</SelectItem>
+                <SelectItem value="completed">انجام شده</SelectItem>
               </SelectContent>
-            </Select>
+            </انتخاب>
           </div>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              انصراف
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Updating..." : "Update Task"}
+              {isSubmitting ? "در حال به‌روزرسانی..." : "به‌روزرسانی Task"}
             </Button>
           </div>
         </form>

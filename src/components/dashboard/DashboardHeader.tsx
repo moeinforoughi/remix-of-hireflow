@@ -9,7 +9,7 @@ const DashboardHeader = () => {
   return (
     <header className="flex w-full items-stretch gap-5 flex-wrap justify-between max-md:max-w-full">
       <h1 className="text-foreground text-2xl font-[590] my-auto">
-        Dashboard
+        داشبورد
       </h1>
       <button
         onClick={handleNewJobListing}
@@ -18,10 +18,10 @@ const DashboardHeader = () => {
         <img
           src="https://api.builder.io/api/v1/image/assets/160bd503595d4b3e818fa7f42e1b117f/b7a98075220a9d99b6e39d82323509e45668de4a?placeholderIfAbsent=true"
           className="aspect-[1] object-contain w-6 self-stretch shrink-0 my-auto"
-          alt="Add icon"
+          alt="افزودن icon"
         />
         <span className="text-white self-stretch my-auto">
-          New Job Listing
+          ایجاد موقعیت جدید
         </span>
       </button>
     </header>

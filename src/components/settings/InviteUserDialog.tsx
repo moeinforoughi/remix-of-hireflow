@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,7 +28,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
   const [role, setRole] = useState<'basic' | 'job_admin' | 'site_admin'>('basic');
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
   const handleInvite = async () => {
     if (!email || !fullName || !password) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Please fill in all required fields',
         variant: 'destructive',
       });
@@ -92,8 +92,8 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
 
     if (password.length < 6) {
       toast({
-        title: 'Error',
-        description: 'Password must be at least 6 characters',
+        title: 'خطا',
+        description: 'رمز عبور must be at least 6 characters',
         variant: 'destructive',
       });
       return;
@@ -101,14 +101,14 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
 
     if (password !== confirmPassword) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Passwords do not match',
         variant: 'destructive',
       });
       return;
     }
 
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -142,11 +142,11 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: `User created successfully. They can now log in with their email and password.`,
       });
 
-      // Send notification about new user
+      // ارسال notification about new user
       if (data?.userId) {
         const { data: profile } = await supabase
           .from('profiles')
@@ -164,26 +164,26 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       onInviteSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
   const handleTransfer = async () => {
     if (!email) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Please enter the email of the user to transfer',
         variant: 'destructive',
       });
       return;
     }
 
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -215,7 +215,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: `User "${data.user?.full_name || email}" has been transferred to your organization.`,
       });
 
@@ -224,12 +224,12 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       onInviteSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -247,11 +247,11 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-hidden flex flex-col gap-0 p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
           <DialogTitle className="text-xl">
-            {mode === 'create' ? 'Create New User' : 'Add Existing User'}
+            {mode === 'create' ? 'ایجاد New User' : 'افزودن Existing User'}
           </DialogTitle>
           <p className="text-sm text-muted-foreground mt-1">
             {mode === 'create' 
-              ? 'Create a new account for a team member'
+              ? 'ایجاد a new account for a team member'
               : 'Transfer an existing user from another organization'
             }
           </p>
@@ -269,7 +269,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Create New
+              ایجاد New
             </button>
             <button
               type="button"
@@ -280,7 +280,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Add Existing
+              افزودن Existing
             </button>
           </div>
 
@@ -295,7 +295,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
               {mode === 'create' && (
                 <div className="space-y-1.5">
                   <Label htmlFor="fullName" className="text-sm font-medium">
-                    Full Name <span className="text-destructive">*</span>
+                    نام و نام خانوادگی <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="fullName"
@@ -306,10 +306,10 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                 </div>
               )}
 
-              {/* Email field */}
+              {/* ایمیل field */}
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-sm font-medium">
-                  Email Address <span className="text-destructive">*</span>
+                  ایمیل آدرس <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -320,12 +320,12 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                 />
               </div>
 
-              {/* Password fields - only for create mode */}
+              {/* رمز عبور fields - only for create mode */}
               {mode === 'create' && (
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label htmlFor="password" className="text-sm font-medium">
-                      Password <span className="text-destructive">*</span>
+                      رمز عبور <span className="text-destructive">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -353,7 +353,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="confirmPassword" className="text-sm font-medium">
-                      Confirm <span className="text-destructive">*</span>
+                      تأیید <span className="text-destructive">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -383,21 +383,21 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
               )}
             </div>
 
-            {/* Role & Access Section */}
+            {/* نقش & Access Section */}
             <div className="space-y-4 pt-2">
               <h3 className="text-sm text-foreground uppercase tracking-wide">
-                Role & Access
+                نقش & Access
               </h3>
 
               <div className="grid grid-cols-2 gap-3">
-                {/* Department */}
+                {/* بخش */}
                 <div className="space-y-1.5">
                   <Label htmlFor="department" className="text-sm font-medium">
-                    Department
+                    بخش
                   </Label>
-                  <Select value={department} onValueChange={setDepartment}>
+                  <انتخاب value={department} onValueChange={setDepartment}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select..." />
+                      <SelectValue placeholder="انتخاب..." />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-50">
                       <SelectItem value="Engineering">Engineering</SelectItem>
@@ -409,24 +409,24 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                       <SelectItem value="Finance">Finance</SelectItem>
                       <SelectItem value="Operations">Operations</SelectItem>
                     </SelectContent>
-                  </Select>
+                  </انتخاب>
                 </div>
 
-                {/* Role */}
+                {/* نقش */}
                 <div className="space-y-1.5">
                   <Label htmlFor="role" className="text-sm font-medium">
                     Permission Level
                   </Label>
-                  <Select value={role} onValueChange={(value: any) => setRole(value)}>
+                  <انتخاب value={role} onValueChange={(value: any) => setRole(value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select..." />
+                      <SelectValue placeholder="انتخاب..." />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-50">
-                      <SelectItem value="basic">Basic</SelectItem>
-                      <SelectItem value="job_admin">Job Admin</SelectItem>
-                      <SelectItem value="site_admin">Site Admin</SelectItem>
+                      <SelectItem value="basic">پایه</SelectItem>
+                      <SelectItem value="job_admin">Job مدیر کل</SelectItem>
+                      <SelectItem value="site_admin">Site مدیر کل</SelectItem>
                     </SelectContent>
-                  </Select>
+                  </انتخاب>
                 </div>
               </div>
             </div>
@@ -446,7 +446,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
               <div className="border rounded-lg p-3 max-h-[140px] overflow-y-auto bg-muted/20">
                 {jobs.length === 0 ? (
                   <div className="text-sm text-muted-foreground text-center py-4">
-                    No open jobs to assign
+                    خیر open jobs to assign
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -475,7 +475,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         {/* Footer with buttons */}
         <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
           <Button variant="outline" onClick={() => setOpen(false)} className="flex-1">
-            Cancel
+            انصراف
           </Button>
           <Button 
             onClick={mode === 'create' ? handleInvite : handleTransfer} 
@@ -483,8 +483,8 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
             className="flex-1"
           >
             {loading 
-              ? (mode === 'create' ? 'Creating...' : 'Transferring...') 
-              : (mode === 'create' ? 'Create User' : 'Transfer User')
+              ? (mode === 'create' ? 'در حال ایجاد...' : 'Transferring...') 
+              : (mode === 'create' ? 'ایجاد User' : 'Transfer User')
             }
           </Button>
         </div>

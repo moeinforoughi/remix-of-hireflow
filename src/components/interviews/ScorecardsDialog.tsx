@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface Scorecard {
+interface فرم ارزیابی {
   id: string;
   user_id: string;
   recommendation: string;
@@ -36,11 +36,11 @@ interface ScorecardsDialogProps {
 }
 
 const RATING_LABELS: { [key: string]: string } = {
-  technical_skills: 'Technical Skills',
+  technical_skills: 'Technical مهارت‌ها',
   problem_solving: 'Problem Solving',
   communication: 'Communication',
   culture_fit: 'Culture Fit',
-  experience: 'Experience',
+  experience: 'سابقه کار',
 };
 
 const getRecommendationColor = (recommendation: string) => {
@@ -63,15 +63,15 @@ const getRecommendationText = (recommendation: string) => {
     case 'hold':
       return 'Hold';
     case 'no':
-      return 'No';
+      return 'خیر';
     default:
       return recommendation;
   }
 };
 
 export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: ScorecardsDialogProps) => {
-  const [scorecards, setScorecards] = useState<Scorecard[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [scorecards, setScorecards] = useState<فرم ارزیابی[]>([]);
+  const [loading, setUpload] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
 
   const fetchScorecards = async () => {
     try {
-      setLoading(true);
+      setUpload(true);
       const { data, error } = await supabase
         .from('scorecards')
         .select(`
@@ -102,12 +102,12 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
       setScorecards((data as any) || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: 'Failed to load scorecards',
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -133,7 +133,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
         <DialogHeader>
           <DialogTitle>Interview Scorecards Summary</DialogTitle>
           <DialogDescription>
-            Review feedback from all interviewers
+            Review feedback from all مصاحبه‌کننده
           </DialogDescription>
         </DialogHeader>
 
@@ -143,7 +143,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
           </div>
         ) : scorecards.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">No scorecards submitted yet</p>
+            <p className="text-muted-foreground">خیر scorecards submitted yet</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -183,7 +183,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
             </Card>
 
             <div className="space-y-4">
-              <h3 className="">Individual Feedback</h3>
+              <h3 className="">Individual بازخورد</h3>
               {scorecards.map((scorecard) => (
                 <Card key={scorecard.id}>
                   <CardHeader>

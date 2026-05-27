@@ -18,14 +18,14 @@ interface QuickScheduleDialogProps {
     meeting_link?: string;
     panel_user_ids?: string[];
   } | null;
-  interviewers?: Array<{ id: string; full_name: string; email: string }>;
+  مصاحبه‌کننده?: Array<{ id: string; full_name: string; email: string }>;
 }
 
 export function QuickScheduleDialog({ 
   open, 
   onOpenChange, 
   interview,
-  interviewers = []
+  مصاحبه‌کننده = []
 }: QuickScheduleDialogProps) {
   const navigate = useNavigate();
 
@@ -34,8 +34,8 @@ export function QuickScheduleDialog({
   const getStatusBadge = (status: string) => {
     const statusMap = {
       scheduled: <Badge>Scheduled</Badge>,
-      completed: <Badge variant="secondary">Completed</Badge>,
-      no_show: <Badge variant="outline">No Show</Badge>,
+      completed: <Badge variant="secondary">انجام شده</Badge>,
+      no_show: <Badge variant="outline">خیر نمایش</Badge>,
       cancelled: <Badge variant="destructive">Cancelled</Badge>,
     };
     return statusMap[status as keyof typeof statusMap] || <Badge>{status}</Badge>;
@@ -55,21 +55,21 @@ export function QuickScheduleDialog({
         
         <div className="space-y-4 pt-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Status</span>
+            <span className="text-sm text-muted-foreground">وضعیت</span>
             {getStatusBadge(interview.status)}
           </div>
 
           <div className="flex items-start gap-3">
             <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
             <div className="flex-1">
-              <p className="font-medium text-sm">Date & Time</p>
+              <p className="font-medium text-sm">تاریخ & زمان</p>
               <p className="text-sm text-muted-foreground">
-                {format(new Date(interview.start_at), 'EEEE, MMMM d, yyyy')}
+                {format(new تاریخ(interview.start_at), 'EEEE, MMMM d, yyyy')}
               </p>
               <div className="flex items-center gap-1 mt-1">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
-                  {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
+                  {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
                 </p>
               </div>
             </div>
@@ -79,14 +79,14 @@ export function QuickScheduleDialog({
             <div className="flex items-start gap-3">
               <Video className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium text-sm">Interview Type</p>
+                <p className="font-medium text-sm">نوع مصاحبه</p>
                 <a
                   href={interview.meeting_link}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-primary hover:underline flex items-center gap-1"
                 >
-                  Virtual - Join Meeting <ExternalLink className="h-3 w-3" />
+                  آنلاین - ورود به جلسه <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
             </div>
@@ -94,21 +94,21 @@ export function QuickScheduleDialog({
             <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium text-sm">Interview Type</p>
+                <p className="font-medium text-sm">نوع مصاحبه</p>
                 <p className="text-sm text-muted-foreground">Onsite - {interview.location}</p>
               </div>
             </div>
           ) : null}
 
-          {interviewers.length > 0 && (
+          {مصاحبه‌کننده.length > 0 && (
             <div className="flex items-start gap-3">
               <User className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium text-sm mb-2">Panel</p>
+                <p className="font-medium text-sm mb-2">هیئت مصاحبه</p>
                 <div className="flex flex-wrap gap-2">
-                  {interviewers.map((interviewer) => (
-                    <Badge key={interviewer.id} variant="secondary">
-                      {interviewer.full_name}
+                  {مصاحبه‌کننده.map((مصاحبه‌کننده) => (
+                    <Badge key={مصاحبه‌کننده.id} variant="secondary">
+                      {مصاحبه‌کننده.full_name}
                     </Badge>
                   ))}
                 </div>
@@ -127,7 +127,7 @@ export function QuickScheduleDialog({
               variant="outline" 
               onClick={() => onOpenChange(false)}
             >
-              Close
+              بستن
             </Button>
           </div>
         </div>

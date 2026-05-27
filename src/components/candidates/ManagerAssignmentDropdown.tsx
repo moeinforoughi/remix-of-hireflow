@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
-  Select,
+  انتخاب,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -20,17 +20,17 @@ interface ManagerAssignmentDropdownProps {
   applicationId: string;
   currentManagerId: string | null;
   currentManagerName: string | null;
-  onUpdate?: () => void;
+  onRefresh?: () => void;
 }
 
 export const ManagerAssignmentDropdown = ({
   applicationId,
   currentManagerId,
   currentManagerName,
-  onUpdate,
+  onRefresh,
 }: ManagerAssignmentDropdownProps) => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const ManagerAssignmentDropdown = ({
   };
 
   const handleAssign = async (userId: string) => {
-    setLoading(true);
+    setUpload(true);
     try {
       const { error } = await supabase
         .from('applications')
@@ -79,26 +79,26 @@ export const ManagerAssignmentDropdown = ({
       if (error) throw error;
 
       toast({
-        title: 'Manager Updated',
+        title: 'Manager Refreshd',
         description: userId === 'unassign' 
           ? 'Manager has been unassigned' 
           : 'Manager has been assigned successfully',
       });
 
-      onUpdate?.();
+      onRefresh?.();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
   return (
-    <Select
+    <انتخاب
       value={currentManagerId || ''}
       onValueChange={handleAssign}
       onOpenChange={setIsOpen}
@@ -127,6 +127,6 @@ export const ManagerAssignmentDropdown = ({
           </SelectItem>
         ))}
       </SelectContent>
-    </Select>
+    </انتخاب>
   );
 };

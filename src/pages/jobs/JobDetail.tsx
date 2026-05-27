@@ -4,8 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, Edit, Eye, Share2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ChevronLeft, ویرایش, Eye, Share2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import PipelineBoard from '@/components/pipeline/PipelineBoard';
@@ -53,11 +53,11 @@ interface HiredCandidate {
 const JobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { role, loading: permissionsLoading } = useUserPermissions();
+  const { role, loading: permissionsUpload } = useUserPermissions();
   const [job, setJob] = useState<Job | null>(null);
   const [stages, setStages] = useState<JobStage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [loading, setUpload] = useState(true);
+  const [deleteDialogOpen, setRemoveDialogOpen] = useState(false);
   const [closeDialogOpen, setCloseDialogOpen] = useState(false);
   const [fillDialogOpen, setFillDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -116,13 +116,13 @@ const JobDetail = () => {
       setStages(stagesResponse.data || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
       navigate('/jobs');
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -155,7 +155,7 @@ const JobDetail = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleRemove = async () => {
     try {
       const { error, count } = await supabase
         .from('jobs')
@@ -174,14 +174,14 @@ const JobDetail = () => {
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Job deleted successfully',
       });
 
       navigate('/jobs');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -205,7 +205,7 @@ const JobDetail = () => {
       fetchJob();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -240,7 +240,7 @@ const JobDetail = () => {
       fetchJob();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -248,12 +248,12 @@ const JobDetail = () => {
   };
 
   const statusConfig: Record<string, { label: string; className: string; dotColor: string }> = {
-    open: { label: 'Open', className: 'bg-green-100 text-green-700 border-green-200', dotColor: 'bg-green-500' },
+    open: { label: 'باز', className: 'bg-green-100 text-green-700 border-green-200', dotColor: 'bg-green-500' },
     paused: { label: 'Paused', className: 'bg-yellow-100 text-yellow-700 border-yellow-200', dotColor: 'bg-yellow-500' },
     filled: { label: 'Filled', className: 'bg-blue-100 text-blue-700 border-blue-200', dotColor: 'bg-blue-500' },
     closed: { label: 'Closed', className: 'bg-gray-100 text-gray-700 border-gray-200', dotColor: 'bg-gray-500' },
-    draft: { label: 'Draft', className: 'bg-gray-100 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
-    pending_approval: { label: 'Pending Approval', className: 'bg-orange-100 text-orange-700 border-orange-200', dotColor: 'bg-orange-500' },
+    draft: { label: 'پیش‌نویس', className: 'bg-gray-100 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
+    pending_approval: { label: 'در انتظار تأیید', className: 'bg-orange-100 text-orange-700 border-orange-200', dotColor: 'bg-orange-500' },
   };
 
   const getStatusBadge = (status: string) => {
@@ -282,21 +282,21 @@ const JobDetail = () => {
       }
 
       const statusLabels: Record<string, string> = {
-        open: 'Open',
+        open: 'باز',
         paused: 'Paused',
         filled: 'Filled',
         closed: 'Closed',
       };
 
       toast({
-        title: 'Status Updated',
+        title: 'وضعیت Refreshd',
         description: `Job status changed to ${statusLabels[newStatus] || newStatus}.`,
       });
 
       fetchJob();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -304,14 +304,14 @@ const JobDetail = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12">Loading job details...</div>;
+    return <div className="text-center py-12">بارگذاری job details...</div>;
   }
 
   if (!job) {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl mb-4">Job not found</h2>
-        <Button onClick={() => navigate('/jobs')}>Back to Jobs</Button>
+        <Button onClick={() => navigate('/jobs')}>بازگشت to Jobs</Button>
       </div>
     );
   }
@@ -336,17 +336,17 @@ const JobDetail = () => {
               onClick={() => setCloseDialogOpen(true)}
             >
               <XCircle className="h-4 w-4" />
-              Cancel Job
+              انصراف Job
             </Button>
           )}
           {canAddCandidate && (
             <Button
               variant="outline"
               className="gap-2 font-medium"
-              onClick={() => setDeleteDialogOpen(true)}
+              onClick={() => setRemoveDialogOpen(true)}
             >
               <Trash2 className="h-4 w-4" />
-              Remove Listing
+              حذف Listing
             </Button>
           )}
           {canAddCandidate && job.status !== 'filled' && job.status !== 'closed' && (
@@ -362,13 +362,13 @@ const JobDetail = () => {
         </div>
       </div>
 
-      {/* Header with Job Title, Status and Actions */}
+      {/* Header with Job عنوان, وضعیت and Actions */}
       <div className="bg-card rounded-2xl p-8 flex items-start justify-between border border-border shadow-sm">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl">{job.title}</h1>
             {canAddCandidate ? (
-              <Select value={job.status} onValueChange={handleStatusChange}>
+              <انتخاب value={job.status} onValueChange={handleStatusChange}>
                 <SelectTrigger className={`w-[130px] h-8 text-sm font-medium border ${statusConfig[job.status]?.className || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${statusConfig[job.status]?.dotColor || 'bg-gray-400'}`} />
@@ -379,7 +379,7 @@ const JobDetail = () => {
                   <SelectItem value="open">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-green-500" />
-                      Open
+                      باز
                     </div>
                   </SelectItem>
                   <SelectItem value="paused">
@@ -401,7 +401,7 @@ const JobDetail = () => {
                     </div>
                   </SelectItem>
                 </SelectContent>
-              </Select>
+              </انتخاب>
             ) : (
               getStatusBadge(job.status)
             )}
@@ -430,7 +430,7 @@ const JobDetail = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {/* Mark as Filled Button - Show when hired count >= openings and job is open */}
+          {/* Mark as Filled Button - نمایش when hired count >= openings and job is open */}
           {canAddCandidate && hiredCount >= job.openings && job.status === 'open' && (
             <Button
               className="bg-green-600 hover:bg-green-700 text-white font-medium gap-2 h-12 px-6 rounded-xl"
@@ -454,7 +454,7 @@ const JobDetail = () => {
             className="h-12 w-12 rounded-xl border-2 border-border hover:bg-muted"
             onClick={() => setEditDialogOpen(true)}
           >
-            <Edit className="h-5 w-5" />
+            <ویرایش className="h-5 w-5" />
           </Button>
           <Button
             className="bg-[#A8E6CF] hover:bg-[#8FD9B6] text-gray-900 font-medium gap-2 h-12 px-6 rounded-xl"
@@ -466,7 +466,7 @@ const JobDetail = () => {
         </div>
       </div>
 
-      {/* Hired Candidates Section - Show when there are hired candidates */}
+      {/* Hired Candidates Section - نمایش when there are hired candidates */}
       {hiredCandidates.length > 0 && (
         <Card>
           <CardHeader>
@@ -489,7 +489,7 @@ const JobDetail = () => {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate">{candidate.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      Hired on {format(new Date(candidate.hired_at), 'MMM d, yyyy')}
+                      Hired on {format(new تاریخ(candidate.hired_at), 'MMM d, yyyy')}
                     </p>
                   </div>
                 </Link>
@@ -499,7 +499,7 @@ const JobDetail = () => {
         </Card>
       )}
 
-      {/* Pipeline Board */}
+      {/* پایپ‌لاین Board */}
       <div className="bg-background rounded-lg">
         <PipelineBoard jobId={id!} />
       </div>
@@ -509,11 +509,11 @@ const JobDetail = () => {
 
       <ConfirmDialog
         open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleDelete}
-        title="Delete Job"
+        onOpenChange={setRemoveDialogOpen}
+        onConfirm={handleRemove}
+        title="حذف Job"
         description="Are you sure you want to delete this job? This will also delete all associated applications, interviews, and offers. This action cannot be undone."
-        confirmText="Delete Job"
+        confirmText="حذف Job"
         variant="destructive"
       />
 
@@ -521,9 +521,9 @@ const JobDetail = () => {
         open={closeDialogOpen}
         onOpenChange={setCloseDialogOpen}
         onConfirm={handleClose}
-        title="Cancel Job"
+        title="انصراف Job"
         description="Are you sure you want to cancel this job? It will no longer accept new applications and won't be visible on the careers site. This is different from marking a job as filled."
-        confirmText="Cancel Job"
+        confirmText="انصراف Job"
         variant="destructive"
       />
 

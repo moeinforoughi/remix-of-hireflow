@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
 import { EditOrganizationDialog } from './EditOrganizationDialog';
@@ -13,10 +13,10 @@ interface OrgSettings {
   salary_currency?: string;
 }
 
-export const OrganizationProfile = () => {
+export const سازمانپروفایل = () => {
   const [org, setOrg] = useState<any>(null);
   const [settings, setSettings] = useState<OrgSettings>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export const OrganizationProfile = () => {
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
       const { data, error } = await supabase
         .from('organizations')
@@ -50,12 +50,12 @@ export const OrganizationProfile = () => {
       setSettings((data.settings_json as OrgSettings) || {});
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -70,10 +70,10 @@ export const OrganizationProfile = () => {
       if (error) throw error;
 
       setSettings(updatedSettings);
-      toast({ title: 'Currency updated' });
+      toast({ title: 'واحد پول updated' });
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -93,35 +93,35 @@ export const OrganizationProfile = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg">Organization Profile & Settings</h3>
+        <h3 className="text-lg">سازمان پروفایل & تنظیمات</h3>
       </div>
 
       <div className="space-y-6">
-        {/* Organization Header */}
+        {/* سازمان Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16 bg-primary">
               <AvatarFallback className="text-lg text-primary-foreground">{orgInitials}</AvatarFallback>
             </Avatar>
-            <h2 className="text-2xl">{org?.name || 'Organization'}</h2>
+            <h2 className="text-2xl">{org?.name || 'سازمان'}</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setEditDialogOpen(true)}>
             <Pencil className="h-4 w-4 mr-2" />
-            Edit
+            ویرایش
           </Button>
         </div>
 
-        {/* Organization Details */}
+        {/* سازمان Details */}
         <div className="space-y-4">
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Company Email Address</span>
+            <span className="text-sm text-muted-foreground">Company ایمیل آدرس</span>
             <span className="text-sm font-medium text-primary">
-              {settings.company_email || 'Not set - click Edit to add'}
+              {settings.company_email || 'Not set - click ویرایش to add'}
             </span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Rejection Email Template</span>
+            <span className="text-sm text-muted-foreground">Rejection ایمیل Template</span>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
@@ -134,7 +134,7 @@ export const OrganizationProfile = () => {
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Offer Email Template</span>
+            <span className="text-sm text-muted-foreground">Offer ایمیل Template</span>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
@@ -147,8 +147,8 @@ export const OrganizationProfile = () => {
           </div>
 
           <div className="flex justify-between items-center py-3">
-            <span className="text-sm text-muted-foreground">Salary Currency</span>
-            <Select value={settings.salary_currency || 'USD'} onValueChange={handleCurrencyChange}>
+            <span className="text-sm text-muted-foreground">Salary واحد پول</span>
+            <انتخاب value={settings.salary_currency || 'USD'} onValueChange={handleCurrencyChange}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue />
               </SelectTrigger>
@@ -158,7 +158,7 @@ export const OrganizationProfile = () => {
                 <SelectItem value="GBP">£ British Pound</SelectItem>
                 <SelectItem value="JPY">¥ Japanese Yen</SelectItem>
               </SelectContent>
-            </Select>
+            </انتخاب>
           </div>
         </div>
       </div>

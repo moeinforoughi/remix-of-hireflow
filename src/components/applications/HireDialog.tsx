@@ -27,7 +27,7 @@ export const HireDialog = ({ open, onOpenChange, onConfirm }: HireDialogProps) =
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm}>
             Mark as Hired
           </AlertDialogAction>

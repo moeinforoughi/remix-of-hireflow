@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
@@ -37,7 +37,7 @@ const OfferForm = () => {
   const [searchParams] = useSearchParams();
   const applicationIdFromUrl = searchParams.get('application_id');
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
 
   const form = useForm<FormValues>({
@@ -85,10 +85,10 @@ const OfferForm = () => {
 
       if (offersError) throw offersError;
 
-      // Create a Set of application IDs that already have active offers
+      // ایجاد a Set of application IDs that already have active offers
       const appsWithActiveOffers = new Set(activeOffers?.map(o => o.application_id) || []);
 
-      // Filter out applications that already have an active offer
+      // فیلتر out applications that already have an active offer
       const availableApplications = (apps || []).filter(app => !appsWithActiveOffers.has(app.id));
 
       setApplications(availableApplications);
@@ -102,7 +102,7 @@ const OfferForm = () => {
   };
 
   const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: offer, error } = await supabase.from('offers').insert({
         application_id: values.application_id,
@@ -126,7 +126,7 @@ const OfferForm = () => {
         .update({ state: 'hired' })
         .eq('id', values.application_id);
 
-      // Create in-app notifications (email will be sent when offer is approved)
+      // ایجاد in-app notifications (email will be sent when offer is approved)
       try {
         const selectedApp = applications.find(a => a.id === values.application_id);
         if (selectedApp) {
@@ -137,32 +137,32 @@ const OfferForm = () => {
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Offer created successfully',
       });
 
       navigate('/offers');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl">Create Offer</h1>
-        <p className="text-muted-foreground">Create a new job offer for a candidate</p>
+        <h1 className="text-3xl">ایجاد Offer</h1>
+        <p className="text-muted-foreground">ایجاد a new job offer for a candidate</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Offer Details</CardTitle>
+          <CardTitle>جزئیات پیشنهاد</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -173,10 +173,10 @@ const OfferForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Candidate Application</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select an application" />
+                          <SelectValue placeholder="انتخاب an application" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -186,7 +186,7 @@ const OfferForm = () => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -198,7 +198,7 @@ const OfferForm = () => {
                   name="base_amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Base Salary</FormLabel>
+                      <FormLabel>حقوق پایه</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="120000" {...field} />
                       </FormControl>
@@ -213,7 +213,7 @@ const OfferForm = () => {
                   name="variable_amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Variable/Bonus (Optional)</FormLabel>
+                      <FormLabel>Variable/پاداش (اختیاری)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="20000" {...field} />
                       </FormControl>
@@ -230,8 +230,8 @@ const OfferForm = () => {
                   name="currency"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Currency</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormLabel>واحد پول</FormLabel>
+                      <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -243,7 +243,7 @@ const OfferForm = () => {
                           <SelectItem value="GBP">GBP</SelectItem>
                           <SelectItem value="CAD">CAD</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </انتخاب>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -254,7 +254,7 @@ const OfferForm = () => {
                   name="equity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Equity (Optional)</FormLabel>
+                      <FormLabel>سهام (اختیاری)</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., 0.5% stock options" {...field} />
                       </FormControl>
@@ -269,7 +269,7 @@ const OfferForm = () => {
                 name="expires_at"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Offer Expiration (Optional)</FormLabel>
+                    <FormLabel>Offer انقضا (اختیاری)</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -294,7 +294,7 @@ const OfferForm = () => {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
+                          disabled={(date) => date < new تاریخ()}
                           initialFocus
                           className={cn('p-3 pointer-events-auto')}
                         />
@@ -313,10 +313,10 @@ const OfferForm = () => {
                 name="benefits_md"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Benefits (Optional)</FormLabel>
+                    <FormLabel>مزایا (اختیاری)</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="• Health, dental, vision insurance&#10;• 401(k) with match&#10;• Unlimited PTO&#10;• Remote work options"
+                        placeholder="• Health, dental, vision insurance&#10;• 401(k) with match&#10;• Unlimited PTO&#10;• دورکاری work options"
                         rows={6}
                         {...field}
                       />
@@ -334,7 +334,7 @@ const OfferForm = () => {
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Internal Notes (Optional)</FormLabel>
+                    <FormLabel>Internal Notes (اختیاری)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Internal notes about this offer..."
@@ -353,10 +353,10 @@ const OfferForm = () => {
               <div className="flex gap-4">
                 <Button type="submit" disabled={loading}>
                   {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Create Offer
+                  ایجاد Offer
                 </Button>
                 <Button type="button" variant="outline" onClick={() => navigate('/offers')}>
-                  Cancel
+                  انصراف
                 </Button>
               </div>
             </form>

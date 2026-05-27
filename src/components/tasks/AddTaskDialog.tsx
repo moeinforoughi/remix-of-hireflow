@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, Plus } from "lucide-react";
@@ -23,7 +23,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
-  const [dueDate, setDueDate] = useState<Date>();
+  const [dueDate, setDueDate] = useState<تاریخ>();
   const [dueTime, setDueTime] = useState("12:00");
   const [status, setStatus] = useState<"pending" | "completed">("pending");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,7 +31,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error("Title is required");
+      toast.error("عنوان is required");
       return;
     }
 
@@ -40,7 +40,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
     let dueDatetime = null;
     if (dueDate) {
       const [hours, minutes] = dueTime.split(":");
-      const datetime = new Date(dueDate);
+      const datetime = new تاریخ(dueDate);
       datetime.setHours(parseInt(hours), parseInt(minutes), 0);
       dueDatetime = datetime.toISOString();
     }
@@ -77,16 +77,16 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Add Task
+          افزودن وظیفه
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add New Task</DialogTitle>
+          <DialogTitle>افزودن وظیفه جدید</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">عنوان *</Label>
             <Input
               id="title"
               value={title}
@@ -102,13 +102,13 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
               id="label"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              placeholder="Optional label"
+              placeholder="اختیاری label"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Due Date</Label>
+              <Label>Due تاریخ</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -134,7 +134,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
             </div>
 
             <div className="space-y-2">
-              <Label>Time</Label>
+              <Label>زمان</Label>
               <TimePickerAMPM
                 value={dueTime}
                 onChange={setDueTime}
@@ -144,24 +144,24 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
+            <Label htmlFor="status">وضعیت</Label>
+            <انتخاب value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="pending">در انتظار</SelectItem>
+                <SelectItem value="completed">انجام شده</SelectItem>
               </SelectContent>
-            </Select>
+            </انتخاب>
           </div>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              انصراف
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Task"}
+              {isSubmitting ? "در حال ایجاد..." : "ایجاد Task"}
             </Button>
           </div>
         </form>

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -36,7 +36,7 @@ interface EditJobDialogProps {
 }
 
 export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDialogProps) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [formData, setFormData] = useState({
     title: job.title || '',
     location: job.location || '',
@@ -55,7 +55,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setUpload(true);
 
     try {
       const { error } = await supabase
@@ -66,7 +66,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Job listing updated successfully',
       });
 
@@ -74,12 +74,12 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -87,21 +87,21 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="flex flex-row items-start justify-between space-y-0 pb-6 pr-12">
-          <DialogTitle className="text-3xl font-semibold">Edit Listing</DialogTitle>
+          <DialogTitle className="text-3xl font-semibold">ویرایش Listing</DialogTitle>
           <Button
             onClick={handleSubmit}
             disabled={loading}
             className="bg-foreground text-background hover:bg-foreground/90 gap-2"
           >
             <Check className="h-4 w-4" />
-            Save Changes
+            ذخیره تغییرات
           </Button>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Job Title */}
+          {/* Job عنوان */}
           <fieldset className="border border-border rounded-lg p-4 relative">
-            <legend className="text-xs text-muted-foreground px-2 -ml-2">Job Title</legend>
+            <legend className="text-xs text-muted-foreground px-2 -ml-2">Job عنوان</legend>
             <Input
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -111,21 +111,21 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
             />
           </fieldset>
 
-          {/* Location, Employment Type, Compensation, Openings Row */}
+          {/* مکان, نوع همکاری, Compensation, Openings Row */}
           <div className="grid grid-cols-4 gap-4">
             <fieldset className="border border-border rounded-lg p-4 relative">
-              <legend className="text-xs text-muted-foreground px-2 -ml-2">Location</legend>
+              <legend className="text-xs text-muted-foreground px-2 -ml-2">مکان</legend>
               <Input
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="e.g., Remote, New York"
+                placeholder="e.g., دورکاری, New York"
                 className="border-0 p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0"
               />
             </fieldset>
 
             <fieldset className="border border-border rounded-lg p-4 relative">
-              <legend className="text-xs text-muted-foreground px-2 -ml-2">Employment Type</legend>
-              <Select
+              <legend className="text-xs text-muted-foreground px-2 -ml-2">نوع همکاری</legend>
+              <انتخاب
                 value={formData.employment_type}
                 onValueChange={(value) => setFormData({ ...formData, employment_type: value as 'full_time' | 'part_time' | 'contract' | 'internship' })}
               >
@@ -133,12 +133,12 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="full_time">Full Time</SelectItem>
-                  <SelectItem value="part_time">Part Time</SelectItem>
-                  <SelectItem value="contract">Contract</SelectItem>
-                  <SelectItem value="internship">Internship</SelectItem>
+                  <SelectItem value="full_time">تمام‌وقت</SelectItem>
+                  <SelectItem value="part_time">نیمه‌وقت</SelectItem>
+                  <SelectItem value="contract">قراردادی</SelectItem>
+                  <SelectItem value="internship">کارآموزی</SelectItem>
                 </SelectContent>
-              </Select>
+              </انتخاب>
             </fieldset>
 
             <fieldset className="border border-border rounded-lg p-4 relative">
@@ -164,9 +164,9 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
             </fieldset>
           </div>
 
-          {/* Required Skills */}
+          {/* اجباری مهارت‌ها */}
           <fieldset className="border border-border rounded-lg p-4 relative">
-            <legend className="text-xs text-muted-foreground px-2 -ml-2">Required Skills</legend>
+            <legend className="text-xs text-muted-foreground px-2 -ml-2">اجباری مهارت‌ها</legend>
             <div className="flex gap-2 mb-3">
               <Input
                 value={skillInput}
@@ -193,7 +193,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
                   }
                 }}
               >
-                Add
+                افزودن
               </Button>
             </div>
             {formData.required_skills.length > 0 && (
@@ -222,7 +222,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
             )}
           </fieldset>
 
-          {/* About Us & Requirements Row */}
+          {/* About Us & نیازمندی‌ها Row */}
           <div className="grid grid-cols-2 gap-4">
             <fieldset className="border border-border rounded-lg p-4 relative">
               <legend className="text-xs text-muted-foreground px-2 -ml-2">About Us</legend>
@@ -235,7 +235,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
             </fieldset>
 
             <fieldset className="border border-border rounded-lg p-4 relative">
-              <legend className="text-xs text-muted-foreground px-2 -ml-2">Requirements</legend>
+              <legend className="text-xs text-muted-foreground px-2 -ml-2">نیازمندی‌ها</legend>
               <Textarea
                 value={formData.requirements_md}
                 onChange={(e) => setFormData({ ...formData, requirements_md: e.target.value })}
@@ -245,10 +245,10 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
             </fieldset>
           </div>
 
-          {/* Role Overview & Nice to Haves Row */}
+          {/* نقش Overview & Nice to Haves Row */}
           <div className="grid grid-cols-2 gap-4">
             <fieldset className="border border-border rounded-lg p-4 relative">
-              <legend className="text-xs text-muted-foreground px-2 -ml-2">Role Overview</legend>
+              <legend className="text-xs text-muted-foreground px-2 -ml-2">نقش Overview</legend>
               <Textarea
                 value={formData.role_overview}
                 onChange={(e) => setFormData({ ...formData, role_overview: e.target.value })}
@@ -262,13 +262,13 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
               <Textarea
                 value={formData.nice_to_have}
                 onChange={(e) => setFormData({ ...formData, nice_to_have: e.target.value })}
-                placeholder="Optional qualifications..."
+                placeholder="اختیاری qualifications..."
                 className="border-0 p-0 min-h-[120px] focus-visible:ring-0 focus-visible:ring-offset-0 resize-none"
               />
             </fieldset>
           </div>
 
-          {/* What You'll Do & Benefits Row */}
+          {/* What You'll Do & مزایا Row */}
           <div className="grid grid-cols-2 gap-4">
             <fieldset className="border border-border rounded-lg p-4 relative">
               <legend className="text-xs text-muted-foreground px-2 -ml-2">What You'll Do</legend>
@@ -281,7 +281,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
             </fieldset>
 
             <fieldset className="border border-border rounded-lg p-4 relative">
-              <legend className="text-xs text-muted-foreground px-2 -ml-2">Benefits</legend>
+              <legend className="text-xs text-muted-foreground px-2 -ml-2">مزایا</legend>
               <Textarea
                 value={formData.benefits}
                 onChange={(e) => setFormData({ ...formData, benefits: e.target.value })}

@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
-interface PendingApproval {
+interface در انتظارتأیید {
   id: string;
   offer_id: string;
   approver_user_id: string;
@@ -22,30 +22,30 @@ interface PendingApproval {
   offer_created_at: string;
 }
 
-interface ApprovalRequestedDialogProps {
+interface ConfirmRequestedDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequestedDialogProps) {
-  const [approvals, setApprovals] = useState<PendingApproval[]>([]);
-  const [loading, setLoading] = useState(true);
+export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedDialogProps) {
+  const [approvals, setConfirms] = useState<در انتظارتأیید[]>([]);
+  const [loading, setUpload] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
-      fetchPendingApprovals();
+      fetchPendingConfirms();
     }
   }, [open]);
 
-  const fetchPendingApprovals = async () => {
-    setLoading(true);
+  const fetchPendingConfirms = async () => {
+    setUpload(true);
     try {
       // Get current user's org_id
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setLoading(false);
+        setUpload(false);
         return;
       }
       
@@ -56,7 +56,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
         .single();
       
       if (!profile) {
-        setLoading(false);
+        setUpload(false);
         return;
       }
 
@@ -100,7 +100,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
 
       if (error) throw error;
 
-      const formattedData: PendingApproval[] = (data || []).map((approval: any) => ({
+      const formattedData: در انتظارتأیید[] = (data || []).map((approval: any) => ({
         id: approval.id,
         offer_id: approval.offers.id,
         approver_user_id: approval.approver_user_id,
@@ -115,26 +115,26 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
         offer_created_at: approval.offers.created_at,
       }));
 
-      setApprovals(formattedData);
+      setConfirms(formattedData);
     } catch (error: any) {
       console.error('Error fetching approvals:', error);
       toast({
-        title: "Error",
+        title: "خطا",
         description: "Failed to load pending approvals",
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
-  const handleApprovalAction = async (approvalId: string, offerId: string, action: 'approved' | 'rejected') => {
+  const handleConfirmAction = async (approvalId: string, offerId: string, action: 'approved' | 'rejected') => {
     try {
       const { error } = await supabase
         .from('approvals')
         .update({ 
           state: action,
-          acted_at: new Date().toISOString()
+          acted_at: new تاریخ().toISOString()
         })
         .eq('id', approvalId);
 
@@ -151,17 +151,17 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
       }
 
       toast({
-        title: action === 'approved' ? "Offer Approved" : "Offer Rejected",
+        title: action === 'approved' ? "Offer Confirmd" : "Offer Rejected",
         description: action === 'approved' 
           ? "The offer has been approved successfully" 
           : "The offer has been rejected",
       });
 
-      fetchPendingApprovals();
+      fetchPendingConfirms();
     } catch (error: any) {
       console.error('Error updating approval:', error);
       toast({
-        title: "Error",
+        title: "خطا",
         description: `Failed to ${action === 'approved' ? 'approve' : 'reject'} offer`,
         variant: "destructive",
       });
@@ -174,7 +174,7 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
   };
 
   const formatStartDate = (createdAt: string) => {
-    const date = new Date(createdAt);
+    const date = new تاریخ(createdAt);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
@@ -182,14 +182,14 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[790px] max-w-[90vw] p-5 max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Approval Requested</DialogTitle>
+          <DialogTitle className="text-2xl">در انتظار تأیید</DialogTitle>
         </DialogHeader>
 
         <div className="py-5 flex flex-col gap-4">
           {loading ? (
-            <div className="text-center text-muted-foreground">Loading approvals...</div>
+            <div className="text-center text-muted-foreground">بارگذاری approvals...</div>
           ) : approvals.length === 0 ? (
-            <div className="text-center text-muted-foreground">No pending approvals</div>
+            <div className="text-center text-muted-foreground">خیر pending approvals</div>
           ) : (
             approvals.map((approval) => (
               <div key={approval.id} className="flex flex-col gap-4">
@@ -231,15 +231,15 @@ export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequeste
                     <Button
                       variant="outline"
                       className="flex-1 h-[41px] text-lg font-bold"
-                      onClick={() => handleApprovalAction(approval.id, approval.offer_id, 'rejected')}
+                      onClick={() => handleConfirmAction(approval.id, approval.offer_id, 'rejected')}
                     >
-                      Reject
+                      رد
                     </Button>
                     <Button
                       className="flex-1 h-[41px] text-base font-bold bg-[#45ce99]/30 text-foreground border-2 border-[#45ce99] hover:bg-[#45ce99]/40"
-                      onClick={() => handleApprovalAction(approval.id, approval.offer_id, 'approved')}
+                      onClick={() => handleConfirmAction(approval.id, approval.offer_id, 'approved')}
                     >
-                      Approve & Send
+                      تأیید & ارسال
                     </Button>
                   </div>
                 </div>

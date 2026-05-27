@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, UserPlus, Trash2, Shield, X } from 'lucide-react';
 import {
-  Select,
+  انتخاب,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -83,9 +83,9 @@ const ROLE_PERMISSION_MATRIX: Record<AppRole, Record<string, boolean>> = {
 
 // Which presets are available for each role
 const ROLE_PRESET_FILTER: Record<AppRole, string[]> = {
-  basic: ['viewer', 'custom'], // Basic users can only be Viewer or Custom (with view only)
-  job_admin: ['viewer', 'interviewer', 'recruiter', 'hiring_manager', 'custom'],
-  site_admin: ['viewer', 'interviewer', 'recruiter', 'hiring_manager', 'custom'],
+  basic: ['viewer', 'custom'], // پایه users can only be Viewer or Custom (with view only)
+  job_admin: ['viewer', 'مصاحبه‌کننده', 'recruiter', 'hiring_manager', 'custom'],
+  site_admin: ['viewer', 'مصاحبه‌کننده', 'recruiter', 'hiring_manager', 'custom'],
 };
 
 const canTogglePermission = (role: AppRole | undefined, permission: string): boolean => {
@@ -107,11 +107,11 @@ const getRoleBadgeVariant = (role: AppRole | undefined): "default" | "secondary"
 const getRoleLabel = (role: AppRole | undefined): string => {
   switch (role) {
     case 'site_admin':
-      return 'Site Admin';
+      return 'Site مدیر کل';
     case 'job_admin':
-      return 'Job Admin';
+      return 'Job مدیر کل';
     case 'basic':
-      return 'Basic';
+      return 'پایه';
     default:
       return 'Unknown';
   }
@@ -120,11 +120,11 @@ const getRoleLabel = (role: AppRole | undefined): string => {
 export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
   const [teamMembers, setTeamMembers] = useState<JobTeamMember[]>([]);
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedPreset, setSelectedPreset] = useState('recruiter');
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteDialogOpen, setRemoveDialogOpen] = useState(false);
   const [deletingMemberId, setDeletingMemberId] = useState<string | null>(null);
   const [permissions, setPermissions] = useState({
     can_view: true,
@@ -177,7 +177,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
 
         if (rolesError) throw rolesError;
 
-        // Create a map of user_id to role
+        // ایجاد a map of user_id to role
         const roleMap = new Map<string, AppRole>();
         rolesData?.forEach(r => roleMap.set(r.user_id, r.role as AppRole));
 
@@ -193,12 +193,12 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -234,7 +234,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
 
         if (rolesError) throw rolesError;
 
-        // Create a map of user_id to role
+        // ایجاد a map of user_id to role
         const roleMap = new Map<string, AppRole>();
         rolesData?.forEach(r => roleMap.set(r.user_id, r.role as AppRole));
 
@@ -286,7 +286,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Team member added successfully',
       });
 
@@ -302,14 +302,14 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       fetchTeamMembers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleUpdatePermission = async (
+  const handleRefreshPermission = async (
     memberId: string,
     field: keyof typeof permissions,
     value: boolean
@@ -323,14 +323,14 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Permission updated',
       });
 
       fetchTeamMembers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -349,16 +349,16 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Team member removed',
       });
 
-      setDeleteDialogOpen(false);
+      setRemoveDialogOpen(false);
       setDeletingMemberId(null);
       fetchTeamMembers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -407,7 +407,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
       <Checkbox
         checked={member[permission]}
         onCheckedChange={(checked) =>
-          handleUpdatePermission(member.id, permission, checked as boolean)
+          handleRefreshPermission(member.id, permission, checked as boolean)
         }
       />
     );
@@ -435,12 +435,12 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
               <DialogTrigger asChild>
                 <Button>
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Add Team Member
+                  افزودن Team Member
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add Team Member</DialogTitle>
+                  <DialogTitle>افزودن Team Member</DialogTitle>
                   <DialogDescription>
                     Grant a user access to this job with specific permissions
                   </DialogDescription>
@@ -449,9 +449,9 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">User</label>
-                    <Select value={selectedUser} onValueChange={setSelectedUser}>
+                    <انتخاب value={selectedUser} onValueChange={setSelectedUser}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a user" />
+                        <SelectValue placeholder="انتخاب a user" />
                       </SelectTrigger>
                       <SelectContent>
                         {getAvailableUsersForAdd().map((user) => (
@@ -465,12 +465,12 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Role</label>
-                    <Select value={selectedPreset} onValueChange={setSelectedPreset}>
+                    <label className="text-sm font-medium">نقش</label>
+                    <انتخاب value={selectedPreset} onValueChange={setSelectedPreset}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -484,17 +484,17 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                     {selectedUser && selectedUserRole === 'basic' && (
                       <p className="text-xs text-muted-foreground">
-                        Basic users can only have view permissions
+                        پایه users can only have view permissions
                       </p>
                     )}
                   </div>
 
                   {selectedPreset === 'custom' && (
                     <div className="space-y-3 p-3 border rounded-lg bg-muted/30">
-                      <label className="text-sm font-medium">Custom Permissions</label>
+                      <label className="text-sm font-medium">Custom دسترسی‌ها</label>
                       
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -575,7 +575,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                     <div className="p-3 border rounded-lg bg-muted/30">
                       <div className="text-sm font-medium mb-2 flex items-center gap-2">
                         <Shield className="h-4 w-4" />
-                        Permissions for {getPresetById(selectedPreset)?.name}
+                        دسترسی‌ها for {getPresetById(selectedPreset)?.name}
                       </div>
                       <div className="space-y-1 text-sm text-muted-foreground">
                         {getPresetById(selectedPreset)?.permissions.can_view && <div>✓ View applications</div>}
@@ -587,8 +587,8 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                         }
                         {getPresetById(selectedPreset)?.permissions.can_message && 
                           (canTogglePermission(selectedUserRole, 'can_message')
-                            ? <div>✓ Message candidates</div>
-                            : <div className="line-through text-muted-foreground/50">✗ Message candidates (not available for basic users)</div>
+                            ? <div>✓ پیام candidates</div>
+                            : <div className="line-through text-muted-foreground/50">✗ پیام candidates (not available for basic users)</div>
                           )
                         }
                         {getPresetById(selectedPreset)?.permissions.can_view_offer && 
@@ -604,10 +604,10 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
 
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                    Cancel
+                    انصراف
                   </Button>
                   <Button onClick={handleAddMember} disabled={!selectedUser}>
-                    Add Member
+                    افزودن Member
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -617,17 +617,17 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
         <CardContent>
           {teamMembers.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
-              No team members assigned to this job yet
+              خیر team members assigned to this job yet
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Role</TableHead>
+                  <TableHead>نقش</TableHead>
                   <TableHead className="text-center">View</TableHead>
-                  <TableHead className="text-center">Move Pipeline</TableHead>
-                  <TableHead className="text-center">Message</TableHead>
+                  <TableHead className="text-center">Move پایپ‌لاین</TableHead>
+                  <TableHead className="text-center">پیام</TableHead>
                   <TableHead className="text-center">View Offers</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
@@ -652,13 +652,13 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                       {renderPermissionCell(member, 'can_view', 'View permission')}
                     </TableCell>
                     <TableCell className="text-center">
-                      {renderPermissionCell(member, 'can_move_pipeline', 'Basic users cannot move pipeline')}
+                      {renderPermissionCell(member, 'can_move_pipeline', 'پایه users cannot move pipeline')}
                     </TableCell>
                     <TableCell className="text-center">
-                      {renderPermissionCell(member, 'can_message', 'Basic users cannot message candidates')}
+                      {renderPermissionCell(member, 'can_message', 'پایه users cannot message candidates')}
                     </TableCell>
                     <TableCell className="text-center">
-                      {renderPermissionCell(member, 'can_view_offer', 'Basic users cannot view offers')}
+                      {renderPermissionCell(member, 'can_view_offer', 'پایه users cannot view offers')}
                     </TableCell>
                     <TableCell>
                       <Button
@@ -666,7 +666,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                         size="sm"
                         onClick={() => {
                           setDeletingMemberId(member.id);
-                          setDeleteDialogOpen(true);
+                          setRemoveDialogOpen(true);
                         }}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -682,11 +682,11 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
 
       <ConfirmDialog
         open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
+        onOpenChange={setRemoveDialogOpen}
         onConfirm={handleRemoveMember}
-        title="Remove Team Member"
+        title="حذف Team Member"
         description="Are you sure you want to remove this user from the job team? They will lose access to this job's applications and data."
-        confirmText="Remove"
+        confirmText="حذف"
         variant="destructive"
       />
     </>

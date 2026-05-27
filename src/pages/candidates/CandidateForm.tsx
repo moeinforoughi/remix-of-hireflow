@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FileUpload } from '@/components/shared/FileUpload';
@@ -15,7 +15,7 @@ import { parseResume } from '@/lib/resume-parser';
 const CandidateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     full_name: '',
@@ -51,7 +51,7 @@ const CandidateForm = () => {
       });
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -60,7 +60,7 @@ const CandidateForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -72,7 +72,7 @@ const CandidateForm = () => {
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
       const candidateData = {
         ...formData,
@@ -80,7 +80,7 @@ const CandidateForm = () => {
         phone: formData.phone || null,
         location: formData.location || null,
         linkedin_url: formData.linkedin_url || null,
-        consent_at: formData.consent ? new Date().toISOString() : null,
+        consent_at: formData.consent ? new تاریخ().toISOString() : null,
       };
 
       let candidateId = id;
@@ -106,10 +106,10 @@ const CandidateForm = () => {
         candidateId = newCandidate.id;
       }
 
-      // Upload resume if provided
+      // بارگذاری resume if provided
       if (resumeFile && candidateId) {
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const fileName = `${تاریخ.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -133,24 +133,24 @@ const CandidateForm = () => {
 
         // Parse resume in the background - use the file path
         parseResume(filePath, candidateId).catch((error) => {
-          console.error('Resume parsing failed:', error);
+          console.error('رزومه parsing failed:', error);
         });
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: id ? 'Candidate updated successfully' : 'Candidate added successfully',
       });
 
       navigate('/candidates');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -161,9 +161,9 @@ const CandidateForm = () => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl">{id ? 'Edit Candidate' : 'Add New Candidate'}</h1>
+          <h1 className="text-3xl">{id ? 'ویرایش Candidate' : 'افزودن کاندیدای جدید'}</h1>
           <p className="text-muted-foreground">
-            {id ? 'Update candidate information' : 'Add a new candidate to your talent pool'}
+            {id ? 'به‌روزرسانی candidate information' : 'افزودن a new candidate to your talent pool'}
           </p>
         </div>
       </div>
@@ -171,13 +171,13 @@ const CandidateForm = () => {
       <Card>
         <CardHeader>
           <CardTitle>Candidate Information</CardTitle>
-          <CardDescription>Basic details about the candidate</CardDescription>
+          <CardDescription>پایه details about the candidate</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name *</Label>
+                <Label htmlFor="full_name">نام و نام خانوادگی *</Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
@@ -188,7 +188,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">ایمیل</Label>
                 <Input
                   id="email"
                   type="email"
@@ -199,7 +199,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">تلفن</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -210,7 +210,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
+                <Label htmlFor="location">مکان</Label>
                 <Input
                   id="location"
                   value={formData.location}
@@ -220,7 +220,7 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+                <Label htmlFor="linkedin_url">لینکدین URL</Label>
                 <Input
                   id="linkedin_url"
                   type="url"
@@ -231,8 +231,8 @@ const CandidateForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="source">Source *</Label>
-                <Select
+                <Label htmlFor="source">منبع *</Label>
+                <انتخاب
                   value={formData.source}
                   onValueChange={(value: any) => setFormData({ ...formData, source: value })}
                 >
@@ -241,18 +241,18 @@ const CandidateForm = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="manual">Manual Entry</SelectItem>
-                    <SelectItem value="careers_site">Careers Site</SelectItem>
+                    <SelectItem value="careers_site">فرصت‌های شغلی Site</SelectItem>
                     <SelectItem value="referral">Referral</SelectItem>
-                    <SelectItem value="linkedin">LinkedIn</SelectItem>
+                    <SelectItem value="linkedin">لینکدین</SelectItem>
                     <SelectItem value="agency">Agency</SelectItem>
                     <SelectItem value="job_fair">Job Fair</SelectItem>
                   </SelectContent>
-                </Select>
+                </انتخاب>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="resume">Resume (Optional)</Label>
+              <Label htmlFor="resume">رزومه (اختیاری)</Label>
               <FileUpload
                 value={resumeFile}
                 onChange={setResumeFile}
@@ -275,10 +275,10 @@ const CandidateForm = () => {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={loading}>
-                {loading ? 'Saving...' : id ? 'Update Candidate' : 'Add Candidate'}
+                {loading ? 'در حال ذخیره...' : id ? 'به‌روزرسانی Candidate' : 'افزودن کاندیدا'}
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate('/candidates')}>
-                Cancel
+                انصراف
               </Button>
             </div>
           </form>

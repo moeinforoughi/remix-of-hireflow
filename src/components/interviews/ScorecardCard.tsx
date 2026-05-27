@@ -34,7 +34,7 @@ export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
         </div>
         {scorecard.submitted_at && (
           <p className="text-sm text-muted-foreground">
-            Submitted {format(new Date(scorecard.submitted_at), 'MMM d, yyyy')}
+            Submitted {format(new تاریخ(scorecard.submitted_at), 'MMM d, yyyy')}
           </p>
         )}
       </CardHeader>

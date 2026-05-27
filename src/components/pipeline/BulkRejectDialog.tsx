@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import {
-  Select,
+  انتخاب,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -27,7 +27,7 @@ interface BulkRejectDialogProps {
 }
 
 const REJECTION_REASONS = [
-  'Qualifications do not match',
+  'شرایط احراز do not match',
   'Position filled',
   'Insufficient experience',
   'Cultural fit concerns',
@@ -49,7 +49,7 @@ export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkR
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Reject {count} Application{count > 1 ? 's' : ''}</AlertDialogTitle>
+          <AlertDialogTitle>رد {count} Application{count > 1 ? 's' : ''}</AlertDialogTitle>
           <AlertDialogDescription>
             This will reject {count} selected application{count > 1 ? 's' : ''}. This action can be reversed later if needed.
           </AlertDialogDescription>
@@ -58,9 +58,9 @@ export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkR
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="reason">Rejection Reason *</Label>
-            <Select value={reason} onValueChange={setReason}>
+            <انتخاب value={reason} onValueChange={setReason}>
               <SelectTrigger id="reason">
-                <SelectValue placeholder="Select a reason" />
+                <SelectValue placeholder="انتخاب a reason" />
               </SelectTrigger>
               <SelectContent>
                 {REJECTION_REASONS.map((r) => (
@@ -69,7 +69,7 @@ export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkR
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </انتخاب>
           </div>
 
           <div className="space-y-2">
@@ -78,16 +78,16 @@ export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkR
               id="note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Add any additional context..."
+              placeholder="افزودن any additional context..."
               rows={3}
             />
           </div>
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirm} disabled={!reason}>
-            Reject {count} Application{count > 1 ? 's' : ''}
+            رد {count} Application{count > 1 ? 's' : ''}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

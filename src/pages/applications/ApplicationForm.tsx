@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
@@ -22,7 +22,7 @@ const ApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
 
@@ -79,7 +79,7 @@ const ApplicationForm = () => {
   };
 
   const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+    setUpload(true);
     try {
       // Get the first stage for the job
       const { data: stages, error: stagesError } = await supabase
@@ -101,27 +101,27 @@ const ApplicationForm = () => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Application created successfully',
       });
 
       navigate('/applications');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl">New Application</h1>
-        <p className="text-muted-foreground">Create a new job application</p>
+        <h1 className="text-3xl">درخواست جدید</h1>
+        <p className="text-muted-foreground">ایجاد a new job application</p>
       </div>
 
       <Card>
@@ -137,16 +137,16 @@ const ApplicationForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Candidate</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a candidate" />
+                          <SelectValue placeholder="انتخاب a candidate" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-background z-50">
                         {candidates.length === 0 ? (
                           <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-                            No candidates found
+                            خیر candidates found
                           </div>
                         ) : (
                           candidates.map((candidate) => (
@@ -156,7 +156,7 @@ const ApplicationForm = () => {
                           ))
                         )}
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -168,16 +168,16 @@ const ApplicationForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Job</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a job" />
+                          <SelectValue placeholder="انتخاب a job" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-background z-50">
                         {jobs.length === 0 ? (
                           <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-                            No jobs found
+                            خیر jobs found
                           </div>
                         ) : (
                           jobs.map((job) => (
@@ -188,7 +188,7 @@ const ApplicationForm = () => {
                           ))
                         )}
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -197,10 +197,10 @@ const ApplicationForm = () => {
               <div className="flex gap-4">
                 <Button type="submit" disabled={loading}>
                   {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Create Application
+                  ایجاد Application
                 </Button>
                 <Button type="button" variant="outline" onClick={() => navigate('/applications')}>
-                  Cancel
+                  انصراف
                 </Button>
               </div>
             </form>

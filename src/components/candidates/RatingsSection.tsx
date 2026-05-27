@@ -29,18 +29,18 @@ interface RatingsSectionProps {
 }
 
 const CATEGORIES = [
-  { key: 'soft_skills', label: 'Soft Skills' },
-  { key: 'hard_skills', label: 'Hard Skills' },
+  { key: 'soft_skills', label: 'Soft مهارت‌ها' },
+  { key: 'hard_skills', label: 'Hard مهارت‌ها' },
   { key: 'salary_match', label: 'Salary Match' },
   { key: 'culture_fit', label: 'Culture Fit' },
-  { key: 'experience', label: 'Experience' },
+  { key: 'experience', label: 'سابقه کار' },
 ] as const;
 
 type RatingKey = typeof CATEGORIES[number]['key'];
 
 export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
   const [ratings, setRatings] = useState<CandidateRating[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [editingRating, setEditingRating] = useState<CandidateRating | null>(null);
@@ -78,7 +78,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
     } catch (error) {
       console.error('Error fetching ratings:', error);
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -106,7 +106,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
           <CardTitle className="text-lg">Ratings</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Loading ratings...</p>
+          <p className="text-sm text-muted-foreground">بارگذاری ratings...</p>
         </CardContent>
       </Card>
     );
@@ -121,7 +121,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
             {userRating ? (
               <>
                 <Pencil className="h-4 w-4 mr-1" />
-                Edit
+                ویرایش
               </>
             ) : (
               <>
@@ -133,7 +133,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           {ratings.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No ratings yet. Be the first to rate this candidate.</p>
+            <p className="text-sm text-muted-foreground">خیر ratings yet. Be the first to rate this candidate.</p>
           ) : (
             <>
               {/* Average Scores */}
@@ -167,7 +167,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
                       </Avatar>
                       <span className="text-sm font-medium">{rating.user.full_name}</span>
                       <span className="text-xs text-muted-foreground ml-auto">
-                        {format(new Date(rating.created_at), 'MMM d, yyyy')}
+                        {format(new تاریخ(rating.created_at), 'MMM d, yyyy')}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">

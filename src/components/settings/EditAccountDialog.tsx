@@ -14,7 +14,7 @@ interface EditAccountDialogProps {
 }
 
 export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccountDialogProps) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [fullName, setFullName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const { toast } = useToast();
@@ -42,7 +42,7 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
       setAvatarUrl(data?.avatar_url || '');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -50,7 +50,7 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -66,7 +66,7 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Your account information has been updated',
       });
 
@@ -79,12 +79,12 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -92,14 +92,14 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Account Information</DialogTitle>
+          <DialogTitle>ویرایش اطلاعات حساب</DialogTitle>
           <DialogDescription>
-            Update your personal information here.
+            به‌روزرسانی your personal information here.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="fullName">نام و نام خانوادگی</Label>
             <Input
               id="fullName"
               value={fullName}
@@ -119,11 +119,11 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
           <Button onClick={handleSave} disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Save Changes
+            ذخیره تغییرات
           </Button>
         </DialogFooter>
       </DialogContent>

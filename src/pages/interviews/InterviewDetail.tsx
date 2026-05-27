@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, Download } from 'lucide-react';
+import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, دانلود } from 'lucide-react';
 import { format } from 'date-fns';
 import { ScorecardCard } from '@/components/interviews/ScorecardCard';
 import { InterviewDecision } from '@/components/interviews/InterviewDecision';
 
-interface Scorecard {
+interface فرم ارزیابی {
   id: string;
   user_id: string;
   user: {
@@ -53,9 +53,9 @@ const InterviewDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [interview, setInterview] = useState<InterviewDetail | null>(null);
-  const [scorecards, setScorecards] = useState<Scorecard[]>([]);
-  const [interviewers, setInterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
-  const [loading, setLoading] = useState(true);
+  const [scorecards, setScorecards] = useState<فرم ارزیابی[]>([]);
+  const [مصاحبه‌کننده, setinterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
+  const [loading, setUpload] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -72,9 +72,9 @@ const InterviewDetail = () => {
     }
   }, [id]);
 
-  const fetchInterviewers = async (panelUserIds: string[]) => {
+  const fetchinterviewers = async (panelUserIds: string[]) => {
     if (!panelUserIds || panelUserIds.length === 0) {
-      setInterviewers([]);
+      setinterviewers([]);
       return;
     }
 
@@ -85,9 +85,9 @@ const InterviewDetail = () => {
         .in("id", panelUserIds);
 
       if (error) throw error;
-      setInterviewers(data || []);
+      setinterviewers(data || []);
     } catch (error) {
-      console.error("Error fetching interviewers:", error);
+      console.error("Error fetching مصاحبه‌کننده:", error);
     }
   };
 
@@ -117,18 +117,18 @@ const InterviewDetail = () => {
       if (error) throw error;
       setInterview(data);
 
-      // Fetch interviewers if panel_user_ids exists
+      // Fetch مصاحبه‌کننده if panel_user_ids exists
       if (data?.panel_user_ids && data.panel_user_ids.length > 0) {
-        await fetchInterviewers(data.panel_user_ids);
+        await fetchinterviewers(data.panel_user_ids);
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -164,7 +164,7 @@ const InterviewDetail = () => {
 
       if (error) throw error;
 
-      // Create a blob and download
+      // ایجاد a blob and download
       const blob = new Blob([data], { type: 'text/calendar' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -181,14 +181,14 @@ const InterviewDetail = () => {
       });
     } catch (error: any) {
       toast({
-        title: 'Download Failed',
+        title: 'دانلود Failed',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleStatusUpdate = async (newStatus: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
+  const handleStatusRefresh = async (newStatus: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
     try {
       const { error } = await supabase
         .from('interviews')
@@ -198,14 +198,14 @@ const InterviewDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: `Interview marked as ${newStatus}`,
       });
 
       fetchInterview();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -223,8 +223,8 @@ const InterviewDetail = () => {
 
       if (!stages || stages.length === 0) {
         toast({
-          title: 'Error',
-          description: 'No stages found for this job',
+          title: 'خطا',
+          description: 'خیر stages found for this job',
           variant: 'destructive',
         });
         return;
@@ -241,7 +241,7 @@ const InterviewDetail = () => {
 
       if (!nextStage) {
         toast({
-          title: 'Already at Final Stage',
+          title: 'Already at Final مرحله',
           description: 'This candidate is already at the final stage',
           variant: 'destructive',
         });
@@ -264,7 +264,7 @@ const InterviewDetail = () => {
       navigate(`/applications/${interview?.application.id}`);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -293,7 +293,7 @@ const InterviewDetail = () => {
       navigate(`/applications/${interview?.application.id}`);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -314,7 +314,7 @@ const InterviewDetail = () => {
         <p className="text-muted-foreground">Interview not found</p>
         <Button onClick={() => navigate('/interviews')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Interviews
+          بازگشت to Interviews
         </Button>
       </div>
     );
@@ -342,9 +342,9 @@ const InterviewDetail = () => {
             <div className="flex items-start gap-3">
               <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium">{format(new Date(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
+                <p className="font-medium">{format(new تاریخ(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
                 <p className="text-sm text-muted-foreground">
-                  {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
+                  {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
                 </p>
               </div>
               <Button 
@@ -352,8 +352,8 @@ const InterviewDetail = () => {
                 size="sm"
                 onClick={handleDownloadICS}
               >
-                <Download className="h-4 w-4 mr-2" />
-                Add to Calendar
+                <دانلود className="h-4 w-4 mr-2" />
+                افزودن to Calendar
               </Button>
             </div>
 
@@ -361,7 +361,7 @@ const InterviewDetail = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="font-medium">Location</p>
+                  <p className="font-medium">مکان</p>
                   <p className="text-sm text-muted-foreground">{interview.location}</p>
                 </div>
               </div>
@@ -378,25 +378,25 @@ const InterviewDetail = () => {
                     rel="noopener noreferrer"
                     className="text-sm text-primary hover:underline flex items-center gap-1"
                   >
-                    Join Meeting <ExternalLink className="h-3 w-3" />
+                    ورود به جلسه <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
               </div>
             )}
 
-            {interviewers.length > 0 && (
+            {مصاحبه‌کننده.length > 0 && (
               <div className="flex items-start gap-3">
                 <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div className="flex-1">
-                  <p className="font-medium mb-2">Interview Panel</p>
+                  <p className="font-medium mb-2">Interview هیئت مصاحبه</p>
                   <div className="space-y-2">
-                    {interviewers.map((interviewer) => (
-                      <div key={interviewer.id} className="flex items-center gap-2">
+                    {مصاحبه‌کننده.map((مصاحبه‌کننده) => (
+                      <div key={مصاحبه‌کننده.id} className="flex items-center gap-2">
                         <Badge variant="secondary">
-                          {interviewer.full_name}
+                          {مصاحبه‌کننده.full_name}
                         </Badge>
                         <span className="text-sm text-muted-foreground">
-                          {interviewer.email}
+                          {مصاحبه‌کننده.email}
                         </span>
                       </div>
                     ))}
@@ -437,7 +437,7 @@ const InterviewDetail = () => {
                 className="w-full"
                 onClick={() => navigate(`/candidates/${interview.application.candidate.id}`)}
               >
-                View Candidate Profile
+                View Candidate پروفایل
               </Button>
               <Button
                 variant="outline"
@@ -457,11 +457,11 @@ const InterviewDetail = () => {
             <CardTitle>Actions</CardTitle>
           </CardHeader>
           <CardContent className="flex gap-4">
-            <Button onClick={() => handleStatusUpdate('completed')}>
-              Mark as Completed
+            <Button onClick={() => handleStatusRefresh('completed')}>
+              Mark as انجام شده
             </Button>
-            <Button variant="outline" onClick={() => handleStatusUpdate('cancelled')}>
-              Cancel Interview
+            <Button variant="outline" onClick={() => handleStatusRefresh('cancelled')}>
+              انصراف Interview
             </Button>
           </CardContent>
         </Card>
@@ -477,12 +477,12 @@ const InterviewDetail = () => {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl">Interview Feedback</h2>
+          <h2 className="text-2xl">Interview بازخورد</h2>
           <Button 
             onClick={() => navigate(`/interviews/${id}/scorecard`)}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Scorecard
+            افزودن فرم ارزیابی
           </Button>
         </div>
 
@@ -496,7 +496,7 @@ const InterviewDetail = () => {
           <Card>
             <CardContent className="py-8">
               <p className="text-center text-muted-foreground">
-                No scorecards submitted yet
+                خیر scorecards submitted yet
               </p>
             </CardContent>
           </Card>

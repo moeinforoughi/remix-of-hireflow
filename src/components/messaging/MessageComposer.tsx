@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Send, Loader2, Lock } from "lucide-react";
+import { ارسال, Loader2, Lock } from "lucide-react";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -36,7 +36,7 @@ export const MessageComposer = ({
 }: MessageComposerProps) => {
   const { toast } = useToast();
   const { canMessage } = useUserPermissions();
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [templates, setTemplates] = useState<MessageTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [to, setTo] = useState<string>(defaultTo.join(", "));
@@ -130,7 +130,7 @@ export const MessageComposer = ({
       return;
     }
 
-    setLoading(true);
+    setUpload(true);
 
     try {
       // Get user profile for org_id
@@ -143,12 +143,12 @@ export const MessageComposer = ({
         .eq("id", user.id)
         .single();
 
-      if (!profile) throw new Error("Profile not found");
+      if (!profile) throw new Error("پروفایل not found");
 
       const interpolatedSubject = interpolateVariables(subject);
       const interpolatedBody = interpolateVariables(body);
 
-      // Create message record
+      // ایجاد message record
       const { data: message, error: messageError } = await supabase
         .from("messages")
         .insert({
@@ -167,7 +167,7 @@ export const MessageComposer = ({
 
       if (messageError) throw messageError;
 
-      // Send email via edge function
+      // ارسال email via edge function
       const { error: sendError } = await supabase.functions.invoke("send-email", {
         body: { messageId: message.id },
       });
@@ -175,11 +175,11 @@ export const MessageComposer = ({
       if (sendError) throw sendError;
 
       toast({
-        title: "Email sent",
+        title: "ایمیل sent",
         description: "Your message has been sent successfully",
       });
 
-      // Reset form
+      // بازنشانی form
       setTo(defaultTo.join(", "));
       setCc("");
       setSubject("");
@@ -196,7 +196,7 @@ export const MessageComposer = ({
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -207,7 +207,7 @@ export const MessageComposer = ({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Compose Message</CardTitle>
+          <CardTitle>Compose پیام</CardTitle>
         </CardHeader>
         <CardContent>
           <Alert>
@@ -224,14 +224,14 @@ export const MessageComposer = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Compose Message</CardTitle>
+        <CardTitle>Compose پیام</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <Label htmlFor="template">Template (optional)</Label>
-          <Select value={selectedTemplate} onValueChange={handleTemplateSelect}>
+          <انتخاب value={selectedTemplate} onValueChange={handleTemplateSelect}>
             <SelectTrigger id="template">
-              <SelectValue placeholder="Select a template" />
+              <SelectValue placeholder="انتخاب a template" />
             </SelectTrigger>
             <SelectContent>
               {templates.map((template) => (
@@ -240,7 +240,7 @@ export const MessageComposer = ({
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </انتخاب>
         </div>
 
         {selectedTemplate && templates.find((t) => t.id === selectedTemplate)?.variables.length > 0 && (
@@ -261,7 +261,7 @@ export const MessageComposer = ({
         )}
 
         <div>
-          <Label htmlFor="to">To *</Label>
+          <Label htmlFor="to">گیرنده *</Label>
           <Input
             id="to"
             value={to}
@@ -281,22 +281,22 @@ export const MessageComposer = ({
         </div>
 
         <div>
-          <Label htmlFor="subject">Subject *</Label>
+          <Label htmlFor="subject">موضوع *</Label>
           <Input
             id="subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder="Email subject"
+            placeholder="ایمیل subject"
           />
         </div>
 
         <div>
-          <Label htmlFor="body">Message *</Label>
+          <Label htmlFor="body">پیام *</Label>
           <Textarea
             id="body"
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            placeholder="Email body (HTML supported)"
+            placeholder="ایمیل body (HTML supported)"
             rows={10}
           />
         </div>
@@ -309,8 +309,8 @@ export const MessageComposer = ({
             </>
           ) : (
             <>
-              <Send className="mr-2 h-4 w-4" />
-              Send Email
+              <ارسال className="mr-2 h-4 w-4" />
+              ارسال ایمیل
             </>
           )}
         </Button>

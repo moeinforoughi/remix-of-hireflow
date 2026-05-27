@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 
-interface Question {
+interface سؤال {
   id: string;
   question_text: string;
   question_type: string;
@@ -25,10 +25,10 @@ interface CustomQuestionsManagerProps {
 }
 
 export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState<سؤال[]>([]);
+  const [loading, setUpload] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [deleteConfirm, setRemoveConfirm] = useState<string | null>(null);
   const [newQuestion, setNewQuestion] = useState({
     question_text: '',
     question_type: 'text',
@@ -52,12 +52,12 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
       setQuestions(data || []);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -79,8 +79,8 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
       if (error) throw error;
 
       toast({
-        title: 'Success',
-        description: 'Question added successfully',
+        title: 'موفقیت',
+        description: 'سؤال added successfully',
       });
 
       setNewQuestion({
@@ -93,14 +93,14 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
       fetchQuestions();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
   };
 
-  const handleDeleteQuestion = async (id: string) => {
+  const handleRemoveQuestion = async (id: string) => {
     try {
       const { error } = await supabase
         .from('application_questions')
@@ -110,19 +110,19 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
       if (error) throw error;
 
       toast({
-        title: 'Success',
-        description: 'Question deleted successfully',
+        title: 'موفقیت',
+        description: 'سؤال deleted successfully',
       });
 
       fetchQuestions();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     }
-    setDeleteConfirm(null);
+    setRemoveConfirm(null);
   };
 
   const addOption = () => {
@@ -146,7 +146,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8">در حال بارگذاری...</div>;
   }
 
   return (
@@ -155,23 +155,23 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
         <div>
           <h3 className="text-lg">Custom Application Questions</h3>
           <p className="text-sm text-muted-foreground">
-            Add custom questions to your application form
+            افزودن custom questions to your application form
           </p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Question
+          افزودن سؤال
         </Button>
       </div>
 
       {showAddForm && (
         <Card>
           <CardHeader>
-            <CardTitle>New Question</CardTitle>
+            <CardTitle>New سؤال</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label>Question Text *</Label>
+              <Label>سؤال Text *</Label>
               <Textarea
                 value={newQuestion.question_text}
                 onChange={(e) => setNewQuestion({ ...newQuestion, question_text: e.target.value })}
@@ -181,8 +181,8 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
             </div>
 
             <div className="space-y-2">
-              <Label>Question Type *</Label>
-              <Select
+              <Label>سؤال Type *</Label>
+              <انتخاب
                 value={newQuestion.question_type}
                 onValueChange={(value: any) => setNewQuestion({ ...newQuestion, question_type: value })}
               >
@@ -192,10 +192,10 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
                 <SelectContent>
                   <SelectItem value="text">Short Text</SelectItem>
                   <SelectItem value="textarea">Long Text</SelectItem>
-                  <SelectItem value="yes_no">Yes/No</SelectItem>
+                  <SelectItem value="yes_no">بله/خیر</SelectItem>
                   <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                 </SelectContent>
-              </Select>
+              </انتخاب>
             </div>
 
             {newQuestion.question_type === 'multiple_choice' && (
@@ -220,7 +220,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
                   </div>
                 ))}
                 <Button type="button" variant="outline" onClick={addOption} className="w-full">
-                  Add Option
+                  افزودن Option
                 </Button>
               </div>
             )}
@@ -234,16 +234,16 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
                 }
               />
               <Label htmlFor="required" className="cursor-pointer">
-                Required field
+                اجباری field
               </Label>
             </div>
 
             <div className="flex gap-2">
               <Button onClick={handleAddQuestion} disabled={!newQuestion.question_text}>
-                Add Question
+                افزودن سؤال
               </Button>
               <Button variant="outline" onClick={() => setShowAddForm(false)}>
-                Cancel
+                انصراف
               </Button>
             </div>
           </CardContent>
@@ -253,9 +253,9 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
       {questions.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No custom questions yet</p>
+            <p className="text-muted-foreground">خیر custom questions yet</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Add questions to collect additional information from applicants
+              افزودن questions to collect additional information from applicants
             </p>
           </CardContent>
         </Card>
@@ -290,7 +290,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setDeleteConfirm(question.id)}
+                        onClick={() => setRemoveConfirm(question.id)}
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
@@ -305,11 +305,11 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
 
       <ConfirmDialog
         open={deleteConfirm !== null}
-        onOpenChange={(open) => !open && setDeleteConfirm(null)}
-        onConfirm={() => deleteConfirm && handleDeleteQuestion(deleteConfirm)}
-        title="Delete Question"
+        onOpenChange={(open) => !open && setRemoveConfirm(null)}
+        onConfirm={() => deleteConfirm && handleRemoveQuestion(deleteConfirm)}
+        title="حذف سؤال"
         description="Are you sure you want to delete this question? This action cannot be undone."
-        confirmText="Delete"
+        confirmText="حذف"
         variant="destructive"
       />
     </div>

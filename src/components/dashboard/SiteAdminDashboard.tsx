@@ -12,7 +12,7 @@ import listIcon from "@/assets/icons/list-icon.svg";
 import usersIcon from "@/assets/icons/users-icon.svg";
 import awardIcon from "@/assets/icons/award-icon.svg";
 import thumbsUpIcon from "@/assets/icons/thumbs-up-icon.svg";
-import { ApprovalRequestedDialog } from "@/components/offers/ApprovalRequestedDialog";
+import { ConfirmRequestedDialog } from "@/components/offers/ConfirmRequestedDialog";
 import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { JobListingsTableSkeleton } from "@/components/dashboard/JobListingsTableSkeleton";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
@@ -21,9 +21,9 @@ export function SiteAdminDashboard() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<any[]>([]);
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
-  const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
+  const [approvalDialogOpen, setConfirmDialogOpen] = useState(false);
   const [createJobDialogOpen, setCreateJobDialogOpen] = useState(false);
-  const [isLoadingDemo, setIsLoadingDemo] = useState(() => {
+  const [isUploadDemo, setIsUploadDemo] = useState(() => {
     return sessionStorage.getItem('demo-reset-in-progress') === 'true';
   });
   const [metrics, setMetrics] = useState({
@@ -92,7 +92,7 @@ export function SiteAdminDashboard() {
         .eq('role', 'job_admin')
         .in('user_id', profileIds);
 
-      const { count: pendingApprovalsCount } = await supabase
+      const { count: pendingConfirmsCount } = await supabase
         .from('approvals')
         .select('*, offers!inner(*, applications!inner(*, jobs!inner(*)))', { count: 'exact', head: true })
         .eq('state', 'pending')
@@ -102,14 +102,14 @@ export function SiteAdminDashboard() {
         currentListings: listingsCount || 0,
         totalApplicants: applicantsCount || 0,
         jobAdmins: jobAdminsCount || 0,
-        approvalRequested: pendingApprovalsCount || 0,
+        approvalRequested: pendingConfirmsCount || 0,
       });
     };
 
     // If demo reset in progress, wait for the event
-    if (isLoadingDemo) {
+    if (isUploadDemo) {
       const handleDemoDataRefresh = () => {
-        setIsLoadingDemo(false);
+        setIsUploadDemo(false);
         fetchData();
       };
       window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
@@ -124,11 +124,11 @@ export function SiteAdminDashboard() {
     };
     window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
     return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
-  }, [isLoadingDemo]);
+  }, [isUploadDemo]);
 
   const metricCards = [
     {
-      title: "Current Listings",
+      title: "موقعیت‌های فعال",
       value: metrics.currentListings,
       bgColor: "bg-[#D4F4DD]",
       iconColor: "text-[#4A7C59]",
@@ -137,7 +137,7 @@ export function SiteAdminDashboard() {
       icon: listIcon,
     },
     {
-      title: "Total Applicants",
+      title: "تعداد کل متقاضیان",
       value: metrics.totalApplicants,
       bgColor: "bg-[#FFE5CC]",
       iconColor: "text-[#CC7A3D]",
@@ -146,7 +146,7 @@ export function SiteAdminDashboard() {
       icon: usersIcon,
     },
     {
-      title: "Job Admins",
+      title: "مدیران شغل",
       value: metrics.jobAdmins,
       bgColor: "bg-[#CCE5FF]",
       iconColor: "text-[#3D7ACC]",
@@ -155,7 +155,7 @@ export function SiteAdminDashboard() {
       icon: awardIcon,
     },
     {
-      title: "Approval Requested",
+      title: "در انتظار تأیید",
       value: metrics.approvalRequested,
       bgColor: "bg-[#FFD9E5]",
       iconColor: "text-[#CC5C7A]",
@@ -169,17 +169,17 @@ export function SiteAdminDashboard() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl">Dashboard</h1>
+          <h1 className="text-3xl">داشبورد</h1>
         </div>
         <Button onClick={() => setCreateJobDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          New Job Listing
+          ایجاد موقعیت جدید
         </Button>
       </div>
       
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        {isLoadingDemo ? (
+        {isUploadDemo ? (
           <>
             <MetricCardSkeleton />
             <MetricCardSkeleton />
@@ -191,7 +191,7 @@ export function SiteAdminDashboard() {
             <Card /* theme-exempt: decorative pastel cards */
               key={metric.title}
               className={`hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer border-2 border-transparent ${metric.hoverBorder} ${metric.bgColor}`}
-              onClick={() => metric.link === "approval-dialog" ? setApprovalDialogOpen(true) : navigate(metric.link)}
+              onClick={() => metric.link === "approval-dialog" ? setConfirmDialogOpen(true) : navigate(metric.link)}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <div className="flex items-center gap-2">
@@ -208,33 +208,33 @@ export function SiteAdminDashboard() {
         )}
       </div>
 
-      {/* Next Interview and Recent Activity */}
+      {/* مصاحبه بعدی and فعالیت‌های اخیر */}
       <div className="grid gap-6 md:grid-cols-2">
         <NextMeetingCard />
         <RecentActivityFeed />
       </div>
 
-      {/* Job Listings with Team Avatars */}
-      {isLoadingDemo ? (
+      {/* موقعیت‌های شغلی with Team Avatars */}
+      {isUploadDemo ? (
         <JobListingsTableSkeleton />
       ) : (
         <div className="bg-card rounded-xl overflow-hidden">
           <div className="p-4">
-            <h2 className="text-sm font-[590] text-foreground">Job Listings</h2>
+            <h2 className="text-sm font-[590] text-foreground">موقعیت‌های شغلی</h2>
           </div>
           <div className="px-4 pb-4 space-y-2">
             {/* Column Headers */}
             <div className="px-4 flex items-center gap-8">
-              <div className="w-[243px] text-xs text-muted-foreground">Title</div>
-              <div className="flex-1 text-xs text-muted-foreground">Location</div>
-              <div className="flex-1 text-xs text-muted-foreground">Date Opened</div>
-              <div className="flex-1 text-xs text-muted-foreground">Team Assigned</div>
-              <div className="flex-1 text-xs text-muted-foreground"># of Candidates</div>
+              <div className="w-[243px] text-xs text-muted-foreground">عنوان</div>
+              <div className="flex-1 text-xs text-muted-foreground">مکان</div>
+              <div className="flex-1 text-xs text-muted-foreground">تاریخ ایجاد</div>
+              <div className="flex-1 text-xs text-muted-foreground">تیم تخصیص‌یافته</div>
+              <div className="flex-1 text-xs text-muted-foreground">تعداد کاندیداها</div>
             </div>
 
             {/* Job Rows */}
             {jobs.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">No jobs created yet</p>
+              <p className="text-sm text-muted-foreground text-center py-8">هنوز هیچ موقعیتی ایجاد نشده</p>
             ) : (
               jobs.map((job: any) => (
                 <div 
@@ -243,9 +243,9 @@ export function SiteAdminDashboard() {
                   onClick={() => navigate(`/jobs/${job.id}`)}
                 >
                   <div className="w-[243px] text-sm font-[590] text-foreground">{job.title}</div>
-                  <div className="flex-1 text-sm text-muted-foreground">{job.location || 'Remote'}</div>
+                  <div className="flex-1 text-sm text-muted-foreground">{job.location || 'دورکاری'}</div>
                   <div className="flex-1 text-sm text-muted-foreground">
-                    {new Date(job.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
+                    {new تاریخ(job.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
                   </div>
                   <div className="flex-1 flex items-center">
                     {job.job_acl?.slice(0, 5).map((acl: any, idx: number) => (
@@ -268,9 +268,9 @@ export function SiteAdminDashboard() {
         </div>
       )}
 
-      <ApprovalRequestedDialog 
+      <ConfirmRequestedDialog 
         open={approvalDialogOpen} 
-        onOpenChange={setApprovalDialogOpen} 
+        onOpenChange={setConfirmDialogOpen} 
       />
 
       <CreateJobDialog

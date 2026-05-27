@@ -44,7 +44,7 @@ const StatsCards = () => {
   const stats = [
     {
       icon: listIcon,
-      title: "Current Listings",
+      title: "موقعیت‌های فعال",
       value: "12",
       gradient: "bg-gradient-to-r from-[#F0F9D6] to-[#A2F1D3]",
       iconColor: "#5D6174",
@@ -53,7 +53,7 @@ const StatsCards = () => {
     },
     {
       icon: usersIcon,
-      title: "Total Applicants",
+      title: "تعداد کل متقاضیان",
       value: "43",
       gradient: "bg-gradient-to-r from-[#FFE4CC] to-[#FFDB99]",
       iconColor: "#6B7280",
@@ -62,7 +62,7 @@ const StatsCards = () => {
     },
     {
       icon: messageIcon,
-      title: "Interviewing",
+      title: "در حال مصاحبه",
       value: "32",
       gradient: "bg-gradient-to-r from-[#D4F1F4] via-[#B8E3F5] to-[#A5C9FF]",
       iconColor: "#5D6174",
@@ -71,7 +71,7 @@ const StatsCards = () => {
     },
     {
       icon: checkVerifiedIcon,
-      title: "Shortlisted",
+      title: "نهایی‌شده",
       value: "8",
       gradient: "bg-gradient-to-r from-[#F3D4F5] to-[#FFB8C8]",
       iconColor: "#7C5D82",

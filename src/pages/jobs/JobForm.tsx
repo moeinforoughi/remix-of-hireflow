@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
@@ -15,7 +15,7 @@ import { CustomQuestionsManager } from '@/components/jobs/CustomQuestionsManager
 const JobForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     department: '',
@@ -47,7 +47,7 @@ const JobForm = () => {
       setFormData(data);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -56,7 +56,7 @@ const JobForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -68,7 +68,7 @@ const JobForm = () => {
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
       if (id) {
         const { error } = await supabase
@@ -79,7 +79,7 @@ const JobForm = () => {
         if (error) throw error;
 
         toast({
-          title: 'Success',
+          title: 'موفقیت',
           description: 'Job updated successfully',
         });
       } else {
@@ -95,7 +95,7 @@ const JobForm = () => {
 
         if (error) throw error;
 
-        // Add creator to job_acl with full permissions
+        // افزودن creator to job_acl with full permissions
         if (newJob) {
           const { error: aclError } = await supabase
             .from('job_acl')
@@ -114,7 +114,7 @@ const JobForm = () => {
         }
 
         toast({
-          title: 'Success',
+          title: 'موفقیت',
           description: 'Job created successfully',
         });
       }
@@ -122,12 +122,12 @@ const JobForm = () => {
       navigate('/jobs');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -138,9 +138,9 @@ const JobForm = () => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl">{id ? 'Edit Job' : 'Create New Job'}</h1>
+          <h1 className="text-3xl">{id ? 'ویرایش Job' : 'ایجاد موقعیت جدید'}</h1>
           <p className="text-muted-foreground">
-            {id ? 'Update job details' : 'Fill in the details to post a new job'}
+            {id ? 'به‌روزرسانی job details' : 'Fill in the details to post a new job'}
           </p>
         </div>
       </div>
@@ -148,20 +148,20 @@ const JobForm = () => {
       <Tabs defaultValue="details" className="space-y-6">
         <TabsList>
           <TabsTrigger value="details">Job Details</TabsTrigger>
-          {id && <TabsTrigger value="questions">Custom Questions</TabsTrigger>}
+          {id && <TabsTrigger value="questions">سؤالات سفارشی</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="details">
           <Card>
             <CardHeader>
               <CardTitle>Job Information</CardTitle>
-              <CardDescription>Basic details about the position</CardDescription>
+              <CardDescription>پایه details about the position</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Job Title *</Label>
+                    <Label htmlFor="title">Job عنوان *</Label>
                     <Input
                       id="title"
                       value={formData.title}
@@ -172,7 +172,7 @@ const JobForm = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="department">Department</Label>
+                    <Label htmlFor="department">بخش</Label>
                     <Input
                       id="department"
                       value={formData.department}
@@ -182,18 +182,18 @@ const JobForm = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
+                    <Label htmlFor="location">مکان</Label>
                     <Input
                       id="location"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      placeholder="e.g. San Francisco, CA / Remote"
+                      placeholder="e.g. San Francisco, CA / دورکاری"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="employment_type">Employment Type *</Label>
-                    <Select
+                    <Label htmlFor="employment_type">نوع همکاری *</Label>
+                    <انتخاب
                       value={formData.employment_type}
                       onValueChange={(value: any) => setFormData({ ...formData, employment_type: value })}
                     >
@@ -201,12 +201,12 @@ const JobForm = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="full_time">Full Time</SelectItem>
-                        <SelectItem value="part_time">Part Time</SelectItem>
-                        <SelectItem value="contract">Contract</SelectItem>
-                        <SelectItem value="internship">Internship</SelectItem>
+                        <SelectItem value="full_time">تمام‌وقت</SelectItem>
+                        <SelectItem value="part_time">نیمه‌وقت</SelectItem>
+                        <SelectItem value="contract">قراردادی</SelectItem>
+                        <SelectItem value="internship">کارآموزی</SelectItem>
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                   </div>
 
                   <div className="space-y-2">
@@ -222,8 +222,8 @@ const JobForm = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="status">Status *</Label>
-                    <Select
+                    <Label htmlFor="status">وضعیت *</Label>
+                    <انتخاب
                       value={formData.status}
                       onValueChange={(value: any) => setFormData({ ...formData, status: value })}
                     >
@@ -231,18 +231,18 @@ const JobForm = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                        <SelectItem value="open">Open</SelectItem>
+                        <SelectItem value="draft">پیش‌نویس</SelectItem>
+                        <SelectItem value="pending_approval">در انتظار تأیید</SelectItem>
+                        <SelectItem value="open">باز</SelectItem>
                         <SelectItem value="paused">Paused</SelectItem>
                         <SelectItem value="closed">Closed</SelectItem>
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Job Description</Label>
+                  <Label htmlFor="description">شرح شغل</Label>
                   <Textarea
                     id="description"
                     value={formData.description_md}
@@ -253,7 +253,7 @@ const JobForm = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="required_skills">Required Skills</Label>
+                  <Label htmlFor="required_skills">اجباری مهارت‌ها</Label>
                   <div className="flex gap-2">
                     <Input
                       id="required_skills"
@@ -279,7 +279,7 @@ const JobForm = () => {
                         }
                       }}
                     >
-                      Add
+                      افزودن
                     </Button>
                   </div>
                   {formData.required_skills.length > 0 && (
@@ -309,7 +309,7 @@ const JobForm = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="requirements">Requirements</Label>
+                  <Label htmlFor="requirements">نیازمندی‌ها</Label>
                   <Textarea
                     id="requirements"
                     value={formData.requirements_md}
@@ -321,10 +321,10 @@ const JobForm = () => {
 
                 <div className="flex gap-4">
                   <Button type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : id ? 'Update Job' : 'Create Job'}
+                    {loading ? 'در حال ذخیره...' : id ? 'به‌روزرسانی Job' : 'ایجاد Job'}
                   </Button>
                   <Button type="button" variant="outline" onClick={() => navigate('/jobs')}>
-                    Cancel
+                    انصراف
                   </Button>
                 </div>
               </form>

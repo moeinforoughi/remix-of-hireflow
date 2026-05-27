@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Upload, Paperclip, FileText } from 'lucide-react';
+import { بارگذاری, Paperclip, FileText } from 'lucide-react';
 import { parseResume } from '@/lib/resume-parser';
 
 // Format phone number as (XXX) XXX-XXXX
 const formatPhoneNumber = (value: string) => {
-  // Remove all non-digits
+  // حذف all non-digits
   const digits = value.replace(/\D/g, '');
   
   // Limit to 10 digits
@@ -35,10 +35,10 @@ interface EditCandidateDialogProps {
     source: string;
     consent: boolean | null;
   } | null;
-  onUpdateSuccess: () => void;
+  onRefreshSuccess: () => void;
 }
 
-export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuccess }: EditCandidateDialogProps) => {
+export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSuccess }: EditCandidateDialogProps) => {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -49,7 +49,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
     phone: '',
     linkedin_url: '',
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [currentResume, setCurrentResume] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -145,8 +145,8 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
 
     setResumeFile(file);
     toast({
-      title: 'Resume selected',
-      description: 'Resume will be uploaded when you update the candidate',
+      title: 'رزومه selected',
+      description: 'رزومه will be uploaded when you update the candidate',
     });
   };
 
@@ -157,10 +157,10 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
     }
   };
 
-  const handleUpdate = async () => {
+  const handleRefresh = async () => {
     if (!candidate) return;
 
-    // Reset errors
+    // بازنشانی errors
     setErrors({ phone: '', linkedin_url: '' });
 
     // Validate form data
@@ -188,15 +188,15 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
       return;
     }
 
-    // Validate LinkedIn URL
+    // Validate لینکدین URL
     if (formData.linkedin_url && formData.linkedin_url.trim() !== '') {
       if (!formData.linkedin_url.startsWith('http') || !formData.linkedin_url.includes('linkedin.com')) {
-        setErrors(prev => ({ ...prev, linkedin_url: 'Please enter a valid LinkedIn URL (e.g., https://linkedin.com/in/username)' }));
+        setErrors(prev => ({ ...prev, linkedin_url: 'Please enter a valid لینکدین URL (e.g., https://linkedin.com/in/username)' }));
         return;
       }
     }
 
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -208,9 +208,9 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
         .maybeSingle();
 
       if (profileError) throw profileError;
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
-      // Update candidate data (preserving source and consent)
+      // به‌روزرسانی candidate data (preserving source and consent)
       const candidateData = {
         full_name: formData.full_name,
         email: formData.email || null,
@@ -234,14 +234,14 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
       
       // Verify the update actually applied
       if (updatedCandidate.full_name !== formData.full_name) {
-        throw new Error('Update was blocked. You may not have permission to modify this candidate.');
+        throw new Error('به‌روزرسانی was blocked. You may not have permission to modify this candidate.');
       }
 
-      // Upload new resume if provided
+      // بارگذاری new resume if provided
       if (resumeFile) {
         setUploading(true);
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${candidate.id}-${Date.now()}.${fileExt}`;
+        const fileName = `${candidate.id}-${تاریخ.now()}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -250,14 +250,14 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
 
         if (uploadError) throw uploadError;
 
-        // Delete old attachment records
+        // حذف old attachment records
         await supabase
           .from('attachments')
           .delete()
           .eq('owner_type', 'candidate')
           .eq('owner_id', candidate.id);
 
-        // Create new attachment record
+        // ایجاد new attachment record
         await supabase.from('attachments').insert({
           owner_type: 'candidate',
           owner_id: candidate.id,
@@ -275,20 +275,20 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Candidate updated successfully',
       });
 
       onOpenChange(false);
-      onUpdateSuccess();
+      onRefreshSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
       setUploading(false);
     }
   };
@@ -297,10 +297,10 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Edit Candidate</DialogTitle>
+          <DialogTitle>ویرایش Candidate</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
-          {/* Current Resume Section */}
+          {/* Current رزومه Section */}
           {currentResume && !resumeFile && (
             <div className="border rounded-lg p-4 flex items-center justify-between bg-muted/20">
               <div className="flex items-center gap-3">
@@ -308,7 +308,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
                   <FileText className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Current Resume</p>
+                  <p className="text-sm font-medium">Current رزومه</p>
                   <p className="text-sm text-muted-foreground">{currentResume}</p>
                 </div>
               </div>
@@ -323,7 +323,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
             </div>
           )}
 
-          {/* Upload Resume Section */}
+          {/* بارگذاری رزومه Section */}
           <div
             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
               isDragging ? 'border-primary bg-accent/20' : uploading ? 'border-primary bg-accent/10' : 'border-border'
@@ -336,11 +336,11 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
           >
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                <Upload className={`h-6 w-6 text-muted-foreground ${uploading ? 'animate-pulse' : ''}`} />
+                <بارگذاری className={`h-6 w-6 text-muted-foreground ${uploading ? 'animate-pulse' : ''}`} />
               </div>
               <div>
                 <p className="text-sm font-medium mb-1">
-                  {uploading ? 'Uploading resume...' : currentResume ? 'Replace Resume' : 'Upload Resume'}
+                  {uploading ? 'Uploading resume...' : currentResume ? 'Replace رزومه' : 'بارگذاری رزومه'}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {uploading ? 'Please wait...' : (
@@ -394,7 +394,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
               <Input
                 id="email"
                 type="email"
-                placeholder="Email"
+                placeholder="ایمیل"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="h-11"
@@ -404,7 +404,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
             <div className="space-y-2">
               <Input
                 id="phone"
-                placeholder="Phone number"
+                placeholder="تلفن number"
                 value={formData.phone}
                 onChange={(e) => {
                   const formatted = formatPhoneNumber(e.target.value);
@@ -421,7 +421,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
             <div className="space-y-2">
               <Input
                 id="linkedin_url"
-                placeholder="LinkedIn URL"
+                placeholder="لینکدین URL"
                 value={formData.linkedin_url}
                 onChange={(e) => {
                   setFormData({ ...formData, linkedin_url: e.target.value });
@@ -443,14 +443,14 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onUpdateSuc
               onClick={() => onOpenChange(false)}
               className="px-6"
             >
-              Cancel
+              انصراف
             </Button>
             <Button
-              onClick={handleUpdate}
+              onClick={handleRefresh}
               disabled={loading || !formData.full_name}
               className="px-6 bg-foreground text-background hover:bg-foreground/90"
             >
-              {loading ? 'Updating...' : 'Update Candidate'}
+              {loading ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی Candidate'}
             </Button>
           </div>
         </div>

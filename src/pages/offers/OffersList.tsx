@@ -34,18 +34,18 @@ interface Offer {
 
 const OffersList = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { role, canViewOffer, loading: permissionsLoading } = useUserPermissions();
+  const { role, canViewOffer, loading: permissionsUpload } = useUserPermissions();
 
   useEffect(() => {
     // Only fetch offers once permissions are loaded
-    if (!permissionsLoading) {
+    if (!permissionsUpload) {
       fetchOffers();
       checkExpiredOffers();
     }
-  }, [permissionsLoading, role]);
+  }, [permissionsUpload, role]);
 
   const fetchOffers = async () => {
     try {
@@ -70,7 +70,7 @@ const OffersList = () => {
 
       if (error) throw error;
       
-      // Filter offers based on permissions for non-site-admins
+      // فیلتر offers based on permissions for non-site-admins
       let filteredOffers = data || [];
       if (role !== 'site_admin') {
         filteredOffers = (data || []).filter((offer: any) => {
@@ -82,12 +82,12 @@ const OffersList = () => {
       setOffers(filteredOffers);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -102,10 +102,10 @@ const OffersList = () => {
 
       if (error) throw error;
 
-      // Update expired offers
-      const now = new Date();
+      // به‌روزرسانی expired offers
+      const now = new تاریخ();
       const offersToExpire = expiredOffers?.filter(
-        offer => offer.expires_at && isPast(new Date(offer.expires_at))
+        offer => offer.expires_at && isPast(new تاریخ(offer.expires_at))
       ) || [];
 
       if (offersToExpire.length > 0) {
@@ -116,7 +116,7 @@ const OffersList = () => {
 
         if (updateError) throw updateError;
         
-        // Refresh the list
+        // به‌روزرسانی the list
         fetchOffers();
       }
     } catch (error: any) {
@@ -127,17 +127,17 @@ const OffersList = () => {
   const getStateBadge = (state: string) => {
     switch (state) {
       case 'draft':
-        return <Badge variant="outline">Draft</Badge>;
+        return <Badge variant="outline">پیش‌نویس</Badge>;
       case 'pending_approval':
-        return <Badge variant="secondary">Pending Approval</Badge>;
+        return <Badge variant="secondary">در انتظار تأیید</Badge>;
       case 'approved':
-        return <Badge variant="success">Approved</Badge>;
+        return <Badge variant="success">Confirmd</Badge>;
       case 'sent':
-        return <Badge>Sent</Badge>;
+        return <Badge>ارسال شده</Badge>;
       case 'accepted':
-        return <Badge variant="default">Accepted</Badge>;
+        return <Badge variant="default">پذیرفته شده</Badge>;
       case 'declined':
-        return <Badge variant="destructive">Declined</Badge>;
+        return <Badge variant="destructive">رد شده</Badge>;
       case 'expired':
         return <Badge variant="destructive">Expired</Badge>;
       default:
@@ -154,7 +154,7 @@ const OffersList = () => {
     }).format(total);
   };
 
-  if (loading || permissionsLoading) {
+  if (loading || permissionsUpload) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -170,7 +170,7 @@ const OffersList = () => {
         </div>
         <Button onClick={() => navigate('/offers/new')}>
           <Plus className="h-4 w-4 mr-2" />
-          Create Offer
+          ایجاد Offer
         </Button>
       </div>
 
@@ -178,10 +178,10 @@ const OffersList = () => {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <DollarSign className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">No offers created yet</p>
+            <p className="text-muted-foreground mb-4">خیر offers created yet</p>
             <Button onClick={() => navigate('/offers/new')}>
               <Plus className="h-4 w-4 mr-2" />
-              Create First Offer
+              ایجاد First Offer
             </Button>
           </CardContent>
         </Card>
@@ -192,10 +192,10 @@ const OffersList = () => {
               <TableHead>Candidate</TableHead>
               <TableHead>Position</TableHead>
               <TableHead>Total Compensation</TableHead>
-              <TableHead>Base Salary</TableHead>
+              <TableHead>حقوق پایه</TableHead>
               <TableHead>Created</TableHead>
               <TableHead>Expires</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>وضعیت</TableHead>
               <TableHead className="w-12"></TableHead>
             </TableRow>
           </TableHeader>
@@ -228,9 +228,9 @@ const OffersList = () => {
                     minimumFractionDigits: 0,
                   }).format(offer.base_amount)}
                 </TableCell>
-                <TableCell>{format(new Date(offer.created_at), 'MMM d, yyyy')}</TableCell>
+                <TableCell>{format(new تاریخ(offer.created_at), 'MMM d, yyyy')}</TableCell>
                 <TableCell>
-                  {offer.expires_at ? format(new Date(offer.expires_at), 'MMM d, yyyy') : '-'}
+                  {offer.expires_at ? format(new تاریخ(offer.expires_at), 'MMM d, yyyy') : '-'}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">

@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send } from 'lucide-react';
+import { ارسال } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface Comment {
+interface نظر {
   id: string;
   content: string;
   created_at: string;
@@ -25,9 +25,9 @@ interface CommentsSectionProps {
 }
 
 export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<نظر[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
 
@@ -80,7 +80,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
     } catch (error: any) {
       console.error('Error fetching comments:', error);
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -101,15 +101,15 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
       if (error) throw error;
 
       toast({
-        title: 'Success',
-        description: 'Comment added successfully',
+        title: 'موفقیت',
+        description: 'نظر added successfully',
       });
 
       setNewComment('');
       fetchComments();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -119,14 +119,14 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
   return (
     <Card className="flex flex-col max-h-[600px]">
       <CardHeader>
-        <CardTitle className="text-lg">Comments</CardTitle>
+        <CardTitle className="text-lg">نظرات</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="flex-1 space-y-4 mb-4 overflow-y-auto min-h-0">
           {loading ? (
-            <p className="text-sm text-muted-foreground">Loading comments...</p>
+            <p className="text-sm text-muted-foreground">بارگذاری comments...</p>
           ) : comments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No comments yet. Be the first to comment!</p>
+            <p className="text-sm text-muted-foreground">خیر comments yet. Be the first to comment!</p>
           ) : (
             comments.map((comment) => {
               const isCurrentUser = comment.user.id === currentUserId;
@@ -155,7 +155,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
                       <p className="text-sm">{comment.content}</p>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1 px-1">
-                      {format(new Date(comment.created_at), 'MMM d, h:mm a')}
+                      {format(new تاریخ(comment.created_at), 'MMM d, h:mm a')}
                     </p>
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
 
         <div className="flex gap-2 pt-4 border-t">
           <Textarea
-            placeholder="Add a comment..."
+            placeholder="افزودن a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             className="min-h-[60px] resize-none"
@@ -183,7 +183,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
             disabled={!newComment.trim()}
             className="flex-shrink-0"
           >
-            <Send className="h-4 w-4" />
+            <ارسال className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

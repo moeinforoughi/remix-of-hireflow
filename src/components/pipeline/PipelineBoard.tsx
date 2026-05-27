@@ -1,4 +1,4 @@
-// Pipeline Board Component - Updated Design
+// پایپ‌لاین Board Component - Refreshd Design
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -30,7 +30,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-interface Stage {
+interface مرحله {
   id: string;
   name: string;
   order_idx: number;
@@ -125,13 +125,13 @@ const SortableApplication = ({ application, onClick, isSelected, onToggleSelect 
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground">{application.candidate.full_name}</p>
             <p className="text-sm text-muted-foreground">
-              {application.candidate.location || 'Location not specified'}
+              {application.candidate.location || 'مکان not specified'}
             </p>
           </div>
         </div>
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}
+            {formatDistanceToNow(new تاریخ(application.applied_at), { addSuffix: true })}
           </p>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -144,7 +144,7 @@ interface DroppableStageProps {
   id: string;
   children: React.ReactNode;
   isOver: boolean;
-  stage: Stage;
+  stage: مرحله;
   stageColor: string;
   candidateCount: number;
   onEditStage: () => void;
@@ -178,7 +178,7 @@ const DroppableStage = ({
         isOver ? 'border-primary' : 'border-border'
       }`}
     >
-      {/* Stage Header */}
+      {/* مرحله Header */}
       <div className="bg-muted/30 p-4 border-b border-border">
         <div className="flex items-center gap-2">
           <div className={`w-2.5 h-2.5 rounded-full ${stageColor}`}></div>
@@ -197,7 +197,7 @@ const DroppableStage = ({
               <button 
                 onClick={onSaveStage}
                 className="p-1 hover:bg-green-100 rounded text-green-600"
-                title="Save"
+                title="ذخیره"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -206,7 +206,7 @@ const DroppableStage = ({
               <button 
                 onClick={onCancelEdit}
                 className="p-1 hover:bg-red-100 rounded text-red-600"
-                title="Cancel"
+                title="انصراف"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -219,7 +219,7 @@ const DroppableStage = ({
               <button 
                 onClick={onEditStage}
                 className="p-1 hover:bg-muted rounded"
-                title="Edit stage name"
+                title="ویرایش stage name"
               >
                 <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
@@ -231,7 +231,7 @@ const DroppableStage = ({
         </div>
       </div>
       
-      {/* Stage Content */}
+      {/* مرحله Content */}
       <div className="p-4 space-y-3">
         {children}
       </div>
@@ -240,9 +240,9 @@ const DroppableStage = ({
 };
 
 const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
-  const [stages, setStages] = useState<Stage[]>([]);
+  const [stages, setStages] = useState<مرحله[]>([]);
   const [applications, setApplications] = useState<ApplicationCard[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -325,7 +325,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       if (appsRes.error) throw appsRes.error;
 
       setStages(stagesRes.data || []);
-      // Filter out applications with null candidates
+      // فیلتر out applications with null candidates
       setApplications((appsRes.data || []).filter(app => app.candidate !== null));
     } catch (error: any) {
       toast({
@@ -334,7 +334,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -423,7 +423,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     setIsScrolling(false);
   };
 
-  const handleStartEditStage = (stage: Stage) => {
+  const handleStartEditStage = (stage: مرحله) => {
     setEditingStageId(stage.id);
     setEditingStageName(stage.name);
   };
@@ -431,8 +431,8 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
   const handleSaveStage = async (stageId: string) => {
     if (!editingStageName.trim()) {
       toast({
-        title: 'Error',
-        description: 'Stage name cannot be empty',
+        title: 'خطا',
+        description: 'مرحله name cannot be empty',
         variant: 'destructive',
       });
       return;
@@ -447,8 +447,8 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Stage updated',
-        description: 'Stage name has been updated successfully',
+        title: 'مرحله updated',
+        description: 'مرحله name has been updated successfully',
       });
 
       setEditingStageId(null);
@@ -486,7 +486,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Applications moved',
+        title: 'درخواست‌ها moved',
         description: `Successfully moved ${selectedApplicationIds.length} candidate${selectedApplicationIds.length !== 1 ? 's' : ''} to new stage`,
       });
 
@@ -517,7 +517,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Applications rejected',
+        title: 'درخواست‌ها rejected',
         description: `Successfully rejected ${selectedApplicationIds.length} candidate${selectedApplicationIds.length !== 1 ? 's' : ''}`,
       });
 
@@ -568,17 +568,17 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                   onClick={() => setSelectedApplicationIds([])}
                 >
                   <X className="h-4 w-4 mr-1" />
-                  Clear
+                  پاک کردن
                 </Button>
               </div>
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button>Move to Stage</Button>
+                    <Button>Move to مرحله</Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-56">
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">Select stage</p>
+                      <p className="text-sm font-medium">انتخاب stage</p>
                       {stages.map((stage, index) => (
                         <Button
                           key={stage.id}
@@ -597,7 +597,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                   variant="destructive" 
                   onClick={() => setShowBulkRejectDialog(true)}
                 >
-                  Reject Selected
+                  رد Selected
                 </Button>
               </div>
             </div>
@@ -688,7 +688,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
                   <div className="flex-1">
                     <p className="font-medium text-sm">{activeApplication.candidate.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {activeApplication.candidate.location || 'Location not specified'}
+                      {activeApplication.candidate.location || 'مکان not specified'}
                     </p>
                   </div>
                 </div>
@@ -702,7 +702,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         <Card>
           <CardContent className="py-12">
             <p className="text-center text-muted-foreground">
-              No active applications for this job yet
+              خیر active applications for this job yet
             </p>
           </CardContent>
         </Card>

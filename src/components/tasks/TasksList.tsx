@@ -33,7 +33,7 @@ interface TasksListProps {
 }
 
 export function TasksList({ tasks, onTasksChange }: TasksListProps) {
-  const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
+  const [deleteTaskId, setRemoveTaskId] = useState<string | null>(null);
   const [editTask, setEditTask] = useState<Task | null>(null);
 
   const handleToggleStatus = async (task: Task) => {
@@ -53,7 +53,7 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
     onTasksChange();
   };
 
-  const handleDelete = async () => {
+  const handleRemove = async () => {
     if (!deleteTaskId) return;
 
     const { error } = await supabase.from("tasks").delete().eq("id", deleteTaskId);
@@ -65,7 +65,7 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
     }
 
     toast.success("Task deleted successfully");
-    setDeleteTaskId(null);
+    setRemoveTaskId(null);
     onTasksChange();
   };
 
@@ -73,7 +73,7 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
     return (
       <Card>
         <CardContent className="pt-6">
-          <p className="text-center text-muted-foreground">No tasks yet</p>
+          <p className="text-center text-muted-foreground">خیر tasks yet</p>
         </CardContent>
       </Card>
     );
@@ -103,7 +103,7 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
                   </div>
                   {task.due_date && (
                     <p className="text-sm text-muted-foreground">
-                      Due: {format(new Date(task.due_date), "PPp")}
+                      Due: {format(new تاریخ(task.due_date), "PPp")}
                     </p>
                   )}
                 </div>
@@ -133,7 +133,7 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setDeleteTaskId(task.id)}
+                    onClick={() => setRemoveTaskId(task.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -149,21 +149,21 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
           task={editTask}
           open={!!editTask}
           onOpenChange={(open) => !open && setEditTask(null)}
-          onTaskUpdated={onTasksChange}
+          onTaskRefreshd={onTasksChange}
         />
       )}
 
-      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setDeleteTaskId(null)}>
+      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setRemoveTaskId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Task</AlertDialogTitle>
+            <AlertDialogTitle>حذف Task</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this task? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemove}>حذف</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -19,7 +19,7 @@ interface OrgSettings {
 }
 
 export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOrganizationDialogProps) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgName, setOrgName] = useState('');
   const [orgSlug, setOrgSlug] = useState('');
@@ -62,7 +62,7 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
       setCompanyEmail(orgSettings.company_email || '');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -72,7 +72,7 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
   const handleSave = async () => {
     if (!orgId) return;
 
-    setLoading(true);
+    setUpload(true);
     try {
       const updatedSettings = { ...settings, company_email: companyEmail };
       const { error } = await supabase
@@ -87,20 +87,20 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
       if (error) throw error;
 
       toast({
-        title: 'Success',
-        description: 'Organization information has been updated',
+        title: 'موفقیت',
+        description: 'سازمان information has been updated',
       });
 
       onSuccess?.();
       onOpenChange(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -108,14 +108,14 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Organization</DialogTitle>
+          <DialogTitle>ویرایش سازمان</DialogTitle>
           <DialogDescription>
-            Update your organization information here.
+            به‌روزرسانی your organization information here.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="orgName">Organization Name</Label>
+            <Label htmlFor="orgName">سازمان Name</Label>
             <Input
               id="orgName"
               value={orgName}
@@ -124,7 +124,7 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="orgSlug">Organization Slug</Label>
+            <Label htmlFor="orgSlug">سازمان Slug</Label>
             <Input
               id="orgSlug"
               value={orgSlug}
@@ -133,7 +133,7 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="companyEmail">Company Email Address</Label>
+            <Label htmlFor="companyEmail">Company ایمیل آدرس</Label>
             <Input
               id="companyEmail"
               type="email"
@@ -145,11 +145,11 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
           <Button onClick={handleSave} disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Save Changes
+            ذخیره تغییرات
           </Button>
         </DialogFooter>
       </DialogContent>

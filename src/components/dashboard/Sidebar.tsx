@@ -17,11 +17,11 @@ const Sidebar = () => {
           <img
             src="https://api.builder.io/api/v1/image/assets/160bd503595d4b3e818fa7f42e1b117f/ba6c0a647ad941622b6ace8b542b255e5a81718c?placeholderIfAbsent=true"
             className="aspect-[1] object-contain w-5 self-stretch shrink-0 my-auto"
-            alt="Dashboard icon"
+            alt="داشبورد icon"
           />
           <div className="self-stretch flex min-h-6 items-center flex-1 shrink basis-[0%] my-auto">
             <div className="text-foreground self-stretch my-auto">
-              Dashboard
+              داشبورد
             </div>
           </div>
         </div>
@@ -56,11 +56,11 @@ const Sidebar = () => {
           <img
             src="https://api.builder.io/api/v1/image/assets/160bd503595d4b3e818fa7f42e1b117f/c5db23af8b32be7492c41b51dd7de017889a4120?placeholderIfAbsent=true"
             className="aspect-[1] object-contain w-5 self-stretch shrink-0 my-auto"
-            alt="Settings icon"
+            alt="تنظیمات icon"
           />
           <div className="self-stretch flex min-h-6 items-center flex-1 shrink basis-[0%] my-auto">
             <div className="text-foreground self-stretch my-auto">
-              Settings
+              تنظیمات
             </div>
           </div>
         </div>

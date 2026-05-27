@@ -21,23 +21,23 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, time }) => {
   );
 };
 
-const TasksPanel = () => {
+const وظایفهیئت مصاحبه = () => {
   const tasks = [
-    { title: "Meeting", time: "Today • 12:30pm" },
-    { title: "Complete Evaluation", time: "Tomorrow • 9:00am" },
-    { title: "Meeting", time: "Today • 12:30pm" },
-    { title: "Meeting", time: "Today • 12:30pm" },
-    { title: "Meeting", time: "Today • 12:30pm" },
-    { title: "Meeting", time: "Today • 12:30pm" },
-    { title: "Meeting", time: "Today • 12:30pm" },
-    { title: "Meeting", time: "Today • 12:30pm" }
+    { title: "Meeting", time: "امروز • 12:30pm" },
+    { title: "Complete Evaluation", time: "فردا • 9:00am" },
+    { title: "Meeting", time: "امروز • 12:30pm" },
+    { title: "Meeting", time: "امروز • 12:30pm" },
+    { title: "Meeting", time: "امروز • 12:30pm" },
+    { title: "Meeting", time: "امروز • 12:30pm" },
+    { title: "Meeting", time: "امروز • 12:30pm" },
+    { title: "Meeting", time: "امروز • 12:30pm" }
   ];
 
   return (
     <section className="min-w-60 overflow-hidden w-[339px] bg-card rounded-xl">
       <div className="flex min-h-[50px] items-center gap-2.5 text-sm text-foreground font-[590] whitespace-nowrap px-4 py-[17px]">
         <h2 className="text-foreground self-stretch my-auto">
-          Tasks
+          وظایف
         </h2>
       </div>
       <div className="mx-4 max-md:mx-2.5 space-y-2">
@@ -53,4 +53,4 @@ const TasksPanel = () => {
   );
 };
 
-export default TasksPanel;
+export default وظایفهیئت مصاحبه;

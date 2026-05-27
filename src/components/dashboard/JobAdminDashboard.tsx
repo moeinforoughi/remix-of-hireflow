@@ -21,7 +21,7 @@ export function JobAdminDashboard() {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
-  const [isLoadingDemo, setIsLoadingDemo] = useState(() => {
+  const [isUploadDemo, setIsUploadDemo] = useState(() => {
     return sessionStorage.getItem('demo-reset-in-progress') === 'true';
   });
   const [metrics, setMetrics] = useState({
@@ -82,9 +82,9 @@ export function JobAdminDashboard() {
     };
 
     // If demo reset in progress, wait for the event
-    if (isLoadingDemo) {
+    if (isUploadDemo) {
       const handleDemoDataRefresh = () => {
-        setIsLoadingDemo(false);
+        setIsUploadDemo(false);
         fetchData();
       };
       window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
@@ -99,11 +99,11 @@ export function JobAdminDashboard() {
     };
     window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
     return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
-  }, [isLoadingDemo]);
+  }, [isUploadDemo]);
 
   const metricCards = [
     {
-      title: "Current Listings",
+      title: "موقعیت‌های فعال",
       value: metrics.currentListings,
       bgColor: "bg-[#D4F4DD]",
       iconColor: "text-[#4A7C59]",
@@ -112,7 +112,7 @@ export function JobAdminDashboard() {
       icon: listIcon,
     },
     {
-      title: "Total Applicants",
+      title: "تعداد کل متقاضیان",
       value: metrics.totalApplicants,
       bgColor: "bg-[#FFE5CC]",
       iconColor: "text-[#CC7A3D]",
@@ -121,7 +121,7 @@ export function JobAdminDashboard() {
       icon: usersIcon,
     },
     {
-      title: "Interviewing",
+      title: "در حال مصاحبه",
       value: metrics.interviewing,
       bgColor: "bg-[#CCE5FF]",
       iconColor: "text-[#3D7ACC]",
@@ -130,7 +130,7 @@ export function JobAdminDashboard() {
       icon: messageIcon,
     },
     {
-      title: "Shortlisted",
+      title: "نهایی‌شده",
       value: metrics.shortlisted,
       bgColor: "bg-[#FFD9E5]",
       iconColor: "text-[#CC5C7A]",
@@ -144,17 +144,17 @@ export function JobAdminDashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl">Dashboard</h1>
+          <h1 className="text-3xl">داشبورد</h1>
         </div>
         <Button onClick={() => navigate('/jobs/new')}>
           <Plus className="mr-2 h-4 w-4" />
-          New Job Listing
+          ایجاد موقعیت جدید
         </Button>
       </div>
 
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        {isLoadingDemo ? (
+        {isUploadDemo ? (
           <>
             <MetricCardSkeleton />
             <MetricCardSkeleton />
@@ -184,17 +184,17 @@ export function JobAdminDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
-        {/* Tasks */}
-        {isLoadingDemo ? (
+        {/* وظایف */}
+        {isUploadDemo ? (
           <TasksCardSkeleton />
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Tasks</CardTitle>
+              <CardTitle>وظایف</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {tasks.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No pending tasks</p>
+                <p className="text-sm text-muted-foreground text-center py-8">وظیفه‌ای در انتظار نیست</p>
               ) : (
                 tasks.map((task) => (
                   <div 
@@ -204,7 +204,7 @@ export function JobAdminDashboard() {
                   >
                     <p className="font-medium text-sm">{task.title}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {task.due_date ? format(new Date(task.due_date), 'MMM d, yyyy') : 'Today'} • {task.due_date ? format(new Date(task.due_date), 'h:mm a') : '12:30 PM'}
+                      {task.due_date ? format(new تاریخ(task.due_date), 'MMM d, yyyy') : 'امروز'} • {task.due_date ? format(new تاریخ(task.due_date), 'h:mm a') : '12:30 PM'}
                     </p>
                   </div>
                 ))
@@ -213,24 +213,24 @@ export function JobAdminDashboard() {
           </Card>
         )}
 
-        {/* Job Listings */}
-        {isLoadingDemo ? (
+        {/* موقعیت‌های شغلی */}
+        {isUploadDemo ? (
           <JobListingsCardSkeleton />
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Job Listings</CardTitle>
+              <CardTitle>موقعیت‌های شغلی</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <div className="grid grid-cols-4 gap-4 text-sm font-medium text-muted-foreground pb-2 border-b">
-                  <div>Title</div>
-                  <div>Location</div>
-                  <div>Date Opened</div>
-                  <div className="text-right"># of Candidates</div>
+                  <div>عنوان</div>
+                  <div>مکان</div>
+                  <div>تاریخ ایجاد</div>
+                  <div className="text-right">تعداد کاندیداها</div>
               </div>
               {jobs.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No jobs assigned</p>
+                <p className="text-sm text-muted-foreground text-center py-8">هیچ شغلی به شما اختصاص داده نشده</p>
               ) : (
                 jobs.slice(0, 8).map((job: any) => (
                   <div 
@@ -239,9 +239,9 @@ export function JobAdminDashboard() {
                     onClick={() => navigate(`/jobs/${job.id}`)}
                   >
                     <div className="font-medium">{job.title}</div>
-                    <div className="text-muted-foreground">{job.location || 'Remote'}</div>
+                    <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new Date(job.created_at).toLocaleDateString()}
+                      {new تاریخ(job.created_at).toLocaleDateString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">
@@ -258,7 +258,7 @@ export function JobAdminDashboard() {
         )}
       </div>
 
-      {/* Next Meeting and Recent Activity */}
+      {/* بعدی Meeting and فعالیت‌های اخیر */}
       <div className="grid gap-6 md:grid-cols-2">
         <NextMeetingCard />
         <RecentActivityFeed />

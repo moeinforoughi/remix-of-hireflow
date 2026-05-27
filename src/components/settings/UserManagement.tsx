@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ChevronRight, ChevronDown } from 'lucide-react';
 import { InviteUserDialog } from './InviteUserDialog';
@@ -23,7 +23,7 @@ interface User {
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -46,7 +46,7 @@ export const UserManagement = () => {
       // Get current user's org_id first
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setLoading(false);
+        setUpload(false);
         return;
       }
 
@@ -57,11 +57,11 @@ export const UserManagement = () => {
         .single();
 
       if (!currentProfile) {
-        setLoading(false);
+        setUpload(false);
         return;
       }
 
-      // Filter profiles by same org_id
+      // فیلتر profiles by same org_id
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -116,12 +116,12 @@ export const UserManagement = () => {
       setUsers(usersWithRoles);
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -133,7 +133,7 @@ export const UserManagement = () => {
       // Get target user info for notification
       const targetUser = users.find(u => u.id === userId);
 
-      // Delete existing role
+      // حذف existing role
       const { error: deleteError } = await supabase
         .from('user_roles')
         .delete()
@@ -149,11 +149,11 @@ export const UserManagement = () => {
       if (insertError) throw insertError;
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'User role updated successfully',
       });
 
-      // Send notification about role change
+      // ارسال notification about role change
       if (targetUser) {
         notifyRoleChanged(userId, targetUser.full_name, newRole, user.id);
       }
@@ -161,7 +161,7 @@ export const UserManagement = () => {
       fetchUsers();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -179,8 +179,8 @@ export const UserManagement = () => {
   const getRoleLabel = (role: string) => {
     const labels: Record<string, string> = {
       basic: 'Can View',
-      job_admin: 'Can Edit',
-      site_admin: 'Admin',
+      job_admin: 'Can ویرایش',
+      site_admin: 'مدیر کل',
     };
     return labels[role] || role;
   };
@@ -189,7 +189,7 @@ export const UserManagement = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl">Team Members</h1>
+          <h1 className="text-3xl">اعضای تیم</h1>
         </div>
         <InviteUserDialog onInviteSuccess={fetchUsers} />
       </div>
@@ -199,10 +199,10 @@ export const UserManagement = () => {
           <TableHeader>
             <TableRow className="hover:bg-transparent border-b-0">
               <TableHead className="w-[200px]">Name</TableHead>
-              <TableHead className="w-[220px]">Email</TableHead>
-              <TableHead className="w-[150px]">Department</TableHead>
+              <TableHead className="w-[220px]">ایمیل</TableHead>
+              <TableHead className="w-[150px]">بخش</TableHead>
               <TableHead className="w-[100px]"># of Listings</TableHead>
-              <TableHead className="w-[130px]">Permissions</TableHead>
+              <TableHead className="w-[130px]">دسترسی‌ها</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -242,7 +242,7 @@ export const UserManagement = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-between">
-                    <Select
+                    <انتخاب
                       value={user.role}
                       onValueChange={(value) => handleRoleChange(user.id, value as 'basic' | 'job_admin' | 'site_admin')}
                       disabled={user.email === 'demo@hireflow.app' && currentUserEmail === 'demo@hireflow.app'}
@@ -255,10 +255,10 @@ export const UserManagement = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="basic">Can View</SelectItem>
-                        <SelectItem value="job_admin">Can Edit</SelectItem>
-                        <SelectItem value="site_admin">Admin</SelectItem>
+                        <SelectItem value="job_admin">Can ویرایش</SelectItem>
+                        <SelectItem value="site_admin">مدیر کل</SelectItem>
                       </SelectContent>
-                    </Select>
+                    </انتخاب>
                   </div>
                 </TableCell>
                 <TableCell className="rounded-r-lg">
@@ -274,7 +274,7 @@ export const UserManagement = () => {
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         user={editingUser}
-        onUpdateSuccess={fetchUsers}
+        onRefreshSuccess={fetchUsers}
       />
     </div>
   );

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { بارگذاری, X, Loader2 } from 'lucide-react';
 
 interface BrandingData {
   platform_name: string;
@@ -13,14 +13,14 @@ interface BrandingData {
   secondary_color: string;
 }
 
-export const BrandingSettings = () => {
+export const برندینگتنظیمات = () => {
   const [branding, setBranding] = useState<BrandingData>({
     platform_name: 'HiringPlatform',
     logo_url: null,
     primary_color: '#3B82F6',
     secondary_color: '#10B981',
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isUpload, setIsUpload] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export const BrandingSettings = () => {
     } catch (error) {
       console.error('Error fetching branding:', error);
     } finally {
-      setIsLoading(false);
+      setIsUpload(false);
     }
   };
 
@@ -79,7 +79,7 @@ export const BrandingSettings = () => {
 
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('Logo must be less than 2MB');
+      toast.error('لوگو must be less than 2MB');
       return;
     }
 
@@ -98,10 +98,10 @@ export const BrandingSettings = () => {
         .from('logos')
         .getPublicUrl(fileName);
 
-      // Add cache buster
-      const logoUrlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
+      // افزودن cache buster
+      const logoUrlWithCacheBuster = `${publicUrl}?t=${تاریخ.now()}`;
       setBranding(prev => ({ ...prev, logo_url: logoUrlWithCacheBuster }));
-      toast.success('Logo uploaded successfully');
+      toast.success('لوگو uploaded successfully');
     } catch (error) {
       console.error('Error uploading logo:', error);
       toast.error('Failed to upload logo');
@@ -120,12 +120,12 @@ export const BrandingSettings = () => {
         .list(orgId);
 
       if (files && files.length > 0) {
-        const filesToDelete = files.map(f => `${orgId}/${f.name}`);
-        await supabase.storage.from('logos').remove(filesToDelete);
+        const filesToRemove = files.map(f => `${orgId}/${f.name}`);
+        await supabase.storage.from('logos').remove(filesToRemove);
       }
 
       setBranding(prev => ({ ...prev, logo_url: null }));
-      toast.success('Logo removed');
+      toast.success('لوگو removed');
     } catch (error) {
       console.error('Error removing logo:', error);
       toast.error('Failed to remove logo');
@@ -153,7 +153,7 @@ export const BrandingSettings = () => {
 
       if (error) throw error;
 
-      toast.success('Branding settings saved');
+      toast.success('برندینگ settings saved');
       // Dispatch a custom event so the sidebar can update
       window.dispatchEvent(new CustomEvent('branding-updated', { detail: branding }));
     } catch (error) {
@@ -164,7 +164,7 @@ export const BrandingSettings = () => {
     }
   };
 
-  if (isLoading) {
+  if (isUpload) {
     return (
       <div className="flex items-center justify-center py-8">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -175,16 +175,16 @@ export const BrandingSettings = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg">Platform Branding</h3>
+        <h3 className="text-lg">Platform برندینگ</h3>
         <p className="text-sm text-muted-foreground">
           Customize how your platform appears to users
         </p>
       </div>
 
       <div className="grid gap-6">
-        {/* Platform Name */}
+        {/* نام سامانه */}
         <div className="space-y-2">
-          <Label htmlFor="platform-name">Platform Name</Label>
+          <Label htmlFor="platform-name">نام سامانه</Label>
           <Input
             id="platform-name"
             value={branding.platform_name}
@@ -197,9 +197,9 @@ export const BrandingSettings = () => {
           </p>
         </div>
 
-        {/* Logo Upload */}
+        {/* لوگو بارگذاری */}
         <div className="space-y-2">
-          <Label>Platform Logo</Label>
+          <Label>Platform لوگو</Label>
           <div className="flex items-start gap-4">
             {branding.logo_url ? (
               <div className="relative">
@@ -227,7 +227,7 @@ export const BrandingSettings = () => {
                 {isUploading ? (
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 ) : (
-                  <Upload className="h-6 w-6 text-muted-foreground" />
+                  <بارگذاری className="h-6 w-6 text-muted-foreground" />
                 )}
               </div>
             )}
@@ -238,7 +238,7 @@ export const BrandingSettings = () => {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
               >
-                {isUploading ? 'Uploading...' : 'Upload Logo'}
+                {isUploading ? 'Uploading...' : 'بارگذاری لوگو'}
               </Button>
               <p className="text-xs text-muted-foreground">
                 PNG, JPG, SVG, or WebP. Max 2MB. Recommended: 200x200px
@@ -257,7 +257,7 @@ export const BrandingSettings = () => {
         {/* Colors */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="primary-color">Primary Color</Label>
+            <Label htmlFor="primary-color">رنگ اصلی</Label>
             <div className="flex gap-2">
               <Input
                 type="color"
@@ -275,7 +275,7 @@ export const BrandingSettings = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="secondary-color">Secondary Color</Label>
+            <Label htmlFor="secondary-color">رنگ ثانویه</Label>
             <div className="flex gap-2">
               <Input
                 type="color"
@@ -302,7 +302,7 @@ export const BrandingSettings = () => {
               {branding.logo_url ? (
                 <img
                   src={branding.logo_url}
-                  alt="Logo preview"
+                  alt="لوگو preview"
                   className="h-8 w-8 rounded object-contain"
                 />
               ) : (
@@ -314,7 +314,7 @@ export const BrandingSettings = () => {
                 </div>
               )}
               <span className="font-semibold text-sidebar-foreground">
-                {branding.platform_name || 'Platform Name'}
+                {branding.platform_name || 'نام سامانه'}
               </span>
             </div>
           </div>
@@ -323,7 +323,7 @@ export const BrandingSettings = () => {
 
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
         </Button>
       </div>
     </div>

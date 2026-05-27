@@ -20,15 +20,15 @@ export const WithdrawDialog = ({ open, onOpenChange, onConfirm }: WithdrawDialog
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Withdraw Application</AlertDialogTitle>
+          <AlertDialogTitle>پس گرفتن Application</AlertDialogTitle>
           <AlertDialogDescription>
             This will mark the application as withdrawn by the candidate. This action can be reversed later if needed.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm}>
-            Withdraw Application
+            پس گرفتن Application
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

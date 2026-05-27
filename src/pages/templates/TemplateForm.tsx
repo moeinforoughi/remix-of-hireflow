@@ -8,13 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Plus, X } from "lucide-react";
+import { ArrowLeft, ذخیره, Plus, X } from "lucide-react";
 
 export default function TemplateForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [bodyHtml, setBodyHtml] = useState("");
@@ -71,7 +71,7 @@ export default function TemplateForm() {
       return;
     }
 
-    setLoading(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -83,7 +83,7 @@ export default function TemplateForm() {
         .eq("id", user.id)
         .single();
 
-      if (!profile) throw new Error("Profile not found");
+      if (!profile) throw new Error("پروفایل not found");
 
       const templateData = {
         org_id: profile.org_id,
@@ -126,7 +126,7 @@ export default function TemplateForm() {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -138,10 +138,10 @@ export default function TemplateForm() {
         </Button>
         <div>
           <h1 className="text-3xl">
-            {id ? "Edit Template" : "New Template"}
+            {id ? "ویرایش Template" : "New Template"}
           </h1>
           <p className="text-muted-foreground">
-            Create reusable email templates with variable support
+            ایجاد reusable email templates with variable support
           </p>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function TemplateForm() {
           </div>
 
           <div>
-            <Label htmlFor="subject">Email Subject *</Label>
+            <Label htmlFor="subject">ایمیل موضوع *</Label>
             <Input
               id="subject"
               value={subject}
@@ -172,7 +172,7 @@ export default function TemplateForm() {
           </div>
 
           <div>
-            <Label htmlFor="body">Email Body (HTML) *</Label>
+            <Label htmlFor="body">ایمیل Body (HTML) *</Label>
             <Textarea
               id="body"
               value={bodyHtml}
@@ -188,7 +188,7 @@ export default function TemplateForm() {
           <div>
             <Label>Template Variables</Label>
             <p className="text-xs text-muted-foreground mb-2">
-              Add variables that can be dynamically replaced when sending emails
+              افزودن variables that can be dynamically replaced when sending emails
             </p>
             <div className="flex gap-2 mb-3">
               <Input
@@ -218,14 +218,14 @@ export default function TemplateForm() {
               </div>
             ) : (
               <p className="text-xs text-muted-foreground italic">
-                No variables added yet. Common variables: candidate_name, job_title, interview_date
+                خیر variables added yet. Common variables: candidate_name, job_title, interview_date
               </p>
             )}
           </div>
 
           <Button onClick={handleSubmit} disabled={loading} className="w-full">
-            <Save className="mr-2 h-4 w-4" />
-            {loading ? "Saving..." : id ? "Update Template" : "Create Template"}
+            <ذخیره className="mr-2 h-4 w-4" />
+            {loading ? "در حال ذخیره..." : id ? "به‌روزرسانی Template" : "ایجاد Template"}
           </Button>
         </CardContent>
       </Card>

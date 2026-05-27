@@ -29,11 +29,11 @@ interface AddCandidateRatingDialogProps {
 }
 
 const RATING_CATEGORIES = [
-  { key: 'soft_skills', label: 'Soft Skills', description: 'Communication, teamwork, leadership' },
-  { key: 'hard_skills', label: 'Hard Skills', description: 'Technical abilities, expertise' },
+  { key: 'soft_skills', label: 'Soft مهارت‌ها', description: 'Communication, teamwork, leadership' },
+  { key: 'hard_skills', label: 'Hard مهارت‌ها', description: 'Technical abilities, expertise' },
   { key: 'salary_match', label: 'Salary Match', description: 'Expectations vs. budget alignment' },
   { key: 'culture_fit', label: 'Culture Fit', description: 'Values and team compatibility' },
-  { key: 'experience', label: 'Experience', description: 'Relevant background and history' },
+  { key: 'experience', label: 'سابقه کار', description: 'Relevant background and history' },
 ] as const;
 
 type RatingKey = typeof RATING_CATEGORIES[number]['key'];
@@ -46,7 +46,7 @@ export const AddCandidateRatingDialog = ({
   onSuccess,
 }: AddCandidateRatingDialogProps) => {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [ratings, setRatings] = useState<Record<RatingKey, number>>({
     soft_skills: 3,
     hard_skills: 3,
@@ -79,7 +79,7 @@ export const AddCandidateRatingDialog = ({
   }, [existingRating, open]);
 
   const handleSubmit = async () => {
-    setLoading(true);
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -90,7 +90,7 @@ export const AddCandidateRatingDialog = ({
         .eq('id', user.id)
         .single();
 
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('پروفایل not found');
 
       if (existingRating) {
         const { error } = await supabase
@@ -102,7 +102,7 @@ export const AddCandidateRatingDialog = ({
           .eq('id', existingRating.id);
 
         if (error) throw error;
-        toast({ title: 'Rating updated successfully' });
+        toast({ title: 'امتیاز updated successfully' });
       } else {
         const { error } = await supabase
           .from('candidate_ratings')
@@ -115,7 +115,7 @@ export const AddCandidateRatingDialog = ({
           });
 
         if (error) throw error;
-        toast({ title: 'Rating added successfully' });
+        toast({ title: 'امتیاز added successfully' });
       }
 
       onSuccess();
@@ -127,7 +127,7 @@ export const AddCandidateRatingDialog = ({
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -135,7 +135,7 @@ export const AddCandidateRatingDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{existingRating ? 'Edit Rating' : 'Rate Candidate'}</DialogTitle>
+          <DialogTitle>{existingRating ? 'ویرایش امتیاز' : 'Rate Candidate'}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -166,10 +166,10 @@ export const AddCandidateRatingDialog = ({
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            انصراف
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? 'Saving...' : existingRating ? 'Update' : 'Save Rating'}
+            {loading ? 'در حال ذخیره...' : existingRating ? 'به‌روزرسانی' : 'ذخیره امتیاز'}
           </Button>
         </div>
       </DialogContent>

@@ -15,11 +15,11 @@ import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { CandidatesCardSkeleton } from "@/components/dashboard/CandidatesCardSkeleton";
 import { JobListingsCardSkeleton } from "@/components/dashboard/JobListingsCardSkeleton";
 
-export function BasicDashboard() {
+export function پایهداشبورد() {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
-  const [isLoadingDemo, setIsLoadingDemo] = useState(() => {
+  const [isUploadDemo, setIsUploadDemo] = useState(() => {
     return sessionStorage.getItem('demo-reset-in-progress') === 'true';
   });
   const [metrics, setMetrics] = useState({
@@ -104,9 +104,9 @@ export function BasicDashboard() {
     };
 
     // If demo reset in progress, wait for the event
-    if (isLoadingDemo) {
+    if (isUploadDemo) {
       const handleDemoDataRefresh = () => {
-        setIsLoadingDemo(false);
+        setIsUploadDemo(false);
         fetchData();
       };
       window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
@@ -121,11 +121,11 @@ export function BasicDashboard() {
     };
     window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
     return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
-  }, [isLoadingDemo]);
+  }, [isUploadDemo]);
 
   const metricCards = [
     {
-      title: "Current Listings",
+      title: "موقعیت‌های فعال",
       value: metrics.currentListings,
       bgColor: "bg-[#D4F4DD]",
       iconColor: "text-[#4A7C59]",
@@ -134,7 +134,7 @@ export function BasicDashboard() {
       icon: listIcon,
     },
     {
-      title: "Total Applicants",
+      title: "تعداد کل متقاضیان",
       value: metrics.totalApplicants,
       bgColor: "bg-[#FFE5CC]",
       iconColor: "text-[#CC7A3D]",
@@ -143,7 +143,7 @@ export function BasicDashboard() {
       icon: usersIcon,
     },
     {
-      title: "Interviewing",
+      title: "در حال مصاحبه",
       value: metrics.interviewing,
       bgColor: "bg-[#CCE5FF]",
       iconColor: "text-[#3D7ACC]",
@@ -152,7 +152,7 @@ export function BasicDashboard() {
       icon: messageIcon,
     },
     {
-      title: "Shortlisted",
+      title: "نهایی‌شده",
       value: metrics.shortlisted,
       bgColor: "bg-[#FFD9E5]",
       iconColor: "text-[#CC5C7A]",
@@ -165,12 +165,12 @@ export function BasicDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl">Dashboard</h1>
+        <h1 className="text-3xl">داشبورد</h1>
       </div>
 
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        {isLoadingDemo ? (
+        {isUploadDemo ? (
           <>
             <MetricCardSkeleton />
             <MetricCardSkeleton />
@@ -199,16 +199,16 @@ export function BasicDashboard() {
         )}
       </div>
 
-      {/* Candidates to Review and Job Listings */}
+      {/* کاندیداهای نیازمند بررسی and موقعیت‌های شغلی */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Candidates to Review */}
-        {isLoadingDemo ? (
+        {/* کاندیداهای نیازمند بررسی */}
+        {isUploadDemo ? (
           <CandidatesCardSkeleton />
         ) : (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
-                <CardTitle>Candidates to Review</CardTitle>
+                <CardTitle>کاندیداهای نیازمند بررسی</CardTitle>
                 <Badge variant="secondary" className="rounded-full">
                   {candidates.length}
                 </Badge>
@@ -216,7 +216,7 @@ export function BasicDashboard() {
             </CardHeader>
             <CardContent className="space-y-3">
               {candidates.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No candidates to review</p>
+                <p className="text-sm text-muted-foreground text-center py-8">کاندیدایی برای بررسی وجود ندارد</p>
               ) : (
                 candidates.map((application) => (
                   <div 
@@ -233,19 +233,19 @@ export function BasicDashboard() {
                       </Avatar>
                       <div>
                         <p className="font-medium">{application.candidates?.full_name}</p>
-                        <p className="text-sm text-muted-foreground">Applying for: {application.jobs?.title}</p>
+                        <p className="text-sm text-muted-foreground">متقاضی موقعیت: {application.jobs?.title}</p>
                       </div>
                     </div>
                     <Badge variant="outline" className="gap-1">
                       {application.state === 'active' ? (
                         <>
                           <Clock className="h-3 w-3" />
-                          Pending
+                          در انتظار
                         </>
                       ) : (
                         <>
                           <CheckCircle2 className="h-3 w-3" />
-                          Reviewed
+                          بررسی شده
                         </>
                       )}
                     </Badge>
@@ -256,24 +256,24 @@ export function BasicDashboard() {
           </Card>
         )}
 
-        {/* Job Listings */}
-        {isLoadingDemo ? (
+        {/* موقعیت‌های شغلی */}
+        {isUploadDemo ? (
           <JobListingsCardSkeleton />
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Job Listings</CardTitle>
+              <CardTitle>موقعیت‌های شغلی</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <div className="grid grid-cols-4 gap-4 text-sm font-medium text-muted-foreground pb-2 border-b">
-                  <div>Title</div>
-                  <div>Location</div>
-                  <div>Date Opened</div>
-                  <div className="text-right"># of Candidates</div>
+                  <div>عنوان</div>
+                  <div>مکان</div>
+                  <div>تاریخ ایجاد</div>
+                  <div className="text-right">تعداد کاندیداها</div>
               </div>
               {jobs.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No jobs assigned</p>
+                <p className="text-sm text-muted-foreground text-center py-8">هیچ شغلی به شما اختصاص داده نشده</p>
               ) : (
                 jobs.map((job: any) => (
                   <div 
@@ -282,9 +282,9 @@ export function BasicDashboard() {
                     onClick={() => navigate(`/jobs/${job.id}`)}
                   >
                     <div className="font-medium">{job.title}</div>
-                    <div className="text-muted-foreground">{job.location || 'Remote'}</div>
+                    <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new Date(job.created_at).toLocaleDateString()}
+                      {new تاریخ(job.created_at).toLocaleDateString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">
@@ -301,7 +301,7 @@ export function BasicDashboard() {
         )}
       </div>
 
-      {/* Next Meeting and Recent Activity */}
+      {/* بعدی Meeting and فعالیت‌های اخیر */}
       <div className="grid gap-6 md:grid-cols-2">
         <NextMeetingCard />
         <RecentActivityFeed />

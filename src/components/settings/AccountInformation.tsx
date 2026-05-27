@@ -11,7 +11,7 @@ export const AccountInformation = () => {
   const [profile, setProfile] = useState<any>(null);
   const [role, setRole] = useState<string>('');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { toast } = useToast();
 
@@ -37,16 +37,16 @@ export const AccountInformation = () => {
         .single();
 
       setProfile(profileData);
-      setRole(roleData?.role === 'site_admin' ? 'Organization Admin' : 
-              roleData?.role === 'job_admin' ? 'Job Admin' : 'Basic User');
+      setRole(roleData?.role === 'site_admin' ? 'سازمان مدیر کل' : 
+              roleData?.role === 'job_admin' ? 'Job مدیر کل' : 'پایه User');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -71,7 +71,7 @@ export const AccountInformation = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg">Account Information</h3>
+        <h3 className="text-lg">اطلاعات حساب</h3>
       </div>
 
       <div className="space-y-6">
@@ -86,34 +86,34 @@ export const AccountInformation = () => {
           </div>
           <Button variant="ghost" size="sm" onClick={() => setEditDialogOpen(true)}>
             <Pencil className="h-4 w-4 mr-2" />
-            Edit
+            ویرایش
           </Button>
         </div>
 
         {/* Account Details */}
         <div className="space-y-4">
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Email Address</span>
+            <span className="text-sm text-muted-foreground">ایمیل آدرس</span>
             <span className="text-sm font-medium text-primary">{profile?.email}</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Phone Number</span>
+            <span className="text-sm text-muted-foreground">تلفن Number</span>
             <span className="text-sm font-medium text-primary">(123) 456-7890</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Role</span>
+            <span className="text-sm text-muted-foreground">نقش</span>
             <span className="text-sm font-medium">{role}</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Password</span>
+            <span className="text-sm text-muted-foreground">رمز عبور</span>
             <span className="text-sm font-medium">••••••••••••</span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">Recovery Email Address</span>
+            <span className="text-sm text-muted-foreground">Recovery ایمیل آدرس</span>
             <span className="text-sm font-medium text-primary">{profile?.email}</span>
           </div>
 

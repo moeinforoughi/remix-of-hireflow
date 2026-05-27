@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Mail, Phone, FileText, MoreVertical, ChevronRight, Briefcase } from 'lucide-react';
+import { Mail, تلفن, FileText, MoreVertical, ChevronRight, Briefcase } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
@@ -80,14 +80,14 @@ const CandidateDetail = () => {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
   const [stages, setStages] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [showResumeDialog, setShowResumeDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
-  const [showApplyToJobDialog, setShowApplyToJobDialog] = useState(false);
+  const [showApplyToJobDialog, setShowSubmit درخواستToJobDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const CandidateDetail = () => {
 
   const fetchData = async () => {
     if (!id) return;
-    setLoading(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -196,12 +196,12 @@ const CandidateDetail = () => {
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -236,19 +236,19 @@ const CandidateDetail = () => {
       setShowResumeDialog(true);
     } else {
       toast({
-        title: 'No Resume',
-        description: 'No resume found for this candidate',
+        title: 'خیر رزومه',
+        description: 'خیر resume found for this candidate',
         variant: 'destructive',
       });
     }
   };
 
-  const handleDeleteCandidate = async () => {
+  const handleRemoveCandidate = async () => {
     if (!candidate) return;
     
     setIsDeleting(true);
     try {
-      // Delete associated applications first (cascade)
+      // حذف associated applications first (cascade)
       const { error: appError } = await supabase
         .from('applications')
         .delete()
@@ -256,7 +256,7 @@ const CandidateDetail = () => {
       
       if (appError) throw appError;
 
-      // Delete candidate
+      // حذف candidate
       const { error } = await supabase
         .from('candidates')
         .delete()
@@ -265,28 +265,28 @@ const CandidateDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Candidate Deleted',
+        title: 'Candidate Removed',
         description: `${candidate.full_name} has been removed.`,
       });
       
       navigate('/candidates');
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
       setIsDeleting(false);
-      setShowDeleteDialog(false);
+      setShowRemoveDialog(false);
     }
   };
 
   const handleRejectCandidate = async (reason: string, note: string) => {
     if (!primaryApplication) {
       toast({
-        title: 'Error',
-        description: 'No active application to reject',
+        title: 'خطا',
+        description: 'خیر active application to reject',
         variant: 'destructive',
       });
       return;
@@ -298,7 +298,7 @@ const CandidateDetail = () => {
 
       if (!rejectedStage) {
         toast({
-          title: 'Error',
+          title: 'خطا',
           description: 'Rejected stage not found for this job',
           variant: 'destructive',
         });
@@ -327,7 +327,7 @@ const CandidateDetail = () => {
       await refetchApplications();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -337,8 +337,8 @@ const CandidateDetail = () => {
   const handleSendOffer = () => {
     if (!primaryApplication) {
       toast({
-        title: 'Error',
-        description: 'No active application to send offer',
+        title: 'خطا',
+        description: 'خیر active application to send offer',
         variant: 'destructive',
       });
       return;
@@ -349,8 +349,8 @@ const CandidateDetail = () => {
   const handleWithdraw = async () => {
     if (!primaryApplication) {
       toast({
-        title: 'Error',
-        description: 'No active application to withdraw',
+        title: 'خطا',
+        description: 'خیر active application to withdraw',
         variant: 'destructive',
       });
       return;
@@ -373,7 +373,7 @@ const CandidateDetail = () => {
       await refetchApplications();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -388,7 +388,7 @@ const CandidateDetail = () => {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl mb-4">Candidate not found</h2>
-        <Button onClick={() => navigate('/candidates')}>Back to Candidates</Button>
+        <Button onClick={() => navigate('/candidates')}>بازگشت to Candidates</Button>
       </div>
     );
   }
@@ -428,10 +428,10 @@ const CandidateDetail = () => {
         <div className="flex items-center gap-2">
           <Button 
             variant="outline" 
-            onClick={() => setShowApplyToJobDialog(true)}
+            onClick={() => setShowSubmit درخواستToJobDialog(true)}
           >
             <Briefcase className="h-4 w-4 mr-2" />
-            Apply to Job
+            ثبت درخواست to Job
           </Button>
           {canReject && (
             <>
@@ -440,14 +440,14 @@ const CandidateDetail = () => {
                 onClick={() => setShowWithdrawDialog(true)}
                 disabled={!primaryApplication}
               >
-                Withdraw
+                پس گرفتن
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setShowRejectDialog(true)}
                 disabled={!primaryApplication}
               >
-                Reject Candidate
+                رد Candidate
               </Button>
             </>
           )}
@@ -457,7 +457,7 @@ const CandidateDetail = () => {
               onClick={handleSendOffer}
               disabled={!primaryApplication}
             >
-              Send Offer
+              ارسال پیشنهاد
             </Button>
           )}
           <DropdownMenu>
@@ -468,20 +468,20 @@ const CandidateDetail = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background z-50">
               <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                Edit Candidate
+                ویرایش Candidate
               </DropdownMenuItem>
               <DropdownMenuItem 
                 className="text-destructive"
-                onClick={() => setShowDeleteDialog(true)}
+                onClick={() => setShowRemoveDialog(true)}
               >
-                Delete Candidate
+                حذف Candidate
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
-      {/* Profile Section */}
+      {/* پروفایل Section */}
       <Card className="rounded-2xl p-8 border shadow-sm">
         <div className="flex items-start gap-6">
           <Avatar className="h-24 w-24">
@@ -510,7 +510,7 @@ const CandidateDetail = () => {
                     href={`tel:${candidate.phone}`}
                     className="flex items-center gap-2 text-primary hover:underline"
                   >
-                    <Phone className="h-4 w-4" />
+                    <تلفن className="h-4 w-4" />
                     {candidate.phone}
                   </a>
                 )}
@@ -525,7 +525,7 @@ const CandidateDetail = () => {
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                   </svg>
-                  LinkedIn Profile
+                  لینکدین پروفایل
                 </a>
               )}
             </div>
@@ -549,13 +549,13 @@ const CandidateDetail = () => {
               className="w-full border-border hover:bg-accent hover:text-accent-foreground transition-colors"
             >
               <FileText className="h-5 w-5 mr-2" />
-              View Resume
+              View رزومه
             </Button>
           </div>
         </div>
       </Card>
 
-      {/* Resume Display Dialog */}
+      {/* رزومه Display Dialog */}
       <ResumeViewer
         open={showResumeDialog}
         onOpenChange={setShowResumeDialog}
@@ -563,54 +563,54 @@ const CandidateDetail = () => {
         candidateName={candidate.full_name}
       />
 
-      {/* Edit Candidate Dialog */}
+      {/* ویرایش Candidate Dialog */}
       <EditCandidateDialog
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
         candidate={candidate}
-        onUpdateSuccess={fetchData}
+        onRefreshSuccess={fetchData}
       />
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      {/* حذف Confirmation Dialog */}
+      <AlertDialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Candidate</AlertDialogTitle>
+            <AlertDialogTitle>حذف Candidate</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete {candidate.full_name}? This will also remove all their applications and cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>انصراف</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDeleteCandidate}
+              onClick={handleRemoveCandidate}
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? 'در حال حذف...' : 'حذف'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Reject Candidate Dialog */}
+      {/* رد Candidate Dialog */}
       <RejectDialog
         open={showRejectDialog}
         onOpenChange={setShowRejectDialog}
         onConfirm={handleRejectCandidate}
       />
 
-      {/* Withdraw Application Dialog */}
+      {/* پس گرفتن Application Dialog */}
       <WithdrawDialog
         open={showWithdrawDialog}
         onOpenChange={setShowWithdrawDialog}
         onConfirm={handleWithdraw}
       />
 
-      {/* Apply to Job Dialog */}
+      {/* ثبت درخواست to Job Dialog */}
       <ApplyToJobDialog
         open={showApplyToJobDialog}
-        onOpenChange={setShowApplyToJobDialog}
+        onOpenChange={setShowSubmit درخواستToJobDialog}
         candidateId={candidate.id}
         candidateName={candidate.full_name}
         existingJobIds={applications.map(app => app.job.id)}
@@ -621,7 +621,7 @@ const CandidateDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Left Column */}
         <div className="space-y-6">
-          {/* Basic Information */}
+          {/* پایه Information */}
           <Card>
             <CardContent className="pt-6 space-y-4">
               <div>
@@ -635,15 +635,15 @@ const CandidateDetail = () => {
                     {primaryApplication.job.location && ` - ${primaryApplication.job.location}`}
                   </Link>
                 ) : (
-                  <p className="text-muted-foreground">No active application</p>
+                  <p className="text-muted-foreground">خیر active application</p>
                 )}
               </div>
 
               <div>
-                <h3 className="text-sm text-muted-foreground mb-1">Date Applied</h3>
+                <h3 className="text-sm text-muted-foreground mb-1">تاریخ ثبت درخواست شده</h3>
                 <p className="font-medium">
                   {primaryApplication
-                    ? new Date(primaryApplication.applied_at).toLocaleDateString('en-US', {
+                    ? new تاریخ(primaryApplication.applied_at).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric',
@@ -653,12 +653,12 @@ const CandidateDetail = () => {
               </div>
 
               <div>
-                <h3 className="text-sm text-muted-foreground mb-1">Years of Experience</h3>
+                <h3 className="text-sm text-muted-foreground mb-1">Years of سابقه کار</h3>
                 <p className="font-medium">{experienceYears}</p>
               </div>
 
               <div>
-                <h3 className="text-sm text-muted-foreground mb-1">Current Role</h3>
+                <h3 className="text-sm text-muted-foreground mb-1">Current نقش</h3>
                 <p className="font-medium">{currentRole}</p>
               </div>
             </CardContent>
@@ -674,7 +674,7 @@ const CandidateDetail = () => {
           <RatingsSection candidateId={candidate.id} />
         </div>
 
-        {/* Right Column - Comments */}
+        {/* Right Column - نظرات */}
         <CommentsSection 
           candidateId={candidate.id}
           applicationId={primaryApplication?.id}

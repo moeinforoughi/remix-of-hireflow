@@ -50,11 +50,11 @@ export const StatusDropdown = ({
 
   const displayedStage = optimisticStageId ? stageById.get(optimisticStageId) ?? currentStage : currentStage;
   
-  // Show application state if not active, otherwise show stage name
+  // نمایش application state if not active, otherwise show stage name
   const getDisplayName = () => {
     if (applicationState === 'withdrawn') return 'Withdrawn';
     if (applicationState === 'rejected') return 'Rejected';
-    return displayedStage?.name || 'No Stage';
+    return displayedStage?.name || 'خیر مرحله';
   };
   
   const displayedStageName = getDisplayName();
@@ -79,23 +79,23 @@ export const StatusDropdown = ({
 
       if (error) throw error;
       if (!data || data.length === 0) {
-        throw new Error('Status update was blocked (no rows updated). Check your permissions for this job.');
+        throw new Error('وضعیت update was blocked (no rows updated). Check your permissions for this job.');
       }
 
-      // Refresh parent data (authoritative state)
+      // به‌روزرسانی parent data (authoritative state)
       if (onStageChange) {
         await onStageChange();
       }
 
       toast({
-        title: 'Success',
-        description: 'Status updated successfully',
+        title: 'موفقیت',
+        description: 'وضعیت updated successfully',
       });
     } catch (error: any) {
       // Revert optimistic UI on failure
       setOptimisticStageId(previousStageId);
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });

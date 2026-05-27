@@ -50,7 +50,7 @@ export const NotificationCenter = () => {
           setNotifications((prev) => [newNotification, ...prev]);
           setUnreadCount((prev) => prev + 1);
 
-          // Show toast for new notification
+          // نمایش toast for new notification
           toast({
             title: newNotification.title,
             description: newNotification.message,
@@ -85,7 +85,7 @@ export const NotificationCenter = () => {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true, read_at: new Date().toISOString() })
+        .update({ is_read: true, read_at: new تاریخ().toISOString() })
         .eq('id', id);
 
       if (error) throw error;
@@ -103,7 +103,7 @@ export const NotificationCenter = () => {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true, read_at: new Date().toISOString() })
+        .update({ is_read: true, read_at: new تاریخ().toISOString() })
         .eq('is_read', false);
 
       if (error) throw error;
@@ -112,12 +112,12 @@ export const NotificationCenter = () => {
       setUnreadCount(0);
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'All notifications marked as read',
       });
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -213,7 +213,7 @@ export const NotificationCenter = () => {
           {notifications.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
               <Bell className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No notifications yet</p>
+              <p>خیر notifications yet</p>
             </div>
           ) : (
             notifications.map((notification) => (
@@ -245,7 +245,7 @@ export const NotificationCenter = () => {
                       {notification.message}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {formatDistanceToNow(new Date(notification.created_at), {
+                      {formatDistanceToNow(new تاریخ(notification.created_at), {
                         addSuffix: true,
                       })}
                     </p>

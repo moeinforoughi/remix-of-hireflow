@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -18,16 +18,16 @@ interface EditUserDialogProps {
     email: string;
     department: string;
   } | null;
-  onUpdateSuccess: () => void;
+  onRefreshSuccess: () => void;
 }
 
-export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: EditUserDialogProps) => {
+export const EditUserDialog = ({ open, onOpenChange, user, onRefreshSuccess }: EditUserDialogProps) => {
   const [department, setDepartment] = useState('');
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const { toast } = useToast();
 
@@ -72,12 +72,12 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
     }
   };
 
-  const handleUpdate = async () => {
+  const handleRefresh = async () => {
     if (!user) return;
 
-    setLoading(true);
+    setUpload(true);
     try {
-      // Update department
+      // به‌روزرسانی department
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ department: department || null })
@@ -85,7 +85,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
 
       if (profileError) throw profileError;
 
-      // Delete existing job assignments
+      // حذف existing job assignments
       const { error: deleteError } = await supabase
         .from('job_acl')
         .delete()
@@ -112,24 +112,24 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
       }
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'User updated successfully',
       });
 
       onOpenChange(false);
-      onUpdateSuccess();
+      onRefreshSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
-  const handleDelete = async () => {
+  const handleRemove = async () => {
     if (!user) return;
 
     setDeleting(true);
@@ -142,16 +142,16 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
       if (data?.error) throw new Error(data.error);
 
       toast({
-        title: 'Success',
+        title: 'موفقیت',
         description: 'Team member removed successfully',
       });
 
-      setShowDeleteConfirm(false);
+      setShowRemoveConfirm(false);
       onOpenChange(false);
-      onUpdateSuccess();
+      onRefreshSuccess();
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: 'خطا',
         description: error.message,
         variant: 'destructive',
       });
@@ -168,14 +168,14 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
     );
   };
 
-  const canDelete = user && user.id !== currentUserId && user.email !== 'demo@hireflow.app';
+  const canRemove = user && user.id !== currentUserId && user.email !== 'demo@hireflow.app';
 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-hidden flex flex-col gap-0 p-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b">
-            <DialogTitle className="text-xl">Edit Team Member</DialogTitle>
+            <DialogTitle className="text-xl">ویرایش Team Member</DialogTitle>
           </DialogHeader>
 
           <div className="overflow-y-auto flex-1 px-6 py-5">
@@ -191,24 +191,24 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
                     <div className="text-sm font-medium">{user?.full_name}</div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Email</Label>
+                    <Label className="text-xs text-muted-foreground">ایمیل</Label>
                     <div className="text-sm font-medium truncate">{user?.email}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Department Section */}
+              {/* بخش Section */}
               <div className="space-y-3 pt-2">
                 <h3 className="text-sm text-foreground uppercase tracking-wide">
-                  Role & Access
+                  نقش & Access
                 </h3>
                 <div className="space-y-1.5">
                   <Label htmlFor="department" className="text-sm font-medium">
-                    Department
+                    بخش
                   </Label>
-                  <Select value={department} onValueChange={setDepartment}>
+                  <انتخاب value={department} onValueChange={setDepartment}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Department" />
+                      <SelectValue placeholder="انتخاب بخش" />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-50">
                       <SelectItem value="Engineering">Engineering</SelectItem>
@@ -220,7 +220,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
                       <SelectItem value="Finance">Finance</SelectItem>
                       <SelectItem value="Operations">Operations</SelectItem>
                     </SelectContent>
-                  </Select>
+                  </انتخاب>
                 </div>
               </div>
 
@@ -239,7 +239,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
                 <div className="border rounded-lg p-3 max-h-[140px] overflow-y-auto bg-muted/20">
                   {jobs.length === 0 ? (
                     <div className="text-sm text-muted-foreground text-center py-4">
-                      No open jobs to assign
+                      خیر open jobs to assign
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -264,7 +264,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
               </div>
 
               {/* Danger Zone */}
-              {canDelete && (
+              {canRemove && (
                 <div className="space-y-3 pt-4 border-t">
                   <h3 className="text-sm text-destructive uppercase tracking-wide">
                     Danger Zone
@@ -272,10 +272,10 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
                   <Button
                     variant="outline"
                     className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                    onClick={() => setShowDeleteConfirm(true)}
+                    onClick={() => setShowRemoveConfirm(true)}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Remove from Team
+                    حذف from Team
                   </Button>
                 </div>
               )}
@@ -285,22 +285,22 @@ export const EditUserDialog = ({ open, onOpenChange, user, onUpdateSuccess }: Ed
           {/* Footer */}
           <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
             <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
-              Cancel
+              انصراف
             </Button>
-            <Button onClick={handleUpdate} disabled={loading} className="flex-1">
-              {loading ? 'Updating...' : 'Update User'}
+            <Button onClick={handleRefresh} disabled={loading} className="flex-1">
+              {loading ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی User'}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
       <ConfirmDialog
-        open={showDeleteConfirm}
-        onOpenChange={setShowDeleteConfirm}
-        title="Remove Team Member"
+        open={showRemoveConfirm}
+        onOpenChange={setShowRemoveConfirm}
+        title="حذف Team Member"
         description={`Are you sure you want to remove ${user?.full_name} from your team? This action cannot be undone and will delete their account.`}
-        confirmText={deleting ? 'Removing...' : 'Remove'}
-        onConfirm={handleDelete}
+        confirmText={deleting ? 'Removing...' : 'حذف'}
+        onConfirm={handleRemove}
         variant="destructive"
       />
     </>

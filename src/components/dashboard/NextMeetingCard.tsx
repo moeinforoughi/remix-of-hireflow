@@ -28,7 +28,7 @@ interface Interview {
 
 const NextMeetingCard = () => {
   const [nextInterview, setNextInterview] = useState<Interview | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setUpload] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const NextMeetingCard = () => {
             jobs!inner(title)
           )
         `)
-        .gte('start_at', new Date().toISOString())
+        .gte('start_at', new تاریخ().toISOString())
         .order('start_at', { ascending: true })
         .limit(1)
         .maybeSingle();
@@ -62,7 +62,7 @@ const NextMeetingCard = () => {
     } catch (error) {
       console.error('Error fetching next interview:', error);
     } finally {
-      setLoading(false);
+      setUpload(false);
     }
   };
 
@@ -107,33 +107,33 @@ const NextMeetingCard = () => {
     return (
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Next Interview</CardTitle>
+          <CardTitle className="text-base">مصاحبه بعدی</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No upcoming interviews scheduled</p>
+          <p className="text-sm text-muted-foreground">مصاحبه‌ی پیش‌رویی برنامه‌ریزی نشده است</p>
         </CardContent>
       </Card>
     );
   }
 
-  const interviewDate = new Date(nextInterview.start_at);
-  const isToday = format(interviewDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+  const interviewDate = new تاریخ(nextInterview.start_at);
+  const isToday = format(interviewDate, 'yyyy-MM-dd') === format(new تاریخ(), 'yyyy-MM-dd');
   const panelCount = nextInterview.panel_user_ids?.length || 0;
 
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-base">Next Interview</CardTitle>
+        <CardTitle className="text-base">مصاحبه بعدی</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex gap-4">
-          {/* Left side - Date/Time box */}
+          {/* Left side - تاریخ/زمان box */}
           <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg px-6 py-4 min-w-[120px]">
             <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-3">
               <Video className="w-6 h-6 text-primary" />
             </div>
             <div className="text-sm font-semibold text-foreground">
-              {isToday ? 'Today' : format(interviewDate, 'MMM d')}
+              {isToday ? 'امروز' : format(interviewDate, 'MMM d')}
             </div>
             <div className="text-xs text-muted-foreground">
               {format(interviewDate, 'h:mm a')}
@@ -162,8 +162,8 @@ const NextMeetingCard = () => {
               {nextInterview.meeting_link ? (
                 <>
                   <Video className="w-4 h-4" />
-                  <span>Online Meeting</span>
-                  <Badge variant="secondary" className="ml-1">Virtual</Badge>
+                  <span>جلسه آنلاین</span>
+                  <Badge variant="secondary" className="ml-1">آنلاین</Badge>
                 </>
               ) : nextInterview.location ? (
                 <>
@@ -173,7 +173,7 @@ const NextMeetingCard = () => {
               ) : (
                 <>
                   <Calendar className="w-4 h-4" />
-                  <span>No location specified</span>
+                  <span>مکانی مشخص نشده</span>
                 </>
               )}
             </div>
@@ -182,7 +182,7 @@ const NextMeetingCard = () => {
               {panelCount > 0 && (
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Users className="w-3.5 h-3.5" />
-                  <span>{panelCount} {panelCount === 1 ? 'interviewer' : 'interviewers'}</span>
+                  <span>{panelCount} {panelCount === 1 ? 'مصاحبه‌کننده' : 'مصاحبه‌کننده'}</span>
                 </div>
               )}
               {panelCount === 0 && <div />}
@@ -194,7 +194,7 @@ const NextMeetingCard = () => {
                     className="gap-1.5"
                   >
                     <Video className="w-3.5 h-3.5" />
-                    Join Meeting
+                    ورود به جلسه
                     <ExternalLink className="w-3 h-3" />
                   </Button>
                 )}
@@ -203,7 +203,7 @@ const NextMeetingCard = () => {
                   size="sm"
                   onClick={handleViewDetails}
                 >
-                  View Details
+                  مشاهده جزئیات
                 </Button>
               </div>
             </div>
