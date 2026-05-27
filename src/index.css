@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-heading-weight: 600;
+    --font-body-weight: 400;
+
+    /* === Theme-overridable tokens (19 tokens, oklch) === */
+    --color-background: oklch(95.5% 0.01 250);
+    --color-foreground: oklch(17% 0.02 260);
+    --color-card: oklch(100% 0 0);
+    --color-card-foreground: oklch(13% 0.04 265);
+    --color-popover: oklch(100% 0 0);
+    --color-popover-foreground: oklch(13% 0.04 265);
+    --color-primary: oklch(25% 0.05 260);
+    --color-primary-foreground: oklch(96% 0.01 260);
+    --color-secondary: oklch(96% 0.01 260);
+    --color-secondary-foreground: oklch(25% 0.05 260);
+    --color-muted: oklch(96% 0.01 260);
+    --color-muted-foreground: oklch(52% 0.015 250);
+    --color-accent: oklch(96% 0.01 260);
+    --color-accent-foreground: oklch(25% 0.05 260);
+    --color-destructive: oklch(58% 0.22 25);
+    --color-destructive-foreground: oklch(96% 0.01 260);
+    --color-border: oklch(92% 0.01 250);
+    --color-input: oklch(92% 0.01 250);
+    --color-ring: oklch(13% 0.04 265);
+
+    /* Template-specific tokens (not overridden by theme) */
+    --brand-primary: 219 100% 57%;
+    --action-blue: 219 100% 57%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar — derives from theme tokens */
+    --sidebar-background: var(--color-card);
+    --sidebar-foreground: var(--color-foreground);
+    --sidebar-primary: var(--color-primary);
+    --sidebar-primary-foreground: var(--color-primary-foreground);
+    --sidebar-accent: var(--color-accent);
+    --sidebar-accent-foreground: var(--color-accent-foreground);
+    --sidebar-border: var(--color-border);
+    --sidebar-ring: var(--color-ring);
+  }
+
+  .dark {
+    --color-background: oklch(13% 0.04 265);
+    --color-foreground: oklch(96% 0.01 260);
+    --color-card: oklch(13% 0.04 265);
+    --color-card-foreground: oklch(96% 0.01 260);
+    --color-popover: oklch(13% 0.04 265);
+    --color-popover-foreground: oklch(96% 0.01 260);
+    --color-primary: oklch(96% 0.01 260);
+    --color-primary-foreground: oklch(25% 0.05 260);
+    --color-secondary: oklch(25% 0.03 257);
+    --color-secondary-foreground: oklch(96% 0.01 260);
+    --color-muted: oklch(25% 0.03 257);
+    --color-muted-foreground: oklch(68% 0.02 255);
+    --color-accent: oklch(25% 0.03 257);
+    --color-accent-foreground: oklch(96% 0.01 260);
+    --color-destructive: oklch(42% 0.15 25);
+    --color-destructive-foreground: oklch(96% 0.01 260);
+    --color-border: oklch(25% 0.03 257);
+    --color-input: oklch(25% 0.03 257);
+    --color-ring: oklch(82% 0.03 255);
+
+    --brand-primary: 219 100% 57%;
+    --action-blue: 219 100% 57%;
+
+    --sidebar-background: var(--color-card);
+    --sidebar-foreground: var(--color-foreground);
+    --sidebar-primary: var(--color-primary);
+    --sidebar-primary-foreground: var(--color-primary-foreground);
+    --sidebar-accent: var(--color-accent);
+    --sidebar-accent-foreground: var(--color-accent-foreground);
+    --sidebar-border: var(--color-border);
+    --sidebar-ring: var(--color-ring);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body, Inter), system-ui, sans-serif;
+    font-weight: var(--font-body-weight);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading, Inter), system-ui, sans-serif;
+    font-weight: var(--font-heading-weight);
+  }
+
+  a, button, input, label {
+    font-family: var(--font-heading, Inter), system-ui, sans-serif;
+  }
+}
