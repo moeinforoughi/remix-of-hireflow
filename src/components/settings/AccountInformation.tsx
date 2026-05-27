@@ -3,26 +3,26 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
-import { ویرایشAccountDialog } from './ویرایشAccountDialog';
+import { EditAccountDialog } from './EditAccountDialog';
 
 export const AccountInformation = () => {
-  const [profile, setپروفایل] = useState<any>(null);
-  const [role, setنقش] = useState<string>('');
+  const [profile, setProfile] = useState<any>(null);
+  const [role, setRole] = useState<string>('');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-  const [loading, setبارگذاری] = useState(true);
-  const [editDialogباز, setویرایشDialogباز] = useState(false);
-  const { toast } = useگیرندهast();
+  const [loading, setUpload] = useState(true);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
-    fetchپروفایل();
+    fetchProfile();
   }, []);
 
-  const fetchپروفایل = async () => {
+  const fetchProfile = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       const { data: profileData } = await supabase
         .from('profiles')
@@ -36,8 +36,8 @@ export const AccountInformation = () => {
         .eq('user_id', user.id)
         .single();
 
-      setپروفایل(profileData);
-      setنقش(roleData?.role === 'site_admin' ? 'سازمان مدیر کل' : 
+      setProfile(profileData);
+      setRole(roleData?.role === 'site_admin' ? 'سازمان مدیر کل' : 
               roleData?.role === 'job_admin' ? 'Job مدیر کل' : 'پایه User');
     } catch (error: any) {
       toast({
@@ -46,11 +46,11 @@ export const AccountInformation = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const handleTwoFactorگیرندهggle = async (enabled: boolean) => {
+  const handleTwoFactorToggle = async (enabled: boolean) => {
     setTwoFactorEnabled(enabled);
     toast({
       title: 'Two-Factor Authentication',
@@ -84,7 +84,7 @@ export const AccountInformation = () => {
             </Avatar>
             <h2 className="text-2xl">{profile?.full_name || 'User'}</h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogباز(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setEditDialogOpen(true)}>
             <Pencil className="h-4 w-4 mr-2" />
             ویرایش
           </Button>
@@ -121,16 +121,16 @@ export const AccountInformation = () => {
             <span className="text-sm text-muted-foreground">Two-Factor Authentication</span>
             <Switch
               checked={twoFactorEnabled}
-              onCheckedChange={handleTwoFactorگیرندهggle}
+              onCheckedChange={handleTwoFactorToggle}
             />
           </div>
         </div>
       </div>
 
-      <ویرایشAccountDialog 
-        open={editDialogباز}
-        onبازChange={setویرایشDialogباز}
-        onSuccess={fetchپروفایل}
+      <EditAccountDialog 
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onSuccess={fetchProfile}
       />
     </div>
   );

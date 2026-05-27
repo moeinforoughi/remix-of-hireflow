@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, دانلود } from 'lucide-react';
 import { format } from 'date-fns';
-import { فرم ارزیابیCard } from '@/components/interviews/فرم ارزیابیCard';
-import { Interviewتصمیم } from '@/components/interviews/Interviewتصمیم';
+import { ScorecardCard } from '@/components/interviews/ScorecardCard';
+import { InterviewDecision } from '@/components/interviews/InterviewDecision';
 
 interface فرم ارزیابی {
   id: string;
@@ -51,11 +51,11 @@ interface InterviewDetail {
 const InterviewDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
   const [interview, setInterview] = useState<InterviewDetail | null>(null);
-  const [scorecards, setفرم ارزیابیs] = useState<فرم ارزیابی[]>([]);
-  const [مصاحبه‌کننده, setمصاحبه‌کنندهs] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
-  const [loading, setبارگذاری] = useState(true);
+  const [scorecards, setScorecards] = useState<فرم ارزیابی[]>([]);
+  const [مصاحبه‌کننده, setinterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
+  const [loading, setUpload] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,13 +68,13 @@ const InterviewDetail = () => {
     
     if (id) {
       fetchInterview();
-      fetchفرم ارزیابیs();
+      fetchScorecards();
     }
   }, [id]);
 
-  const fetchمصاحبه‌کنندهs = async (panelUserIds: string[]) => {
+  const fetchinterviewers = async (panelUserIds: string[]) => {
     if (!panelUserIds || panelUserIds.length === 0) {
-      setمصاحبه‌کنندهs([]);
+      setinterviewers([]);
       return;
     }
 
@@ -85,7 +85,7 @@ const InterviewDetail = () => {
         .in("id", panelUserIds);
 
       if (error) throw error;
-      setمصاحبه‌کنندهs(data || []);
+      setinterviewers(data || []);
     } catch (error) {
       console.error("Error fetching مصاحبه‌کننده:", error);
     }
@@ -119,7 +119,7 @@ const InterviewDetail = () => {
 
       // Fetch مصاحبه‌کننده if panel_user_ids exists
       if (data?.panel_user_ids && data.panel_user_ids.length > 0) {
-        await fetchمصاحبه‌کنندهs(data.panel_user_ids);
+        await fetchinterviewers(data.panel_user_ids);
       }
     } catch (error: any) {
       toast({
@@ -128,11 +128,11 @@ const InterviewDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const fetchفرم ارزیابیs = async () => {
+  const fetchScorecards = async () => {
     try {
       const { data, error } = await supabase
         .from('scorecards')
@@ -150,13 +150,13 @@ const InterviewDetail = () => {
         .order('submitted_at', { ascending: false });
 
       if (error) throw error;
-      setفرم ارزیابیs(data || []);
+      setScorecards(data || []);
     } catch (error: any) {
       console.error('Error fetching scorecards:', error);
     }
   };
 
-  const handleدانلودICS = async () => {
+  const handleDownloadICS = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('generate-ics', {
         body: { interviewId: id },
@@ -176,7 +176,7 @@ const InterviewDetail = () => {
       document.body.removeChild(a);
 
       toast({
-        title: 'Calendar Event دانلودed',
+        title: 'Calendar Event Downloaded',
         description: 'ICS file has been downloaded',
       });
     } catch (error: any) {
@@ -188,18 +188,18 @@ const InterviewDetail = () => {
     }
   };
 
-  const handleوضعیتبه‌روزرسانی = async (newوضعیت: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
+  const handleStatusRefresh = async (newStatus: 'completed' | 'cancelled' | 'no_show' | 'scheduled') => {
     try {
       const { error } = await supabase
         .from('interviews')
-        .update({ status: newوضعیت })
+        .update({ status: newStatus })
         .eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'موفقیت',
-        description: `Interview marked as ${newوضعیت}`,
+        description: `Interview marked as ${newStatus}`,
       });
 
       fetchInterview();
@@ -236,10 +236,10 @@ const InterviewDetail = () => {
         .eq('id', interview?.application.id)
         .single();
 
-      const currentمرحله = stages.find(s => s.id === currentApp?.current_stage_id);
-      const nextمرحله = stages.find(s => s.order_idx === (currentمرحله?.order_idx || 0) + 1);
+      const currentStage = stages.find(s => s.id === currentApp?.current_stage_id);
+      const nextStage = stages.find(s => s.order_idx === (currentStage?.order_idx || 0) + 1);
 
-      if (!nextمرحله) {
+      if (!nextStage) {
         toast({
           title: 'Already at Final مرحله',
           description: 'This candidate is already at the final stage',
@@ -250,7 +250,7 @@ const InterviewDetail = () => {
 
       const { error } = await supabase
         .from('applications')
-        .update({ current_stage_id: nextمرحله.id })
+        .update({ current_stage_id: nextStage.id })
         .eq('id', interview?.application.id);
 
       if (error) throw error;
@@ -271,7 +271,7 @@ const InterviewDetail = () => {
     }
   };
 
-  const handleردCandidate = async (reason: string, notes: string) => {
+  const handleRejectCandidate = async (reason: string, notes: string) => {
     try {
       const { error } = await supabase
         .from('applications')
@@ -285,7 +285,7 @@ const InterviewDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Candidate ردed',
+        title: 'Candidate Rejected',
         description: 'Application marked as rejected',
       });
 
@@ -336,7 +336,7 @@ const InterviewDetail = () => {
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <Cardعنوان>Interview Details</Cardعنوان>
+            <CardTitle>Interview Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-start gap-3">
@@ -350,7 +350,7 @@ const InterviewDetail = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={handleدانلودICS}
+                onClick={handleDownloadICS}
               >
                 <دانلود className="h-4 w-4 mr-2" />
                 افزودن to Calendar
@@ -409,7 +409,7 @@ const InterviewDetail = () => {
 
         <Card>
           <CardHeader>
-            <Cardعنوان>Candidate Information</Cardعنوان>
+            <CardTitle>Candidate Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-start gap-3">
@@ -454,25 +454,25 @@ const InterviewDetail = () => {
       {interview.status === 'scheduled' && (
         <Card>
           <CardHeader>
-            <Cardعنوان>Actions</Cardعنوان>
+            <CardTitle>Actions</CardTitle>
           </CardHeader>
           <CardContent className="flex gap-4">
-            <Button onClick={() => handleوضعیتبه‌روزرسانی('completed')}>
+            <Button onClick={() => handleStatusRefresh('completed')}>
               Mark as انجام شده
             </Button>
-            <Button variant="outline" onClick={() => handleوضعیتبه‌روزرسانی('cancelled')}>
+            <Button variant="outline" onClick={() => handleStatusRefresh('cancelled')}>
               انصراف Interview
             </Button>
           </CardContent>
         </Card>
       )}
 
-      <Interviewتصمیم 
+      <InterviewDecision 
         scorecards={scorecards}
-        interviewوضعیت={interview.status}
+        interviewStatus={interview.status}
         applicationState={interview.application.state}
         onAdvance={handleAdvanceCandidate}
-        onرد={handleردCandidate}
+        onReject={handleRejectCandidate}
       />
 
       <div className="space-y-4">
@@ -489,7 +489,7 @@ const InterviewDetail = () => {
         {scorecards.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-4">
             {scorecards.map((scorecard) => (
-              <فرم ارزیابیCard key={scorecard.id} scorecard={scorecard} />
+              <ScorecardCard key={scorecard.id} scorecard={scorecard} />
             ))}
           </div>
         ) : (

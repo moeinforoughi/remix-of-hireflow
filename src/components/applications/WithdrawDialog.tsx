@@ -1,33 +1,33 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogانصراف,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogتوضیحات,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogعنوان,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-interface پس گرفتنDialogProps {
+interface WithdrawDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
-  onتأیید: () => void;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
 }
 
-export const پس گرفتنDialog = ({ open, onبازChange, onتأیید }: پس گرفتنDialogProps) => {
+export const WithdrawDialog = ({ open, onOpenChange, onConfirm }: WithdrawDialogProps) => {
   return (
-    <AlertDialog open={open} onبازChange={onبازChange}>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogعنوان>پس گرفتن Application</AlertDialogعنوان>
-          <AlertDialogتوضیحات>
+          <AlertDialogTitle>پس گرفتن Application</AlertDialogTitle>
+          <AlertDialogDescription>
             This will mark the application as withdrawn by the candidate. This action can be reversed later if needed.
-          </AlertDialogتوضیحات>
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogانصراف>انصراف</AlertDialogانصراف>
-          <AlertDialogAction onClick={onتأیید}>
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>
             پس گرفتن Application
           </AlertDialogAction>
         </AlertDialogFooter>

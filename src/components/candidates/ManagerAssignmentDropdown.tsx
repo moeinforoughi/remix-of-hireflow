@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
   انتخاب,
-  انتخابContent,
-  انتخابItem,
-  انتخابTrigger,
-  انتخابValue,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import { User } from 'lucide-react';
@@ -20,24 +20,24 @@ interface ManagerAssignmentDropdownProps {
   applicationId: string;
   currentManagerId: string | null;
   currentManagerName: string | null;
-  onبه‌روزرسانی?: () => void;
+  onRefresh?: () => void;
 }
 
 export const ManagerAssignmentDropdown = ({
   applicationId,
   currentManagerId,
   currentManagerName,
-  onبه‌روزرسانی,
+  onRefresh,
 }: ManagerAssignmentDropdownProps) => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [loading, setبارگذاری] = useState(false);
-  const [isباز, setIsباز] = useState(false);
+  const [loading, setUpload] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (isباز) {
+    if (isOpen) {
       fetchTeamMembers();
     }
-  }, [isباز]);
+  }, [isOpen]);
 
   const fetchTeamMembers = async () => {
     try {
@@ -69,7 +69,7 @@ export const ManagerAssignmentDropdown = ({
   };
 
   const handleAssign = async (userId: string) => {
-    setبارگذاری(true);
+    setUpload(true);
     try {
       const { error } = await supabase
         .from('applications')
@@ -79,13 +79,13 @@ export const ManagerAssignmentDropdown = ({
       if (error) throw error;
 
       toast({
-        title: 'Manager به‌روزرسانیd',
+        title: 'Manager Refreshd',
         description: userId === 'unassign' 
           ? 'Manager has been unassigned' 
           : 'Manager has been assigned successfully',
       });
 
-      onبه‌روزرسانی?.();
+      onRefresh?.();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -93,7 +93,7 @@ export const ManagerAssignmentDropdown = ({
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -101,32 +101,32 @@ export const ManagerAssignmentDropdown = ({
     <انتخاب
       value={currentManagerId || ''}
       onValueChange={handleAssign}
-      onبازChange={setIsباز}
+      onOpenChange={setIsOpen}
       disabled={loading}
     >
-      <انتخابTrigger 
+      <SelectTrigger 
         className="w-[160px] h-8 text-sm border-none bg-transparent hover:bg-accent/50 focus:ring-0"
         onClick={(e) => e.stopPropagation()}
       >
-        <انتخابValue>
+        <SelectValue>
           <div className="flex items-center gap-2 text-left">
             <User className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             <span className={`truncate ${currentManagerName ? 'font-medium' : 'text-muted-foreground'}`}>
               {currentManagerName || 'Assign...'}
             </span>
           </div>
-        </انتخابValue>
-      </انتخابTrigger>
-      <انتخابContent onClick={(e) => e.stopPropagation()}>
-        <انتخابItem value="unassign">
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent onClick={(e) => e.stopPropagation()}>
+        <SelectItem value="unassign">
           <span className="text-muted-foreground">Unassign</span>
-        </انتخابItem>
+        </SelectItem>
         {teamMembers.map((member) => (
-          <انتخابItem key={member.id} value={member.id}>
+          <SelectItem key={member.id} value={member.id}>
             {member.full_name}
-          </انتخابItem>
+          </SelectItem>
         ))}
-      </انتخابContent>
+      </SelectContent>
     </انتخاب>
   );
 };

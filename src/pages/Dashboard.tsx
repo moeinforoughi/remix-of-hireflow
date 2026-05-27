@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { پایهDashboard } from "@/components/dashboard/پایهDashboard";
-import { Jobمدیر کلDashboard } from "@/components/dashboard/Jobمدیر کلDashboard";
-import { Siteمدیر کلDashboard } from "@/components/dashboard/Siteمدیر کلDashboard";
+import { BasicDashboard } from "@/components/dashboard/BasicDashboard";
+import { JobAdminDashboard } from "@/components/dashboard/JobAdminDashboard";
+import { SiteAdminDashboard } from "@/components/dashboard/SiteAdminDashboard";
 
 const Dashboard = () => {
-  const [userنقش, setUserنقش] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserنقش = async () => {
+    const fetchUserRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -21,20 +21,20 @@ const Dashboard = () => {
       if (rolesData && rolesData.length > 0) {
         // Prioritize site_admin > job_admin > basic
         if (rolesData.some(r => r.role === 'site_admin')) {
-          setUserنقش('site_admin');
+          setUserRole('site_admin');
         } else if (rolesData.some(r => r.role === 'job_admin')) {
-          setUserنقش('job_admin');
+          setUserRole('job_admin');
         } else {
-          setUserنقش('basic');
+          setUserRole('basic');
         }
       } else {
-        setUserنقش('basic');
+        setUserRole('basic');
       }
       
       setLoading(false);
     };
 
-    fetchUserنقش();
+    fetchUserRole();
   }, []);
 
   if (loading) {
@@ -46,15 +46,15 @@ const Dashboard = () => {
   }
 
   // Render different dashboard based on role
-  if (userنقش === 'site_admin') {
-    return <Siteمدیر کلDashboard />;
+  if (userRole === 'site_admin') {
+    return <SiteAdminDashboard />;
   }
 
-  if (userنقش === 'job_admin') {
-    return <Jobمدیر کلDashboard />;
+  if (userRole === 'job_admin') {
+    return <JobAdminDashboard />;
   }
 
-  return <پایهDashboard />;
+  return <BasicDashboard />;
 };
 
 export default Dashboard;

@@ -1,39 +1,39 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Trash2, Loader2 } from 'lucide-react';
-import { تأییدDialog } from '@/components/shared/تأییدDialog';
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 
-interface ویرایشUserDialogProps {
+interface EditUserDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   user: {
     id: string;
     full_name: string;
     email: string;
     department: string;
   } | null;
-  onبه‌روزرسانیSuccess: () => void;
+  onRefreshSuccess: () => void;
 }
 
-export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌روزرسانیSuccess }: ویرایشUserDialogProps) => {
-  const [department, setبخش] = useState('');
-  const [selectedJobs, setانتخابedJobs] = useState<string[]>([]);
+export const EditUserDialog = ({ open, onOpenChange, user, onRefreshSuccess }: EditUserDialogProps) => {
+  const [department, setDepartment] = useState('');
+  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [loading, setبارگذاری] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [showحذفتأیید, setنمایشحذفتأیید] = useState(false);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (open && user) {
-      setبخش(user.department || '');
+      setDepartment(user.department || '');
       fetchJobs();
       fetchUserJobs();
       fetchCurrentUser();
@@ -68,14 +68,14 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
       .eq('user_id', user.id);
 
     if (!error && data) {
-      setانتخابedJobs(data.map(acl => acl.job_id));
+      setSelectedJobs(data.map(acl => acl.job_id));
     }
   };
 
-  const handleبه‌روزرسانی = async () => {
+  const handleRefresh = async () => {
     if (!user) return;
 
-    setبارگذاری(true);
+    setUpload(true);
     try {
       // به‌روزرسانی department
       const { error: profileError } = await supabase
@@ -116,8 +116,8 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
         description: 'User updated successfully',
       });
 
-      onبازChange(false);
-      onبه‌روزرسانیSuccess();
+      onOpenChange(false);
+      onRefreshSuccess();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -125,11 +125,11 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const handleحذف = async () => {
+  const handleRemove = async () => {
     if (!user) return;
 
     setDeleting(true);
@@ -146,9 +146,9 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
         description: 'Team member removed successfully',
       });
 
-      setنمایشحذفتأیید(false);
-      onبازChange(false);
-      onبه‌روزرسانیSuccess();
+      setShowRemoveConfirm(false);
+      onOpenChange(false);
+      onRefreshSuccess();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -161,21 +161,21 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
   };
 
   const toggleJob = (jobId: string) => {
-    setانتخابedJobs(prev =>
+    setSelectedJobs(prev =>
       prev.includes(jobId)
         ? prev.filter(id => id !== jobId)
         : [...prev, jobId]
     );
   };
 
-  const canحذف = user && user.id !== currentUserId && user.email !== 'demo@hireflow.app';
+  const canRemove = user && user.id !== currentUserId && user.email !== 'demo@hireflow.app';
 
   return (
     <>
-      <Dialog open={open} onبازChange={onبازChange}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-hidden flex flex-col gap-0 p-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b">
-            <Dialogعنوان className="text-xl">ویرایش Team Member</Dialogعنوان>
+            <DialogTitle className="text-xl">ویرایش Team Member</DialogTitle>
           </DialogHeader>
 
           <div className="overflow-y-auto flex-1 px-6 py-5">
@@ -206,20 +206,20 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
                   <Label htmlFor="department" className="text-sm font-medium">
                     بخش
                   </Label>
-                  <انتخاب value={department} onValueChange={setبخش}>
-                    <انتخابTrigger>
-                      <انتخابValue placeholder="انتخاب بخش" />
-                    </انتخابTrigger>
-                    <انتخابContent className="bg-background z-50">
-                      <انتخابItem value="Engineering">Engineering</انتخابItem>
-                      <انتخابItem value="Design">Design</انتخابItem>
-                      <انتخابItem value="Product">Product</انتخابItem>
-                      <انتخابItem value="Marketing">Marketing</انتخابItem>
-                      <انتخابItem value="Sales">Sales</انتخابItem>
-                      <انتخابItem value="HR">HR</انتخابItem>
-                      <انتخابItem value="Finance">Finance</انتخابItem>
-                      <انتخابItem value="Operations">Operations</انتخابItem>
-                    </انتخابContent>
+                  <انتخاب value={department} onValueChange={setDepartment}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="انتخاب بخش" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-50">
+                      <SelectItem value="Engineering">Engineering</SelectItem>
+                      <SelectItem value="Design">Design</SelectItem>
+                      <SelectItem value="Product">Product</SelectItem>
+                      <SelectItem value="Marketing">Marketing</SelectItem>
+                      <SelectItem value="Sales">Sales</SelectItem>
+                      <SelectItem value="HR">HR</SelectItem>
+                      <SelectItem value="Finance">Finance</SelectItem>
+                      <SelectItem value="Operations">Operations</SelectItem>
+                    </SelectContent>
                   </انتخاب>
                 </div>
               </div>
@@ -264,7 +264,7 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
               </div>
 
               {/* Danger Zone */}
-              {canحذف && (
+              {canRemove && (
                 <div className="space-y-3 pt-4 border-t">
                   <h3 className="text-sm text-destructive uppercase tracking-wide">
                     Danger Zone
@@ -272,7 +272,7 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
                   <Button
                     variant="outline"
                     className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                    onClick={() => setنمایشحذفتأیید(true)}
+                    onClick={() => setShowRemoveConfirm(true)}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     حذف from Team
@@ -284,23 +284,23 @@ export const ویرایشUserDialog = ({ open, onبازChange, user, onبه‌ر
 
           {/* Footer */}
           <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
-            <Button variant="outline" onClick={() => onبازChange(false)} className="flex-1">
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
               انصراف
             </Button>
-            <Button onClick={handleبه‌روزرسانی} disabled={loading} className="flex-1">
+            <Button onClick={handleRefresh} disabled={loading} className="flex-1">
               {loading ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی User'}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      <تأییدDialog
-        open={showحذفتأیید}
-        onبازChange={setنمایشحذفتأیید}
+      <ConfirmDialog
+        open={showRemoveConfirm}
+        onOpenChange={setShowRemoveConfirm}
         title="حذف Team Member"
         description={`Are you sure you want to remove ${user?.full_name} from your team? This action cannot be undone and will delete their account.`}
         confirmText={deleting ? 'Removing...' : 'حذف'}
-        onتأیید={handleحذف}
+        onConfirm={handleRemove}
         variant="destructive"
       />
     </>

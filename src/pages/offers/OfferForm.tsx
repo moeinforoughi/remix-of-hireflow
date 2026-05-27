@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useجستجوParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, Formپیام, Formتوضیحات } from '@/components/ui/form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { sendOfferخیرtification } from '@/lib/email-notifications';
-import { notifyOfferایجادd } from '@/lib/notifications';
+import { sendOfferNotification } from '@/lib/email-notifications';
+import { notifyOfferCreated } from '@/lib/notifications';
 
 const formSchema = z.object({
   application_id: z.string().min(1, 'Please select an application'),
@@ -34,11 +34,11 @@ type FormValues = z.infer<typeof formSchema>;
 
 const OfferForm = () => {
   const navigate = useNavigate();
-  const [searchParams] = useجستجوParams();
-  const applicationIdفرستندهUrl = searchParams.get('application_id');
-  const { toast } = useگیرندهast();
-  const [loading, setبارگذاری] = useState(false);
-  const [applications, setدرخواست‌ها] = useState<any[]>([]);
+  const [searchParams] = useSearchParams();
+  const applicationIdFromUrl = searchParams.get('application_id');
+  const { toast } = useToast();
+  const [loading, setUpload] = useState(false);
+  const [applications, setApplications] = useState<any[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -46,22 +46,22 @@ const OfferForm = () => {
       currency: 'USD',
       base_amount: 0,
       variable_amount: 0,
-      application_id: applicationIdفرستندهUrl || '',
+      application_id: applicationIdFromUrl || '',
     },
   });
 
   useEffect(() => {
-    fetchدرخواست‌ها();
+    fetchApplications();
   }, []);
 
   // Set form value when URL param exists and applications are loaded
   useEffect(() => {
-    if (applicationIdفرستندهUrl && applications.length > 0) {
-      form.setValue('application_id', applicationIdفرستندهUrl);
+    if (applicationIdFromUrl && applications.length > 0) {
+      form.setValue('application_id', applicationIdFromUrl);
     }
-  }, [applicationIdفرستندهUrl, applications]);
+  }, [applicationIdFromUrl, applications]);
 
-  const fetchدرخواست‌ها = async () => {
+  const fetchApplications = async () => {
     try {
       // Fetch all active applications
       const { data: apps, error: appsError } = await supabase
@@ -86,12 +86,12 @@ const OfferForm = () => {
       if (offersError) throw offersError;
 
       // ایجاد a Set of application IDs that already have active offers
-      const appsWithفعالOffers = new Set(activeOffers?.map(o => o.application_id) || []);
+      const appsWithActiveOffers = new Set(activeOffers?.map(o => o.application_id) || []);
 
       // فیلتر out applications that already have an active offer
-      const availableدرخواست‌ها = (apps || []).filter(app => !appsWithفعالOffers.has(app.id));
+      const availableApplications = (apps || []).filter(app => !appsWithActiveOffers.has(app.id));
 
-      setدرخواست‌ها(availableدرخواست‌ها);
+      setApplications(availableApplications);
     } catch (error: any) {
       toast({
         title: 'Error loading applications',
@@ -101,8 +101,8 @@ const OfferForm = () => {
     }
   };
 
-  const onثبت = async (values: FormValues) => {
-    setبارگذاری(true);
+  const onSubmit = async (values: FormValues) => {
+    setUpload(true);
     try {
       const { data: offer, error } = await supabase.from('offers').insert({
         application_id: values.application_id,
@@ -130,7 +130,7 @@ const OfferForm = () => {
       try {
         const selectedApp = applications.find(a => a.id === values.application_id);
         if (selectedApp) {
-          await notifyOfferایجادd(selectedApp.id, offer.id, selectedApp.candidate.full_name);
+          await notifyOfferCreated(selectedApp.id, offer.id, selectedApp.candidate.full_name);
         }
       } catch (notifError) {
         console.error('Failed to create notifications:', notifError);
@@ -149,7 +149,7 @@ const OfferForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -162,11 +162,11 @@ const OfferForm = () => {
 
       <Card>
         <CardHeader>
-          <Cardعنوان>جزئیات پیشنهاد</Cardعنوان>
+          <CardTitle>جزئیات پیشنهاد</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="application_id"
@@ -175,19 +175,19 @@ const OfferForm = () => {
                     <FormLabel>Candidate Application</FormLabel>
                     <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <انتخابTrigger>
-                          <انتخابValue placeholder="انتخاب an application" />
-                        </انتخابTrigger>
+                        <SelectTrigger>
+                          <SelectValue placeholder="انتخاب an application" />
+                        </SelectTrigger>
                       </FormControl>
-                      <انتخابContent>
+                      <SelectContent>
                         {applications.map((app) => (
-                          <انتخابItem key={app.id} value={app.id}>
+                          <SelectItem key={app.id} value={app.id}>
                             {app.candidate.full_name} - {app.job.title}
-                          </انتخابItem>
+                          </SelectItem>
                         ))}
-                      </انتخابContent>
+                      </SelectContent>
                     </انتخاب>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -202,8 +202,8 @@ const OfferForm = () => {
                       <FormControl>
                         <Input type="number" placeholder="120000" {...field} />
                       </FormControl>
-                      <Formتوضیحات>Annual base salary</Formتوضیحات>
-                      <Formپیام />
+                      <FormDescription>Annual base salary</FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -217,8 +217,8 @@ const OfferForm = () => {
                       <FormControl>
                         <Input type="number" placeholder="20000" {...field} />
                       </FormControl>
-                      <Formتوضیحات>Annual bonus/commission</Formتوضیحات>
-                      <Formپیام />
+                      <FormDescription>Annual bonus/commission</FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -233,18 +233,18 @@ const OfferForm = () => {
                       <FormLabel>واحد پول</FormLabel>
                       <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <انتخابTrigger>
-                            <انتخابValue />
-                          </انتخابTrigger>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
                         </FormControl>
-                        <انتخابContent>
-                          <انتخابItem value="USD">USD</انتخابItem>
-                          <انتخابItem value="EUR">EUR</انتخابItem>
-                          <انتخابItem value="GBP">GBP</انتخابItem>
-                          <انتخابItem value="CAD">CAD</انتخابItem>
-                        </انتخابContent>
+                        <SelectContent>
+                          <SelectItem value="USD">USD</SelectItem>
+                          <SelectItem value="EUR">EUR</SelectItem>
+                          <SelectItem value="GBP">GBP</SelectItem>
+                          <SelectItem value="CAD">CAD</SelectItem>
+                        </SelectContent>
                       </انتخاب>
-                      <Formپیام />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -258,7 +258,7 @@ const OfferForm = () => {
                       <FormControl>
                         <Input placeholder="e.g., 0.5% stock options" {...field} />
                       </FormControl>
-                      <Formپیام />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -293,17 +293,17 @@ const OfferForm = () => {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onانتخاب={field.onChange}
+                          onSelect={field.onChange}
                           disabled={(date) => date < new تاریخ()}
                           initialFocus
                           className={cn('p-3 pointer-events-auto')}
                         />
                       </PopoverContent>
                     </Popover>
-                    <Formتوضیحات>
+                    <FormDescription>
                       When this offer expires (typically 7-14 days)
-                    </Formتوضیحات>
-                    <Formپیام />
+                    </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -321,10 +321,10 @@ const OfferForm = () => {
                         {...field}
                       />
                     </FormControl>
-                    <Formتوضیحات>
+                    <FormDescription>
                       List benefits included with this offer
-                    </Formتوضیحات>
-                    <Formپیام />
+                    </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -334,7 +334,7 @@ const OfferForm = () => {
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Internal خیرtes (اختیاری)</FormLabel>
+                    <FormLabel>Internal Notes (اختیاری)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Internal notes about this offer..."
@@ -342,10 +342,10 @@ const OfferForm = () => {
                         {...field}
                       />
                     </FormControl>
-                    <Formتوضیحات>
+                    <FormDescription>
                       These notes are internal and won't be shared with the candidate
-                    </Formتوضیحات>
-                    <Formپیام />
+                    </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

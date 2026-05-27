@@ -4,19 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useگیرندهast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, ذخیره, Plus, X } from "lucide-react";
 
 export default function TemplateForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
-  const [loading, setبارگذاری] = useState(false);
+  const { toast } = useToast();
+  const [loading, setUpload] = useState(false);
   const [name, setName] = useState("");
-  const [subject, setموضوع] = useState("");
+  const [subject, setSubject] = useState("");
   const [bodyHtml, setBodyHtml] = useState("");
   const [variables, setVariables] = useState<string[]>([]);
   const [newVariable, setNewVariable] = useState("");
@@ -38,7 +38,7 @@ export default function TemplateForm() {
       if (error) throw error;
 
       setName(data.name);
-      setموضوع(data.subject);
+      setSubject(data.subject);
       setBodyHtml(data.body_html);
       setVariables(data.variables || []);
     } catch (error: any) {
@@ -50,18 +50,18 @@ export default function TemplateForm() {
     }
   };
 
-  const handleافزودنVariable = () => {
+  const handleAddVariable = () => {
     if (newVariable && !variables.includes(newVariable)) {
       setVariables([...variables, newVariable]);
       setNewVariable("");
     }
   };
 
-  const handleحذفVariable = (variable: string) => {
+  const handleRemoveVariable = (variable: string) => {
     setVariables(variables.filter((v) => v !== variable));
   };
 
-  const handleثبت = async () => {
+  const handleSubmit = async () => {
     if (!name || !subject || !bodyHtml) {
       toast({
         title: "Missing fields",
@@ -71,11 +71,11 @@ export default function TemplateForm() {
       return;
     }
 
-    setبارگذاری(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("خیرt authenticated");
+      if (!user) throw new Error("Not authenticated");
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -126,7 +126,7 @@ export default function TemplateForm() {
         variant: "destructive",
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -148,7 +148,7 @@ export default function TemplateForm() {
 
       <Card>
         <CardHeader>
-          <Cardعنوان>Template Details</Cardعنوان>
+          <CardTitle>Template Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -166,7 +166,7 @@ export default function TemplateForm() {
             <Input
               id="subject"
               value={subject}
-              onChange={(e) => setموضوع(e.target.value)}
+              onChange={(e) => setSubject(e.target.value)}
               placeholder="Interview Invitation for {{position}}"
             />
           </div>
@@ -195,9 +195,9 @@ export default function TemplateForm() {
                 value={newVariable}
                 onChange={(e) => setNewVariable(e.target.value)}
                 placeholder="e.g., candidate_name, job_title"
-                onKeyPress={(e) => e.key === "Enter" && handleافزودنVariable()}
+                onKeyPress={(e) => e.key === "Enter" && handleAddVariable()}
               />
-              <Button onClick={handleافزودنVariable} size="icon" type="button">
+              <Button onClick={handleAddVariable} size="icon" type="button">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -208,7 +208,7 @@ export default function TemplateForm() {
                     {"{{"}{variable}{"}}"}
                     <button
                       type="button"
-                      onClick={() => handleحذفVariable(variable)}
+                      onClick={() => handleRemoveVariable(variable)}
                       className="ml-2 hover:text-destructive"
                     >
                       <X className="h-3 w-3" />
@@ -223,7 +223,7 @@ export default function TemplateForm() {
             )}
           </div>
 
-          <Button onClick={handleثبت} disabled={loading} className="w-full">
+          <Button onClick={handleSubmit} disabled={loading} className="w-full">
             <ذخیره className="mr-2 h-4 w-4" />
             {loading ? "در حال ذخیره..." : id ? "به‌روزرسانی Template" : "ایجاد Template"}
           </Button>

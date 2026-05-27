@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { UserPlus, Eye, EyeOff } from 'lucide-react';
-import { notifyUserایجادd } from '@/lib/notifications';
+import { notifyUserCreated } from '@/lib/notifications';
 
 interface InviteUserDialogProps {
   onInviteSuccess: () => void;
@@ -17,19 +17,19 @@ interface InviteUserDialogProps {
 type Mode = 'create' | 'transfer';
 
 export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => {
-  const [open, setباز] = useState(false);
+  const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('create');
-  const [email, setایمیل] = useState('');
+  const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
-  const [password, setرمز عبور] = useState('');
-  const [confirmرمز عبور, setتأییدرمز عبور] = useState('');
-  const [showرمز عبور, setنمایشرمز عبور] = useState(false);
-  const [department, setبخش] = useState('');
-  const [role, setنقش] = useState<'basic' | 'job_admin' | 'site_admin'>('basic');
-  const [selectedJobs, setانتخابedJobs] = useState<string[]>([]);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [department, setDepartment] = useState('');
+  const [role, setRole] = useState<'basic' | 'job_admin' | 'site_admin'>('basic');
+  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [loading, setبارگذاری] = useState(false);
-  const { toast } = useگیرندهast();
+  const [loading, setUpload] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (open) {
@@ -38,13 +38,13 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
   }, [open]);
 
   const resetForm = () => {
-    setایمیل('');
+    setEmail('');
     setFullName('');
-    setرمز عبور('');
-    setتأییدرمز عبور('');
-    setبخش('');
-    setنقش('basic');
-    setانتخابedJobs([]);
+    setPassword('');
+    setConfirmPassword('');
+    setDepartment('');
+    setRole('basic');
+    setSelectedJobs([]);
     setMode('create');
   };
 
@@ -73,7 +73,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
   };
 
   const toggleJob = (jobId: string) => {
-    setانتخابedJobs(prev =>
+    setSelectedJobs(prev =>
       prev.includes(jobId)
         ? prev.filter(id => id !== jobId)
         : [...prev, jobId]
@@ -99,16 +99,16 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       return;
     }
 
-    if (password !== confirmرمز عبور) {
+    if (password !== confirmPassword) {
       toast({
         title: 'خطا',
-        description: 'رمز عبورs do not match',
+        description: 'Passwords do not match',
         variant: 'destructive',
       });
       return;
     }
 
-    setبارگذاری(true);
+    setUpload(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -126,19 +126,19 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         },
       });
 
-      let errorپیام: string | undefined;
+      let errorMessage: string | undefined;
       
       if (data && typeof data === 'object' && 'error' in data && data.error) {
-        errorپیام = data.error as string;
+        errorMessage = data.error as string;
       } else if (error && typeof error === 'object') {
         const errorObj = error as any;
         if (errorObj.message) {
-          errorپیام = errorObj.message;
+          errorMessage = errorObj.message;
         }
       }
       
-      if (errorپیام || !data?.success) {
-        throw new Error(errorپیام || 'Failed to invite user');
+      if (errorMessage || !data?.success) {
+        throw new Error(errorMessage || 'Failed to invite user');
       }
 
       toast({
@@ -155,11 +155,11 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
           .single();
 
         if (profile) {
-          notifyUserایجادd(data.userId, fullName, profile.org_id, session.user.id);
+          notifyUserCreated(data.userId, fullName, profile.org_id, session.user.id);
         }
       }
 
-      setباز(false);
+      setOpen(false);
       resetForm();
       onInviteSuccess();
     } catch (error: any) {
@@ -169,7 +169,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -183,7 +183,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       return;
     }
 
-    setبارگذاری(true);
+    setUpload(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -199,19 +199,19 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         },
       });
 
-      let errorپیام: string | undefined;
+      let errorMessage: string | undefined;
       
       if (data && typeof data === 'object' && 'error' in data && data.error) {
-        errorپیام = data.error as string;
+        errorMessage = data.error as string;
       } else if (error && typeof error === 'object') {
         const errorObj = error as any;
         if (errorObj.message) {
-          errorپیام = errorObj.message;
+          errorMessage = errorObj.message;
         }
       }
       
-      if (errorپیام || !data?.success) {
-        throw new Error(errorپیام || 'Failed to transfer user');
+      if (errorMessage || !data?.success) {
+        throw new Error(errorMessage || 'Failed to transfer user');
       }
 
       toast({
@@ -219,7 +219,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         description: `User "${data.user?.full_name || email}" has been transferred to your organization.`,
       });
 
-      setباز(false);
+      setOpen(false);
       resetForm();
       onInviteSuccess();
     } catch (error: any) {
@@ -229,14 +229,14 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={(isباز) => {
-      setباز(isباز);
-      if (!isباز) resetForm();
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      setOpen(isOpen);
+      if (!isOpen) resetForm();
     }}>
       <DialogTrigger asChild>
         <Button>
@@ -246,9 +246,9 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       </DialogTrigger>
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-hidden flex flex-col gap-0 p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
-          <Dialogعنوان className="text-xl">
+          <DialogTitle className="text-xl">
             {mode === 'create' ? 'ایجاد New User' : 'افزودن Existing User'}
-          </Dialogعنوان>
+          </DialogTitle>
           <p className="text-sm text-muted-foreground mt-1">
             {mode === 'create' 
               ? 'ایجاد a new account for a team member'
@@ -258,7 +258,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         </DialogHeader>
 
         <div className="overflow-y-auto flex-1 px-6 py-5">
-          {/* Mode گیرندهggle */}
+          {/* Mode Toggle */}
           <div className="flex rounded-lg border p-1 bg-muted/30 mb-6">
             <button
               type="button"
@@ -315,7 +315,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setایمیل(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="john@company.com"
                 />
               </div>
@@ -330,9 +330,9 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                     <div className="relative">
                       <Input
                         id="password"
-                        type={showرمز عبور ? 'text' : 'password'}
+                        type={showPassword ? 'text' : 'password'}
                         value={password}
-                        onChange={(e) => setرمز عبور(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
                         className="pr-10"
                       />
@@ -341,9 +341,9 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                         variant="ghost"
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setنمایشرمز عبور(!showرمز عبور)}
+                        onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showرمز عبور ? (
+                        {showPassword ? (
                           <EyeOff className="h-4 w-4 text-muted-foreground" />
                         ) : (
                           <Eye className="h-4 w-4 text-muted-foreground" />
@@ -352,15 +352,15 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="confirmرمز عبور" className="text-sm font-medium">
+                    <Label htmlFor="confirmPassword" className="text-sm font-medium">
                       تأیید <span className="text-destructive">*</span>
                     </Label>
                     <div className="relative">
                       <Input
-                        id="confirmرمز عبور"
-                        type={showرمز عبور ? 'text' : 'password'}
-                        value={confirmرمز عبور}
-                        onChange={(e) => setتأییدرمز عبور(e.target.value)}
+                        id="confirmPassword"
+                        type={showPassword ? 'text' : 'password'}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="••••••••"
                         className="pr-10"
                       />
@@ -369,9 +369,9 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                         variant="ghost"
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setنمایشرمز عبور(!showرمز عبور)}
+                        onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showرمز عبور ? (
+                        {showPassword ? (
                           <EyeOff className="h-4 w-4 text-muted-foreground" />
                         ) : (
                           <Eye className="h-4 w-4 text-muted-foreground" />
@@ -395,20 +395,20 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   <Label htmlFor="department" className="text-sm font-medium">
                     بخش
                   </Label>
-                  <انتخاب value={department} onValueChange={setبخش}>
-                    <انتخابTrigger>
-                      <انتخابValue placeholder="انتخاب..." />
-                    </انتخابTrigger>
-                    <انتخابContent className="bg-background z-50">
-                      <انتخابItem value="Engineering">Engineering</انتخابItem>
-                      <انتخابItem value="Design">Design</انتخابItem>
-                      <انتخابItem value="Product">Product</انتخابItem>
-                      <انتخابItem value="Marketing">Marketing</انتخابItem>
-                      <انتخابItem value="Sales">Sales</انتخابItem>
-                      <انتخابItem value="HR">HR</انتخابItem>
-                      <انتخابItem value="Finance">Finance</انتخابItem>
-                      <انتخابItem value="Operations">Operations</انتخابItem>
-                    </انتخابContent>
+                  <انتخاب value={department} onValueChange={setDepartment}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="انتخاب..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-50">
+                      <SelectItem value="Engineering">Engineering</SelectItem>
+                      <SelectItem value="Design">Design</SelectItem>
+                      <SelectItem value="Product">Product</SelectItem>
+                      <SelectItem value="Marketing">Marketing</SelectItem>
+                      <SelectItem value="Sales">Sales</SelectItem>
+                      <SelectItem value="HR">HR</SelectItem>
+                      <SelectItem value="Finance">Finance</SelectItem>
+                      <SelectItem value="Operations">Operations</SelectItem>
+                    </SelectContent>
                   </انتخاب>
                 </div>
 
@@ -417,15 +417,15 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   <Label htmlFor="role" className="text-sm font-medium">
                     Permission Level
                   </Label>
-                  <انتخاب value={role} onValueChange={(value: any) => setنقش(value)}>
-                    <انتخابTrigger>
-                      <انتخابValue placeholder="انتخاب..." />
-                    </انتخابTrigger>
-                    <انتخابContent className="bg-background z-50">
-                      <انتخابItem value="basic">پایه</انتخابItem>
-                      <انتخابItem value="job_admin">Job مدیر کل</انتخابItem>
-                      <انتخابItem value="site_admin">Site مدیر کل</انتخابItem>
-                    </انتخابContent>
+                  <انتخاب value={role} onValueChange={(value: any) => setRole(value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="انتخاب..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-50">
+                      <SelectItem value="basic">پایه</SelectItem>
+                      <SelectItem value="job_admin">Job مدیر کل</SelectItem>
+                      <SelectItem value="site_admin">Site مدیر کل</SelectItem>
+                    </SelectContent>
                   </انتخاب>
                 </div>
               </div>
@@ -474,7 +474,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
 
         {/* Footer with buttons */}
         <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
-          <Button variant="outline" onClick={() => setباز(false)} className="flex-1">
+          <Button variant="outline" onClick={() => setOpen(false)} className="flex-1">
             انصراف
           </Button>
           <Button 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const داشبوردHeader = () => {
+const DashboardHeader = () => {
   const handleNewJobListing = () => {
     // Handle new job listing creation
     console.log('Creating new job listing...');
@@ -28,4 +28,4 @@ const داشبوردHeader = () => {
   );
 };
 
-export default داشبوردHeader;
+export default DashboardHeader;

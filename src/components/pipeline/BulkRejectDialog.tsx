@@ -1,28 +1,28 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogانصراف,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogتوضیحات,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogعنوان,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import {
   انتخاب,
-  انتخابContent,
-  انتخابItem,
-  انتخابTrigger,
-  انتخابValue,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 
-interface BulkردDialogProps {
+interface BulkRejectDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
-  onتأیید: (reason: string, note: string) => void;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (reason: string, note: string) => void;
   count: number;
 }
 
@@ -35,49 +35,49 @@ const REJECTION_REASONS = [
   'Other',
 ];
 
-export const BulkردDialog = ({ open, onبازChange, onتأیید, count }: BulkردDialogProps) => {
+export const BulkRejectDialog = ({ open, onOpenChange, onConfirm, count }: BulkRejectDialogProps) => {
   const [reason, setReason] = useState('');
-  const [note, setخیرte] = useState('');
+  const [note, setNote] = useState('');
 
-  const handleتأیید = () => {
-    onتأیید(reason, note);
+  const handleConfirm = () => {
+    onConfirm(reason, note);
     setReason('');
-    setخیرte('');
+    setNote('');
   };
 
   return (
-    <AlertDialog open={open} onبازChange={onبازChange}>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogعنوان>رد {count} Application{count > 1 ? 's' : ''}</AlertDialogعنوان>
-          <AlertDialogتوضیحات>
+          <AlertDialogTitle>رد {count} Application{count > 1 ? 's' : ''}</AlertDialogTitle>
+          <AlertDialogDescription>
             This will reject {count} selected application{count > 1 ? 's' : ''}. This action can be reversed later if needed.
-          </AlertDialogتوضیحات>
+          </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="reason">ردion Reason *</Label>
+            <Label htmlFor="reason">Rejection Reason *</Label>
             <انتخاب value={reason} onValueChange={setReason}>
-              <انتخابTrigger id="reason">
-                <انتخابValue placeholder="انتخاب a reason" />
-              </انتخابTrigger>
-              <انتخابContent>
+              <SelectTrigger id="reason">
+                <SelectValue placeholder="انتخاب a reason" />
+              </SelectTrigger>
+              <SelectContent>
                 {REJECTION_REASONS.map((r) => (
-                  <انتخابItem key={r} value={r}>
+                  <SelectItem key={r} value={r}>
                     {r}
-                  </انتخابItem>
+                  </SelectItem>
                 ))}
-              </انتخابContent>
+              </SelectContent>
             </انتخاب>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="note">افزودنitional خیرtes (optional)</Label>
+            <Label htmlFor="note">Additional Notes (optional)</Label>
             <Textarea
               id="note"
               value={note}
-              onChange={(e) => setخیرte(e.target.value)}
+              onChange={(e) => setNote(e.target.value)}
               placeholder="افزودن any additional context..."
               rows={3}
             />
@@ -85,8 +85,8 @@ export const BulkردDialog = ({ open, onبازChange, onتأیید, count }: Bu
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogانصراف>انصراف</AlertDialogانصراف>
-          <AlertDialogAction onClick={handleتأیید} disabled={!reason}>
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm} disabled={!reason}>
             رد {count} Application{count > 1 ? 's' : ''}
           </AlertDialogAction>
         </AlertDialogFooter>

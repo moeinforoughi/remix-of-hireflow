@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Mail, تلفن, FileText, بیشترVertical, ChevronRight, Briefcase } from 'lucide-react';
+import { Mail, تلفن, FileText, MoreVertical, ChevronRight, Briefcase } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
@@ -15,12 +15,12 @@ import {
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogانصراف,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogتوضیحات,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogعنوان,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import {
   Breadcrumb,
@@ -31,16 +31,16 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { SkillMatchCard } from '@/components/candidates/SkillMatchCard';
-import { امتیازsSection } from '@/components/candidates/امتیازsSection';
-import { نظراتSection } from '@/components/candidates/نظراتSection';
-import { وضعیتDropdown } from '@/components/candidates/وضعیتDropdown';
-import { رزومهViewer } from '@/components/candidates/رزومهViewer';
-import { ویرایشCandidateDialog } from '@/components/candidates/ویرایشCandidateDialog';
+import { RatingsSection } from '@/components/candidates/RatingsSection';
+import { CommentsSection } from '@/components/candidates/CommentsSection';
+import { StatusDropdown } from '@/components/candidates/StatusDropdown';
+import { ResumeViewer } from '@/components/candidates/ResumeViewer';
+import { EditCandidateDialog } from '@/components/candidates/EditCandidateDialog';
 import { CandidateDetailSkeleton } from '@/components/candidates/CandidateDetailSkeleton';
-import { ردDialog } from '@/components/applications/ردDialog';
-import { پس گرفتنDialog } from '@/components/applications/پس گرفتنDialog';
-import { ثبت درخواستگیرندهJobDialog } from '@/components/candidates/ثبت درخواستگیرندهJobDialog';
-import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
+import { RejectDialog } from '@/components/applications/RejectDialog';
+import { WithdrawDialog } from '@/components/applications/WithdrawDialog';
+import { ApplyToJobDialog } from '@/components/candidates/ApplyToJobDialog';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface Candidate {
   id: string;
@@ -76,18 +76,18 @@ interface Application {
 const CandidateDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { role, canMoveپایپ‌لاین, canViewOffer } = useUserدسترسی‌ها();
+  const { role, canMovePipeline, canViewOffer } = useUserPermissions();
   const [candidate, setCandidate] = useState<Candidate | null>(null);
-  const [applications, setدرخواست‌ها] = useState<Application[]>([]);
-  const [stages, setمرحلهs] = useState<any[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [resumeUrl, setرزومهUrl] = useState<string | null>(null);
-  const [showرزومهDialog, setنمایشرزومهDialog] = useState(false);
-  const [showویرایشDialog, setنمایشویرایشDialog] = useState(false);
-  const [showحذفDialog, setنمایشحذفDialog] = useState(false);
-  const [showردDialog, setنمایشردDialog] = useState(false);
-  const [showپس گرفتنDialog, setنمایشپس گرفتنDialog] = useState(false);
-  const [showثبت درخواستگیرندهJobDialog, setنمایشثبت درخواستگیرندهJobDialog] = useState(false);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [stages, setStages] = useState<any[]>([]);
+  const [loading, setUpload] = useState(true);
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+  const [showResumeDialog, setShowResumeDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
+  const [showApplyToJobDialog, setShowSubmit درخواستToJobDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const CandidateDetail = () => {
 
   const fetchData = async () => {
     if (!id) return;
-    setبارگذاری(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -112,7 +112,7 @@ const CandidateDetail = () => {
         .eq('user_id', user.id)
         .single();
 
-      const userنقش = roleData?.role;
+      const userRole = roleData?.role;
 
       // Run candidate and applications queries in parallel
       const [candidateResult, applicationsResult] = await Promise.all([
@@ -134,8 +134,8 @@ const CandidateDetail = () => {
 
       if (candidateResult.error) throw candidateResult.error;
 
-      // For basic users (همکارs): verify they're assigned to at least one application
-      if (userنقش === 'basic' && applicationsResult.data) {
+      // For basic users (Collaborators): verify they're assigned to at least one application
+      if (userRole === 'basic' && applicationsResult.data) {
         const isAssigned = applicationsResult.data.some(
           (app: any) => app.owner_user_id === user.id
         );
@@ -154,7 +154,7 @@ const CandidateDetail = () => {
       setCandidate(candidateResult.data);
 
       if (!applicationsResult.error && applicationsResult.data) {
-        setدرخواست‌ها(applicationsResult.data as any);
+        setApplications(applicationsResult.data as any);
 
         // Fetch stages and resume attachment in parallel
         const attachmentPromise = supabase
@@ -185,13 +185,13 @@ const CandidateDetail = () => {
             .createSignedUrl(attachmentResult.data[0].file_url, 3600);
 
           if (signedUrlData?.signedUrl) {
-            setرزومهUrl(signedUrlData.signedUrl);
+            setResumeUrl(signedUrlData.signedUrl);
           }
         }
 
         // Process stages result
         if (stagesResult?.data) {
-          setمرحلهs(stagesResult.data);
+          setStages(stagesResult.data);
         }
       }
     } catch (error: any) {
@@ -201,11 +201,11 @@ const CandidateDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const refetchدرخواست‌ها = async (): Promise<void> => {
+  const refetchApplications = async (): Promise<void> => {
     if (!id) return;
     try {
       const { data, error } = await supabase
@@ -224,16 +224,16 @@ const CandidateDetail = () => {
 
       if (error) throw error;
       if (data) {
-        setدرخواست‌ها(data as any);
+        setApplications(data as any);
       }
     } catch (error: any) {
       console.error('Error refetching applications:', error);
     }
   };
 
-  const handleViewرزومه = () => {
+  const handleViewResume = () => {
     if (resumeUrl) {
-      setنمایشرزومهDialog(true);
+      setShowResumeDialog(true);
     } else {
       toast({
         title: 'خیر رزومه',
@@ -243,7 +243,7 @@ const CandidateDetail = () => {
     }
   };
 
-  const handleحذفCandidate = async () => {
+  const handleRemoveCandidate = async () => {
     if (!candidate) return;
     
     setIsDeleting(true);
@@ -265,7 +265,7 @@ const CandidateDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Candidate حذفd',
+        title: 'Candidate Removed',
         description: `${candidate.full_name} has been removed.`,
       });
       
@@ -278,11 +278,11 @@ const CandidateDetail = () => {
       });
     } finally {
       setIsDeleting(false);
-      setنمایشحذفDialog(false);
+      setShowRemoveDialog(false);
     }
   };
 
-  const handleردCandidate = async (reason: string, note: string) => {
+  const handleRejectCandidate = async (reason: string, note: string) => {
     if (!primaryApplication) {
       toast({
         title: 'خطا',
@@ -294,12 +294,12 @@ const CandidateDetail = () => {
 
     try {
       // Find the rejected stage
-      const rejectedمرحله = stages.find(s => s.type === 'rejected');
+      const rejectedStage = stages.find(s => s.type === 'rejected');
 
-      if (!rejectedمرحله) {
+      if (!rejectedStage) {
         toast({
           title: 'خطا',
-          description: 'ردed stage not found for this job',
+          description: 'Rejected stage not found for this job',
           variant: 'destructive',
         });
         return;
@@ -315,16 +315,16 @@ const CandidateDetail = () => {
 
       if (error) throw error;
       if (!result?.success) {
-        throw new Error(result?.error || 'ردion failed');
+        throw new Error(result?.error || 'Rejection failed');
       }
 
       toast({
-        title: 'Candidate ردed',
+        title: 'Candidate Rejected',
         description: `${candidate?.full_name} has been rejected.`,
       });
 
-      setنمایشردDialog(false);
-      await refetchدرخواست‌ها();
+      setShowRejectDialog(false);
+      await refetchApplications();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -334,7 +334,7 @@ const CandidateDetail = () => {
     }
   };
 
-  const handleارسالOffer = () => {
+  const handleSendOffer = () => {
     if (!primaryApplication) {
       toast({
         title: 'خطا',
@@ -346,7 +346,7 @@ const CandidateDetail = () => {
     navigate(`/offers/new?application_id=${primaryApplication.id}`);
   };
 
-  const handleپس گرفتن = async () => {
+  const handleWithdraw = async () => {
     if (!primaryApplication) {
       toast({
         title: 'خطا',
@@ -365,12 +365,12 @@ const CandidateDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Application پس گرفتنn',
+        title: 'Application Withdrawn',
         description: `${candidate?.full_name}'s application has been withdrawn.`,
       });
 
-      setنمایشپس گرفتنDialog(false);
-      await refetchدرخواست‌ها();
+      setShowWithdrawDialog(false);
+      await refetchApplications();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -394,14 +394,14 @@ const CandidateDetail = () => {
   }
 
   const primaryApplication = applications[0];
-  const parsedرزومه = candidate.parsed_resume_json || {};
-  const experienceYears = parsedرزومه.experience_years || 'N/A';
-  const currentنقش = parsedرزومه.current_role || 'N/A';
-  const skills = parsedرزومه.skills || [];
+  const parsedResume = candidate.parsed_resume_json || {};
+  const experienceYears = parsedResume.experience_years || 'N/A';
+  const currentRole = parsedResume.current_role || 'N/A';
+  const skills = parsedResume.skills || [];
 
   // Permission checks - only admin roles can reject/offer
-  const canرد = role === 'site_admin' || role === 'job_admin' || 
-    (primaryApplication && canMoveپایپ‌لاین(primaryApplication.job.id));
+  const canReject = role === 'site_admin' || role === 'job_admin' || 
+    (primaryApplication && canMovePipeline(primaryApplication.job.id));
   const canOffer = role === 'site_admin' || 
     (primaryApplication && canViewOffer(primaryApplication.job.id));
 
@@ -428,23 +428,23 @@ const CandidateDetail = () => {
         <div className="flex items-center gap-2">
           <Button 
             variant="outline" 
-            onClick={() => setنمایشثبت درخواستگیرندهJobDialog(true)}
+            onClick={() => setShowSubmit درخواستToJobDialog(true)}
           >
             <Briefcase className="h-4 w-4 mr-2" />
             ثبت درخواست to Job
           </Button>
-          {canرد && (
+          {canReject && (
             <>
               <Button 
                 variant="outline" 
-                onClick={() => setنمایشپس گرفتنDialog(true)}
+                onClick={() => setShowWithdrawDialog(true)}
                 disabled={!primaryApplication}
               >
                 پس گرفتن
               </Button>
               <Button 
                 variant="outline" 
-                onClick={() => setنمایشردDialog(true)}
+                onClick={() => setShowRejectDialog(true)}
                 disabled={!primaryApplication}
               >
                 رد Candidate
@@ -454,7 +454,7 @@ const CandidateDetail = () => {
           {canOffer && (
             <Button 
               className="bg-[#4CAF50] hover:bg-[#45A049] text-white"
-              onClick={handleارسالOffer}
+              onClick={handleSendOffer}
               disabled={!primaryApplication}
             >
               ارسال پیشنهاد
@@ -463,16 +463,16 @@ const CandidateDetail = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <بیشترVertical className="h-4 w-4" />
+                <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-background z-50">
-              <DropdownMenuItem onClick={() => setنمایشویرایشDialog(true)}>
+              <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
                 ویرایش Candidate
               </DropdownMenuItem>
               <DropdownMenuItem 
                 className="text-destructive"
-                onClick={() => setنمایشحذفDialog(true)}
+                onClick={() => setShowRemoveDialog(true)}
               >
                 حذف Candidate
               </DropdownMenuItem>
@@ -533,19 +533,19 @@ const CandidateDetail = () => {
 
           <div className="flex flex-col gap-3">
             {primaryApplication && (
-              <وضعیتDropdown
-                currentمرحله={primaryApplication.current_stage}
+              <StatusDropdown
+                currentStage={primaryApplication.current_stage}
                 applicationId={primaryApplication.id}
                 applicationState={primaryApplication.state}
-                availableمرحلهs={stages}
-                onمرحلهChange={refetchدرخواست‌ها}
+                availableStages={stages}
+                onStageChange={refetchApplications}
               />
             )}
             
             <Button 
               variant="outline" 
               size="default"
-              onClick={handleViewرزومه}
+              onClick={handleViewResume}
               className="w-full border-border hover:bg-accent hover:text-accent-foreground transition-colors"
             >
               <FileText className="h-5 w-5 mr-2" />
@@ -556,34 +556,34 @@ const CandidateDetail = () => {
       </Card>
 
       {/* رزومه Display Dialog */}
-      <رزومهViewer
-        open={showرزومهDialog}
-        onبازChange={setنمایشرزومهDialog}
+      <ResumeViewer
+        open={showResumeDialog}
+        onOpenChange={setShowResumeDialog}
         resumeUrl={resumeUrl}
         candidateName={candidate.full_name}
       />
 
       {/* ویرایش Candidate Dialog */}
-      <ویرایشCandidateDialog
-        open={showویرایشDialog}
-        onبازChange={setنمایشویرایشDialog}
+      <EditCandidateDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
         candidate={candidate}
-        onبه‌روزرسانیSuccess={fetchData}
+        onRefreshSuccess={fetchData}
       />
 
-      {/* حذف تأییدation Dialog */}
-      <AlertDialog open={showحذفDialog} onبازChange={setنمایشحذفDialog}>
+      {/* حذف Confirmation Dialog */}
+      <AlertDialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogعنوان>حذف Candidate</AlertDialogعنوان>
-            <AlertDialogتوضیحات>
+            <AlertDialogTitle>حذف Candidate</AlertDialogTitle>
+            <AlertDialogDescription>
               Are you sure you want to delete {candidate.full_name}? This will also remove all their applications and cannot be undone.
-            </AlertDialogتوضیحات>
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogانصراف disabled={isDeleting}>انصراف</AlertDialogانصراف>
+            <AlertDialogCancel disabled={isDeleting}>انصراف</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleحذفCandidate}
+              onClick={handleRemoveCandidate}
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
@@ -594,27 +594,27 @@ const CandidateDetail = () => {
       </AlertDialog>
 
       {/* رد Candidate Dialog */}
-      <ردDialog
-        open={showردDialog}
-        onبازChange={setنمایشردDialog}
-        onتأیید={handleردCandidate}
+      <RejectDialog
+        open={showRejectDialog}
+        onOpenChange={setShowRejectDialog}
+        onConfirm={handleRejectCandidate}
       />
 
       {/* پس گرفتن Application Dialog */}
-      <پس گرفتنDialog
-        open={showپس گرفتنDialog}
-        onبازChange={setنمایشپس گرفتنDialog}
-        onتأیید={handleپس گرفتن}
+      <WithdrawDialog
+        open={showWithdrawDialog}
+        onOpenChange={setShowWithdrawDialog}
+        onConfirm={handleWithdraw}
       />
 
       {/* ثبت درخواست to Job Dialog */}
-      <ثبت درخواستگیرندهJobDialog
-        open={showثبت درخواستگیرندهJobDialog}
-        onبازChange={setنمایشثبت درخواستگیرندهJobDialog}
+      <ApplyToJobDialog
+        open={showApplyToJobDialog}
+        onOpenChange={setShowSubmit درخواستToJobDialog}
         candidateId={candidate.id}
         candidateName={candidate.full_name}
         existingJobIds={applications.map(app => app.job.id)}
-        onSuccess={refetchدرخواست‌ها}
+        onSuccess={refetchApplications}
       />
 
       {/* Two Column Layout */}
@@ -625,7 +625,7 @@ const CandidateDetail = () => {
           <Card>
             <CardContent className="pt-6 space-y-4">
               <div>
-                <h3 className="text-sm text-muted-foreground mb-1">ثبت درخواستing for</h3>
+                <h3 className="text-sm text-muted-foreground mb-1">Applying for</h3>
                 {primaryApplication ? (
                   <Link 
                     to={`/jobs/${primaryApplication.job.id}`}
@@ -643,7 +643,7 @@ const CandidateDetail = () => {
                 <h3 className="text-sm text-muted-foreground mb-1">تاریخ ثبت درخواست شده</h3>
                 <p className="font-medium">
                   {primaryApplication
-                    ? new تاریخ(primaryApplication.applied_at).toLocaleتاریخString('en-US', {
+                    ? new تاریخ(primaryApplication.applied_at).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric',
@@ -659,23 +659,23 @@ const CandidateDetail = () => {
 
               <div>
                 <h3 className="text-sm text-muted-foreground mb-1">Current نقش</h3>
-                <p className="font-medium">{currentنقش}</p>
+                <p className="font-medium">{currentRole}</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Skill Match */}
           <SkillMatchCard 
-            candidateمهارت‌ها={skills} 
-            requiredمهارت‌ها={primaryApplication?.job?.required_skills || []}
+            candidateSkills={skills} 
+            requiredSkills={primaryApplication?.job?.required_skills || []}
           />
 
-          {/* امتیازs */}
-          <امتیازsSection candidateId={candidate.id} />
+          {/* Ratings */}
+          <RatingsSection candidateId={candidate.id} />
         </div>
 
         {/* Right Column - نظرات */}
-        <نظراتSection 
+        <CommentsSection 
           candidateId={candidate.id}
           applicationId={primaryApplication?.id}
         />

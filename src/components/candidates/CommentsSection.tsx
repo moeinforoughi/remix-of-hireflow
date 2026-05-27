@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,21 +19,21 @@ interface نظر {
   };
 }
 
-interface نظراتSectionProps {
+interface CommentsSectionProps {
   candidateId: string;
   applicationId?: string;
 }
 
-export const نظراتSection = ({ candidateId, applicationId }: نظراتSectionProps) => {
-  const [comments, setنظرات] = useState<نظر[]>([]);
-  const [newنظر, setNewنظر] = useState('');
-  const [loading, setبارگذاری] = useState(true);
+export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
+  const [comments, setComments] = useState<نظر[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [loading, setUpload] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCurrentUser();
-    fetchنظرات();
+    fetchComments();
   }, [candidateId]);
 
   const fetchCurrentUser = async () => {
@@ -54,7 +54,7 @@ export const نظراتSection = ({ candidateId, applicationId }: نظراتSect
     }
   };
 
-  const fetchنظرات = async () => {
+  const fetchComments = async () => {
     try {
       const { data, error } = await supabase
         .from('candidate_comments')
@@ -69,23 +69,23 @@ export const نظراتSection = ({ candidateId, applicationId }: نظراتSect
 
       if (error) throw error;
 
-      const formattedنظرات = (data || []).map((comment: any) => ({
+      const formattedComments = (data || []).map((comment: any) => ({
         id: comment.id,
         content: comment.content,
         created_at: comment.created_at,
         user: comment.user,
       }));
 
-      setنظرات(formattedنظرات);
+      setComments(formattedComments);
     } catch (error: any) {
       console.error('Error fetching comments:', error);
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const handleافزودننظر = async () => {
-    if (!newنظر.trim() || !currentUserId || !orgId) return;
+  const handleAddComment = async () => {
+    if (!newComment.trim() || !currentUserId || !orgId) return;
 
     try {
       const { error } = await supabase
@@ -95,7 +95,7 @@ export const نظراتSection = ({ candidateId, applicationId }: نظراتSect
           application_id: applicationId,
           user_id: currentUserId,
           org_id: orgId,
-          content: newنظر.trim(),
+          content: newComment.trim(),
         });
 
       if (error) throw error;
@@ -105,8 +105,8 @@ export const نظراتSection = ({ candidateId, applicationId }: نظراتSect
         description: 'نظر added successfully',
       });
 
-      setNewنظر('');
-      fetchنظرات();
+      setNewComment('');
+      fetchComments();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -119,7 +119,7 @@ export const نظراتSection = ({ candidateId, applicationId }: نظراتSect
   return (
     <Card className="flex flex-col max-h-[600px]">
       <CardHeader>
-        <Cardعنوان className="text-lg">نظرات</Cardعنوان>
+        <CardTitle className="text-lg">نظرات</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="flex-1 space-y-4 mb-4 overflow-y-auto min-h-0">
@@ -167,20 +167,20 @@ export const نظراتSection = ({ candidateId, applicationId }: نظراتSect
         <div className="flex gap-2 pt-4 border-t">
           <Textarea
             placeholder="افزودن a comment..."
-            value={newنظر}
-            onChange={(e) => setNewنظر(e.target.value)}
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
             className="min-h-[60px] resize-none"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleافزودننظر();
+                handleAddComment();
               }
             }}
           />
           <Button
-            onClick={handleافزودننظر}
+            onClick={handleAddComment}
             size="icon"
-            disabled={!newنظر.trim()}
+            disabled={!newComment.trim()}
             className="flex-shrink-0"
           >
             <ارسال className="h-4 w-4" />

@@ -1,16 +1,16 @@
-import { Reactخیرde } from 'react';
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { Loader2 } from 'lucide-react';
 
 interface ProtectedRouteProps {
-  children: Reactخیرde;
-  requireنقش?: 'site_admin' | 'job_admin';
+  children: ReactNode;
+  requireRole?: 'site_admin' | 'job_admin';
   requireOfferAccess?: boolean;
 }
 
-export const ProtectedRoute = ({ children, requireنقش, requireOfferAccess }: ProtectedRouteProps) => {
-  const { role, canViewOffers, loading } = useUserدسترسی‌ها();
+export const ProtectedRoute = ({ children, requireRole, requireOfferAccess }: ProtectedRouteProps) => {
+  const { role, canViewOffers, loading } = useUserPermissions();
 
   if (loading) {
     return (
@@ -21,11 +21,11 @@ export const ProtectedRoute = ({ children, requireنقش, requireOfferAccess }: 
   }
 
   // Check role-based access
-  if (requireنقش) {
-    if (requireنقش === 'site_admin' && role !== 'site_admin') {
+  if (requireRole) {
+    if (requireRole === 'site_admin' && role !== 'site_admin') {
       return <Navigate to="/dashboard" replace />;
     }
-    if (requireنقش === 'job_admin' && role !== 'site_admin' && role !== 'job_admin') {
+    if (requireRole === 'job_admin' && role !== 'site_admin' && role !== 'job_admin') {
       return <Navigate to="/dashboard" replace />;
     }
   }

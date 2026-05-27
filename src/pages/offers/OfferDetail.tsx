@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useگیرندهast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, Calendar, User, Briefcase, FileText, دانلود, به‌روزرسانیCw } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, Loader2, Calendar, User, Briefcase, FileText, دانلود, RefreshCw } from 'lucide-react';
 import { format, isPast } from 'date-fns';
-import { تأییدSection } from '@/components/offers/تأییدSection';
-import { انقضاWarning } from '@/components/offers/انقضاWarning';
-import { Offerزمانline } from '@/components/offers/Offerزمانline';
+import { ConfirmSection } from '@/components/offers/ConfirmSection';
+import { ExpirationWarning } from '@/components/offers/ExpirationWarning';
+import { OfferTimeline } from '@/components/offers/OfferTimeline';
 
 interface OfferDetail {
   id: string;
@@ -42,15 +42,15 @@ interface OfferDetail {
 const OfferDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
   const [offer, setOffer] = useState<OfferDetail | null>(null);
-  const [loading, setبارگذاری] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
   useEffect(() => {
     if (id) {
       fetchOffer();
-      checkانقضا();
+      checkExpiration();
     }
   }, [id]);
 
@@ -88,11 +88,11 @@ const OfferDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const checkانقضا = async () => {
+  const checkExpiration = async () => {
     try {
       const { data: currentOffer } = await supabase
         .from('offers')
@@ -115,7 +115,7 @@ const OfferDetail = () => {
     }
   };
 
-  const handleStateبه‌روزرسانی = async (newState: 'pending_approval' | 'sent' | 'accepted' | 'declined') => {
+  const handleStateRefresh = async (newState: 'pending_approval' | 'sent' | 'accepted' | 'declined') => {
     try {
       const { error } = await supabase
         .from('offers')
@@ -139,7 +139,7 @@ const OfferDetail = () => {
     }
   };
 
-  const formatواحد پول = (amount: number, currency: string) => {
+  const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
@@ -174,7 +174,7 @@ const OfferDetail = () => {
     }
   };
 
-  const handleارسالForSignature = async () => {
+  const handleSendForSignature = async () => {
     if (!offer || !offer.pdf_url) return;
     
     setGeneratingPdf(true);
@@ -182,7 +182,7 @@ const OfferDetail = () => {
       const { data, error } = await supabase.functions.invoke("send-hellosign", {
         body: {
           offerId: id,
-          candidateایمیل: offer.application.candidate.email,
+          candidateEmail: offer.application.candidate.email,
           candidateName: offer.application.candidate.full_name,
           documentUrl: offer.pdf_url,
         },
@@ -245,33 +245,33 @@ const OfferDetail = () => {
       <Tabs defaultValue="overview">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="approvals">تأییدs</TabsTrigger>
-          <TabsTrigger value="timeline">زمانline</TabsTrigger>
+          <TabsTrigger value="approvals">Confirms</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <انقضاWarning expiresAt={offer.expires_at} state={offer.state} />
+          <ExpirationWarning expiresAt={offer.expires_at} state={offer.state} />
           
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <Cardعنوان>Compensation Package</Cardعنوان>
+                <CardTitle>Compensation Package</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">گیرندهtal Compensation</p>
-                  <p className="text-2xl font-bold">{formatواحد پول(totalComp, offer.currency)}</p>
+                  <p className="text-sm text-muted-foreground">Total Compensation</p>
+                  <p className="text-2xl font-bold">{formatCurrency(totalComp, offer.currency)}</p>
                 </div>
 
                 <div className="space-y-2 pt-4 border-t">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">حقوق پایه</span>
-                    <span className="font-medium">{formatواحد پول(offer.base_amount, offer.currency)}</span>
+                    <span className="font-medium">{formatCurrency(offer.base_amount, offer.currency)}</span>
                   </div>
                   {offer.variable_amount && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Variable/پاداش</span>
-                      <span className="font-medium">{formatواحد پول(offer.variable_amount, offer.currency)}</span>
+                      <span className="font-medium">{formatCurrency(offer.variable_amount, offer.currency)}</span>
                     </div>
                   )}
                   {offer.equity && (
@@ -296,7 +296,7 @@ const OfferDetail = () => {
 
             <Card>
               <CardHeader>
-                <Cardعنوان>Candidate Information</Cardعنوان>
+                <CardTitle>Candidate Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
@@ -338,7 +338,7 @@ const OfferDetail = () => {
           {offer.benefits_md && (
             <Card>
               <CardHeader>
-                <Cardعنوان>مزایا</Cardعنوان>
+                <CardTitle>مزایا</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="whitespace-pre-wrap">{offer.benefits_md}</div>
@@ -349,7 +349,7 @@ const OfferDetail = () => {
           {offer.notes && (
             <Card>
               <CardHeader>
-                <Cardعنوان>Internal خیرtes</Cardعنوان>
+                <CardTitle>Internal Notes</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="whitespace-pre-wrap text-muted-foreground">{offer.notes}</div>
@@ -359,7 +359,7 @@ const OfferDetail = () => {
 
           <Card>
             <CardHeader>
-              <Cardعنوان>نامه پیشنهاد & E-Signature</Cardعنوان>
+              <CardTitle>نامه پیشنهاد & E-Signature</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {offer.pdf_url ? (
@@ -395,7 +395,7 @@ const OfferDetail = () => {
                         </>
                       ) : (
                         <>
-                          <به‌روزرسانیCw className="h-4 w-4 mr-2" />
+                          <RefreshCw className="h-4 w-4 mr-2" />
                           Regenerate PDF
                         </>
                       )}
@@ -407,11 +407,11 @@ const OfferDetail = () => {
                       <p className="text-sm text-muted-foreground mb-2">
                         ارسال for electronic signature via Dropbox Sign (HelloSign)
                       </p>
-                      <Button onClick={handleارسالForSignature} disabled={generatingPdf}>
+                      <Button onClick={handleSendForSignature} disabled={generatingPdf}>
                         {generatingPdf ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            ارسالing...
+                            Sending...
                           </>
                         ) : (
                           <>
@@ -443,11 +443,11 @@ const OfferDetail = () => {
           {offer.state === 'draft' && (
             <Card>
               <CardHeader>
-                <Cardعنوان>Actions</Cardعنوان>
+                <CardTitle>Actions</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  افزودن approvers in the تأییدs tab, then the offer will be automatically sent to the candidate once all approvals are complete.
+                  افزودن approvers in the Confirms tab, then the offer will be automatically sent to the candidate once all approvals are complete.
                 </p>
               </CardContent>
             </Card>
@@ -456,7 +456,7 @@ const OfferDetail = () => {
           {offer.state === 'pending_approval' && (
             <Card>
               <CardHeader>
-                <Cardعنوان>در انتظار تأییدs</Cardعنوان>
+                <CardTitle>Pending Approvals</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
@@ -469,13 +469,13 @@ const OfferDetail = () => {
           {offer.state === 'sent' && (
             <Card>
               <CardHeader>
-                <Cardعنوان>Candidate Response</Cardعنوان>
+                <CardTitle>Candidate Response</CardTitle>
               </CardHeader>
               <CardContent className="flex gap-4">
-                <Button onClick={() => handleStateبه‌روزرسانی('accepted')}>
+                <Button onClick={() => handleStateRefresh('accepted')}>
                   Mark as پذیرفته شده
                 </Button>
-                <Button variant="destructive" onClick={() => handleStateبه‌روزرسانی('declined')}>
+                <Button variant="destructive" onClick={() => handleStateRefresh('declined')}>
                   Mark as رد شده
                 </Button>
               </CardContent>
@@ -484,15 +484,15 @@ const OfferDetail = () => {
         </TabsContent>
 
         <TabsContent value="approvals">
-          <تأییدSection 
+          <ConfirmSection 
             offerId={offer.id} 
             offerState={offer.state}
-            onتأییدChange={fetchOffer}
+            onConfirmChange={fetchOffer}
           />
         </TabsContent>
 
         <TabsContent value="timeline">
-          <Offerزمانline offerId={offer.id} />
+          <OfferTimeline offerId={offer.id} />
         </TabsContent>
       </Tabs>
     </div>

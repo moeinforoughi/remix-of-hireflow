@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import بعدیMeetingCard from "@/components/dashboard/بعدیMeetingCard";
+import NextMeetingCard from "@/components/dashboard/NextMeetingCard";
 import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -12,24 +12,24 @@ import listIcon from "@/assets/icons/list-icon.svg";
 import usersIcon from "@/assets/icons/users-icon.svg";
 import awardIcon from "@/assets/icons/award-icon.svg";
 import thumbsUpIcon from "@/assets/icons/thumbs-up-icon.svg";
-import { تأییدRequestedDialog } from "@/components/offers/تأییدRequestedDialog";
+import { ConfirmRequestedDialog } from "@/components/offers/ConfirmRequestedDialog";
 import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { JobListingsTableSkeleton } from "@/components/dashboard/JobListingsTableSkeleton";
-import { ایجادJobDialog } from "@/components/jobs/ایجادJobDialog";
+import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 
-export function Siteمدیر کلداشبورد() {
+export function SiteAdminDashboard() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<any[]>([]);
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
-  const [approvalDialogباز, setتأییدDialogباز] = useState(false);
-  const [createJobDialogباز, setایجادJobDialogباز] = useState(false);
-  const [isبارگذاریDemo, setIsبارگذاریDemo] = useState(() => {
+  const [approvalDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [createJobDialogOpen, setCreateJobDialogOpen] = useState(false);
+  const [isUploadDemo, setIsUploadDemo] = useState(() => {
     return sessionStorage.getItem('demo-reset-in-progress') === 'true';
   });
   const [metrics, setMetrics] = useState({
     currentListings: 0,
     totalApplicants: 0,
-    jobمدیر کلs: 0,
+    jobAdmins: 0,
     approvalRequested: 0,
   });
 
@@ -79,20 +79,20 @@ export function Siteمدیر کلداشبورد() {
         .eq('jobs.org_id', orgId);
 
       // Get profiles in org first, then count job admins among them
-      const { data: orgپروفایلs } = await supabase
+      const { data: orgProfiles } = await supabase
         .from('profiles')
         .select('id')
         .eq('org_id', orgId);
 
-      const profileIds = orgپروفایلs?.map(p => p.id) || [];
+      const profileIds = orgProfiles?.map(p => p.id) || [];
 
-      const { count: jobمدیر کلsCount } = await supabase
+      const { count: jobAdminsCount } = await supabase
         .from('user_roles')
         .select('*', { count: 'exact', head: true })
         .eq('role', 'job_admin')
         .in('user_id', profileIds);
 
-      const { count: pendingتأییدsCount } = await supabase
+      const { count: pendingConfirmsCount } = await supabase
         .from('approvals')
         .select('*, offers!inner(*, applications!inner(*, jobs!inner(*)))', { count: 'exact', head: true })
         .eq('state', 'pending')
@@ -101,30 +101,30 @@ export function Siteمدیر کلداشبورد() {
       setMetrics({
         currentListings: listingsCount || 0,
         totalApplicants: applicantsCount || 0,
-        jobمدیر کلs: jobمدیر کلsCount || 0,
-        approvalRequested: pendingتأییدsCount || 0,
+        jobAdmins: jobAdminsCount || 0,
+        approvalRequested: pendingConfirmsCount || 0,
       });
     };
 
     // If demo reset in progress, wait for the event
-    if (isبارگذاریDemo) {
-      const handleDemoDataبه‌روزرسانی = () => {
-        setIsبارگذاریDemo(false);
+    if (isUploadDemo) {
+      const handleDemoDataRefresh = () => {
+        setIsUploadDemo(false);
         fetchData();
       };
-      window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
+      window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
+      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
     } else {
       fetchData();
     }
 
     // Also listen for future demo data refresh events
-    const handleDemoDataبه‌روزرسانی = () => {
+    const handleDemoDataRefresh = () => {
       fetchData();
     };
-    window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-  }, [isبارگذاریDemo]);
+    window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
+    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
+  }, [isUploadDemo]);
 
   const metricCards = [
     {
@@ -147,7 +147,7 @@ export function Siteمدیر کلداشبورد() {
     },
     {
       title: "مدیران شغل",
-      value: metrics.jobمدیر کلs,
+      value: metrics.jobAdmins,
       bgColor: "bg-[#CCE5FF]",
       iconColor: "text-[#3D7ACC]",
       hoverBorder: "hover:border-[#1976D2]",
@@ -171,7 +171,7 @@ export function Siteمدیر کلداشبورد() {
         <div>
           <h1 className="text-3xl">داشبورد</h1>
         </div>
-        <Button onClick={() => setایجادJobDialogباز(true)}>
+        <Button onClick={() => setCreateJobDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           ایجاد موقعیت جدید
         </Button>
@@ -179,7 +179,7 @@ export function Siteمدیر کلداشبورد() {
       
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        {isبارگذاریDemo ? (
+        {isUploadDemo ? (
           <>
             <MetricCardSkeleton />
             <MetricCardSkeleton />
@@ -191,12 +191,12 @@ export function Siteمدیر کلداشبورد() {
             <Card /* theme-exempt: decorative pastel cards */
               key={metric.title}
               className={`hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer border-2 border-transparent ${metric.hoverBorder} ${metric.bgColor}`}
-              onClick={() => metric.link === "approval-dialog" ? setتأییدDialogباز(true) : navigate(metric.link)}
+              onClick={() => metric.link === "approval-dialog" ? setConfirmDialogOpen(true) : navigate(metric.link)}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <div className="flex items-center gap-2">
                   <img src={metric.icon} alt="" className="w-4 h-4 flex-shrink-0" />
-                  <Cardعنوان className="text-sm font-medium !text-black">{metric.title}</Cardعنوان>
+                  <CardTitle className="text-sm font-medium !text-black">{metric.title}</CardTitle>
                 </div>
                 <ChevronRight className={`h-4 w-4 ${metric.iconColor}`} />
               </CardHeader>
@@ -210,12 +210,12 @@ export function Siteمدیر کلداشبورد() {
 
       {/* مصاحبه بعدی and فعالیت‌های اخیر */}
       <div className="grid gap-6 md:grid-cols-2">
-        <بعدیMeetingCard />
+        <NextMeetingCard />
         <RecentActivityFeed />
       </div>
 
       {/* موقعیت‌های شغلی with Team Avatars */}
-      {isبارگذاریDemo ? (
+      {isUploadDemo ? (
         <JobListingsTableSkeleton />
       ) : (
         <div className="bg-card rounded-xl overflow-hidden">
@@ -245,7 +245,7 @@ export function Siteمدیر کلداشبورد() {
                   <div className="w-[243px] text-sm font-[590] text-foreground">{job.title}</div>
                   <div className="flex-1 text-sm text-muted-foreground">{job.location || 'دورکاری'}</div>
                   <div className="flex-1 text-sm text-muted-foreground">
-                    {new تاریخ(job.created_at).toLocaleتاریخString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
+                    {new تاریخ(job.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
                   </div>
                   <div className="flex-1 flex items-center">
                     {job.job_acl?.slice(0, 5).map((acl: any, idx: number) => (
@@ -268,16 +268,16 @@ export function Siteمدیر کلداشبورد() {
         </div>
       )}
 
-      <تأییدRequestedDialog 
-        open={approvalDialogباز} 
-        onبازChange={setتأییدDialogباز} 
+      <ConfirmRequestedDialog 
+        open={approvalDialogOpen} 
+        onOpenChange={setConfirmDialogOpen} 
       />
 
-      <ایجادJobDialog
-        open={createJobDialogباز}
-        onبازChange={setایجادJobDialogباز}
+      <CreateJobDialog
+        open={createJobDialogOpen}
+        onOpenChange={setCreateJobDialogOpen}
         onSuccess={() => {
-          setایجادJobDialogباز(false);
+          setCreateJobDialogOpen(false);
           window.location.reload();
         }}
       />

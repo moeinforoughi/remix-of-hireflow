@@ -5,16 +5,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, Formپیام, Formتوضیحات } from '@/components/ui/form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { زمانPickerAMPM } from '@/components/ui/time-picker-ampm';
+import { TimePickerAMPM } from '@/components/ui/time-picker-ampm';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -56,11 +56,11 @@ type FormValues = z.infer<typeof formSchema>;
 const InterviewForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
-  const [loading, setبارگذاری] = useState(false);
-  const [applications, setدرخواست‌ها] = useState<any[]>([]);
+  const { toast } = useToast();
+  const [loading, setUpload] = useState(false);
+  const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
-  const [datePickerباز, setتاریخPickerباز] = useState(false);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,7 +101,7 @@ const InterviewForm = () => {
       if (appsResult.error) throw appsResult.error;
       if (usersResult.error) throw usersResult.error;
 
-      setدرخواست‌ها(appsResult.data || []);
+      setApplications(appsResult.data || []);
       setUsers(usersResult.data || []);
     } catch (error: any) {
       toast({
@@ -112,24 +112,24 @@ const InterviewForm = () => {
     }
   };
 
-  const onثبت = async (values: FormValues) => {
-    setبارگذاری(true);
+  const onSubmit = async (values: FormValues) => {
+    setUpload(true);
     try {
       // Combine date and time
-      const startتاریخزمان = new تاریخ(values.start_date);
+      const startDateTime = new تاریخ(values.start_date);
       const [startHour, startMin] = values.start_time.split(':');
-      startتاریخزمان.setHours(parseInt(startHour), parseInt(startMin));
+      startDateTime.setHours(parseInt(startHour), parseInt(startMin));
 
-      const endتاریخزمان = new تاریخ(values.start_date);
+      const endDateTime = new تاریخ(values.start_date);
       const [endHour, endMin] = values.end_time.split(':');
-      endتاریخزمان.setHours(parseInt(endHour), parseInt(endMin));
+      endDateTime.setHours(parseInt(endHour), parseInt(endMin));
 
       const { data: interview, error } = await supabase.from('interviews')
         .insert({
           title: values.title,
           application_id: values.application_id,
-          start_at: startتاریخزمان.toISOString(),
-          end_at: endتاریخزمان.toISOString(),
+          start_at: startDateTime.toISOString(),
+          end_at: endDateTime.toISOString(),
           location: values.location || null,
           meeting_link: values.meeting_link || null,
           panel_user_ids: values.panel_user_ids || [],
@@ -149,8 +149,8 @@ const InterviewForm = () => {
             selectedApp.candidate.email || '',
             selectedApp.candidate.full_name,
             selectedApp.job.title,
-            format(startتاریخزمان, 'PPP'),
-            format(startتاریخزمان, 'p'),
+            format(startDateTime, 'PPP'),
+            format(startDateTime, 'p'),
             values.meeting_link,
             values.location,
             selectedApp.id,
@@ -167,7 +167,7 @@ const InterviewForm = () => {
             selectedApp.id,
             interview.id,
             selectedApp.candidate.full_name,
-            format(startتاریخزمان, 'PPP')
+            format(startDateTime, 'PPP')
           );
         } catch (notifError) {
           console.error('Failed to create notifications:', notifError);
@@ -175,16 +175,16 @@ const InterviewForm = () => {
 
         // ارسال notifications to مصاحبه‌کننده
         if (values.panel_user_ids && values.panel_user_ids.length > 0) {
-          const selectedمصاحبه‌کنندهs = users.filter(u => values.panel_user_ids?.includes(u.id));
+          const selectedinterviewers = users.filter(u => values.panel_user_ids?.includes(u.id));
           
-          for (const مصاحبه‌کننده of selectedمصاحبه‌کنندهs) {
+          for (const مصاحبه‌کننده of selectedinterviewers) {
             try {
               await sendInterviewInvitation(
                 مصاحبه‌کننده.email,
                 مصاحبه‌کننده.full_name,
                 selectedApp.job.title,
-                format(startتاریخزمان, 'PPP'),
-                format(startتاریخزمان, 'p'),
+                format(startDateTime, 'PPP'),
+                format(startDateTime, 'p'),
                 values.meeting_link,
                 values.location,
                 selectedApp.id,
@@ -198,7 +198,7 @@ const InterviewForm = () => {
                 org_id: userData.user?.user_metadata?.org_id,
                 type: 'interview_scheduled',
                 title: 'Interview هیئت مصاحبه Assignment',
-                message: `You've been added to the interview panel for ${selectedApp.job.title} on ${format(startتاریخزمان, 'PPP')} at ${format(startتاریخزمان, 'p')}`,
+                message: `You've been added to the interview panel for ${selectedApp.job.title} on ${format(startDateTime, 'PPP')} at ${format(startDateTime, 'p')}`,
                 entity_type: 'interview',
                 entity_id: interview.id,
               });
@@ -222,7 +222,7 @@ const InterviewForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -235,11 +235,11 @@ const InterviewForm = () => {
 
       <Card>
         <CardHeader>
-          <Cardعنوان>Interview Details</Cardعنوان>
+          <CardTitle>Interview Details</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="title"
@@ -249,7 +249,7 @@ const InterviewForm = () => {
                     <FormControl>
                       <Input placeholder="e.g., مصاحبه فنی" {...field} />
                     </FormControl>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -262,19 +262,19 @@ const InterviewForm = () => {
                     <FormLabel>Candidate Application</FormLabel>
                     <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <انتخابTrigger>
-                          <انتخابValue placeholder="انتخاب an application" />
-                        </انتخابTrigger>
+                        <SelectTrigger>
+                          <SelectValue placeholder="انتخاب an application" />
+                        </SelectTrigger>
                       </FormControl>
-                      <انتخابContent>
+                      <SelectContent>
                         {applications.map((app) => (
-                          <انتخابItem key={app.id} value={app.id}>
+                          <SelectItem key={app.id} value={app.id}>
                             {app.candidate.full_name} - {app.job.title}
-                          </انتخابItem>
+                          </SelectItem>
                         ))}
-                      </انتخابContent>
+                      </SelectContent>
                     </انتخاب>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -284,7 +284,7 @@ const InterviewForm = () => {
                 name="panel_user_ids"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>مصاحبه‌کنندهs (اختیاری)</FormLabel>
+                    <FormLabel>interviewers (اختیاری)</FormLabel>
                     <انتخاب
                       onValueChange={(value) => {
                         const currentValues = field.value || [];
@@ -294,17 +294,17 @@ const InterviewForm = () => {
                       }}
                     >
                       <FormControl>
-                        <انتخابTrigger>
-                          <انتخابValue placeholder="افزودن مصاحبه‌کننده..." />
-                        </انتخابTrigger>
+                        <SelectTrigger>
+                          <SelectValue placeholder="افزودن مصاحبه‌کننده..." />
+                        </SelectTrigger>
                       </FormControl>
-                      <انتخابContent>
+                      <SelectContent>
                         {users.map((user) => (
-                          <انتخابItem key={user.id} value={user.id}>
+                          <SelectItem key={user.id} value={user.id}>
                             {user.full_name} ({user.email})
-                          </انتخابItem>
+                          </SelectItem>
                         ))}
-                      </انتخابContent>
+                      </SelectContent>
                     </انتخاب>
                     {field.value && field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
@@ -329,7 +329,7 @@ const InterviewForm = () => {
                         })}
                       </div>
                     )}
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -340,7 +340,7 @@ const InterviewForm = () => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>تاریخ مصاحبه</FormLabel>
-                    <Popover open={datePickerباز} onبازChange={setتاریخPickerباز}>
+                    <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -363,9 +363,9 @@ const InterviewForm = () => {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onانتخاب={(date) => {
+                          onSelect={(date) => {
                             field.onChange(date);
-                            setتاریخPickerباز(false);
+                            setDatePickerOpen(false);
                           }}
                           disabled={(date) => date < new تاریخ()}
                           initialFocus
@@ -373,7 +373,7 @@ const InterviewForm = () => {
                         />
                       </PopoverContent>
                     </Popover>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -386,9 +386,9 @@ const InterviewForm = () => {
                     <FormItem>
                       <FormLabel>شروع زمان</FormLabel>
                       <FormControl>
-                        <زمانPickerAMPM value={field.value || "09:00"} onChange={field.onChange} />
+                        <TimePickerAMPM value={field.value || "09:00"} onChange={field.onChange} />
                       </FormControl>
-                      <Formپیام />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -400,9 +400,9 @@ const InterviewForm = () => {
                     <FormItem>
                       <FormLabel>End زمان</FormLabel>
                       <FormControl>
-                        <زمانPickerAMPM value={field.value || "10:00"} onChange={field.onChange} />
+                        <TimePickerAMPM value={field.value || "10:00"} onChange={field.onChange} />
                       </FormControl>
-                      <Formپیام />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -416,16 +416,16 @@ const InterviewForm = () => {
                     <FormLabel>نوع مصاحبه</FormLabel>
                     <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <انتخابTrigger>
-                          <انتخابValue placeholder="انتخاب interview type" />
-                        </انتخابTrigger>
+                        <SelectTrigger>
+                          <SelectValue placeholder="انتخاب interview type" />
+                        </SelectTrigger>
                       </FormControl>
-                      <انتخابContent>
-                        <انتخابItem value="virtual">آنلاین Interview</انتخابItem>
-                        <انتخابItem value="onsite">On-site Interview</انتخابItem>
-                      </انتخابContent>
+                      <SelectContent>
+                        <SelectItem value="virtual">آنلاین Interview</SelectItem>
+                        <SelectItem value="onsite">On-site Interview</SelectItem>
+                      </SelectContent>
                     </انتخاب>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -440,10 +440,10 @@ const InterviewForm = () => {
                       <FormControl>
                         <Input placeholder="e.g., Office - Conference Room A" {...field} />
                       </FormControl>
-                      <Formتوضیحات>
+                      <FormDescription>
                         Physical location for in-person interviews
-                      </Formتوضیحات>
-                      <Formپیام />
+                      </FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -459,10 +459,10 @@ const InterviewForm = () => {
                       <FormControl>
                         <Input placeholder="https://zoom.us/j/..." {...field} />
                       </FormControl>
-                      <Formتوضیحات>
+                      <FormDescription>
                         Zoom, Google Meet, or other video conferencing link
-                      </Formتوضیحات>
-                      <Formپیام />
+                      </FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

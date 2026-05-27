@@ -1,34 +1,34 @@
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Clock } from "lucide-react";
-import { differenceInDays, isPast, isامروز, isفردا } from "date-fns";
+import { differenceInDays, isPast, isToday, isTomorrow } from "date-fns";
 
-interface انقضاWarningProps {
+interface ExpirationWarningProps {
   expiresAt: string | null | undefined;
   state: string;
 }
 
-export const انقضاWarning = ({ expiresAt, state }: انقضاWarningProps) => {
+export const ExpirationWarning = ({ expiresAt, state }: ExpirationWarningProps) => {
   if (!expiresAt || state === "accepted" || state === "declined" || state === "expired") {
     return null;
   }
 
-  const expirationتاریخ = new تاریخ(expiresAt);
-  const daysUntilExpiry = differenceInDays(expirationتاریخ, new تاریخ());
+  const expirationDate = new تاریخ(expiresAt);
+  const daysUntilExpiry = differenceInDays(expirationDate, new تاریخ());
 
-  if (isPast(expirationتاریخ)) {
+  if (isPast(expirationDate)) {
     return (
       <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
         <AlertCircle className="h-4 w-4 text-destructive" />
         <div>
           <p className="text-sm font-medium text-destructive">This offer has expired</p>
-          <p className="text-xs text-destructive/80">Expired on {expirationتاریخ.toLocaleتاریخString()}</p>
+          <p className="text-xs text-destructive/80">Expired on {expirationDate.toLocaleDateString()}</p>
         </div>
       </div>
     );
   }
 
-  if (isامروز(expirationتاریخ)) {
+  if (isToday(expirationDate)) {
     return (
       <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
         <AlertCircle className="h-4 w-4 text-destructive" />
@@ -40,7 +40,7 @@ export const انقضاWarning = ({ expiresAt, state }: انقضاWarningProps) 
     );
   }
 
-  if (isفردا(expirationتاریخ)) {
+  if (isTomorrow(expirationDate)) {
     return (
       <div className="flex items-center gap-2 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg">
         <AlertCircle className="h-4 w-4 text-orange-500" />
@@ -69,15 +69,15 @@ export const انقضاWarning = ({ expiresAt, state }: انقضاWarningProps) 
   return null;
 };
 
-export const انقضاBadge = ({ expiresAt, state }: انقضاWarningProps) => {
+export const ExpirationBadge = ({ expiresAt, state }: ExpirationWarningProps) => {
   if (!expiresAt || state === "accepted" || state === "declined") {
     return null;
   }
 
-  const expirationتاریخ = new تاریخ(expiresAt);
-  const daysUntilExpiry = differenceInDays(expirationتاریخ, new تاریخ());
+  const expirationDate = new تاریخ(expiresAt);
+  const daysUntilExpiry = differenceInDays(expirationDate, new تاریخ());
 
-  if (isPast(expirationتاریخ)) {
+  if (isPast(expirationDate)) {
     return <Badge variant="destructive">Expired</Badge>;
   }
 

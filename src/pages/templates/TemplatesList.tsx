@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useگیرندهast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Plus, ویرایش, Trash2 } from "lucide-react";
-import { تأییدDialog } from "@/components/shared/تأییدDialog";
-import { گیرندهoltip, گیرندهoltipContent, گیرندهoltipProvider, گیرندهoltipTrigger } from "@/components/ui/tooltip";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Template {
   id: string;
@@ -20,19 +20,19 @@ interface Template {
 
 export default function TemplatesList() {
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [deleteDialogباز, setحذفDialogباز] = useState(false);
-  const [templateگیرندهحذف, setTemplateگیرندهحذف] = useState<string | null>(null);
-  const [isSiteمدیر کل, setIsSiteمدیر کل] = useState(false);
+  const [loading, setUpload] = useState(true);
+  const [deleteDialogOpen, setRemoveDialogOpen] = useState(false);
+  const [templateToRemove, setTemplateToRemove] = useState<string | null>(null);
+  const [isSiteAdmin, setIsSiteAdmin] = useState(false);
 
   useEffect(() => {
     fetchTemplates();
-    checkUserنقش();
+    checkUserRole();
   }, []);
 
-  const checkUserنقش = async () => {
+  const checkUserRole = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -43,11 +43,11 @@ export default function TemplatesList() {
       .eq("role", "site_admin")
       .single();
 
-    setIsSiteمدیر کل(!!data);
+    setIsSiteAdmin(!!data);
   };
 
   const fetchTemplates = async () => {
-    setبارگذاری(true);
+    setUpload(true);
     try {
       const { data, error } = await supabase
         .from("message_templates")
@@ -63,23 +63,23 @@ export default function TemplatesList() {
         variant: "destructive",
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const handleحذفClick = (id: string) => {
-    setTemplateگیرندهحذف(id);
-    setحذفDialogباز(true);
+  const handleRemoveClick = (id: string) => {
+    setTemplateToRemove(id);
+    setRemoveDialogOpen(true);
   };
 
-  const handleحذفتأیید = async () => {
-    if (!templateگیرندهحذف) return;
+  const handleRemoveConfirm = async () => {
+    if (!templateToRemove) return;
 
     try {
       const { error } = await supabase
         .from("message_templates")
         .delete()
-        .eq("id", templateگیرندهحذف);
+        .eq("id", templateToRemove);
 
       if (error) throw error;
 
@@ -96,8 +96,8 @@ export default function TemplatesList() {
         variant: "destructive",
       });
     } finally {
-      setحذفDialogباز(false);
-      setTemplateگیرندهحذف(null);
+      setRemoveDialogOpen(false);
+      setTemplateToRemove(null);
     }
   };
 
@@ -132,7 +132,7 @@ export default function TemplatesList() {
           {templates.map((template) => (
             <Card key={template.id}>
               <CardHeader>
-                <Cardعنوان className="flex items-start justify-between">
+                <CardTitle className="flex items-start justify-between">
                   <span className="text-lg">{template.name}</span>
                   <div className="flex gap-2">
                     <Button
@@ -142,29 +142,29 @@ export default function TemplatesList() {
                     >
                       <ویرایش className="h-4 w-4" />
                     </Button>
-                    <گیرندهoltipProvider>
-                      <گیرندهoltip>
-                        <گیرندهoltipTrigger asChild>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
                           <span>
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => handleحذفClick(template.id)}
-                              disabled={!isSiteمدیر کل}
+                              onClick={() => handleRemoveClick(template.id)}
+                              disabled={!isSiteAdmin}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </span>
-                        </گیرندهoltipTrigger>
-                        {!isSiteمدیر کل && (
-                          <گیرندهoltipContent>
+                        </TooltipTrigger>
+                        {!isSiteAdmin && (
+                          <TooltipContent>
                             <p>Only site administrators can delete templates</p>
-                          </گیرندهoltipContent>
+                          </TooltipContent>
                         )}
-                      </گیرندهoltip>
-                    </گیرندهoltipProvider>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
-                </Cardعنوان>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm font-medium mb-2">{template.subject}</p>
@@ -189,10 +189,10 @@ export default function TemplatesList() {
         </div>
       )}
 
-      <تأییدDialog
-        open={deleteDialogباز}
-        onبازChange={setحذفDialogباز}
-        onتأیید={handleحذفتأیید}
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setRemoveDialogOpen}
+        onConfirm={handleRemoveConfirm}
         title="حذف Template"
         description="Are you sure you want to delete this template? This action cannot be undone."
         confirmText="حذف"

@@ -6,10 +6,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Plus, Users, ChevronRight, فیلتر } from 'lucide-react';
 import {
   انتخاب,
-  انتخابContent,
-  انتخابItem,
-  انتخابTrigger,
-  انتخابValue,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import {
@@ -20,11 +20,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { افزودنCandidateDialog } from '@/components/pipeline/افزودنCandidateDialog';
-import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
+import { AddCandidateDialog } from '@/components/pipeline/AddCandidateDialog';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { CandidatesListSkeleton } from '@/components/candidates/CandidatesListSkeleton';
 import { ManagerAssignmentDropdown } from '@/components/candidates/ManagerAssignmentDropdown';
-import { getمرحلهColorClasses } from '@/lib/stage-colors';
+import { getStageColorClasses } from '@/lib/stage-colors';
 
 interface ApplicationWithDetails {
   id: string;
@@ -51,26 +51,26 @@ interface ApplicationWithDetails {
 }
 
 const CandidatesList = () => {
-  const [applications, setدرخواست‌ها] = useState<ApplicationWithDetails[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [userنقش, setUserنقش] = useState<string | null>(null);
+  const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
+  const [loading, setUpload] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [jobs, setJobs] = useState<Array<{ id: string; title: string }>>([]);
-  const [stages, setمرحلهs] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
-  const [statusفیلتر, setوضعیتفیلتر] = useState<string>('all');
-  const { role, assignedJobIds, loading: permissionsبارگذاری } = useUserدسترسی‌ها();
+  const [stages, setStages] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const { role, assignedJobIds, loading: permissionsUpload } = useUserPermissions();
 
   useEffect(() => {
-    fetchUserنقش();
+    fetchUserRole();
     fetchJobs();
   }, []);
 
   useEffect(() => {
-    if (!permissionsبارگذاری) {
-      fetchدرخواست‌ها();
+    if (!permissionsUpload) {
+      fetchApplications();
     }
-  }, [permissionsبارگذاری, role, assignedJobIds, statusفیلتر]);
+  }, [permissionsUpload, role, assignedJobIds, statusFilter]);
 
-  const fetchUserنقش = async () => {
+  const fetchUserRole = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -81,7 +81,7 @@ const CandidatesList = () => {
         .eq('user_id', user.id);
 
       if (rolesData && rolesData.length > 0) {
-        setUserنقش(rolesData[0].role);
+        setUserRole(rolesData[0].role);
       }
     } catch (error: any) {
       console.error('Error fetching user role:', error);
@@ -117,15 +117,15 @@ const CandidatesList = () => {
     }
   };
 
-  const fetchدرخواست‌ها = async () => {
+  const fetchApplications = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // خیرn-site_admin users with no job assignments see nothing
+      // Non-site_admin users with no job assignments see nothing
       if (role !== 'site_admin' && assignedJobIds.length === 0) {
-        setدرخواست‌ها([]);
-        setبارگذاری(false);
+        setApplications([]);
+        setUpload(false);
         return;
       }
 
@@ -144,7 +144,7 @@ const CandidatesList = () => {
           owner:profiles!applications_owner_user_id_fkey(full_name)
         `);
 
-      // پایه users (همکارs) - only see candidates assigned to them
+      // پایه users (Collaborators) - only see candidates assigned to them
       if (role === 'basic') {
         query = query.eq('owner_user_id', user.id);
         // Also filter by their accessible jobs
@@ -159,14 +159,14 @@ const CandidatesList = () => {
       // Site admins - no filter (see all)
 
       // ثبت درخواست status filter
-      if (statusفیلتر === 'active') {
+      if (statusFilter === 'active') {
         query = query.eq('state', 'active');
-      } else if (statusفیلتر === 'rejected') {
+      } else if (statusFilter === 'rejected') {
         query = query.eq('state', 'rejected');
-      } else if (statusفیلتر === 'withdrawn') {
+      } else if (statusFilter === 'withdrawn') {
         query = query.eq('state', 'withdrawn');
       }
-      // خیرte: 'hired' filter is handled post-query since we need to check stage type
+      // Note: 'hired' filter is handled post-query since we need to check stage type
 
       const { data, error } = await query.order('applied_at', { ascending: false });
 
@@ -181,20 +181,20 @@ const CandidatesList = () => {
         }));
 
       // Handle hired filter - check both state='hired' and stage type='hired'
-      if (statusفیلتر === 'hired') {
+      if (statusFilter === 'hired') {
         filteredData = filteredData.filter((app: any) => 
           app.state === 'hired' || app.current_stage?.type === 'hired'
         );
       }
       
       // Exclude hired candidates from "فعال" filter
-      if (statusفیلتر === 'active') {
+      if (statusFilter === 'active') {
         filteredData = filteredData.filter((app: any) => 
           app.current_stage?.type !== 'hired'
         );
       }
 
-      setدرخواست‌ها(filteredData);
+      setApplications(filteredData);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -202,7 +202,7 @@ const CandidatesList = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -212,29 +212,29 @@ const CandidatesList = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-3xl">Candidates</h1>
-          <انتخاب value={statusفیلتر} onValueChange={setوضعیتفیلتر}>
-            <انتخابTrigger className="w-[160px]">
+          <انتخاب value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[160px]">
               <فیلتر className="h-4 w-4 mr-2" />
-              <انتخابValue placeholder="فیلتر by status" />
-            </انتخابTrigger>
-            <انتخابContent>
-              <انتخابItem value="all">همه کاندیداها</انتخابItem>
-              <انتخابItem value="active">فعال</انتخابItem>
-              <انتخابItem value="rejected">ردed</انتخابItem>
-              <انتخابItem value="hired">استخدامd</انتخابItem>
-              <انتخابItem value="withdrawn">پس گرفتنn</انتخابItem>
-            </انتخابContent>
+              <SelectValue placeholder="فیلتر by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">همه کاندیداها</SelectItem>
+              <SelectItem value="active">فعال</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="hired">Hired</SelectItem>
+              <SelectItem value="withdrawn">Withdrawn</SelectItem>
+            </SelectContent>
           </انتخاب>
         </div>
-        {userنقش && userنقش !== 'basic' && (
-          <افزودنCandidateDialog 
+        {userRole && userRole !== 'basic' && (
+          <AddCandidateDialog 
             jobs={jobs}
-            onSuccess={fetchدرخواست‌ها}
+            onSuccess={fetchApplications}
           />
         )}
       </div>
 
-      {loading || permissionsبارگذاری ? (
+      {loading || permissionsUpload ? (
         <CandidatesListSkeleton />
       ) : applications.length === 0 ? (
         <div className="text-center py-12">
@@ -243,8 +243,8 @@ const CandidatesList = () => {
           <p className="text-muted-foreground">
             {role !== 'site_admin' && assignedJobIds.length === 0
               ? "You haven't been assigned to any jobs yet. Contact your administrator to get access."
-              : statusفیلتر !== 'all' 
-                ? `خیر ${statusفیلتر} candidates found`
+              : statusFilter !== 'all' 
+                ? `خیر ${statusFilter} candidates found`
                 : "Get started by adding your first candidate"}
           </p>
         </div>
@@ -288,7 +288,7 @@ const CandidatesList = () => {
                     {application.job?.title || 'Unknown Position'}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new تاریخ(application.applied_at).toLocaleتاریخString('en-US', { 
+                    {new تاریخ(application.applied_at).toLocaleDateString('en-US', { 
                       month: '2-digit', 
                       day: '2-digit', 
                       year: 'numeric' 
@@ -297,7 +297,7 @@ const CandidatesList = () => {
                   <TableCell>
                     <Badge 
                       variant="outline" 
-                      className={`capitalize border ${getمرحلهColorClasses(application.current_stage?.name || 'ثبت درخواست شده')}`}
+                      className={`capitalize border ${getStageColorClasses(application.current_stage?.name || 'ثبت درخواست شده')}`}
                     >
                       {application.current_stage?.name || 'ثبت درخواست شده'}
                     </Badge>
@@ -307,7 +307,7 @@ const CandidatesList = () => {
                       applicationId={application.id}
                       currentManagerId={application.owner_user_id}
                       currentManagerName={application.owner?.full_name || null}
-                      onبه‌روزرسانی={fetchدرخواست‌ها}
+                      onRefresh={fetchApplications}
                     />
                   </TableCell>
                   <TableCell className="rounded-r-lg">

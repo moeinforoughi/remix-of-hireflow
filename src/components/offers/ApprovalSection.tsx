@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from "@/components/ui/select";
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useگیرندهast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, Clock, Plus } from "lucide-react";
-import { formatDistanceگیرندهخیرw } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 interface تأیید {
   id: string;
@@ -29,30 +29,30 @@ interface پروفایل {
   email: string;
 }
 
-interface تأییدSectionProps {
+interface ConfirmSectionProps {
   offerId: string;
   offerState: string;
-  onتأییدChange?: () => void;
+  onConfirmChange?: () => void;
 }
 
-export const تأییدSection = ({ offerId, offerState, onتأییدChange }: تأییدSectionProps) => {
-  const { toast } = useگیرندهast();
-  const [approvals, setتأییدs] = useState<تأیید[]>([]);
-  const [profiles, setپروفایلs] = useState<پروفایل[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [selectedتأییدr, setانتخابedتأییدr] = useState("");
-  const [actionنظر, setActionنظر] = useState("");
+export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: ConfirmSectionProps) => {
+  const { toast } = useToast();
+  const [approvals, setConfirms] = useState<تأیید[]>([]);
+  const [profiles, setProfiles] = useState<پروفایل[]>([]);
+  const [loading, setUpload] = useState(true);
+  const [selectedConfirmr, setSelectedConfirmr] = useState("");
+  const [actionComment, setActionComment] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string>("");
-  const [pendingOffers, setدر انتظارOffers] = useState<any[]>([]);
+  const [pendingOffers, setPendingOffers] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchتأییدs();
-    fetchپروفایلs();
+    fetchConfirms();
+    fetchProfiles();
     getCurrentUser();
-    fetchدر انتظارOffers();
+    fetchPendingOffers();
   }, [offerId]);
 
-  const fetchدر انتظارOffers = async () => {
+  const fetchPendingOffers = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -86,7 +86,7 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
         .neq("offer_id", offerId);
 
       if (error) throw error;
-      setدر انتظارOffers(data || []);
+      setPendingOffers(data || []);
     } catch (error: any) {
       console.error("Error fetching pending offers:", error);
     }
@@ -97,8 +97,8 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
     if (user) setCurrentUserId(user.id);
   };
 
-  const fetchتأییدs = async () => {
-    setبارگذاری(true);
+  const fetchConfirms = async () => {
+    setUpload(true);
     try {
       const { data, error } = await supabase
         .from("approvals")
@@ -110,7 +110,7 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setتأییدs(data || []);
+      setConfirms(data || []);
     } catch (error: any) {
       toast({
         title: "Error fetching approvals",
@@ -118,11 +118,11 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
         variant: "destructive",
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const fetchپروفایلs = async () => {
+  const fetchProfiles = async () => {
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -130,14 +130,14 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
         .order("full_name");
 
       if (error) throw error;
-      setپروفایلs(data || []);
+      setProfiles(data || []);
     } catch (error: any) {
       console.error("Error fetching profiles:", error);
     }
   };
 
-  const handleافزودنتأیید = async () => {
-    if (!selectedتأییدr) {
+  const handleAddConfirm = async () => {
+    if (!selectedConfirmr) {
       toast({
         title: "انتخاب an approver",
         description: "Please select a user to approve this offer",
@@ -149,20 +149,20 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
     try {
       const { error } = await supabase.from("approvals").insert({
         offer_id: offerId,
-        approver_user_id: selectedتأییدr,
+        approver_user_id: selectedConfirmr,
         state: "pending",
       });
 
       if (error) throw error;
 
       toast({
-        title: "تأییدr added",
+        title: "Confirmr added",
         description: "تأیید request has been sent",
       });
 
-      setانتخابedتأییدr("");
-      fetchتأییدs();
-      onتأییدChange?.();
+      setSelectedConfirmr("");
+      fetchConfirms();
+      onConfirmChange?.();
     } catch (error: any) {
       toast({
         title: "Error adding approver",
@@ -172,13 +172,13 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
     }
   };
 
-  const handleتأییدAction = async (approvalId: string, action: "approved" | "rejected") => {
+  const handleConfirmAction = async (approvalId: string, action: "approved" | "rejected") => {
     try {
       const { error } = await supabase
         .from("approvals")
         .update({
           state: action,
-          comment: actionنظر || null,
+          comment: actionComment || null,
           acted_at: new تاریخ().toISOString(),
         })
         .eq("id", approvalId);
@@ -190,16 +190,16 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
         description: `You have ${action} this offer`,
       });
 
-      setActionنظر("");
+      setActionComment("");
       
       // Fetch updated approvals to check if all are complete
-      const { data: updatedتأییدs } = await supabase
+      const { data: updatedConfirms } = await supabase
         .from("approvals")
         .select("state")
         .eq("offer_id", offerId);
 
       // If all approvals are approved, trigger email notification
-      if (updatedتأییدs?.every(a => a.state === "approved")) {
+      if (updatedConfirms?.every(a => a.state === "approved")) {
         try {
           await supabase.functions.invoke("handle-offer-approval", {
             body: { offerId },
@@ -218,8 +218,8 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
         }
       }
 
-      fetchتأییدs();
-      onتأییدChange?.();
+      fetchConfirms();
+      onConfirmChange?.();
     } catch (error: any) {
       toast({
         title: "Error updating approval",
@@ -229,7 +229,7 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
     }
   };
 
-  const getوضعیتIcon = (state: string) => {
+  const getStatusIcon = (state: string) => {
     switch (state) {
       case "approved":
         return <CheckCircle className="h-5 w-5 text-green-500" />;
@@ -240,7 +240,7 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
     }
   };
 
-  const getوضعیتBadge = (state: string) => {
+  const getStatusBadge = (state: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive"> = {
       approved: "default",
       rejected: "destructive",
@@ -249,7 +249,7 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
     return <Badge variant={variants[state] || "secondary"}>{state}</Badge>;
   };
 
-  const pendingتأیید = approvals.find(
+  const pendingConfirm = approvals.find(
     (a) => a.state === "pending" && a.approver_user_id === currentUserId
   );
 
@@ -260,7 +260,7 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>تأییدs</Cardعنوان>
+        <CardTitle>Confirms</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {pendingOffers.length > 0 && (
@@ -296,21 +296,21 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
           <div className="space-y-2">
             <Label>افزودن تأییدکننده</Label>
             <div className="flex gap-2">
-              <انتخاب value={selectedتأییدr} onValueChange={setانتخابedتأییدr}>
-                <انتخابTrigger>
-                  <انتخابValue placeholder="انتخاب approver" />
-                </انتخابTrigger>
-                <انتخابContent>
+              <انتخاب value={selectedConfirmr} onValueChange={setSelectedConfirmr}>
+                <SelectTrigger>
+                  <SelectValue placeholder="انتخاب approver" />
+                </SelectTrigger>
+                <SelectContent>
                   {profiles
                     .filter((p) => !approvals.find((a) => a.approver_user_id === p.id))
                     .map((profile) => (
-                      <انتخابItem key={profile.id} value={profile.id}>
+                      <SelectItem key={profile.id} value={profile.id}>
                         {profile.full_name} ({profile.email})
-                      </انتخابItem>
+                      </SelectItem>
                     ))}
-                </انتخابContent>
+                </SelectContent>
               </انتخاب>
-              <Button onClick={handleافزودنتأیید} size="icon">
+              <Button onClick={handleAddConfirm} size="icon">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -325,13 +325,13 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
               <div key={approval.id} className="border rounded-lg p-4 space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    {getوضعیتIcon(approval.state)}
+                    {getStatusIcon(approval.state)}
                     <div>
                       <p className="font-medium">{approval.approver.full_name}</p>
                       <p className="text-xs text-muted-foreground">{approval.approver.email}</p>
                     </div>
                   </div>
-                  {getوضعیتBadge(approval.state)}
+                  {getStatusBadge(approval.state)}
                 </div>
 
                 {approval.comment && (
@@ -343,8 +343,8 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
 
                 <p className="text-xs text-muted-foreground">
                   {approval.acted_at
-                    ? `${approval.state} ${formatDistanceگیرندهخیرw(new تاریخ(approval.acted_at))} ago`
-                    : `Requested ${formatDistanceگیرندهخیرw(new تاریخ(approval.created_at))} ago`}
+                    ? `${approval.state} ${formatDistanceToNow(new تاریخ(approval.acted_at))} ago`
+                    : `Requested ${formatDistanceToNow(new تاریخ(approval.created_at))} ago`}
                 </p>
 
                 {approval.state === "pending" && approval.approver_user_id === currentUserId && (
@@ -352,14 +352,14 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
                     <Label htmlFor={`comment-${approval.id}`}>نظر (optional)</Label>
                     <Textarea
                       id={`comment-${approval.id}`}
-                      value={actionنظر}
-                      onChange={(e) => setActionنظر(e.target.value)}
+                      value={actionComment}
+                      onChange={(e) => setActionComment(e.target.value)}
                       placeholder="افزودن a comment..."
                       rows={2}
                     />
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => handleتأییدAction(approval.id, "approved")}
+                        onClick={() => handleConfirmAction(approval.id, "approved")}
                         size="sm"
                         className="flex-1"
                       >
@@ -367,7 +367,7 @@ export const تأییدSection = ({ offerId, offerState, onتأییدChange }: �
                         تأیید
                       </Button>
                       <Button
-                        onClick={() => handleتأییدAction(approval.id, "rejected")}
+                        onClick={() => handleConfirmAction(approval.id, "rejected")}
                         size="sm"
                         variant="destructive"
                         className="flex-1"

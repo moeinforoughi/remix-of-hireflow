@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, CheckCircle2, XCircle, Clock, ارسال, FileCheck, FileX, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
@@ -17,13 +17,13 @@ interface Activity {
   };
 }
 
-interface OfferزمانlineProps {
+interface OfferTimelineProps {
   offerId: string;
 }
 
-export function Offerزمانline({ offerId }: OfferزمانlineProps) {
+export function OfferTimeline({ offerId }: OfferTimelineProps) {
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setبارگذاری] = useState(true);
+  const [loading, setUpload] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -51,7 +51,7 @@ export function Offerزمانline({ offerId }: OfferزمانlineProps) {
     } catch (error: any) {
       console.error('Error fetching activities:', error);
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -85,7 +85,7 @@ export function Offerزمانline({ offerId }: OfferزمانlineProps) {
     );
   };
 
-  const getActivityتوضیحات = (activity: Activity) => {
+  const getActivityDescription = (activity: Activity) => {
     const beforeState = activity.before_json?.state;
     const afterState = activity.after_json?.state;
 
@@ -150,7 +150,7 @@ export function Offerزمانline({ offerId }: OfferزمانlineProps) {
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>وضعیت History</Cardعنوان>
+        <CardTitle>وضعیت History</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
@@ -168,7 +168,7 @@ export function Offerزمانline({ offerId }: OfferزمانlineProps) {
                   )}
                 </div>
                 <div className="flex-1 pb-6">
-                  {getActivityتوضیحات(activity)}
+                  {getActivityDescription(activity)}
                   <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                     <span>{format(new تاریخ(activity.created_at), 'MMM d, yyyy · h:mm a')}</span>
                     {activity.profiles?.full_name && (

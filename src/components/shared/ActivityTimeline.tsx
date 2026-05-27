@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, User, FileText, Briefcase, Mail, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
@@ -20,7 +20,7 @@ interface Activity {
   };
 }
 
-interface ActivityزمانlineProps {
+interface ActivityTimelineProps {
   entityType?: string;
   entityId?: string;
   limit?: number;
@@ -45,9 +45,9 @@ const getEntityIcon = (entity: string) => {
 
 const getActionLabel = (action: string) => {
   const labels: Record<string, string> = {
-    created: 'ایجادd',
-    updated: 'به‌روزرسانیd',
-    deleted: 'حذفd',
+    created: 'Created',
+    updated: 'Refreshd',
+    deleted: 'Removed',
     stage_moved: 'Moved stage',
     state_changed: 'Changed state',
     sent: 'ارسال شده',
@@ -71,10 +71,10 @@ const getActionColor = (action: string): 'default' | 'secondary' | 'destructive'
   }
 };
 
-export const Activityزمانline = ({ entityType, entityId, limit = 20 }: ActivityزمانlineProps) => {
+export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityTimelineProps) => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [candidateActivities, setCandidateActivities] = useState<any[]>([]);
-  const [loading, setبارگذاری] = useState(true);
+  const [loading, setUpload] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -110,7 +110,7 @@ export const Activityزمانline = ({ entityType, entityId, limit = 20 }: Activ
     } catch (error: any) {
       console.error('Error fetching activities:', error);
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -181,7 +181,7 @@ export const Activityزمانline = ({ entityType, entityId, limit = 20 }: Activ
         })) || []),
       ];
 
-      combined.sort((a, b) => new تاریخ(b.created_at).getزمان() - new تاریخ(a.created_at).getزمان());
+      combined.sort((a, b) => new تاریخ(b.created_at).getTime() - new تاریخ(a.created_at).getTime());
       setCandidateActivities(combined);
     } catch (error: any) {
       console.error('Error fetching candidate activities:', error);
@@ -192,7 +192,7 @@ export const Activityزمانline = ({ entityType, entityId, limit = 20 }: Activ
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان>Activity زمانline</Cardعنوان>
+          <CardTitle>Activity Timeline</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
@@ -209,7 +209,7 @@ export const Activityزمانline = ({ entityType, entityId, limit = 20 }: Activ
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان>Activity زمانline</Cardعنوان>
+          <CardTitle>Activity Timeline</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground py-8">خیر activity yet</p>
@@ -221,7 +221,7 @@ export const Activityزمانline = ({ entityType, entityId, limit = 20 }: Activ
   return (
     <Card>
       <CardHeader>
-        <Cardعنوان>Activity زمانline</Cardعنوان>
+        <CardTitle>Activity Timeline</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -231,44 +231,44 @@ export const Activityزمانline = ({ entityType, entityId, limit = 20 }: Activ
 
             if (item.type === 'application') {
               icon = FileText;
-              const jobعنوان = Array.isArray(item.data.job) ? item.data.job[0]?.title : item.data.job?.title;
+              const jobTitle = Array.isArray(item.data.job) ? item.data.job[0]?.title : item.data.job?.title;
               label = 'ثبت درخواست شده to Job';
-              description = jobعنوان || 'Unknown position';
+              description = jobTitle || 'Unknown position';
               
               if (item.data.state === 'rejected') {
                 badgeVariant = 'destructive';
-                label = 'Application ردed';
+                label = 'Application Rejected';
               } else if (item.data.current_stage?.type === 'hired') {
                 badgeVariant = 'default';
-                label = 'استخدامd';
-                description = `${jobعنوان} - ${item.data.current_stage.name}`;
+                label = 'Hired';
+                description = `${jobTitle} - ${item.data.current_stage.name}`;
               } else if (item.data.current_stage) {
                 badgeVariant = 'secondary';
                 label = item.data.current_stage.name;
               }
             } else if (item.type === 'interview') {
               icon = Calendar;
-              const jobعنوان = Array.isArray(item.data.application?.job) 
+              const jobTitle = Array.isArray(item.data.application?.job) 
                 ? item.data.application?.job[0]?.title 
                 : item.data.application?.job?.title;
               label = 'Interview Scheduled';
-              description = `${item.data.title} - ${jobعنوان}`;
+              description = `${item.data.title} - ${jobTitle}`;
               badgeVariant = 'secondary';
               
               if (item.data.status === 'completed') {
                 label = 'Interview انجام شده';
               } else if (item.data.status === 'cancelled') {
-                label = 'Interview انصرافled';
+                label = 'Interview Cancelled';
                 badgeVariant = 'destructive';
               }
             } else if (item.type === 'offer') {
               icon = Mail;
-              const jobعنوان = Array.isArray(item.data.application?.job) 
+              const jobTitle = Array.isArray(item.data.application?.job) 
                 ? item.data.application?.job[0]?.title 
                 : item.data.application?.job?.title;
               const amount = item.data.base_amount?.toLocaleString();
               const currency = item.data.currency || 'USD';
-              description = `${jobعنوان} - ${currency} ${amount}`;
+              description = `${jobTitle} - ${currency} ${amount}`;
               
               if (item.data.state === 'draft') {
                 label = 'Offer Being Prepared';
@@ -277,7 +277,7 @@ export const Activityزمانline = ({ entityType, entityId, limit = 20 }: Activ
                 label = 'Offer در انتظار تأیید';
                 badgeVariant = 'secondary';
               } else if (item.data.state === 'approved') {
-                label = 'Offer تأییدd';
+                label = 'Offer Confirmd';
                 badgeVariant = 'default';
               } else if (item.data.state === 'sent') {
                 label = 'Offer ارسال شده';

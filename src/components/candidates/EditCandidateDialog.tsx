@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { بارگذاری, Paperclip, FileText } from 'lucide-react';
-import { parseرزومه } from '@/lib/resume-parser';
+import { parseResume } from '@/lib/resume-parser';
 
 // Format phone number as (XXX) XXX-XXXX
-const formatتلفنNumber = (value: string) => {
+const formatPhoneNumber = (value: string) => {
   // حذف all non-digits
   const digits = value.replace(/\D/g, '');
   
@@ -22,9 +22,9 @@ const formatتلفنNumber = (value: string) => {
   return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)}-${limitedDigits.slice(6)}`;
 };
 
-interface ویرایشCandidateDialogProps {
+interface EditCandidateDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   candidate: {
     id: string;
     full_name: string;
@@ -35,10 +35,10 @@ interface ویرایشCandidateDialogProps {
     source: string;
     consent: boolean | null;
   } | null;
-  onبه‌روزرسانیSuccess: () => void;
+  onRefreshSuccess: () => void;
 }
 
-export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, onبه‌روزرسانیSuccess }: ویرایشCandidateDialogProps) => {
+export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSuccess }: EditCandidateDialogProps) => {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -49,13 +49,13 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
     phone: '',
     linkedin_url: '',
   });
-  const [loading, setبارگذاری] = useState(false);
-  const [resumeFile, setرزومهFile] = useState<File | null>(null);
-  const [currentرزومه, setCurrentرزومه] = useState<string | null>(null);
+  const [loading, setUpload] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [currentResume, setCurrentResume] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [uploading, setبارگذاریing] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (open && candidate) {
@@ -66,12 +66,12 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
         linkedin_url: candidate.linkedin_url || '',
       });
       setErrors({ phone: '', linkedin_url: '' });
-      setرزومهFile(null);
-      fetchCurrentرزومه();
+      setResumeFile(null);
+      fetchCurrentResume();
     }
   }, [open, candidate]);
 
-  const fetchCurrentرزومه = async () => {
+  const fetchCurrentResume = async () => {
     if (!candidate) return;
 
     try {
@@ -84,9 +84,9 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
         .limit(1);
 
       if (attachments && attachments.length > 0) {
-        setCurrentرزومه(attachments[0].file_name);
+        setCurrentResume(attachments[0].file_name);
       } else {
-        setCurrentرزومه(null);
+        setCurrentResume(null);
       }
     } catch (error) {
       console.error('Error fetching resume:', error);
@@ -117,11 +117,11 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
     
     const files = e.dataTransfer.files;
     if (files && files[0]) {
-      handleFileانتخاب(files[0]);
+      handleFileSelect(files[0]);
     }
   };
 
-  const handleFileانتخاب = async (file: File) => {
+  const handleFileSelect = async (file: File) => {
     const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     const maxSize = 10 * 1024 * 1024; // 10MB
 
@@ -143,7 +143,7 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
       return;
     }
 
-    setرزومهFile(file);
+    setResumeFile(file);
     toast({
       title: 'رزومه selected',
       description: 'رزومه will be uploaded when you update the candidate',
@@ -153,11 +153,11 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files[0]) {
-      handleFileانتخاب(files[0]);
+      handleFileSelect(files[0]);
     }
   };
 
-  const handleبه‌روزرسانی = async () => {
+  const handleRefresh = async () => {
     if (!candidate) return;
 
     // بازنشانی errors
@@ -196,10 +196,10 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
       }
     }
 
-    setبارگذاری(true);
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -239,7 +239,7 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
 
       // بارگذاری new resume if provided
       if (resumeFile) {
-        setبارگذاریing(true);
+        setUploading(true);
         const fileExt = resumeFile.name.split('.').pop();
         const fileName = `${candidate.id}-${تاریخ.now()}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
@@ -270,8 +270,8 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
         });
 
         // Parse resume in background
-        parseرزومه(filePath, candidate.id).catch(console.error);
-        setبارگذاریing(false);
+        parseResume(filePath, candidate.id).catch(console.error);
+        setUploading(false);
       }
 
       toast({
@@ -279,8 +279,8 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
         description: 'Candidate updated successfully',
       });
 
-      onبازChange(false);
-      onبه‌روزرسانیSuccess();
+      onOpenChange(false);
+      onRefreshSuccess();
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -288,20 +288,20 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
-      setبارگذاریing(false);
+      setUpload(false);
+      setUploading(false);
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <Dialogعنوان>ویرایش Candidate</Dialogعنوان>
+          <DialogTitle>ویرایش Candidate</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
           {/* Current رزومه Section */}
-          {currentرزومه && !resumeFile && (
+          {currentResume && !resumeFile && (
             <div className="border rounded-lg p-4 flex items-center justify-between bg-muted/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
@@ -309,7 +309,7 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
                 </div>
                 <div>
                   <p className="text-sm font-medium">Current رزومه</p>
-                  <p className="text-sm text-muted-foreground">{currentرزومه}</p>
+                  <p className="text-sm text-muted-foreground">{currentResume}</p>
                 </div>
               </div>
               <Button
@@ -340,7 +340,7 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
               </div>
               <div>
                 <p className="text-sm font-medium mb-1">
-                  {uploading ? 'بارگذاریing resume...' : currentرزومه ? 'Replace رزومه' : 'بارگذاری رزومه'}
+                  {uploading ? 'Uploading resume...' : currentResume ? 'Replace رزومه' : 'بارگذاری رزومه'}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {uploading ? 'Please wait...' : (
@@ -407,7 +407,7 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
                 placeholder="تلفن number"
                 value={formData.phone}
                 onChange={(e) => {
-                  const formatted = formatتلفنNumber(e.target.value);
+                  const formatted = formatPhoneNumber(e.target.value);
                   setFormData({ ...formData, phone: formatted });
                   setErrors(prev => ({ ...prev, phone: '' }));
                 }}
@@ -440,13 +440,13 @@ export const ویرایشCandidateDialog = ({ open, onبازChange, candidate, o
             <Button
               type="button"
               variant="outline"
-              onClick={() => onبازChange(false)}
+              onClick={() => onOpenChange(false)}
               className="px-6"
             >
               انصراف
             </Button>
             <Button
-              onClick={handleبه‌روزرسانی}
+              onClick={handleRefresh}
               disabled={loading || !formData.full_name}
               className="px-6 bg-foreground text-background hover:bg-foreground/90"
             >

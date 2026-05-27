@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layouts/AppSidebar';
 import { User } from '@supabase/supabase-js';
-import { خیرtificationCenter } from '@/components/notifications/خیرtificationCenter';
+import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 import { DynamicBreadcrumb } from '@/components/layouts/DynamicBreadcrumb';
 
 const AppLayout = () => {
@@ -48,14 +48,14 @@ const AppLayout = () => {
   }
 
   return (
-    <SidebarProvider defaultباز>
+    <SidebarProvider defaultOpen>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-x-hidden">
           <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
             <div className="flex h-14 items-center justify-between px-6">
               <SidebarTrigger />
-              <خیرtificationCenter />
+              <NotificationCenter />
             </div>
           </header>
           <main className="flex-1">

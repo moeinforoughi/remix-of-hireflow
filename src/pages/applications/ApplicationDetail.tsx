@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2, Calendar, Clock, MapPin, Video, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
-import { پیامComposer } from '@/components/messaging/پیامComposer';
-import { پیامزمانline } from '@/components/messaging/پیامزمانline';
+import { MessageComposer } from '@/components/messaging/MessageComposer';
+import { MessageTimeline } from '@/components/messaging/MessageTimeline';
 import { ApplicationActions } from '@/components/applications/ApplicationActions';
-import { Activityزمانline } from '@/components/shared/Activityزمانline';
-import { فرم ارزیابیsDialog } from '@/components/interviews/فرم ارزیابیsDialog';
-import { افزودنTaskDialog } from '@/components/tasks/افزودنTaskDialog';
-import { وظایفList } from '@/components/tasks/وظایفList';
+import { ActivityTimeline } from '@/components/shared/ActivityTimeline';
+import { ScorecardsDialog } from '@/components/interviews/ScorecardsDialog';
+import { AddTaskDialog } from '@/components/tasks/AddTaskDialog';
+import { TasksList } from '@/components/tasks/TasksList';
 
 interface ApplicationDetail {
   id: string;
@@ -64,15 +64,15 @@ interface Offer {
 const ApplicationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
   const [application, setApplication] = useState<ApplicationDetail | null>(null);
-  const [loading, setبارگذاری] = useState(true);
+  const [loading, setUpload] = useState(true);
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loadingInterviews, setبارگذاریInterviews] = useState(false);
-  const [selectedInterviewId, setانتخابedInterviewId] = useState<string | null>(null);
-  const [scorecardsDialogباز, setفرم ارزیابیsDialogباز] = useState(false);
+  const [loadingInterviews, setUploadInterviews] = useState(false);
+  const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
+  const [scorecardsDialogOpen, setScorecardsDialogOpen] = useState(false);
   const [offer, setOffer] = useState<Offer | null>(null);
-  const [tasks, setوظایف] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -84,7 +84,7 @@ const ApplicationDetail = () => {
 
   useEffect(() => {
     if (application?.candidate?.id) {
-      fetchوظایف();
+      fetchTasks();
     }
   }, [application?.candidate?.id]);
 
@@ -115,7 +115,7 @@ const ApplicationDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -123,7 +123,7 @@ const ApplicationDetail = () => {
     if (!id) return;
     
     try {
-      setبارگذاریInterviews(true);
+      setUploadInterviews(true);
       const { data, error } = await supabase
         .from('interviews')
         .select('*')
@@ -140,7 +140,7 @@ const ApplicationDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاریInterviews(false);
+      setUploadInterviews(false);
     }
   };
 
@@ -161,7 +161,7 @@ const ApplicationDetail = () => {
     }
   };
 
-  const fetchوظایف = async () => {
+  const fetchTasks = async () => {
     if (!application?.candidate?.id) return;
 
     try {
@@ -172,13 +172,13 @@ const ApplicationDetail = () => {
         .order('due_date', { ascending: true, nullsFirst: false });
 
       if (error) throw error;
-      setوظایف(data || []);
+      setTasks(data || []);
     } catch (error: any) {
       console.error('Error fetching tasks:', error);
     }
   };
 
-  const getوضعیتBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case 'scheduled':
         return 'default';
@@ -191,14 +191,14 @@ const ApplicationDetail = () => {
     }
   };
 
-  const getردionReasonText = (reason: string) => {
+  const getRejectionReasonText = (reason: string) => {
     switch (reason) {
       case 'not_qualified':
-        return 'خیرt Qualified';
+        return 'Not Qualified';
       case 'position_filled':
         return 'Position Filled';
       case 'withdrawn':
-        return 'پس گرفتنn by Candidate';
+        return 'Withdrawn by Candidate';
       case 'failed_assessment':
         return 'Failed Assessment';
       case 'cultural_fit':
@@ -216,7 +216,7 @@ const ApplicationDetail = () => {
     }
   };
 
-  const handleرد = async (reason: string, note: string) => {
+  const handleReject = async (reason: string, note: string) => {
     try {
       const { error } = await supabase
         .from('applications')
@@ -230,7 +230,7 @@ const ApplicationDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Application ردed',
+        title: 'Application Rejected',
         description: 'The application has been marked as rejected.',
       });
 
@@ -244,7 +244,7 @@ const ApplicationDetail = () => {
     }
   };
 
-  const handleپس گرفتن = async () => {
+  const handleWithdraw = async () => {
     try {
       const { error } = await supabase
         .from('applications')
@@ -254,7 +254,7 @@ const ApplicationDetail = () => {
       if (error) throw error;
 
       toast({
-        title: 'Application پس گرفتنn',
+        title: 'Application Withdrawn',
         description: 'The application has been marked as withdrawn.',
       });
 
@@ -268,10 +268,10 @@ const ApplicationDetail = () => {
     }
   };
 
-  const handleاستخدام = async () => {
+  const handleHire = async () => {
     try {
-      // Try to move the application to the "استخدامd" stage for this job
-      let hiredمرحلهId: string | null = null;
+      // Try to move the application to the "Hired" stage for this job
+      let hiredStageId: string | null = null;
       if (application?.job?.id) {
         const { data: stage, error: stageError } = await supabase
           .from('job_stages')
@@ -281,12 +281,12 @@ const ApplicationDetail = () => {
           .maybeSingle();
 
         if (stageError) throw stageError;
-        hiredمرحلهId = stage?.id ?? null;
+        hiredStageId = stage?.id ?? null;
       }
 
       const updates: { state: 'hired'; current_stage_id?: string | null } = { state: 'hired' };
-      if (hiredمرحلهId) {
-        updates.current_stage_id = hiredمرحلهId;
+      if (hiredStageId) {
+        updates.current_stage_id = hiredStageId;
       }
 
       const { data, error } = await supabase
@@ -304,8 +304,8 @@ const ApplicationDetail = () => {
       }
 
       toast({
-        title: 'Candidate استخدامd',
-        description: hiredمرحلهId ? 'Moved to the استخدامd stage.' : 'Marked as hired. (خیر استخدامd stage configured)'
+        title: 'Candidate Hired',
+        description: hiredStageId ? 'Moved to the Hired stage.' : 'Marked as hired. (خیر Hired stage configured)'
       });
 
       fetchApplication();
@@ -318,7 +318,7 @@ const ApplicationDetail = () => {
     }
   };
 
-  const handleEndقراردادی = async () => {
+  const handleEndContract = async () => {
     try {
       const { error } = await supabase
         .from('applications')
@@ -388,16 +388,16 @@ const ApplicationDetail = () => {
                   </Link>
                 </Button>
               )}
-              <Button variant="outline" onClick={handleEndقراردادی}>
+              <Button variant="outline" onClick={handleEndContract}>
                 End قراردادی
               </Button>
             </>
           ) : (
             <ApplicationActions
               applicationState={application.state}
-              onرد={handleرد}
-              onپس گرفتن={handleپس گرفتن}
-              onاستخدام={handleاستخدام}
+              onReject={handleReject}
+              onWithdraw={handleWithdraw}
+              onHire={handleHire}
               offerState={offer?.state}
               applicationId={application.id}
             />
@@ -414,8 +414,8 @@ const ApplicationDetail = () => {
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="tasks">وظایف ({tasks.length})</TabsTrigger>
-          <TabsTrigger value="messages">پیامs</TabsTrigger>
-          <TabsTrigger value="timeline">زمانline</TabsTrigger>
+          <TabsTrigger value="messages">Messages</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
           <TabsTrigger value="interviews">Interviews</TabsTrigger>
         </TabsList>
 
@@ -423,7 +423,7 @@ const ApplicationDetail = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <Cardعنوان>Candidate Information</Cardعنوان>
+                <CardTitle>Candidate Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
@@ -460,7 +460,7 @@ const ApplicationDetail = () => {
 
             <Card>
               <CardHeader>
-                <Cardعنوان>Application Details</Cardعنوان>
+                <CardTitle>Application Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
@@ -473,7 +473,7 @@ const ApplicationDetail = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Current مرحله</p>
-                  <p className="font-medium">{application.current_stage?.name || 'خیرt assigned'}</p>
+                  <p className="font-medium">{application.current_stage?.name || 'Not assigned'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">ثبت درخواست شده تاریخ</p>
@@ -488,7 +488,7 @@ const ApplicationDetail = () => {
           {application.cover_letter && (
             <Card>
               <CardHeader>
-                <Cardعنوان>کاور لتر</Cardعنوان>
+                <CardTitle>کاور لتر</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="prose prose-sm max-w-none dark:prose-invert">
@@ -501,18 +501,18 @@ const ApplicationDetail = () => {
           {application.state === 'rejected' && (
             <Card>
               <CardHeader>
-                <Cardعنوان>ردion Details</Cardعنوان>
+                <CardTitle>Rejection Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {application.rejection_reason && (
                   <div>
                     <p className="text-sm text-muted-foreground">Reason</p>
-                    <p className="font-medium">{getردionReasonText(application.rejection_reason)}</p>
+                    <p className="font-medium">{getRejectionReasonText(application.rejection_reason)}</p>
                   </div>
                 )}
                 {application.rejection_note && (
                   <div>
-                    <p className="text-sm text-muted-foreground">خیرte</p>
+                    <p className="text-sm text-muted-foreground">Note</p>
                     <p className="font-medium">{application.rejection_note}</p>
                   </div>
                 )}
@@ -524,38 +524,38 @@ const ApplicationDetail = () => {
         <TabsContent value="tasks" className="space-y-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <Cardعنوان>وظایف</Cardعنوان>
-              <افزودنTaskDialog 
+              <CardTitle>وظایف</CardTitle>
+              <AddTaskDialog 
                 candidateId={application.candidate.id} 
                 orgId={application.candidate.org_id} 
-                onTaskافزودنed={fetchوظایف} 
+                onTaskAdded={fetchTasks} 
               />
             </CardHeader>
             <CardContent>
-              <وظایفList tasks={tasks} onوظایفChange={fetchوظایف} />
+              <TasksList tasks={tasks} onTasksChange={fetchTasks} />
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="messages" className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
-            <پیامComposer 
+            <MessageComposer 
               candidateId={application.candidate.id}
               applicationId={application.id}
-              defaultگیرنده={application.candidate.email ? [application.candidate.email] : []}
+              defaultTo={application.candidate.email ? [application.candidate.email] : []}
             />
-            <پیامزمانline applicationId={application.id} />
+            <MessageTimeline applicationId={application.id} />
           </div>
         </TabsContent>
 
         <TabsContent value="timeline">
-          <Activityزمانline entityType="application" entityId={application.id} />
+          <ActivityTimeline entityType="application" entityId={application.id} />
         </TabsContent>
 
         <TabsContent value="interviews">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <Cardعنوان>Interviews</Cardعنوان>
+              <CardTitle>Interviews</CardTitle>
               <Button asChild size="sm">
                 <Link to={`/interviews/new?applicationId=${application.id}`}>
                   <Calendar className="h-4 w-4 mr-2" />
@@ -593,7 +593,7 @@ const ApplicationDetail = () => {
                               <ExternalLink className="h-4 w-4" />
                             </Link>
                             <Badge 
-                              variant={getوضعیتBadgeVariant(interview.status)} 
+                              variant={getStatusBadgeVariant(interview.status)} 
                               className="ml-3"
                             >
                               {interview.status}
@@ -650,11 +650,11 @@ const ApplicationDetail = () => {
                               size="sm"
                               className="w-full"
                               onClick={() => {
-                                setانتخابedInterviewId(interview.id);
-                                setفرم ارزیابیsDialogباز(true);
+                                setSelectedInterviewId(interview.id);
+                                setScorecardsDialogOpen(true);
                               }}
                             >
-                              View فرم ارزیابیs
+                              View Scorecards
                             </Button>
                           )}
                         </div>
@@ -669,10 +669,10 @@ const ApplicationDetail = () => {
       </Tabs>
 
       {selectedInterviewId && (
-        <فرم ارزیابیsDialog
+        <ScorecardsDialog
           interviewId={selectedInterviewId}
-          open={scorecardsDialogباز}
-          onبازChange={setفرم ارزیابیsDialogباز}
+          open={scorecardsDialogOpen}
+          onOpenChange={setScorecardsDialogOpen}
         />
       )}
     </div>

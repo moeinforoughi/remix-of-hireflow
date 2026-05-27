@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useگیرندهast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
 interface در انتظارتأیید {
@@ -22,30 +22,30 @@ interface در انتظارتأیید {
   offer_created_at: string;
 }
 
-interface تأییدRequestedDialogProps {
+interface ConfirmRequestedDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function تأییدRequestedDialog({ open, onبازChange }: تأییدRequestedDialogProps) {
-  const [approvals, setتأییدs] = useState<در انتظارتأیید[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const { toast } = useگیرندهast();
+export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedDialogProps) {
+  const [approvals, setConfirms] = useState<در انتظارتأیید[]>([]);
+  const [loading, setUpload] = useState(true);
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
-      fetchدر انتظارتأییدs();
+      fetchPendingConfirms();
     }
   }, [open]);
 
-  const fetchدر انتظارتأییدs = async () => {
-    setبارگذاری(true);
+  const fetchPendingConfirms = async () => {
+    setUpload(true);
     try {
       // Get current user's org_id
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setبارگذاری(false);
+        setUpload(false);
         return;
       }
       
@@ -56,7 +56,7 @@ export function تأییدRequestedDialog({ open, onبازChange }: تأییدRe
         .single();
       
       if (!profile) {
-        setبارگذاری(false);
+        setUpload(false);
         return;
       }
 
@@ -115,7 +115,7 @@ export function تأییدRequestedDialog({ open, onبازChange }: تأییدRe
         offer_created_at: approval.offers.created_at,
       }));
 
-      setتأییدs(formattedData);
+      setConfirms(formattedData);
     } catch (error: any) {
       console.error('Error fetching approvals:', error);
       toast({
@@ -124,11 +124,11 @@ export function تأییدRequestedDialog({ open, onبازChange }: تأییدRe
         variant: "destructive",
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const handleتأییدAction = async (approvalId: string, offerId: string, action: 'approved' | 'rejected') => {
+  const handleConfirmAction = async (approvalId: string, offerId: string, action: 'approved' | 'rejected') => {
     try {
       const { error } = await supabase
         .from('approvals')
@@ -151,13 +151,13 @@ export function تأییدRequestedDialog({ open, onبازChange }: تأییدRe
       }
 
       toast({
-        title: action === 'approved' ? "Offer تأییدd" : "Offer ردed",
+        title: action === 'approved' ? "Offer Confirmd" : "Offer Rejected",
         description: action === 'approved' 
           ? "The offer has been approved successfully" 
           : "The offer has been rejected",
       });
 
-      fetchدر انتظارتأییدs();
+      fetchPendingConfirms();
     } catch (error: any) {
       console.error('Error updating approval:', error);
       toast({
@@ -173,16 +173,16 @@ export function تأییدRequestedDialog({ open, onبازChange }: تأییدRe
     return `${currency === 'USD' ? '$' : currency}${total.toLocaleString()}/yr`;
   };
 
-  const formatشروعتاریخ = (createdAt: string) => {
+  const formatStartDate = (createdAt: string) => {
     const date = new تاریخ(createdAt);
-    return date.toLocaleتاریخString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[790px] max-w-[90vw] p-5 max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <Dialogعنوان className="text-2xl">در انتظار تأیید</Dialogعنوان>
+          <DialogTitle className="text-2xl">در انتظار تأیید</DialogTitle>
         </DialogHeader>
 
         <div className="py-5 flex flex-col gap-4">
@@ -213,7 +213,7 @@ export function تأییدRequestedDialog({ open, onبازChange }: تأییدRe
                         {formatSalary(approval.base_amount, approval.variable_amount, approval.currency)}
                       </div>
                       <div className="text-sm text-[#5d6174] leading-[18.20px]">
-                        شروعing: {formatشروعتاریخ(approval.offer_created_at)}
+                        Starting: {formatStartDate(approval.offer_created_at)}
                       </div>
                     </div>
 
@@ -231,13 +231,13 @@ export function تأییدRequestedDialog({ open, onبازChange }: تأییدRe
                     <Button
                       variant="outline"
                       className="flex-1 h-[41px] text-lg font-bold"
-                      onClick={() => handleتأییدAction(approval.id, approval.offer_id, 'rejected')}
+                      onClick={() => handleConfirmAction(approval.id, approval.offer_id, 'rejected')}
                     >
                       رد
                     </Button>
                     <Button
                       className="flex-1 h-[41px] text-base font-bold bg-[#45ce99]/30 text-foreground border-2 border-[#45ce99] hover:bg-[#45ce99]/40"
-                      onClick={() => handleتأییدAction(approval.id, approval.offer_id, 'approved')}
+                      onClick={() => handleConfirmAction(approval.id, approval.offer_id, 'approved')}
                     >
                       تأیید & ارسال
                     </Button>

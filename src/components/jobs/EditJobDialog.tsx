@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -28,15 +28,15 @@ interface Job {
   created_at: string;
 }
 
-interface ویرایشJobDialogProps {
+interface EditJobDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   job: Job;
   onSuccess?: () => void;
 }
 
-export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: ویرایشJobDialogProps) {
-  const [loading, setبارگذاری] = useState(false);
+export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDialogProps) {
+  const [loading, setUpload] = useState(false);
   const [formData, setFormData] = useState({
     title: job.title || '',
     location: job.location || '',
@@ -53,9 +53,9 @@ export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: 
   });
   const [skillInput, setSkillInput] = useState('');
 
-  const handleثبت = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setبارگذاری(true);
+    setUpload(true);
 
     try {
       const { error } = await supabase
@@ -71,7 +71,7 @@ export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: 
       });
 
       onSuccess?.();
-      onبازChange(false);
+      onOpenChange(false);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -79,17 +79,17 @@ export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: 
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="flex flex-row items-start justify-between space-y-0 pb-6 pr-12">
-          <Dialogعنوان className="text-3xl font-semibold">ویرایش Listing</Dialogعنوان>
+          <DialogTitle className="text-3xl font-semibold">ویرایش Listing</DialogTitle>
           <Button
-            onClick={handleثبت}
+            onClick={handleSubmit}
             disabled={loading}
             className="bg-foreground text-background hover:bg-foreground/90 gap-2"
           >
@@ -98,7 +98,7 @@ export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: 
           </Button>
         </DialogHeader>
 
-        <form onثبت={handleثبت} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Job عنوان */}
           <fieldset className="border border-border rounded-lg p-4 relative">
             <legend className="text-xs text-muted-foreground px-2 -ml-2">Job عنوان</legend>
@@ -111,7 +111,7 @@ export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: 
             />
           </fieldset>
 
-          {/* مکان, نوع همکاری, Compensation, بازings Row */}
+          {/* مکان, نوع همکاری, Compensation, Openings Row */}
           <div className="grid grid-cols-4 gap-4">
             <fieldset className="border border-border rounded-lg p-4 relative">
               <legend className="text-xs text-muted-foreground px-2 -ml-2">مکان</legend>
@@ -129,15 +129,15 @@ export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: 
                 value={formData.employment_type}
                 onValueChange={(value) => setFormData({ ...formData, employment_type: value as 'full_time' | 'part_time' | 'contract' | 'internship' })}
               >
-                <انتخابTrigger className="border-0 p-0 h-auto focus:ring-0 focus:ring-offset-0">
-                  <انتخابValue />
-                </انتخابTrigger>
-                <انتخابContent>
-                  <انتخابItem value="full_time">تمام‌وقت</انتخابItem>
-                  <انتخابItem value="part_time">نیمه‌وقت</انتخابItem>
-                  <انتخابItem value="contract">قراردادی</انتخابItem>
-                  <انتخابItem value="internship">کارآموزی</انتخابItem>
-                </انتخابContent>
+                <SelectTrigger className="border-0 p-0 h-auto focus:ring-0 focus:ring-offset-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full_time">تمام‌وقت</SelectItem>
+                  <SelectItem value="part_time">نیمه‌وقت</SelectItem>
+                  <SelectItem value="contract">قراردادی</SelectItem>
+                  <SelectItem value="internship">کارآموزی</SelectItem>
+                </SelectContent>
               </انتخاب>
             </fieldset>
 
@@ -152,7 +152,7 @@ export function ویرایشJobDialog({ open, onبازChange, job, onSuccess }: 
             </fieldset>
 
             <fieldset className="border border-border rounded-lg p-4 relative">
-              <legend className="text-xs text-muted-foreground px-2 -ml-2">Number of بازings</legend>
+              <legend className="text-xs text-muted-foreground px-2 -ml-2">Number of Openings</legend>
               <Input
                 type="number"
                 min={1}

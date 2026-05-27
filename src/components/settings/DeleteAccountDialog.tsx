@@ -4,23 +4,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, Dialogتوضیحات, DialogFooter, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import { Alert, Alertتوضیحات } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
-interface حذفAccountDialogProps {
+interface RemoveAccountDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
 }
 
-export const حذفAccountDialog = ({ open, onبازChange }: حذفAccountDialogProps) => {
-  const [loading, setبارگذاری] = useState(false);
-  const [confirmation, setتأییدation] = useState('');
-  const { toast } = useگیرندهast();
+export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogProps) => {
+  const [loading, setUpload] = useState(false);
+  const [confirmation, setConfirmation] = useState('');
+  const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleحذف = async () => {
+  const handleRemove = async () => {
     if (confirmation !== 'DELETE') {
       toast({
         title: 'Invalid confirmation',
@@ -30,7 +30,7 @@ export const حذفAccountDialog = ({ open, onبازChange }: حذفAccountDialo
       return;
     }
 
-    setبارگذاری(true);
+    setUpload(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -73,27 +73,27 @@ export const حذفAccountDialog = ({ open, onبازChange }: حذفAccountDialo
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <Dialogعنوان className="flex items-center gap-2 text-destructive">
+          <DialogTitle className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-5 w-5" />
             حذف Account
-          </Dialogعنوان>
-          <Dialogتوضیحات>
+          </DialogTitle>
+          <DialogDescription>
             This action cannot be undone. This will permanently delete your account and remove your data from our servers.
-          </Dialogتوضیحات>
+          </DialogDescription>
         </DialogHeader>
         
         <Alert variant="destructive">
-          <Alertتوضیحات>
+          <AlertDescription>
             Warning: All your data including applications, interviews, and offers will be permanently deleted.
-          </Alertتوضیحات>
+          </AlertDescription>
         </Alert>
 
         <div className="space-y-4 py-4">
@@ -104,19 +104,19 @@ export const حذفAccountDialog = ({ open, onبازChange }: حذفAccountDialo
             <Input
               id="confirmation"
               value={confirmation}
-              onChange={(e) => setتأییدation(e.target.value)}
+              onChange={(e) => setConfirmation(e.target.value)}
               placeholder="DELETE"
             />
           </div>
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={() => onبازChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             انصراف
           </Button>
           <Button 
             variant="destructive" 
-            onClick={handleحذف} 
+            onClick={handleRemove} 
             disabled={loading || confirmation !== 'DELETE'}
           >
             {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}

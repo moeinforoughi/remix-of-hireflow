@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Plus, Pencil } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { Starامتیاز } from './Starامتیاز';
-import { افزودنCandidateامتیازDialog } from './افزودنCandidateامتیازDialog';
+import { StarRating } from './StarRating';
+import { AddCandidateRatingDialog } from './AddCandidateRatingDialog';
 import { format } from 'date-fns';
 
-interface Candidateامتیاز {
+interface CandidateRating {
   id: string;
   soft_skills: number;
   hard_skills: number;
@@ -24,7 +24,7 @@ interface Candidateامتیاز {
   };
 }
 
-interface امتیازsSectionProps {
+interface RatingsSectionProps {
   candidateId: string;
 }
 
@@ -36,17 +36,17 @@ const CATEGORIES = [
   { key: 'experience', label: 'سابقه کار' },
 ] as const;
 
-type امتیازKey = typeof CATEGORIES[number]['key'];
+type RatingKey = typeof CATEGORIES[number]['key'];
 
-export const امتیازsSection = ({ candidateId }: امتیازsSectionProps) => {
-  const [ratings, setامتیازs] = useState<Candidateامتیاز[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [dialogباز, setDialogباز] = useState(false);
+export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
+  const [ratings, setRatings] = useState<CandidateRating[]>([]);
+  const [loading, setUpload] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [editingامتیاز, setویرایشingامتیاز] = useState<Candidateامتیاز | null>(null);
+  const [editingRating, setEditingRating] = useState<CandidateRating | null>(null);
 
   useEffect(() => {
-    fetchامتیازs();
+    fetchRatings();
     fetchCurrentUser();
   }, [candidateId]);
 
@@ -55,7 +55,7 @@ export const امتیازsSection = ({ candidateId }: امتیازsSectionProps)
     setCurrentUserId(user?.id || null);
   };
 
-  const fetchامتیازs = async () => {
+  const fetchRatings = async () => {
     try {
       const { data, error } = await supabase
         .from('candidate_ratings')
@@ -74,36 +74,36 @@ export const امتیازsSection = ({ candidateId }: امتیازsSectionProps)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setامتیازs((data as any) || []);
+      setRatings((data as any) || []);
     } catch (error) {
       console.error('Error fetching ratings:', error);
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const calculateAverage = (key: امتیازKey): number => {
+  const calculateAverage = (key: RatingKey): number => {
     if (ratings.length === 0) return 0;
     const sum = ratings.reduce((acc, r) => acc + r[key], 0);
     return sum / ratings.length;
   };
 
-  const userامتیاز = ratings.find(r => r.user.id === currentUserId);
+  const userRating = ratings.find(r => r.user.id === currentUserId);
 
-  const handleافزودنOrویرایش = () => {
-    if (userامتیاز) {
-      setویرایشingامتیاز(userامتیاز);
+  const handleAddOrEdit = () => {
+    if (userRating) {
+      setEditingRating(userRating);
     } else {
-      setویرایشingامتیاز(null);
+      setEditingRating(null);
     }
-    setDialogباز(true);
+    setDialogOpen(true);
   };
 
   if (loading) {
     return (
       <Card>
         <CardHeader>
-          <Cardعنوان className="text-lg">امتیازs</Cardعنوان>
+          <CardTitle className="text-lg">Ratings</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">بارگذاری ratings...</p>
@@ -116,9 +116,9 @@ export const امتیازsSection = ({ candidateId }: امتیازsSectionProps)
     <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Cardعنوان className="text-lg">امتیازs</Cardعنوان>
-          <Button size="sm" variant="outline" onClick={handleافزودنOrویرایش}>
-            {userامتیاز ? (
+          <CardTitle className="text-lg">Ratings</CardTitle>
+          <Button size="sm" variant="outline" onClick={handleAddOrEdit}>
+            {userRating ? (
               <>
                 <Pencil className="h-4 w-4 mr-1" />
                 ویرایش
@@ -145,7 +145,7 @@ export const امتیازsSection = ({ candidateId }: امتیازsSectionProps)
                     <div key={cat.key} className="flex items-center justify-between">
                       <span className="text-sm">{cat.label}</span>
                       <div className="flex items-center gap-2">
-                        <Starامتیاز value={Math.round(avg)} readonly size="sm" />
+                        <StarRating value={Math.round(avg)} readonly size="sm" />
                         <span className="text-xs text-muted-foreground w-8">({avg.toFixed(1)})</span>
                       </div>
                     </div>
@@ -153,9 +153,9 @@ export const امتیازsSection = ({ candidateId }: امتیازsSectionProps)
                 })}
               </div>
 
-              {/* Individual امتیازs */}
+              {/* Individual Ratings */}
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">Individual امتیازs</p>
+                <p className="text-sm font-medium text-muted-foreground">Individual Ratings</p>
                 {ratings.map((rating) => (
                   <div key={rating.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
                     <div className="flex items-center gap-2">
@@ -174,7 +174,7 @@ export const امتیازsSection = ({ candidateId }: امتیازsSectionProps)
                       {CATEGORIES.map((cat) => (
                         <div key={cat.key} className="flex items-center justify-between">
                           <span className="text-muted-foreground">{cat.label}:</span>
-                          <Starامتیاز value={rating[cat.key]} readonly size="sm" />
+                          <StarRating value={rating[cat.key]} readonly size="sm" />
                         </div>
                       ))}
                     </div>
@@ -191,12 +191,12 @@ export const امتیازsSection = ({ candidateId }: امتیازsSectionProps)
         </CardContent>
       </Card>
 
-      <افزودنCandidateامتیازDialog
-        open={dialogباز}
-        onبازChange={setDialogباز}
+      <AddCandidateRatingDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
         candidateId={candidateId}
-        existingامتیاز={editingامتیاز}
-        onSuccess={fetchامتیازs}
+        existingRating={editingRating}
+        onSuccess={fetchRatings}
       />
     </>
   );

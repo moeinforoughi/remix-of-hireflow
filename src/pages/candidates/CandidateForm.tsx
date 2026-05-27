@@ -4,19 +4,19 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
-import { Card, CardContent, Cardتوضیحات, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Fileبارگذاری } from '@/components/shared/Fileبارگذاری';
+import { FileUpload } from '@/components/shared/FileUpload';
 import { toast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
-import { parseرزومه } from '@/lib/resume-parser';
+import { parseResume } from '@/lib/resume-parser';
 
 const CandidateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setبارگذاری] = useState(false);
-  const [resumeFile, setرزومهFile] = useState<File | null>(null);
+  const [loading, setUpload] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -58,13 +58,13 @@ const CandidateForm = () => {
     }
   };
 
-  const handleثبت = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setبارگذاری(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -132,7 +132,7 @@ const CandidateForm = () => {
           });
 
         // Parse resume in the background - use the file path
-        parseرزومه(filePath, candidateId).catch((error) => {
+        parseResume(filePath, candidateId).catch((error) => {
           console.error('رزومه parsing failed:', error);
         });
       }
@@ -150,7 +150,7 @@ const CandidateForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -170,11 +170,11 @@ const CandidateForm = () => {
 
       <Card>
         <CardHeader>
-          <Cardعنوان>Candidate Information</Cardعنوان>
-          <Cardتوضیحات>پایه details about the candidate</Cardتوضیحات>
+          <CardTitle>Candidate Information</CardTitle>
+          <CardDescription>پایه details about the candidate</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onثبت={handleثبت} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="full_name">نام و نام خانوادگی *</Label>
@@ -236,26 +236,26 @@ const CandidateForm = () => {
                   value={formData.source}
                   onValueChange={(value: any) => setFormData({ ...formData, source: value })}
                 >
-                  <انتخابTrigger>
-                    <انتخابValue />
-                  </انتخابTrigger>
-                  <انتخابContent>
-                    <انتخابItem value="manual">Manual Entry</انتخابItem>
-                    <انتخابItem value="careers_site">فرصت‌های شغلی Site</انتخابItem>
-                    <انتخابItem value="referral">Referral</انتخابItem>
-                    <انتخابItem value="linkedin">لینکدین</انتخابItem>
-                    <انتخابItem value="agency">Agency</انتخابItem>
-                    <انتخابItem value="job_fair">Job Fair</انتخابItem>
-                  </انتخابContent>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="manual">Manual Entry</SelectItem>
+                    <SelectItem value="careers_site">فرصت‌های شغلی Site</SelectItem>
+                    <SelectItem value="referral">Referral</SelectItem>
+                    <SelectItem value="linkedin">لینکدین</SelectItem>
+                    <SelectItem value="agency">Agency</SelectItem>
+                    <SelectItem value="job_fair">Job Fair</SelectItem>
+                  </SelectContent>
                 </انتخاب>
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="resume">رزومه (اختیاری)</Label>
-              <Fileبارگذاری
+              <FileUpload
                 value={resumeFile}
-                onChange={setرزومهFile}
+                onChange={setResumeFile}
               />
             </div>
 

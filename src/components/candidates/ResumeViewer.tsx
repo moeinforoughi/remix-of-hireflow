@@ -2,31 +2,31 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  Dialogعنوان,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { دانلود, ExternalLink } from 'lucide-react';
 
-interface رزومهViewerProps {
+interface ResumeViewerProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   resumeUrl: string | null;
   candidateName: string;
 }
 
-export const رزومهViewer = ({
+export const ResumeViewer = ({
   open,
-  onبازChange,
+  onOpenChange,
   resumeUrl,
   candidateName,
-}: رزومهViewerProps) => {
+}: ResumeViewerProps) => {
   if (!resumeUrl) return null;
 
-  const handleدانلود = () => {
+  const handleDownload = () => {
     window.open(resumeUrl, '_blank');
   };
 
-  const handleبازInNewTab = () => {
+  const handleOpenInNewTab = () => {
     window.open(resumeUrl, '_blank');
   };
 
@@ -34,24 +34,24 @@ export const رزومهViewer = ({
   const isPdf = (() => {
     try {
       const url = new URL(resumeUrl);
-      return url.pathname.toکمerCase().endsWith('.pdf');
+      return url.pathname.toLowerCase().endsWith('.pdf');
     } catch {
-      return resumeUrl.toکمerCase().includes('.pdf');
+      return resumeUrl.toLowerCase().includes('.pdf');
     }
   })();
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0">
         <DialogHeader className="px-6 py-4 border-b flex flex-row items-center justify-between space-y-0">
-          <Dialogعنوان className="text-xl font-semibold">
+          <DialogTitle className="text-xl font-semibold">
             {candidateName}'s رزومه
-          </Dialogعنوان>
+          </DialogTitle>
           <div className="flex items-center gap-2 mr-12">
             <Button
               variant="outline"
               size="sm"
-              onClick={handleدانلود}
+              onClick={handleDownload}
               className="gap-2"
             >
               <دانلود className="h-4 w-4" />
@@ -60,7 +60,7 @@ export const رزومهViewer = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={handleبازInNewTab}
+              onClick={handleOpenInNewTab}
               className="gap-2"
             >
               <ExternalLink className="h-4 w-4" />
@@ -82,7 +82,7 @@ export const رزومهViewer = ({
                 <p className="text-muted-foreground">
                   Preview not available for this file type
                 </p>
-                <Button onClick={handleدانلود} className="gap-2">
+                <Button onClick={handleDownload} className="gap-2">
                   <دانلود className="h-4 w-4" />
                   دانلود رزومه
                 </Button>

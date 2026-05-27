@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { Star } from 'lucide-react';
 
-interface فرم ارزیابیCardProps {
+interface ScorecardCardProps {
   scorecard: {
     id: string;
     user: {
@@ -19,29 +19,29 @@ interface فرم ارزیابیCardProps {
 const RECOMMENDATION_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' }> = {
   advance: { label: 'Advance', variant: 'default' },
   hold: { label: 'Hold', variant: 'secondary' },
-  no: { label: 'Do خیرt Advance', variant: 'destructive' },
+  no: { label: 'Do Not Advance', variant: 'destructive' },
 };
 
-export const فرم ارزیابیCard = ({ scorecard }: فرم ارزیابیCardProps) => {
+export const ScorecardCard = ({ scorecard }: ScorecardCardProps) => {
   const recInfo = RECOMMENDATION_LABELS[scorecard.recommendation] || { label: scorecard.recommendation, variant: 'default' as const };
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <Cardعنوان className="text-base">{scorecard.user.full_name}</Cardعنوان>
+          <CardTitle className="text-base">{scorecard.user.full_name}</CardTitle>
           <Badge variant={recInfo.variant}>{recInfo.label}</Badge>
         </div>
         {scorecard.submitted_at && (
           <p className="text-sm text-muted-foreground">
-            ثبتted {format(new تاریخ(scorecard.submitted_at), 'MMM d, yyyy')}
+            Submitted {format(new تاریخ(scorecard.submitted_at), 'MMM d, yyyy')}
           </p>
         )}
       </CardHeader>
       <CardContent className="space-y-4">
         {scorecard.ratings_json && Object.keys(scorecard.ratings_json).length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-sm">امتیازs</h4>
+            <h4 className="text-sm">Ratings</h4>
             {Object.entries(scorecard.ratings_json).map(([key, value]: [string, any]) => (
               <div key={key} className="space-y-1">
                 <div className="flex items-center justify-between">
@@ -69,7 +69,7 @@ export const فرم ارزیابیCard = ({ scorecard }: فرم ارزیابیCa
         
         {scorecard.notes && (
           <div className="space-y-2">
-            <h4 className="text-sm">Overall خیرtes</h4>
+            <h4 className="text-sm">Overall Notes</h4>
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">{scorecard.notes}</p>
           </div>
         )}

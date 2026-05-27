@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight, CheckCircle2, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import بعدیMeetingCard from "@/components/dashboard/بعدیMeetingCard";
+import NextMeetingCard from "@/components/dashboard/NextMeetingCard";
 import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +19,7 @@ export function پایهداشبورد() {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
-  const [isبارگذاریDemo, setIsبارگذاریDemo] = useState(() => {
+  const [isUploadDemo, setIsUploadDemo] = useState(() => {
     return sessionStorage.getItem('demo-reset-in-progress') === 'true';
   });
   const [metrics, setMetrics] = useState({
@@ -41,7 +41,7 @@ export function پایهداشبورد() {
         .eq('user_id', user.id)
         .single();
 
-      const userنقش = roleData?.role;
+      const userRole = roleData?.role;
 
       // Fetch assigned jobs through job_acl
       const { data: aclData } = await supabase
@@ -65,8 +65,8 @@ export function پایهداشبورد() {
           .order('applied_at', { ascending: false })
           .limit(10);
 
-        // For basic users (همکارs), only show candidates assigned to them
-        if (userنقش === 'basic') {
+        // For basic users (Collaborators), only show candidates assigned to them
+        if (userRole === 'basic') {
           applicationsQuery = applicationsQuery.eq('owner_user_id', user.id);
         }
 
@@ -80,23 +80,23 @@ export function پایهداشبورد() {
           .in('job_id', jobIds);
 
         // For basic users, only count their assigned candidates
-        if (userنقش === 'basic') {
+        if (userRole === 'basic') {
           metricsQuery = metricsQuery.eq('owner_user_id', user.id);
         }
 
-        const { data: allدرخواست‌ها } = await metricsQuery;
+        const { data: allApplications } = await metricsQuery;
 
-        const activeدرخواست‌ها = allدرخواست‌ها?.filter(a => a.state === 'active') || [];
-        const interviewing = activeدرخواست‌ها.filter(a => 
+        const activeApplications = allApplications?.filter(a => a.state === 'active') || [];
+        const interviewing = activeApplications.filter(a => 
           ['phone', 'onsite'].includes(a.job_stages?.type || '')
         ).length;
-        const shortlisted = activeدرخواست‌ها.filter(a => 
+        const shortlisted = activeApplications.filter(a => 
           a.job_stages?.type === 'offer'
         ).length;
 
         setMetrics({
           currentListings: assignedJobs.length,
-          totalApplicants: allدرخواست‌ها?.length || 0,
+          totalApplicants: allApplications?.length || 0,
           interviewing,
           shortlisted,
         });
@@ -104,24 +104,24 @@ export function پایهداشبورد() {
     };
 
     // If demo reset in progress, wait for the event
-    if (isبارگذاریDemo) {
-      const handleDemoDataبه‌روزرسانی = () => {
-        setIsبارگذاریDemo(false);
+    if (isUploadDemo) {
+      const handleDemoDataRefresh = () => {
+        setIsUploadDemo(false);
         fetchData();
       };
-      window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
+      window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
+      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
     } else {
       fetchData();
     }
 
     // Also listen for future demo data refresh events
-    const handleDemoDataبه‌روزرسانی = () => {
+    const handleDemoDataRefresh = () => {
       fetchData();
     };
-    window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-  }, [isبارگذاریDemo]);
+    window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
+    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
+  }, [isUploadDemo]);
 
   const metricCards = [
     {
@@ -170,7 +170,7 @@ export function پایهداشبورد() {
 
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        {isبارگذاریDemo ? (
+        {isUploadDemo ? (
           <>
             <MetricCardSkeleton />
             <MetricCardSkeleton />
@@ -187,7 +187,7 @@ export function پایهداشبورد() {
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <div className="flex items-center gap-2">
                   <img src={metric.icon} alt="" className="w-4 h-4 flex-shrink-0" />
-                  <Cardعنوان className="text-sm font-medium !text-black">{metric.title}</Cardعنوان>
+                  <CardTitle className="text-sm font-medium !text-black">{metric.title}</CardTitle>
                 </div>
                 <ChevronRight className={`h-4 w-4 ${metric.iconColor}`} />
               </CardHeader>
@@ -202,13 +202,13 @@ export function پایهداشبورد() {
       {/* کاندیداهای نیازمند بررسی and موقعیت‌های شغلی */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* کاندیداهای نیازمند بررسی */}
-        {isبارگذاریDemo ? (
+        {isUploadDemo ? (
           <CandidatesCardSkeleton />
         ) : (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
-                <Cardعنوان>کاندیداهای نیازمند بررسی</Cardعنوان>
+                <CardTitle>کاندیداهای نیازمند بررسی</CardTitle>
                 <Badge variant="secondary" className="rounded-full">
                   {candidates.length}
                 </Badge>
@@ -257,12 +257,12 @@ export function پایهداشبورد() {
         )}
 
         {/* موقعیت‌های شغلی */}
-        {isبارگذاریDemo ? (
+        {isUploadDemo ? (
           <JobListingsCardSkeleton />
         ) : (
           <Card>
             <CardHeader>
-              <Cardعنوان>موقعیت‌های شغلی</Cardعنوان>
+              <CardTitle>موقعیت‌های شغلی</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -284,7 +284,7 @@ export function پایهداشبورد() {
                     <div className="font-medium">{job.title}</div>
                     <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new تاریخ(job.created_at).toLocaleتاریخString()}
+                      {new تاریخ(job.created_at).toLocaleDateString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">
@@ -303,7 +303,7 @@ export function پایهداشبورد() {
 
       {/* بعدی Meeting and فعالیت‌های اخیر */}
       <div className="grid gap-6 md:grid-cols-2">
-        <بعدیMeetingCard />
+        <NextMeetingCard />
         <RecentActivityFeed />
       </div>
     </div>

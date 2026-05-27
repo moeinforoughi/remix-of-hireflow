@@ -1,18 +1,18 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogانصراف,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogتوضیحات,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogعنوان,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-interface تأییدDialogProps {
+interface ConfirmDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
-  onتأیید: () => void;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
   title: string;
   description: string;
   confirmText?: string;
@@ -20,27 +20,27 @@ interface تأییدDialogProps {
   variant?: 'default' | 'destructive';
 }
 
-export const تأییدDialog = ({
+export const ConfirmDialog = ({
   open,
-  onبازChange,
-  onتأیید,
+  onOpenChange,
+  onConfirm,
   title,
   description,
   confirmText = 'ادامه',
   cancelText = 'انصراف',
   variant = 'default',
-}: تأییدDialogProps) => {
+}: ConfirmDialogProps) => {
   return (
-    <AlertDialog open={open} onبازChange={onبازChange}>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogعنوان>{title}</AlertDialogعنوان>
-          <AlertDialogتوضیحات>{description}</AlertDialogتوضیحات>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogانصراف>{cancelText}</AlertDialogانصراف>
+          <AlertDialogCancel>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
-            onClick={onتأیید}
+            onClick={onConfirm}
             className={variant === 'destructive' ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : ''}
           >
             {confirmText}

@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Loader2, جستجو, X, ChevronRight, Briefcase } from 'lucide-react';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import {
   انتخاب,
-  انتخابContent,
-  انتخابItem,
-  انتخابTrigger,
-  انتخابValue,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import {
   Table,
@@ -42,20 +42,20 @@ interface Application {
   };
 }
 
-const درخواست‌هاList = () => {
-  const [applications, setدرخواست‌ها] = useState<Application[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [searchQuery, setجستجوQuery] = useState('');
-  const [statusفیلتر, setوضعیتفیلتر] = useState<string>('all');
-  const [sortBy, setمرتب‌سازیBy] = useState<'date' | 'name'>('date');
+const ApplicationsList = () => {
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setUpload] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
 
   useEffect(() => {
-    fetchدرخواست‌ها();
+    fetchApplications();
   }, []);
 
-  const fetchدرخواست‌ها = async () => {
+  const fetchApplications = async () => {
     try {
       const { data, error } = await supabase
         .from('applications')
@@ -70,7 +70,7 @@ const درخواست‌هاList = () => {
         .order('applied_at', { ascending: false });
 
       if (error) throw error;
-      setدرخواست‌ها(data || []);
+      setApplications(data || []);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -78,7 +78,7 @@ const درخواست‌هاList = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -92,35 +92,35 @@ const درخواست‌هاList = () => {
     return colors[state] || 'bg-slate-50 text-slate-700 border-slate-300';
   };
 
-  const filteredدرخواست‌ها = applications
+  const filteredApplications = applications
     .filter((app) => {
       // فیلتر out applications with missing candidate or job data
       if (!app.candidate || !app.job) return false;
 
-      const matchesجستجو =
-        app.candidate.full_name.toکمerCase().includes(searchQuery.toکمerCase()) ||
-        app.candidate.email.toکمerCase().includes(searchQuery.toکمerCase()) ||
-        app.job.title.toکمerCase().includes(searchQuery.toکمerCase());
+      const matchesSearch =
+        app.candidate.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.candidate.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.job.title.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesوضعیت = statusفیلتر === 'all' || app.state === statusفیلتر;
+      const matchesStatus = statusFilter === 'all' || app.state === statusFilter;
 
-      return matchesجستجو && matchesوضعیت;
+      return matchesSearch && matchesStatus;
     })
     .sort((a, b) => {
       if (sortBy === 'date') {
-        return new تاریخ(b.applied_at).getزمان() - new تاریخ(a.applied_at).getزمان();
+        return new تاریخ(b.applied_at).getTime() - new تاریخ(a.applied_at).getTime();
       } else {
         return a.candidate?.full_name.localeCompare(b.candidate?.full_name) || 0;
       }
     });
 
-  const clearفیلترs = () => {
-    setجستجوQuery('');
-    setوضعیتفیلتر('all');
-    setمرتب‌سازیBy('date');
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+    setSortBy('date');
   };
 
-  const hasفعالفیلترs = searchQuery || statusفیلتر !== 'all' || sortBy !== 'date';
+  const hasActiveFilters = searchQuery || statusFilter !== 'all' || sortBy !== 'date';
 
   if (loading) {
     return (
@@ -148,50 +148,50 @@ const درخواست‌هاList = () => {
           <Input
             placeholder="جستجو by candidate name, email, or job title..."
             value={searchQuery}
-            onChange={(e) => setجستجوQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-card border-input"
           />
         </div>
 
-        <انتخاب value={statusفیلتر} onValueChange={setوضعیتفیلتر}>
-          <انتخابTrigger className="w-full sm:w-[180px] bg-card">
-            <انتخابValue placeholder="وضعیت" />
-          </انتخابTrigger>
-          <انتخابContent>
-            <انتخابItem value="all">All وضعیتes</انتخابItem>
-            <انتخابItem value="active">فعال</انتخابItem>
-            <انتخابItem value="hired">استخدامd</انتخابItem>
-            <انتخابItem value="rejected">ردed</انتخابItem>
-            <انتخابItem value="withdrawn">پس گرفتنn</انتخابItem>
-          </انتخابContent>
+        <انتخاب value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-[180px] bg-card">
+            <SelectValue placeholder="وضعیت" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="active">فعال</SelectItem>
+            <SelectItem value="hired">Hired</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value="withdrawn">Withdrawn</SelectItem>
+          </SelectContent>
         </انتخاب>
 
-        <انتخاب value={sortBy} onValueChange={(value: 'date' | 'name') => setمرتب‌سازیBy(value)}>
-          <انتخابTrigger className="w-full sm:w-[180px] bg-card">
-            <انتخابValue placeholder="مرتب‌سازی by" />
-          </انتخابTrigger>
-          <انتخابContent>
-            <انتخابItem value="date">تاریخ (Newest)</انتخابItem>
-            <انتخابItem value="name">Name (A-Z)</انتخابItem>
-          </انتخابContent>
+        <انتخاب value={sortBy} onValueChange={(value: 'date' | 'name') => setSortBy(value)}>
+          <SelectTrigger className="w-full sm:w-[180px] bg-card">
+            <SelectValue placeholder="مرتب‌سازی by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">تاریخ (Newest)</SelectItem>
+            <SelectItem value="name">Name (A-Z)</SelectItem>
+          </SelectContent>
         </انتخاب>
 
-        {hasفعالفیلترs && (
-          <Button variant="outline" onClick={clearفیلترs}>
+        {hasActiveFilters && (
+          <Button variant="outline" onClick={clearFilters}>
             <X className="h-4 w-4 mr-2" />
             پاک کردن
           </Button>
         )}
       </div>
 
-      {filteredدرخواست‌ها.length === 0 ? (
+      {filteredApplications.length === 0 ? (
         <div className="text-center py-12">
           <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg mb-2">خیر applications found</h3>
           <p className="text-muted-foreground mb-4">
-            {hasفعالفیلترs ? 'Try adjusting your filters' : 'Get started by creating your first application'}
+            {hasActiveFilters ? 'Try adjusting your filters' : 'Get started by creating your first application'}
           </p>
-          {!hasفعالفیلترs && (
+          {!hasActiveFilters && (
             <Button onClick={() => navigate('/applications/new')}>
               <Plus className="h-4 w-4 mr-2" />
               درخواست جدید
@@ -214,7 +214,7 @@ const درخواست‌هاList = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="space-y-1">
-              {filteredدرخواست‌ها.map((app) => (
+              {filteredApplications.map((app) => (
                 <TableRow 
                   key={app.id}
                   className="cursor-pointer hover:bg-accent/50 border-0 mb-1"
@@ -229,14 +229,14 @@ const درخواست‌هاList = () => {
                   <TableCell>{app.candidate.email}</TableCell>
                   <TableCell className="text-blue-600 font-medium">{app.job.title}</TableCell>
                   <TableCell>{app.job.department || '-'}</TableCell>
-                  <TableCell>{app.current_stage?.name || 'خیرt assigned'}</TableCell>
+                  <TableCell>{app.current_stage?.name || 'Not assigned'}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={`capitalize ${getStateBadgeColor(app.state)}`}>
                       {app.state}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new تاریخ(app.applied_at).toLocaleتاریخString()}
+                    {new تاریخ(app.applied_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="rounded-r-lg">
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -251,4 +251,4 @@ const درخواست‌هاList = () => {
   );
 };
 
-export default درخواست‌هاList;
+export default ApplicationsList;

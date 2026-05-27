@@ -3,20 +3,20 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  Dialogعنوان,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Starامتیاز } from './Starامتیاز';
+import { StarRating } from './StarRating';
 import { supabase } from '@/integrations/supabase/client';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
-interface افزودنCandidateامتیازDialogProps {
+interface AddCandidateRatingDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   candidateId: string;
-  existingامتیاز?: {
+  existingRating?: {
     id: string;
     soft_skills: number;
     hard_skills: number;
@@ -36,53 +36,53 @@ const RATING_CATEGORIES = [
   { key: 'experience', label: 'سابقه کار', description: 'Relevant background and history' },
 ] as const;
 
-type امتیازKey = typeof RATING_CATEGORIES[number]['key'];
+type RatingKey = typeof RATING_CATEGORIES[number]['key'];
 
-export const افزودنCandidateامتیازDialog = ({
+export const AddCandidateRatingDialog = ({
   open,
-  onبازChange,
+  onOpenChange,
   candidateId,
-  existingامتیاز,
+  existingRating,
   onSuccess,
-}: افزودنCandidateامتیازDialogProps) => {
-  const { toast } = useگیرندهast();
-  const [loading, setبارگذاری] = useState(false);
-  const [ratings, setامتیازs] = useState<Record<امتیازKey, number>>({
+}: AddCandidateRatingDialogProps) => {
+  const { toast } = useToast();
+  const [loading, setUpload] = useState(false);
+  const [ratings, setRatings] = useState<Record<RatingKey, number>>({
     soft_skills: 3,
     hard_skills: 3,
     salary_match: 3,
     culture_fit: 3,
     experience: 3,
   });
-  const [notes, setخیرtes] = useState('');
+  const [notes, setNotes] = useState('');
 
   useEffect(() => {
-    if (existingامتیاز) {
-      setامتیازs({
-        soft_skills: existingامتیاز.soft_skills,
-        hard_skills: existingامتیاز.hard_skills,
-        salary_match: existingامتیاز.salary_match,
-        culture_fit: existingامتیاز.culture_fit,
-        experience: existingامتیاز.experience,
+    if (existingRating) {
+      setRatings({
+        soft_skills: existingRating.soft_skills,
+        hard_skills: existingRating.hard_skills,
+        salary_match: existingRating.salary_match,
+        culture_fit: existingRating.culture_fit,
+        experience: existingRating.experience,
       });
-      setخیرtes(existingامتیاز.notes || '');
+      setNotes(existingRating.notes || '');
     } else {
-      setامتیازs({
+      setRatings({
         soft_skills: 3,
         hard_skills: 3,
         salary_match: 3,
         culture_fit: 3,
         experience: 3,
       });
-      setخیرtes('');
+      setNotes('');
     }
-  }, [existingامتیاز, open]);
+  }, [existingRating, open]);
 
-  const handleثبت = async () => {
-    setبارگذاری(true);
+  const handleSubmit = async () => {
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -92,14 +92,14 @@ export const افزودنCandidateامتیازDialog = ({
 
       if (!profile) throw new Error('پروفایل not found');
 
-      if (existingامتیاز) {
+      if (existingRating) {
         const { error } = await supabase
           .from('candidate_ratings')
           .update({
             ...ratings,
             notes: notes || null,
           })
-          .eq('id', existingامتیاز.id);
+          .eq('id', existingRating.id);
 
         if (error) throw error;
         toast({ title: 'امتیاز updated successfully' });
@@ -119,7 +119,7 @@ export const افزودنCandidateامتیازDialog = ({
       }
 
       onSuccess();
-      onبازChange(false);
+      onOpenChange(false);
     } catch (error: any) {
       toast({
         title: 'Error saving rating',
@@ -127,15 +127,15 @@ export const افزودنCandidateامتیازDialog = ({
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <Dialogعنوان>{existingامتیاز ? 'ویرایش امتیاز' : 'Rate Candidate'}</Dialogعنوان>
+          <DialogTitle>{existingRating ? 'ویرایش امتیاز' : 'Rate Candidate'}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -145,31 +145,31 @@ export const افزودنCandidateامتیازDialog = ({
                 <Label className="text-sm font-medium">{category.label}</Label>
                 <p className="text-xs text-muted-foreground">{category.description}</p>
               </div>
-              <Starامتیاز
+              <StarRating
                 value={ratings[category.key]}
-                onChange={(value) => setامتیازs((prev) => ({ ...prev, [category.key]: value }))}
+                onChange={(value) => setRatings((prev) => ({ ...prev, [category.key]: value }))}
               />
             </div>
           ))}
 
           <div className="space-y-2 pt-2">
-            <Label htmlFor="notes">خیرtes (optional)</Label>
+            <Label htmlFor="notes">Notes (optional)</Label>
             <Textarea
               id="notes"
               value={notes}
-              onChange={(e) => setخیرtes(e.target.value)}
-              placeholder="افزودنitional comments about this candidate..."
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Additional comments about this candidate..."
               rows={3}
             />
           </div>
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onبازChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             انصراف
           </Button>
-          <Button onClick={handleثبت} disabled={loading}>
-            {loading ? 'در حال ذخیره...' : existingامتیاز ? 'به‌روزرسانی' : 'ذخیره امتیاز'}
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? 'در حال ذخیره...' : existingRating ? 'به‌روزرسانی' : 'ذخیره امتیاز'}
           </Button>
         </div>
       </DialogContent>

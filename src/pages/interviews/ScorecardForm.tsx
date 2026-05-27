@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Star } from 'lucide-react';
 
 const RATING_CATEGORIES = [
@@ -17,30 +17,30 @@ const RATING_CATEGORIES = [
   { key: 'experience', label: 'Relevant سابقه کار' },
 ];
 
-const فرم ارزیابیForm = () => {
+const ScorecardForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
-  const [recommendation, setتوصیه] = useState('');
-  const [ratings, setامتیازs] = useState<Record<string, { score: number; comment: string }>>({});
-  const [overallخیرtes, setOverallخیرtes] = useState('');
-  const [submitting, setثبتting] = useState(false);
+  const { toast } = useToast();
+  const [recommendation, setRecommendation] = useState('');
+  const [ratings, setRatings] = useState<Record<string, { score: number; comment: string }>>({});
+  const [overallNotes, setOverallNotes] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleامتیازChange = (category: string, score: number) => {
-    setامتیازs((prev) => ({
+  const handleRatingChange = (category: string, score: number) => {
+    setRatings((prev) => ({
       ...prev,
       [category]: { score, comment: prev[category]?.comment || '' },
     }));
   };
 
-  const handleنظرChange = (category: string, comment: string) => {
-    setامتیازs((prev) => ({
+  const handleCommentChange = (category: string, comment: string) => {
+    setRatings((prev) => ({
       ...prev,
       [category]: { score: prev[category]?.score || 0, comment },
     }));
   };
 
-  const handleثبت = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!recommendation) {
@@ -52,24 +52,24 @@ const فرم ارزیابیForm = () => {
       return;
     }
 
-    setثبتting(true);
+    setSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       const { error } = await supabase.from('scorecards').insert([{
         interview_id: id!,
         user_id: user.id,
         recommendation: recommendation as 'advance' | 'hold' | 'no',
         ratings_json: ratings as any,
-        notes: overallخیرtes,
+        notes: overallNotes,
         submitted_at: new تاریخ().toISOString(),
       }]);
 
       if (error) throw error;
 
       toast({
-        title: 'فرم ارزیابی ثبتted',
+        title: 'فرم ارزیابی Submitted',
         description: 'Your interview feedback has been recorded.',
       });
 
@@ -81,7 +81,7 @@ const فرم ارزیابیForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setثبتting(false);
+      setSubmitting(false);
     }
   };
 
@@ -94,10 +94,10 @@ const فرم ارزیابیForm = () => {
         <h1 className="text-3xl">Interview فرم ارزیابی</h1>
       </div>
 
-      <form onثبت={handleثبت} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <CardHeader>
-            <Cardعنوان>امتیاز Categories</Cardعنوان>
+            <CardTitle>امتیاز Categories</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {RATING_CATEGORIES.map((category) => (
@@ -108,7 +108,7 @@ const فرم ارزیابیForm = () => {
                     <button
                       key={score}
                       type="button"
-                      onClick={() => handleامتیازChange(category.key, score)}
+                      onClick={() => handleRatingChange(category.key, score)}
                       className="focus:outline-none"
                     >
                       <Star
@@ -127,7 +127,7 @@ const فرم ارزیابیForm = () => {
                 <Textarea
                   placeholder="افزودن comments about this area..."
                   value={ratings[category.key]?.comment || ''}
-                  onChange={(e) => handleنظرChange(category.key, e.target.value)}
+                  onChange={(e) => handleCommentChange(category.key, e.target.value)}
                   rows={2}
                 />
               </div>
@@ -137,10 +137,10 @@ const فرم ارزیابیForm = () => {
 
         <Card>
           <CardHeader>
-            <Cardعنوان>توصیه</Cardعنوان>
+            <CardTitle>توصیه</CardTitle>
           </CardHeader>
           <CardContent>
-            <RadioGroup value={recommendation} onValueChange={setتوصیه}>
+            <RadioGroup value={recommendation} onValueChange={setRecommendation}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="advance" id="advance" />
                 <Label htmlFor="advance" className="font-normal">
@@ -156,7 +156,7 @@ const فرم ارزیابیForm = () => {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="no" id="no" />
                 <Label htmlFor="no" className="font-normal">
-                  Do خیرt Advance
+                  Do Not Advance
                 </Label>
               </div>
             </RadioGroup>
@@ -165,13 +165,13 @@ const فرم ارزیابیForm = () => {
 
         <Card>
           <CardHeader>
-            <Cardعنوان>Overall خیرtes</Cardعنوان>
+            <CardTitle>Overall Notes</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
               placeholder="Provide overall feedback about the candidate..."
-              value={overallخیرtes}
-              onChange={(e) => setOverallخیرtes(e.target.value)}
+              value={overallNotes}
+              onChange={(e) => setOverallNotes(e.target.value)}
               rows={6}
             />
           </CardContent>
@@ -179,7 +179,7 @@ const فرم ارزیابیForm = () => {
 
         <div className="flex gap-4">
           <Button type="submit" disabled={submitting}>
-            {submitting ? 'ثبتting...' : 'ثبت فرم ارزیابی'}
+            {submitting ? 'Submitting...' : 'ثبت فرم ارزیابی'}
           </Button>
           <Button
             type="button"
@@ -194,4 +194,4 @@ const فرم ارزیابیForm = () => {
   );
 };
 
-export default فرم ارزیابیForm;
+export default ScorecardForm;

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, DollarSign, Users, UserCheck } from 'lucide-react';
-import { ویرایشJobDialog } from './ویرایشJobDialog';
+import { EditJobDialog } from './EditJobDialog';
 import { supabase } from '@/integrations/supabase/client';
 interface Job {
   id: string;
@@ -25,26 +25,26 @@ interface Job {
 }
 interface ViewJobDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   job: Job;
   onSuccess?: () => void;
   hiredCount?: number;
 }
 export function ViewJobDialog({
   open,
-  onبازChange,
+  onOpenChange,
   job,
   onSuccess,
   hiredCount = 0
 }: ViewJobDialogProps) {
-  const [editDialogباز, setویرایشDialogباز] = useState(false);
-  const [canویرایش, setCanویرایش] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
 
   useEffect(() => {
-    const checkUserنقش = async () => {
+    const checkUserRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setCanویرایش(false);
+        setCanEdit(false);
         return;
       }
 
@@ -55,27 +55,27 @@ export function ViewJobDialog({
         .single();
 
       // Only job_admin and site_admin can edit
-      setCanویرایش(roleData?.role === 'job_admin' || roleData?.role === 'site_admin');
+      setCanEdit(roleData?.role === 'job_admin' || roleData?.role === 'site_admin');
     };
 
     if (open) {
-      checkUserنقش();
+      checkUserRole();
     }
   }, [open]);
-  const handleویرایشClick = () => {
-    setویرایشDialogباز(true);
+  const handleEditClick = () => {
+    setEditDialogOpen(true);
   };
-  const handleویرایشSuccess = () => {
-    setویرایشDialogباز(false);
+  const handleEditSuccess = () => {
+    setEditDialogOpen(false);
     onSuccess?.();
   };
   return <>
-      <Dialog open={open} onبازChange={onبازChange}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-card">
           <DialogHeader className="flex flex-row items-center justify-between pr-12">
-            <Dialogعنوان className="text-2xl font-semibold">{job.title}</Dialogعنوان>
-            {canویرایش && (
-              <Button onClick={handleویرایشClick} variant="outline" className="bg-foreground text-background hover:bg-foreground/90">
+            <DialogTitle className="text-2xl font-semibold">{job.title}</DialogTitle>
+            {canEdit && (
+              <Button onClick={handleEditClick} variant="outline" className="bg-foreground text-background hover:bg-foreground/90">
                 ویرایش Listing
               </Button>
             )}
@@ -143,6 +143,6 @@ export function ViewJobDialog({
         </DialogContent>
       </Dialog>
 
-      <ویرایشJobDialog open={editDialogباز} onبازChange={setویرایشDialogباز} job={job} onSuccess={handleویرایشSuccess} />
+      <EditJobDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} job={job} onSuccess={handleEditSuccess} />
     </>;
 }

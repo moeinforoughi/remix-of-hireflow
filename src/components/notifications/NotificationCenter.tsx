@@ -9,12 +9,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bell, Check, Trash2 } from 'lucide-react';
-import { formatDistanceگیرندهخیرw } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
-interface خیرtification {
+interface Notification {
   id: string;
   title: string;
   message: string;
@@ -25,15 +25,15 @@ interface خیرtification {
   created_at: string;
 }
 
-export const خیرtificationCenter = () => {
-  const [notifications, setخیرtifications] = useState<خیرtification[]>([]);
+export const NotificationCenter = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [open, setباز] = useState(false);
-  const { toast } = useگیرندهast();
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchخیرtifications();
+    fetchNotifications();
 
     // Subscribe to realtime notifications
     const channel = supabase
@@ -46,14 +46,14 @@ export const خیرtificationCenter = () => {
           table: 'notifications',
         },
         (payload) => {
-          const newخیرtification = payload.new as خیرtification;
-          setخیرtifications((prev) => [newخیرtification, ...prev]);
+          const newNotification = payload.new as Notification;
+          setNotifications((prev) => [newNotification, ...prev]);
           setUnreadCount((prev) => prev + 1);
 
           // نمایش toast for new notification
           toast({
-            title: newخیرtification.title,
-            description: newخیرtification.message,
+            title: newNotification.title,
+            description: newNotification.message,
           });
         }
       )
@@ -64,7 +64,7 @@ export const خیرtificationCenter = () => {
     };
   }, []);
 
-  const fetchخیرtifications = async () => {
+  const fetchNotifications = async () => {
     try {
       const { data, error } = await supabase
         .from('notifications')
@@ -74,7 +74,7 @@ export const خیرtificationCenter = () => {
 
       if (error) throw error;
 
-      setخیرtifications(data || []);
+      setNotifications(data || []);
       setUnreadCount(data?.filter((n) => !n.is_read).length || 0);
     } catch (error: any) {
       console.error('Error fetching notifications:', error);
@@ -90,7 +90,7 @@ export const خیرtificationCenter = () => {
 
       if (error) throw error;
 
-      setخیرtifications((prev) =>
+      setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
@@ -108,7 +108,7 @@ export const خیرtificationCenter = () => {
 
       if (error) throw error;
 
-      setخیرtifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
       setUnreadCount(0);
 
       toast({
@@ -124,7 +124,7 @@ export const خیرtificationCenter = () => {
     }
   };
 
-  const deleteخیرtification = async (id: string) => {
+  const deleteNotification = async (id: string) => {
     try {
       const { error } = await supabase
         .from('notifications')
@@ -134,7 +134,7 @@ export const خیرtificationCenter = () => {
       if (error) throw error;
 
       const wasUnread = notifications.find((n) => n.id === id)?.is_read === false;
-      setخیرtifications((prev) => prev.filter((n) => n.id !== id));
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
       if (wasUnread) {
         setUnreadCount((prev) => Math.max(0, prev - 1));
       }
@@ -143,14 +143,14 @@ export const خیرtificationCenter = () => {
     }
   };
 
-  const handleخیرtificationClick = (notification: خیرtification) => {
+  const handleNotificationClick = (notification: Notification) => {
     if (!notification.is_read) {
       markAsRead(notification.id);
     }
 
     // Navigate based on entity type
     if (notification.entity_type && notification.entity_id) {
-      setباز(false);
+      setOpen(false);
       switch (notification.entity_type) {
         case 'application':
           navigate(`/applications/${notification.entity_id}`);
@@ -168,7 +168,7 @@ export const خیرtificationCenter = () => {
     }
   };
 
-  const getخیرtificationIcon = (type: string) => {
+  const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'application':
         return '📝';
@@ -184,7 +184,7 @@ export const خیرtificationCenter = () => {
   };
 
   return (
-    <DropdownMenu open={open} onبازChange={setباز}>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
@@ -200,7 +200,7 @@ export const خیرtificationCenter = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
         <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="">خیرtifications</h3>
+          <h3 className="">Notifications</h3>
           {unreadCount > 0 && (
             <Button variant="ghost" size="sm" onClick={markAllAsRead}>
               <Check className="h-4 w-4 mr-1" />
@@ -222,10 +222,10 @@ export const خیرtificationCenter = () => {
                 className={`p-4 cursor-pointer border-b ${
                   !notification.is_read ? 'bg-muted/50' : ''
                 }`}
-                onClick={() => handleخیرtificationClick(notification)}
+                onClick={() => handleNotificationClick(notification)}
               >
                 <div className="flex gap-3 w-full">
-                  <div className="text-2xl">{getخیرtificationIcon(notification.type)}</div>
+                  <div className="text-2xl">{getNotificationIcon(notification.type)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <p className="font-medium text-sm">{notification.title}</p>
@@ -235,7 +235,7 @@ export const خیرtificationCenter = () => {
                         className="h-6 w-6"
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteخیرtification(notification.id);
+                          deleteNotification(notification.id);
                         }}
                       >
                         <Trash2 className="h-3 w-3" />
@@ -245,7 +245,7 @@ export const خیرtificationCenter = () => {
                       {notification.message}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {formatDistanceگیرندهخیرw(new تاریخ(notification.created_at), {
+                      {formatDistanceToNow(new تاریخ(notification.created_at), {
                         addSuffix: true,
                       })}
                     </p>

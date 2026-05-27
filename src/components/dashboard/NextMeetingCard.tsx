@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Video, Clock, Users, Calendar, MapPin, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -26,16 +26,16 @@ interface Interview {
   };
 }
 
-const بعدیMeetingCard = () => {
-  const [nextInterview, setبعدیInterview] = useState<Interview | null>(null);
-  const [loading, setبارگذاری] = useState(true);
+const NextMeetingCard = () => {
+  const [nextInterview, setNextInterview] = useState<Interview | null>(null);
+  const [loading, setUpload] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchبعدیInterview();
+    fetchNextInterview();
   }, []);
 
-  const fetchبعدیInterview = async () => {
+  const fetchNextInterview = async () => {
     try {
       const { data, error } = await supabase
         .from('interviews')
@@ -58,11 +58,11 @@ const بعدیMeetingCard = () => {
         .maybeSingle();
 
       if (error) throw error;
-      setبعدیInterview(data);
+      setNextInterview(data);
     } catch (error) {
       console.error('Error fetching next interview:', error);
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -107,7 +107,7 @@ const بعدیMeetingCard = () => {
     return (
       <Card>
         <CardHeader className="pb-3">
-          <Cardعنوان className="text-base">مصاحبه بعدی</Cardعنوان>
+          <CardTitle className="text-base">مصاحبه بعدی</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">مصاحبه‌ی پیش‌رویی برنامه‌ریزی نشده است</p>
@@ -116,14 +116,14 @@ const بعدیMeetingCard = () => {
     );
   }
 
-  const interviewتاریخ = new تاریخ(nextInterview.start_at);
-  const isامروز = format(interviewتاریخ, 'yyyy-MM-dd') === format(new تاریخ(), 'yyyy-MM-dd');
+  const interviewDate = new تاریخ(nextInterview.start_at);
+  const isToday = format(interviewDate, 'yyyy-MM-dd') === format(new تاریخ(), 'yyyy-MM-dd');
   const panelCount = nextInterview.panel_user_ids?.length || 0;
 
   return (
     <Card>
       <CardHeader className="pb-3">
-        <Cardعنوان className="text-base">مصاحبه بعدی</Cardعنوان>
+        <CardTitle className="text-base">مصاحبه بعدی</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex gap-4">
@@ -133,10 +133,10 @@ const بعدیMeetingCard = () => {
               <Video className="w-6 h-6 text-primary" />
             </div>
             <div className="text-sm font-semibold text-foreground">
-              {isامروز ? 'امروز' : format(interviewتاریخ, 'MMM d')}
+              {isToday ? 'امروز' : format(interviewDate, 'MMM d')}
             </div>
             <div className="text-xs text-muted-foreground">
-              {format(interviewتاریخ, 'h:mm a')}
+              {format(interviewDate, 'h:mm a')}
             </div>
           </div>
 
@@ -148,7 +148,7 @@ const بعدیMeetingCard = () => {
             
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
               <Clock className="w-4 h-4" />
-              <span>{format(interviewتاریخ, 'MMM d, yyyy')} at {format(interviewتاریخ, 'h:mm a')}</span>
+              <span>{format(interviewDate, 'MMM d, yyyy')} at {format(interviewDate, 'h:mm a')}</span>
             </div>
             
             <div className="flex items-center gap-1.5 text-xs mb-2">
@@ -214,4 +214,4 @@ const بعدیMeetingCard = () => {
   );
 };
 
-export default بعدیMeetingCard;
+export default NextMeetingCard;

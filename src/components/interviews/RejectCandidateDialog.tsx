@@ -2,101 +2,101 @@ import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
-  Dialogتوضیحات,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
-  Dialogعنوان,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
   انتخاب,
-  انتخابContent,
-  انتخابItem,
-  انتخابTrigger,
-  انتخابValue,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 
-interface ردCandidateDialogProps {
+interface RejectCandidateDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
-  onتأیید: (reason: string, notes: string) => void;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (reason: string, notes: string) => void;
 }
 
 const REJECTION_REASONS = [
-  { value: 'not_qualified', label: 'خیرt Qualified for Position' },
+  { value: 'not_qualified', label: 'Not Qualified for Position' },
   { value: 'failed_technical', label: 'Failed Technical Assessment' },
-  { value: 'cultural_fit', label: 'خیرt a Cultural Fit' },
+  { value: 'cultural_fit', label: 'Not a Cultural Fit' },
   { value: 'communication_skills', label: 'Poor Communication مهارت‌ها' },
   { value: 'experience_mismatch', label: 'سابقه کار Mismatch' },
-  { value: 'salary_expectations', label: 'Salary Expectations گیرندهo زیاد' },
+  { value: 'salary_expectations', label: 'Salary Expectations Too زیاد' },
   { value: 'availability', label: 'Availability Issues' },
   { value: 'other', label: 'Other' },
 ];
 
-export const ردCandidateDialog = ({
+export const RejectCandidateDialog = ({
   open,
-  onبازChange,
-  onتأیید,
-}: ردCandidateDialogProps) => {
+  onOpenChange,
+  onConfirm,
+}: RejectCandidateDialogProps) => {
   const [reason, setReason] = useState('');
-  const [notes, setخیرtes] = useState('');
+  const [notes, setNotes] = useState('');
 
-  const handleتأیید = () => {
+  const handleConfirm = () => {
     if (reason) {
-      onتأیید(reason, notes);
+      onConfirm(reason, notes);
       setReason('');
-      setخیرtes('');
+      setNotes('');
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <Dialogعنوان>رد Candidate</Dialogعنوان>
-          <Dialogتوضیحات>
+          <DialogTitle>رد Candidate</DialogTitle>
+          <DialogDescription>
             Please select a reason for rejecting this candidate and provide any additional notes.
-          </Dialogتوضیحات>
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="reason">ردion Reason *</Label>
+            <Label htmlFor="reason">Rejection Reason *</Label>
             <انتخاب value={reason} onValueChange={setReason}>
-              <انتخابTrigger id="reason">
-                <انتخابValue placeholder="انتخاب a reason" />
-              </انتخابTrigger>
-              <انتخابContent>
+              <SelectTrigger id="reason">
+                <SelectValue placeholder="انتخاب a reason" />
+              </SelectTrigger>
+              <SelectContent>
                 {REJECTION_REASONS.map((r) => (
-                  <انتخابItem key={r.value} value={r.value}>
+                  <SelectItem key={r.value} value={r.value}>
                     {r.label}
-                  </انتخابItem>
+                  </SelectItem>
                 ))}
-              </انتخابContent>
+              </SelectContent>
             </انتخاب>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">افزودنitional خیرtes (اختیاری)</Label>
+            <Label htmlFor="notes">Additional Notes (اختیاری)</Label>
             <Textarea
               id="notes"
               placeholder="افزودن any additional context or notes..."
               value={notes}
-              onChange={(e) => setخیرtes(e.target.value)}
+              onChange={(e) => setNotes(e.target.value)}
               rows={4}
             />
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onبازChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             انصراف
           </Button>
           <Button 
             variant="destructive" 
-            onClick={handleتأیید}
+            onClick={handleConfirm}
             disabled={!reason}
           >
             رد Candidate

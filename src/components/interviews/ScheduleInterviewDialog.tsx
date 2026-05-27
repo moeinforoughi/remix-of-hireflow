@@ -3,13 +3,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  Dialogعنوان,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -17,17 +17,17 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  Formپیام,
+  FormMessage,
 } from '@/components/ui/form';
 import {
   انتخاب,
-  انتخابContent,
-  انتخابItem,
-  انتخابTrigger,
-  انتخابValue,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { زمانPickerAMPM } from '@/components/ui/time-picker-ampm';
+import { TimePickerAMPM } from '@/components/ui/time-picker-ampm';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -67,21 +67,21 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface ScheduleInterviewDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
 export function ScheduleInterviewDialog({
   open,
-  onبازChange,
+  onOpenChange,
   onSuccess,
 }: ScheduleInterviewDialogProps) {
-  const [loading, setبارگذاری] = useState(false);
-  const [applications, setدرخواست‌ها] = useState<any[]>([]);
+  const [loading, setUpload] = useState(false);
+  const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
-  const [datePickerباز, setتاریخPickerباز] = useState(false);
-  const [panelPickerباز, setهیئت مصاحبهPickerباز] = useState(false);
-  const { toast } = useگیرندهast();
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [panelPickerOpen, setPanelPickerOpen] = useState(false);
+  const { toast } = useToast();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -115,7 +115,7 @@ export function ScheduleInterviewDialog({
       if (applicationsRes.error) throw applicationsRes.error;
       if (usersRes.error) throw usersRes.error;
 
-      setدرخواست‌ها(applicationsRes.data || []);
+      setApplications(applicationsRes.data || []);
       setUsers(usersRes.data || []);
     } catch (error: any) {
       toast({
@@ -126,22 +126,22 @@ export function ScheduleInterviewDialog({
     }
   };
 
-  const onثبت = async (values: FormValues) => {
-    setبارگذاری(true);
+  const onSubmit = async (values: FormValues) => {
+    setUpload(true);
     try {
-      const startتاریخزمان = new تاریخ(values.date);
+      const startDateTime = new تاریخ(values.date);
       const [startHour, startMinute] = values.start_time.split(':');
-      startتاریخزمان.setHours(parseInt(startHour), parseInt(startMinute));
+      startDateTime.setHours(parseInt(startHour), parseInt(startMinute));
 
-      const endتاریخزمان = new تاریخ(values.date);
+      const endDateTime = new تاریخ(values.date);
       const [endHour, endMinute] = values.end_time.split(':');
-      endتاریخزمان.setHours(parseInt(endHour), parseInt(endMinute));
+      endDateTime.setHours(parseInt(endHour), parseInt(endMinute));
 
       const { error } = await supabase.from('interviews').insert({
         application_id: values.application_id,
         title: values.title,
-        start_at: startتاریخزمان.toISOString(),
-        end_at: endتاریخزمان.toISOString(),
+        start_at: startDateTime.toISOString(),
+        end_at: endDateTime.toISOString(),
         status: values.status,
         location: values.interview_type === 'onsite' ? values.location : null,
         meeting_link: values.interview_type === 'virtual' ? values.meeting_link : null,
@@ -156,7 +156,7 @@ export function ScheduleInterviewDialog({
       });
 
       form.reset();
-      onبازChange(false);
+      onOpenChange(false);
       onSuccess?.();
     } catch (error: any) {
       toast({
@@ -165,19 +165,19 @@ export function ScheduleInterviewDialog({
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <Dialogعنوان>برنامه‌ریزی مصاحبه</Dialogعنوان>
+          <DialogTitle>برنامه‌ریزی مصاحبه</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onثبت={form.handleثبت(onثبت)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="application_id"
@@ -186,21 +186,21 @@ export function ScheduleInterviewDialog({
                   <FormLabel>Candidate Application</FormLabel>
                   <انتخاب onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <انتخابTrigger>
-                        <انتخابValue placeholder="انتخاب application" />
-                      </انتخابTrigger>
+                      <SelectTrigger>
+                        <SelectValue placeholder="انتخاب application" />
+                      </SelectTrigger>
                     </FormControl>
-                    <انتخابContent>
+                    <SelectContent>
                       {applications.map((app) => (
-                        <انتخابItem key={app.id} value={app.id}>
+                        <SelectItem key={app.id} value={app.id}>
                           {(app.candidate?.full_name || 'Unknown candidate')}
                           {' - '}
                           {(app.job?.title || 'Unknown role')}
-                        </انتخابItem>
+                        </SelectItem>
                       ))}
-                    </انتخابContent>
+                    </SelectContent>
                   </انتخاب>
-                  <Formپیام />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -214,7 +214,7 @@ export function ScheduleInterviewDialog({
                   <FormControl>
                     <Input placeholder="e.g., مصاحبه فنی" {...field} />
                   </FormControl>
-                  <Formپیام />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -225,7 +225,7 @@ export function ScheduleInterviewDialog({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>تاریخ</FormLabel>
-                  <Popover open={datePickerباز} onبازChange={setتاریخPickerباز}>
+                  <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -248,9 +248,9 @@ export function ScheduleInterviewDialog({
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onانتخاب={(date) => {
+                        onSelect={(date) => {
                           field.onChange(date);
-                          setتاریخPickerباز(false);
+                          setDatePickerOpen(false);
                         }}
                         disabled={(date) => {
                           const today = new تاریخ();
@@ -262,7 +262,7 @@ export function ScheduleInterviewDialog({
                       />
                     </PopoverContent>
                   </Popover>
-                  <Formپیام />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -275,9 +275,9 @@ export function ScheduleInterviewDialog({
                   <FormItem>
                     <FormLabel>شروع زمان</FormLabel>
                     <FormControl>
-                      <زمانPickerAMPM value={field.value || "09:00"} onChange={field.onChange} />
+                      <TimePickerAMPM value={field.value || "09:00"} onChange={field.onChange} />
                     </FormControl>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -289,9 +289,9 @@ export function ScheduleInterviewDialog({
                   <FormItem>
                     <FormLabel>End زمان</FormLabel>
                     <FormControl>
-                      <زمانPickerAMPM value={field.value || "10:00"} onChange={field.onChange} />
+                      <TimePickerAMPM value={field.value || "10:00"} onChange={field.onChange} />
                     </FormControl>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -305,16 +305,16 @@ export function ScheduleInterviewDialog({
                   <FormLabel>نوع مصاحبه</FormLabel>
                   <انتخاب onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <انتخابTrigger>
-                        <انتخابValue />
-                      </انتخابTrigger>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
                     </FormControl>
-                    <انتخابContent>
-                      <انتخابItem value="virtual">آنلاین</انتخابItem>
-                      <انتخابItem value="onsite">Onsite</انتخابItem>
-                    </انتخابContent>
+                    <SelectContent>
+                      <SelectItem value="virtual">آنلاین</SelectItem>
+                      <SelectItem value="onsite">Onsite</SelectItem>
+                    </SelectContent>
                   </انتخاب>
-                  <Formپیام />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -332,7 +332,7 @@ export function ScheduleInterviewDialog({
                         {...field}
                       />
                     </FormControl>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -348,7 +348,7 @@ export function ScheduleInterviewDialog({
                     <FormControl>
                       <Input placeholder="Office address" {...field} />
                     </FormControl>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -360,7 +360,7 @@ export function ScheduleInterviewDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Interview هیئت مصاحبه</FormLabel>
-                  <Popover open={panelPickerباز} onبازChange={setهیئت مصاحبهPickerباز}>
+                  <Popover open={panelPickerOpen} onOpenChange={setPanelPickerOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -380,14 +380,14 @@ export function ScheduleInterviewDialog({
                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
                       <div className="max-h-64 overflow-auto">
                         {users.filter(user => user != null).map((user) => {
-                          const isانتخابed = field.value?.includes(user.id);
+                          const isSelected = field.value?.includes(user.id);
                           return (
                             <div
                               key={user.id}
                               className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
                               onClick={() => {
                                 const currentValues = field.value || [];
-                                if (isانتخابed) {
+                                if (isSelected) {
                                   field.onChange(currentValues.filter((v) => v !== user.id));
                                 } else {
                                   field.onChange([...currentValues, user.id]);
@@ -397,7 +397,7 @@ export function ScheduleInterviewDialog({
                               <Check
                                 className={cn(
                                   'mr-2 h-4 w-4',
-                                  isانتخابed ? 'opacity-100' : 'opacity-0'
+                                  isSelected ? 'opacity-100' : 'opacity-0'
                                 )}
                               />
                               {user.full_name}
@@ -410,14 +410,14 @@ export function ScheduleInterviewDialog({
                           type="button"
                           size="sm"
                           className="w-full"
-                          onClick={() => setهیئت مصاحبهPickerباز(false)}
+                          onClick={() => setPanelPickerOpen(false)}
                         >
                           انجام شد
                         </Button>
                       </div>
                     </PopoverContent>
                   </Popover>
-                  <Formپیام />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -430,18 +430,18 @@ export function ScheduleInterviewDialog({
                   <FormLabel>وضعیت</FormLabel>
                   <انتخاب onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <انتخابTrigger>
-                        <انتخابValue />
-                      </انتخابTrigger>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
                     </FormControl>
-                    <انتخابContent>
-                      <انتخابItem value="scheduled">Scheduled</انتخابItem>
-                      <انتخابItem value="completed">انجام شده</انتخابItem>
-                      <انتخابItem value="no_show">خیر نمایش</انتخابItem>
-                      <انتخابItem value="cancelled">انصرافled</انتخابItem>
-                    </انتخابContent>
+                    <SelectContent>
+                      <SelectItem value="scheduled">Scheduled</SelectItem>
+                      <SelectItem value="completed">انجام شده</SelectItem>
+                      <SelectItem value="no_show">خیر نمایش</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
                   </انتخاب>
-                  <Formپیام />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -450,7 +450,7 @@ export function ScheduleInterviewDialog({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => onبازChange(false)}
+                onClick={() => onOpenChange(false)}
               >
                 انصراف
               </Button>

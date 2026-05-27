@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AccountInformation } from '@/components/settings/AccountInformation';
-import { خیرtificationتنظیمات } from '@/components/settings/خیرtificationتنظیمات';
+import { NotificationSettings } from '@/components/settings/NotificationSettings';
 import { سازمانپروفایل } from '@/components/settings/سازمانپروفایل';
 import { برندینگتنظیمات } from '@/components/settings/برندینگتنظیمات';
 import { Button } from '@/components/ui/button';
@@ -11,13 +11,13 @@ import { toast } from 'sonner';
 
 const تنظیمات = () => {
   const navigate = useNavigate();
-  const [isSiteمدیر کل, setIsSiteمدیر کل] = useState(false);
+  const [isSiteAdmin, setIsSiteAdmin] = useState(false);
 
   useEffect(() => {
-    const checkUserنقش = async () => {
+    const checkUserRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setIsSiteمدیر کل(false);
+        setIsSiteAdmin(false);
         return;
       }
 
@@ -27,13 +27,13 @@ const تنظیمات = () => {
         .eq('user_id', user.id)
         .single();
 
-      setIsSiteمدیر کل(roleData?.role === 'site_admin');
+      setIsSiteAdmin(roleData?.role === 'site_admin');
     };
 
-    checkUserنقش();
+    checkUserRole();
   }, []);
 
-  const handleلوگوut = async () => {
+  const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       toast.error('Failed to log out');
@@ -49,7 +49,7 @@ const تنظیمات = () => {
         <h1 className="text-3xl">تنظیمات</h1>
         <Button 
           variant="outline" 
-          onClick={handleلوگوut}
+          onClick={handleLogout}
           className="flex items-center gap-2"
         >
           <LogOut className="h-4 w-4" />
@@ -63,21 +63,21 @@ const تنظیمات = () => {
           <AccountInformation />
         </div>
 
-        {/* Right Column - خیرtifications */}
+        {/* Right Column - Notifications */}
         <div className="bg-card border rounded-lg p-6">
-          <خیرtificationتنظیمات />
+          <NotificationSettings />
         </div>
       </div>
 
       {/* Full Width - سازمان پروفایل - Site مدیر کل Only */}
-      {isSiteمدیر کل && (
+      {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
           <سازمانپروفایل />
         </div>
       )}
 
       {/* Full Width - برندینگ تنظیمات - Site مدیر کل Only */}
-      {isSiteمدیر کل && (
+      {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
           <برندینگتنظیمات />
         </div>

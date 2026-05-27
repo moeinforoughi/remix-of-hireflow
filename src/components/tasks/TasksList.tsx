@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { ویرایشTaskDialog } from "./ویرایشTaskDialog";
+import { EditTaskDialog } from "./EditTaskDialog";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogانصراف,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogتوضیحات,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogعنوان,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
 interface Task {
@@ -27,20 +27,20 @@ interface Task {
   created_at: string;
 }
 
-interface وظایفListProps {
+interface TasksListProps {
   tasks: Task[];
-  onوظایفChange: () => void;
+  onTasksChange: () => void;
 }
 
-export function وظایفList({ tasks, onوظایفChange }: وظایفListProps) {
-  const [deleteTaskId, setحذفTaskId] = useState<string | null>(null);
-  const [editTask, setویرایشTask] = useState<Task | null>(null);
+export function TasksList({ tasks, onTasksChange }: TasksListProps) {
+  const [deleteTaskId, setRemoveTaskId] = useState<string | null>(null);
+  const [editTask, setEditTask] = useState<Task | null>(null);
 
-  const handleگیرندهggleوضعیت = async (task: Task) => {
-    const newوضعیت = task.status === "pending" ? "completed" : "pending";
+  const handleToggleStatus = async (task: Task) => {
+    const newStatus = task.status === "pending" ? "completed" : "pending";
     const { error } = await supabase
       .from("tasks")
-      .update({ status: newوضعیت })
+      .update({ status: newStatus })
       .eq("id", task.id);
 
     if (error) {
@@ -49,11 +49,11 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
       return;
     }
 
-    toast.success(`Task marked as ${newوضعیت}`);
-    onوظایفChange();
+    toast.success(`Task marked as ${newStatus}`);
+    onTasksChange();
   };
 
-  const handleحذف = async () => {
+  const handleRemove = async () => {
     if (!deleteTaskId) return;
 
     const { error } = await supabase.from("tasks").delete().eq("id", deleteTaskId);
@@ -65,8 +65,8 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
     }
 
     toast.success("Task deleted successfully");
-    setحذفTaskId(null);
-    onوظایفChange();
+    setRemoveTaskId(null);
+    onTasksChange();
   };
 
   if (tasks.length === 0) {
@@ -112,7 +112,7 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleگیرندهggleوضعیت(task)}
+                    onClick={() => handleToggleStatus(task)}
                     title={
                       task.status === "pending" ? "Mark as completed" : "Mark as pending"
                     }
@@ -126,14 +126,14 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setویرایشTask(task)}
+                    onClick={() => setEditTask(task)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setحذفTaskId(task.id)}
+                    onClick={() => setRemoveTaskId(task.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -145,25 +145,25 @@ export function وظایفList({ tasks, onوظایفChange }: وظایفListProp
       </div>
 
       {editTask && (
-        <ویرایشTaskDialog
+        <EditTaskDialog
           task={editTask}
           open={!!editTask}
-          onبازChange={(open) => !open && setویرایشTask(null)}
-          onTaskبه‌روزرسانیd={onوظایفChange}
+          onOpenChange={(open) => !open && setEditTask(null)}
+          onTaskRefreshd={onTasksChange}
         />
       )}
 
-      <AlertDialog open={!!deleteTaskId} onبازChange={() => setحذفTaskId(null)}>
+      <AlertDialog open={!!deleteTaskId} onOpenChange={() => setRemoveTaskId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogعنوان>حذف Task</AlertDialogعنوان>
-            <AlertDialogتوضیحات>
+            <AlertDialogTitle>حذف Task</AlertDialogTitle>
+            <AlertDialogDescription>
               Are you sure you want to delete this task? This action cannot be undone.
-            </AlertDialogتوضیحات>
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogانصراف>انصراف</AlertDialogانصراف>
-            <AlertDialogAction onClick={handleحذف}>حذف</AlertDialogAction>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemove}>حذف</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

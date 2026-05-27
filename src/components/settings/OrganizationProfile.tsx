@@ -3,32 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
-import { ویرایشسازمانDialog } from './ویرایشسازمانDialog';
+import { EditOrganizationDialog } from './EditOrganizationDialog';
 
-interface Orgتنظیمات {
+interface OrgSettings {
   company_email?: string;
   salary_currency?: string;
 }
 
 export const سازمانپروفایل = () => {
   const [org, setOrg] = useState<any>(null);
-  const [settings, setتنظیمات] = useState<Orgتنظیمات>({});
-  const [loading, setبارگذاری] = useState(true);
-  const [editDialogباز, setویرایشDialogباز] = useState(false);
-  const { toast } = useگیرندهast();
+  const [settings, setSettings] = useState<OrgSettings>({});
+  const [loading, setUpload] = useState(true);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchسازمان();
+    fetchOrganization();
   }, []);
 
-  const fetchسازمان = async () => {
+  const fetchOrganization = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -47,7 +47,7 @@ export const سازمانپروفایل = () => {
       if (error) throw error;
 
       setOrg(data);
-      setتنظیمات((data.settings_json as Orgتنظیمات) || {});
+      setSettings((data.settings_json as OrgSettings) || {});
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -55,21 +55,21 @@ export const سازمانپروفایل = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const handleواحد پولChange = async (newواحد پول: string) => {
+  const handleCurrencyChange = async (newCurrency: string) => {
     try {
-      const updatedتنظیمات = { ...settings, salary_currency: newواحد پول };
+      const updatedSettings = { ...settings, salary_currency: newCurrency };
       const { error } = await supabase
         .from('organizations')
-        .update({ settings_json: updatedتنظیمات })
+        .update({ settings_json: updatedSettings })
         .eq('id', org.id);
 
       if (error) throw error;
 
-      setتنظیمات(updatedتنظیمات);
+      setSettings(updatedSettings);
       toast({ title: 'واحد پول updated' });
     } catch (error: any) {
       toast({
@@ -105,7 +105,7 @@ export const سازمانپروفایل = () => {
             </Avatar>
             <h2 className="text-2xl">{org?.name || 'سازمان'}</h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setویرایشDialogباز(true)}>
+          <Button variant="ghost" size="sm" onClick={() => setEditDialogOpen(true)}>
             <Pencil className="h-4 w-4 mr-2" />
             ویرایش
           </Button>
@@ -116,12 +116,12 @@ export const سازمانپروفایل = () => {
           <div className="flex justify-between items-center py-3 border-b">
             <span className="text-sm text-muted-foreground">Company ایمیل آدرس</span>
             <span className="text-sm font-medium text-primary">
-              {settings.company_email || 'خیرt set - click ویرایش to add'}
+              {settings.company_email || 'Not set - click ویرایش to add'}
             </span>
           </div>
 
           <div className="flex justify-between items-center py-3 border-b">
-            <span className="text-sm text-muted-foreground">ردion ایمیل Template</span>
+            <span className="text-sm text-muted-foreground">Rejection ایمیل Template</span>
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
@@ -148,25 +148,25 @@ export const سازمانپروفایل = () => {
 
           <div className="flex justify-between items-center py-3">
             <span className="text-sm text-muted-foreground">Salary واحد پول</span>
-            <انتخاب value={settings.salary_currency || 'USD'} onValueChange={handleواحد پولChange}>
-              <انتخابTrigger className="w-[200px]">
-                <انتخابValue />
-              </انتخابTrigger>
-              <انتخابContent>
-                <انتخابItem value="USD">$ US Dollar</انتخابItem>
-                <انتخابItem value="EUR">€ Euro</انتخابItem>
-                <انتخابItem value="GBP">£ British Pound</انتخابItem>
-                <انتخابItem value="JPY">¥ Japanese Yen</انتخابItem>
-              </انتخابContent>
+            <انتخاب value={settings.salary_currency || 'USD'} onValueChange={handleCurrencyChange}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">$ US Dollar</SelectItem>
+                <SelectItem value="EUR">€ Euro</SelectItem>
+                <SelectItem value="GBP">£ British Pound</SelectItem>
+                <SelectItem value="JPY">¥ Japanese Yen</SelectItem>
+              </SelectContent>
             </انتخاب>
           </div>
         </div>
       </div>
 
-      <ویرایشسازمانDialog 
-        open={editDialogباز}
-        onبازChange={setویرایشDialogباز}
-        onSuccess={fetchسازمان}
+      <EditOrganizationDialog 
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onSuccess={fetchOrganization}
       />
     </div>
   );

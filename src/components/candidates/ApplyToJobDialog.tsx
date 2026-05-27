@@ -5,11 +5,11 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  Dialogعنوان,
-  Dialogتوضیحات,
+  DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Briefcase, Loader2 } from 'lucide-react';
 import { notifyNewApplication } from '@/lib/notifications';
@@ -21,26 +21,26 @@ interface Job {
   status: string;
 }
 
-interface ثبت درخواستگیرندهJobDialogProps {
+interface ApplyToJobDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   candidateId: string;
   candidateName: string;
   existingJobIds: string[];
   onSuccess?: () => void;
 }
 
-export const ثبت درخواستگیرندهJobDialog = ({
+export const ApplyToJobDialog = ({
   open,
-  onبازChange,
+  onOpenChange,
   candidateId,
   candidateName,
   existingJobIds,
   onSuccess,
-}: ثبت درخواستگیرندهJobDialogProps) => {
+}: ApplyToJobDialogProps) => {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [selectedJobId, setانتخابedJobId] = useState<string>('');
-  const [loading, setبارگذاری] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string>('');
+  const [loading, setUpload] = useState(false);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -70,11 +70,11 @@ export const ثبت درخواستگیرندهJobDialog = ({
         .eq('user_id', user.id)
         .single();
 
-      const isSiteمدیر کل = roleData?.role === 'site_admin';
+      const isSiteAdmin = roleData?.role === 'site_admin';
 
       let availableJobs: Job[] = [];
 
-      if (isSiteمدیر کل) {
+      if (isSiteAdmin) {
         // Site admins can see all open jobs
         const { data, error } = await supabase
           .from('jobs')
@@ -126,7 +126,7 @@ export const ثبت درخواستگیرندهJobDialog = ({
     }
   };
 
-  const handleثبت درخواست = async () => {
+  const handleApply = async () => {
     if (!selectedJobId) {
       toast({
         title: 'خطا',
@@ -136,10 +136,10 @@ export const ثبت درخواستگیرندهJobDialog = ({
       return;
     }
 
-    setبارگذاری(true);
+    setUpload(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       // Get the first stage for the job
       const { data: stages, error: stagesError } = await supabase
@@ -150,9 +150,9 @@ export const ثبت درخواستگیرندهJobDialog = ({
 
       if (stagesError) throw stagesError;
 
-      const firstمرحله = stages?.find(s => s.name.toکمerCase().includes('applied')) || stages?.[0];
+      const firstStage = stages?.find(s => s.name.toLowerCase().includes('applied')) || stages?.[0];
 
-      if (!firstمرحله) {
+      if (!firstStage) {
         throw new Error('خیر pipeline stage found for this job');
       }
 
@@ -162,7 +162,7 @@ export const ثبت درخواستگیرندهJobDialog = ({
         .insert({
           candidate_id: candidateId,
           job_id: selectedJobId,
-          current_stage_id: firstمرحله.id,
+          current_stage_id: firstStage.id,
           state: 'active',
           owner_user_id: user.id,
           applied_at: new تاریخ().toISOString(),
@@ -179,12 +179,12 @@ export const ثبت درخواستگیرندهJobDialog = ({
 
       const selectedJob = jobs.find(j => j.id === selectedJobId);
       toast({
-        title: 'Application ایجادd',
+        title: 'Application Created',
         description: `${candidateName} has been applied to ${selectedJob?.title}`,
       });
 
-      setانتخابedJobId('');
-      onبازChange(false);
+      setSelectedJobId('');
+      onOpenChange(false);
       onSuccess?.();
     } catch (error: any) {
       toast({
@@ -193,21 +193,21 @@ export const ثبت درخواستگیرندهJobDialog = ({
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <Dialogعنوان className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2">
             <Briefcase className="h-5 w-5" />
             ثبت درخواست to Job
-          </Dialogعنوان>
-          <Dialogتوضیحات>
+          </DialogTitle>
+          <DialogDescription>
             انتخاب a job to apply {candidateName} to.
-          </Dialogتوضیحات>
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 pt-4">
@@ -224,22 +224,22 @@ export const ثبت درخواستگیرندهJobDialog = ({
             <>
               <div className="space-y-2">
                 <Label htmlFor="job">انتخاب Job Position</Label>
-                <انتخاب value={selectedJobId} onValueChange={setانتخابedJobId}>
-                  <انتخابTrigger className="h-11">
-                    <انتخابValue placeholder="Choose a job..." />
-                  </انتخابTrigger>
-                  <انتخابContent>
+                <انتخاب value={selectedJobId} onValueChange={setSelectedJobId}>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Choose a job..." />
+                  </SelectTrigger>
+                  <SelectContent>
                     {jobs.map((job) => (
-                      <انتخابItem key={job.id} value={job.id}>
+                      <SelectItem key={job.id} value={job.id}>
                         <div className="flex flex-col items-start">
                           <span>{job.title}</span>
                           {job.location && (
                             <span className="text-xs text-muted-foreground">{job.location}</span>
                           )}
                         </div>
-                      </انتخابItem>
+                      </SelectItem>
                     ))}
-                  </انتخابContent>
+                  </SelectContent>
                 </انتخاب>
               </div>
 
@@ -247,19 +247,19 @@ export const ثبت درخواستگیرندهJobDialog = ({
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => onبازChange(false)}
+                  onClick={() => onOpenChange(false)}
                   disabled={loading}
                 >
                   انصراف
                 </Button>
                 <Button
-                  onClick={handleثبت درخواست}
+                  onClick={handleApply}
                   disabled={loading || !selectedJobId}
                 >
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ثبت درخواستing...
+                      Applying...
                     </>
                   ) : (
                     'ثبت درخواست to Job'

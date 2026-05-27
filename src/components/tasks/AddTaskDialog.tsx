@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from "@/components/ui/select";
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, Plus } from "lucide-react";
@@ -11,38 +11,38 @@ import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { زمانPickerAMPM } from "@/components/ui/time-picker-ampm";
+import { TimePickerAMPM } from "@/components/ui/time-picker-ampm";
 
-interface افزودنTaskDialogProps {
+interface AddTaskDialogProps {
   candidateId: string;
   orgId: string;
-  onTaskافزودنed?: () => void;
+  onTaskAdded?: () => void;
 }
 
-export function افزودنTaskDialog({ candidateId, orgId, onTaskافزودنed }: افزودنTaskDialogProps) {
-  const [open, setباز] = useState(false);
-  const [title, setعنوان] = useState("");
+export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
-  const [dueتاریخ, setDueتاریخ] = useState<تاریخ>();
-  const [dueزمان, setDueزمان] = useState("12:00");
-  const [status, setوضعیت] = useState<"pending" | "completed">("pending");
-  const [isثبتting, setIsثبتting] = useState(false);
+  const [dueDate, setDueDate] = useState<تاریخ>();
+  const [dueTime, setDueTime] = useState("12:00");
+  const [status, setStatus] = useState<"pending" | "completed">("pending");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleثبت = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
       toast.error("عنوان is required");
       return;
     }
 
-    setIsثبتting(true);
+    setIsSubmitting(true);
 
-    let dueتاریخtime = null;
-    if (dueتاریخ) {
-      const [hours, minutes] = dueزمان.split(":");
-      const datetime = new تاریخ(dueتاریخ);
+    let dueDatetime = null;
+    if (dueDate) {
+      const [hours, minutes] = dueTime.split(":");
+      const datetime = new تاریخ(dueDate);
       datetime.setHours(parseInt(hours), parseInt(minutes), 0);
-      dueتاریخtime = datetime.toISOString();
+      dueDatetime = datetime.toISOString();
     }
 
     const { error } = await supabase.from("tasks").insert({
@@ -50,11 +50,11 @@ export function افزودنTaskDialog({ candidateId, orgId, onTaskافزودنe
       org_id: orgId,
       title: title.trim(),
       label: label.trim() || null,
-      due_date: dueتاریخtime,
+      due_date: dueDatetime,
       status,
     });
 
-    setIsثبتting(false);
+    setIsSubmitting(false);
 
     if (error) {
       toast.error("Failed to create task");
@@ -63,17 +63,17 @@ export function افزودنTaskDialog({ candidateId, orgId, onTaskافزودنe
     }
 
     toast.success("Task created successfully");
-    setباز(false);
-    setعنوان("");
+    setOpen(false);
+    setTitle("");
     setLabel("");
-    setDueتاریخ(undefined);
-    setDueزمان("12:00");
-    setوضعیت("pending");
-    onTaskافزودنed?.();
+    setDueDate(undefined);
+    setDueTime("12:00");
+    setStatus("pending");
+    onTaskAdded?.();
   };
 
   return (
-    <Dialog open={open} onبازChange={setباز}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
@@ -82,15 +82,15 @@ export function افزودنTaskDialog({ candidateId, orgId, onTaskافزودنe
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <Dialogعنوان>افزودن وظیفه جدید</Dialogعنوان>
+          <DialogTitle>افزودن وظیفه جدید</DialogTitle>
         </DialogHeader>
-        <form onثبت={handleثبت} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="title">عنوان *</Label>
             <Input
               id="title"
               value={title}
-              onChange={(e) => setعنوان(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               placeholder="Task title"
               required
             />
@@ -115,18 +115,18 @@ export function افزودنTaskDialog({ candidateId, orgId, onTaskافزودنe
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !dueتاریخ && "text-muted-foreground"
+                      !dueDate && "text-muted-foreground"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dueتاریخ ? format(dueتاریخ, "PPP") : <span>Pick a date</span>}
+                    {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    selected={dueتاریخ}
-                    onانتخاب={setDueتاریخ}
+                    selected={dueDate}
+                    onSelect={setDueDate}
                     initialFocus
                   />
                 </PopoverContent>
@@ -135,33 +135,33 @@ export function افزودنTaskDialog({ candidateId, orgId, onTaskافزودنe
 
             <div className="space-y-2">
               <Label>زمان</Label>
-              <زمانPickerAMPM
-                value={dueزمان}
-                onChange={setDueزمان}
-                disabled={!dueتاریخ}
+              <TimePickerAMPM
+                value={dueTime}
+                onChange={setDueTime}
+                disabled={!dueDate}
               />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="status">وضعیت</Label>
-            <انتخاب value={status} onValueChange={(value: "pending" | "completed") => setوضعیت(value)}>
-              <انتخابTrigger id="status">
-                <انتخابValue />
-              </انتخابTrigger>
-              <انتخابContent>
-                <انتخابItem value="pending">در انتظار</انتخابItem>
-                <انتخابItem value="completed">انجام شده</انتخابItem>
-              </انتخابContent>
+            <انتخاب value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
+              <SelectTrigger id="status">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">در انتظار</SelectItem>
+                <SelectItem value="completed">انجام شده</SelectItem>
+              </SelectContent>
             </انتخاب>
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setباز(false)}>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               انصراف
             </Button>
-            <Button type="submit" disabled={isثبتting}>
-              {isثبتting ? "در حال ایجاد..." : "ایجاد Task"}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "در حال ایجاد..." : "ایجاد Task"}
             </Button>
           </div>
         </form>

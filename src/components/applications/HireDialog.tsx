@@ -1,35 +1,35 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogانصراف,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogتوضیحات,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogعنوان,
+  AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-interface استخدامDialogProps {
+interface HireDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
-  onتأیید: () => void;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
 }
 
-export const استخدامDialog = ({ open, onبازChange, onتأیید }: استخدامDialogProps) => {
+export const HireDialog = ({ open, onOpenChange, onConfirm }: HireDialogProps) => {
   return (
-    <AlertDialog open={open} onبازChange={onبازChange}>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogعنوان>Mark as استخدامd</AlertDialogعنوان>
-          <AlertDialogتوضیحات>
+          <AlertDialogTitle>Mark as Hired</AlertDialogTitle>
+          <AlertDialogDescription>
             This will mark the application as hired and move the candidate to the final stage. 
             Make sure an offer has been accepted before proceeding.
-          </AlertDialogتوضیحات>
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogانصراف>انصراف</AlertDialogانصراف>
-          <AlertDialogAction onClick={onتأیید}>
-            Mark as استخدامd
+          <AlertDialogCancel>انصراف</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>
+            Mark as Hired
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

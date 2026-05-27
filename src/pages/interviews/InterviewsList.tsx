@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Loader2, Calendar, MapPin, Video } from 'lucide-react';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { format, isFuture, isPast } from 'date-fns';
 import { ScheduleInterviewDialog } from '@/components/interviews/ScheduleInterviewDialog';
 import { QuickScheduleDialog } from '@/components/interviews/QuickScheduleDialog';
@@ -33,13 +33,13 @@ interface Interview {
 
 const InterviewsList = () => {
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [showScheduleDialog, setنمایشScheduleDialog] = useState(false);
-  const [showQuickView, setنمایشQuickView] = useState(false);
-  const [selectedInterview, setانتخابedInterview] = useState<Interview | null>(null);
-  const [مصاحبه‌کننده, setمصاحبه‌کنندهs] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
+  const [loading, setUpload] = useState(true);
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+  const [showQuickView, setShowQuickView] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
+  const [مصاحبه‌کننده, setinterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchInterviews();
@@ -75,13 +75,13 @@ const InterviewsList = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const fetchمصاحبه‌کنندهs = async (panelUserIds: string[]) => {
+  const fetchinterviewers = async (panelUserIds: string[]) => {
     if (!panelUserIds || panelUserIds.length === 0) {
-      setمصاحبه‌کنندهs([]);
+      setinterviewers([]);
       return;
     }
 
@@ -92,28 +92,28 @@ const InterviewsList = () => {
         .in("id", panelUserIds);
 
       if (error) throw error;
-      setمصاحبه‌کنندهs(data || []);
+      setinterviewers(data || []);
     } catch (error) {
       console.error("Error fetching مصاحبه‌کننده:", error);
     }
   };
 
   const handleInterviewClick = async (interview: Interview) => {
-    setانتخابedInterview(interview);
+    setSelectedInterview(interview);
     if (interview.panel_user_ids && interview.panel_user_ids.length > 0) {
-      await fetchمصاحبه‌کنندهs(interview.panel_user_ids);
+      await fetchinterviewers(interview.panel_user_ids);
     } else {
-      setمصاحبه‌کنندهs([]);
+      setinterviewers([]);
     }
-    setنمایشQuickView(true);
+    setShowQuickView(true);
   };
 
-  const getوضعیتBadge = (interview: Interview) => {
+  const getStatusBadge = (interview: Interview) => {
     if (interview.status === 'completed') {
       return <Badge variant="secondary">انجام شده</Badge>;
     }
     if (interview.status === 'cancelled') {
-      return <Badge variant="destructive">انصرافled</Badge>;
+      return <Badge variant="destructive">Cancelled</Badge>;
     }
     if (interview.status === 'no_show') {
       return <Badge variant="outline">خیر نمایش</Badge>;
@@ -145,7 +145,7 @@ const InterviewsList = () => {
         <div>
           <h1 className="text-3xl">Interviews</h1>
         </div>
-        <Button onClick={() => setنمایشScheduleDialog(true)}>
+        <Button onClick={() => setShowScheduleDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
           برنامه‌ریزی مصاحبه
         </Button>
@@ -153,13 +153,13 @@ const InterviewsList = () => {
 
       <ScheduleInterviewDialog
         open={showScheduleDialog}
-        onبازChange={setنمایشScheduleDialog}
+        onOpenChange={setShowScheduleDialog}
         onSuccess={fetchInterviews}
       />
 
       <QuickScheduleDialog
         open={showQuickView}
-        onبازChange={setنمایشQuickView}
+        onOpenChange={setShowQuickView}
         interview={selectedInterview}
         مصاحبه‌کننده={مصاحبه‌کننده}
       />
@@ -178,11 +178,11 @@ const InterviewsList = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        {getوضعیتBadge(interview)}
+                        {getStatusBadge(interview)}
                       </div>
-                      <Cardعنوان className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
+                      <CardTitle className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
                         {interview.title}
-                      </Cardعنوان>
+                      </CardTitle>
                       <p className="text-sm text-muted-foreground mt-1.5 font-medium">
                         {interview.application?.candidate?.full_name || 'N/A'}
                       </p>
@@ -239,11 +239,11 @@ const InterviewsList = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        {getوضعیتBadge(interview)}
+                        {getStatusBadge(interview)}
                       </div>
-                      <Cardعنوان className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
+                      <CardTitle className="text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors">
                         {interview.title}
-                      </Cardعنوان>
+                      </CardTitle>
                       <p className="text-sm text-muted-foreground mt-1.5 font-medium">
                         {interview.application?.candidate?.full_name || 'N/A'}
                       </p>
@@ -272,7 +272,7 @@ const InterviewsList = () => {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-muted-foreground mb-4">خیر interviews scheduled</p>
-            <Button onClick={() => setنمایشScheduleDialog(true)}>
+            <Button onClick={() => setShowScheduleDialog(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Schedule First Interview
             </Button>

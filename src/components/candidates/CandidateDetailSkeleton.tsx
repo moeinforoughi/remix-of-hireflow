@@ -65,7 +65,7 @@ export const CandidateDetailSkeleton = () => {
             </CardContent>
           </Card>
 
-          {/* امتیازs card */}
+          {/* Ratings card */}
           <Card>
             <CardHeader>
               <Skeleton className="h-5 w-24" />

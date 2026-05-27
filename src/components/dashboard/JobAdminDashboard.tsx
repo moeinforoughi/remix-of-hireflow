@@ -1,9 +1,9 @@
 import { format } from "date-fns";
-import { Card, CardContent, CardHeader, Cardعنوان } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import بعدیMeetingCard from "@/components/dashboard/بعدیMeetingCard";
+import NextMeetingCard from "@/components/dashboard/NextMeetingCard";
 import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,14 +14,14 @@ import usersIcon from "@/assets/icons/users-icon.svg";
 import messageIcon from "@/assets/icons/message-icon.svg";
 import checkVerifiedIcon from "@/assets/icons/check-verified-icon.svg";
 import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
-import { وظایفCardSkeleton } from "@/components/dashboard/وظایفCardSkeleton";
+import { TasksCardSkeleton } from "@/components/dashboard/TasksCardSkeleton";
 import { JobListingsCardSkeleton } from "@/components/dashboard/JobListingsCardSkeleton";
 
-export function Jobمدیر کلداشبورد() {
+export function JobAdminDashboard() {
   const navigate = useNavigate();
-  const [tasks, setوظایف] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
-  const [isبارگذاریDemo, setIsبارگذاریDemo] = useState(() => {
+  const [isUploadDemo, setIsUploadDemo] = useState(() => {
     return sessionStorage.getItem('demo-reset-in-progress') === 'true';
   });
   const [metrics, setMetrics] = useState({
@@ -56,25 +56,25 @@ export function Jobمدیر کلداشبورد() {
           .order('due_date', { ascending: true })
           .limit(10);
 
-        setوظایف(tasksData || []);
+        setTasks(tasksData || []);
 
         // Fetch metrics
-        const { data: allدرخواست‌ها } = await supabase
+        const { data: allApplications } = await supabase
           .from('applications')
           .select('id, state, current_stage_id, job_stages(type)')
           .in('job_id', jobIds);
 
-        const activeدرخواست‌ها = allدرخواست‌ها?.filter(a => a.state === 'active') || [];
-        const interviewing = activeدرخواست‌ها.filter(a => 
+        const activeApplications = allApplications?.filter(a => a.state === 'active') || [];
+        const interviewing = activeApplications.filter(a => 
           ['phone', 'onsite'].includes(a.job_stages?.type || '')
         ).length;
-        const shortlisted = activeدرخواست‌ها.filter(a => 
+        const shortlisted = activeApplications.filter(a => 
           a.job_stages?.type === 'offer'
         ).length;
 
         setMetrics({
           currentListings: assignedJobs.length,
-          totalApplicants: allدرخواست‌ها?.length || 0,
+          totalApplicants: allApplications?.length || 0,
           interviewing,
           shortlisted,
         });
@@ -82,24 +82,24 @@ export function Jobمدیر کلداشبورد() {
     };
 
     // If demo reset in progress, wait for the event
-    if (isبارگذاریDemo) {
-      const handleDemoDataبه‌روزرسانی = () => {
-        setIsبارگذاریDemo(false);
+    if (isUploadDemo) {
+      const handleDemoDataRefresh = () => {
+        setIsUploadDemo(false);
         fetchData();
       };
-      window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
+      window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
+      return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
     } else {
       fetchData();
     }
 
     // Also listen for future demo data refresh events
-    const handleDemoDataبه‌روزرسانی = () => {
+    const handleDemoDataRefresh = () => {
       fetchData();
     };
-    window.addEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataبه‌روزرسانی);
-  }, [isبارگذاریDemo]);
+    window.addEventListener('demo-data-refreshed', handleDemoDataRefresh);
+    return () => window.removeEventListener('demo-data-refreshed', handleDemoDataRefresh);
+  }, [isUploadDemo]);
 
   const metricCards = [
     {
@@ -154,7 +154,7 @@ export function Jobمدیر کلداشبورد() {
 
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-4">
-        {isبارگذاریDemo ? (
+        {isUploadDemo ? (
           <>
             <MetricCardSkeleton />
             <MetricCardSkeleton />
@@ -171,7 +171,7 @@ export function Jobمدیر کلداشبورد() {
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <div className="flex items-center gap-2">
                   <img src={metric.icon} alt="" className="w-4 h-4 flex-shrink-0" />
-                  <Cardعنوان className="text-sm font-medium !text-black">{metric.title}</Cardعنوان>
+                  <CardTitle className="text-sm font-medium !text-black">{metric.title}</CardTitle>
                 </div>
                 <ChevronRight className={`h-4 w-4 ${metric.iconColor}`} />
               </CardHeader>
@@ -185,12 +185,12 @@ export function Jobمدیر کلداشبورد() {
 
       <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
         {/* وظایف */}
-        {isبارگذاریDemo ? (
-          <وظایفCardSkeleton />
+        {isUploadDemo ? (
+          <TasksCardSkeleton />
         ) : (
           <Card>
             <CardHeader>
-              <Cardعنوان>وظایف</Cardعنوان>
+              <CardTitle>وظایف</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {tasks.length === 0 ? (
@@ -214,12 +214,12 @@ export function Jobمدیر کلداشبورد() {
         )}
 
         {/* موقعیت‌های شغلی */}
-        {isبارگذاریDemo ? (
+        {isUploadDemo ? (
           <JobListingsCardSkeleton />
         ) : (
           <Card>
             <CardHeader>
-              <Cardعنوان>موقعیت‌های شغلی</Cardعنوان>
+              <CardTitle>موقعیت‌های شغلی</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -241,7 +241,7 @@ export function Jobمدیر کلداشبورد() {
                     <div className="font-medium">{job.title}</div>
                     <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new تاریخ(job.created_at).toLocaleتاریخString()}
+                      {new تاریخ(job.created_at).toLocaleDateString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">
@@ -260,7 +260,7 @@ export function Jobمدیر کلداشبورد() {
 
       {/* بعدی Meeting and فعالیت‌های اخیر */}
       <div className="grid gap-6 md:grid-cols-2">
-        <بعدیMeetingCard />
+        <NextMeetingCard />
         <RecentActivityFeed />
       </div>
     </div>

@@ -5,17 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
-import { Card, CardContent, Cardتوضیحات, CardHeader, Cardعنوان } from '@/components/ui/card';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CustomسؤالsManager } from '@/components/jobs/CustomسؤالsManager';
+import { CustomQuestionsManager } from '@/components/jobs/CustomQuestionsManager';
 
 const JobForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setبارگذاری] = useState(false);
+  const [loading, setUpload] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     department: '',
@@ -54,13 +54,13 @@ const JobForm = () => {
     }
   };
 
-  const handleثبت = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setبارگذاری(true);
+    setUpload(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('خیرt authenticated');
+      if (!user) throw new Error('Not authenticated');
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -127,7 +127,7 @@ const JobForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -154,11 +154,11 @@ const JobForm = () => {
         <TabsContent value="details">
           <Card>
             <CardHeader>
-              <Cardعنوان>Job Information</Cardعنوان>
-              <Cardتوضیحات>پایه details about the position</Cardتوضیحات>
+              <CardTitle>Job Information</CardTitle>
+              <CardDescription>پایه details about the position</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onثبت={handleثبت} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="title">Job عنوان *</Label>
@@ -197,20 +197,20 @@ const JobForm = () => {
                       value={formData.employment_type}
                       onValueChange={(value: any) => setFormData({ ...formData, employment_type: value })}
                     >
-                      <انتخابTrigger>
-                        <انتخابValue />
-                      </انتخابTrigger>
-                      <انتخابContent>
-                        <انتخابItem value="full_time">تمام‌وقت</انتخابItem>
-                        <انتخابItem value="part_time">نیمه‌وقت</انتخابItem>
-                        <انتخابItem value="contract">قراردادی</انتخابItem>
-                        <انتخابItem value="internship">کارآموزی</انتخابItem>
-                      </انتخابContent>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="full_time">تمام‌وقت</SelectItem>
+                        <SelectItem value="part_time">نیمه‌وقت</SelectItem>
+                        <SelectItem value="contract">قراردادی</SelectItem>
+                        <SelectItem value="internship">کارآموزی</SelectItem>
+                      </SelectContent>
                     </انتخاب>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="openings">Number of بازings *</Label>
+                    <Label htmlFor="openings">Number of Openings *</Label>
                     <Input
                       id="openings"
                       type="number"
@@ -227,16 +227,16 @@ const JobForm = () => {
                       value={formData.status}
                       onValueChange={(value: any) => setFormData({ ...formData, status: value })}
                     >
-                      <انتخابTrigger>
-                        <انتخابValue />
-                      </انتخابTrigger>
-                      <انتخابContent>
-                        <انتخابItem value="draft">پیش‌نویس</انتخابItem>
-                        <انتخابItem value="pending_approval">در انتظار تأیید</انتخابItem>
-                        <انتخابItem value="open">باز</انتخابItem>
-                        <انتخابItem value="paused">وقفهd</انتخابItem>
-                        <انتخابItem value="closed">بستنd</انتخابItem>
-                      </انتخابContent>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="draft">پیش‌نویس</SelectItem>
+                        <SelectItem value="pending_approval">در انتظار تأیید</SelectItem>
+                        <SelectItem value="open">باز</SelectItem>
+                        <SelectItem value="paused">Paused</SelectItem>
+                        <SelectItem value="closed">Closed</SelectItem>
+                      </SelectContent>
                     </انتخاب>
                   </div>
                 </div>
@@ -336,13 +336,13 @@ const JobForm = () => {
           <TabsContent value="questions">
             <Card>
               <CardHeader>
-                <Cardعنوان>Application سؤالs</Cardعنوان>
-                <Cardتوضیحات>
+                <CardTitle>Application Questions</CardTitle>
+                <CardDescription>
                   Customize your application form with additional questions
-                </Cardتوضیحات>
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <CustomسؤالsManager jobId={id} />
+                <CustomQuestionsManager jobId={id} />
               </CardContent>
             </Card>
           </TabsContent>

@@ -10,64 +10,64 @@ import { ChevronDown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { getمرحلهColorClasses } from '@/lib/stage-colors';
+import { getStageColorClasses } from '@/lib/stage-colors';
 
-interface وضعیتDropdownProps {
-  currentمرحله: {
+interface StatusDropdownProps {
+  currentStage: {
     id: string;
     name: string;
     type: string;
   } | null;
   applicationId: string;
   applicationState?: 'active' | 'rejected' | 'withdrawn' | 'hired';
-  availableمرحلهs: Array<{
+  availableStages: Array<{
     id: string;
     name: string;
     type: string;
   }>;
-  onمرحلهChange?: () => Promise<void> | void;
+  onStageChange?: () => Promise<void> | void;
 }
 
-export const وضعیتDropdown = ({
-  currentمرحله,
+export const StatusDropdown = ({
+  currentStage,
   applicationId,
   applicationState = 'active',
-  availableمرحلهs,
-  onمرحلهChange,
-}: وضعیتDropdownProps) => {
+  availableStages,
+  onStageChange,
+}: StatusDropdownProps) => {
   const [updating, setUpdating] = useState(false);
-  const [optimisticمرحلهId, setOptimisticمرحلهId] = useState<string | null>(currentمرحله?.id ?? null);
+  const [optimisticStageId, setOptimisticStageId] = useState<string | null>(currentStage?.id ?? null);
 
   useEffect(() => {
-    setOptimisticمرحلهId(currentمرحله?.id ?? null);
-  }, [currentمرحله?.id]);
+    setOptimisticStageId(currentStage?.id ?? null);
+  }, [currentStage?.id]);
 
   const stageById = useMemo(() => {
     const map = new Map<string, { id: string; name: string; type: string }>();
-    availableمرحلهs.forEach((s) => map.set(s.id, s));
+    availableStages.forEach((s) => map.set(s.id, s));
     return map;
-  }, [availableمرحلهs]);
+  }, [availableStages]);
 
-  const displayedمرحله = optimisticمرحلهId ? stageById.get(optimisticمرحلهId) ?? currentمرحله : currentمرحله;
+  const displayedStage = optimisticStageId ? stageById.get(optimisticStageId) ?? currentStage : currentStage;
   
   // نمایش application state if not active, otherwise show stage name
   const getDisplayName = () => {
-    if (applicationState === 'withdrawn') return 'پس گرفتنn';
-    if (applicationState === 'rejected') return 'ردed';
-    return displayedمرحله?.name || 'خیر مرحله';
+    if (applicationState === 'withdrawn') return 'Withdrawn';
+    if (applicationState === 'rejected') return 'Rejected';
+    return displayedStage?.name || 'خیر مرحله';
   };
   
-  const displayedمرحلهName = getDisplayName();
+  const displayedStageName = getDisplayName();
   
   // Disable dropdown if application is withdrawn or rejected
   const isDisabled = updating || applicationState === 'withdrawn' || applicationState === 'rejected';
 
-  const handleمرحلهChange = async (stageId: string) => {
+  const handleStageChange = async (stageId: string) => {
     // Don't update if selecting the same stage
-    if ((optimisticمرحلهId ?? currentمرحله?.id) === stageId) return;
+    if ((optimisticStageId ?? currentStage?.id) === stageId) return;
 
-    const previousمرحلهId = optimisticمرحلهId ?? currentمرحله?.id ?? null;
-    setOptimisticمرحلهId(stageId);
+    const previousStageId = optimisticStageId ?? currentStage?.id ?? null;
+    setOptimisticStageId(stageId);
 
     setUpdating(true);
     try {
@@ -83,8 +83,8 @@ export const وضعیتDropdown = ({
       }
 
       // به‌روزرسانی parent data (authoritative state)
-      if (onمرحلهChange) {
-        await onمرحلهChange();
+      if (onStageChange) {
+        await onStageChange();
       }
 
       toast({
@@ -93,7 +93,7 @@ export const وضعیتDropdown = ({
       });
     } catch (error: any) {
       // Revert optimistic UI on failure
-      setOptimisticمرحلهId(previousمرحلهId);
+      setOptimisticStageId(previousStageId);
       toast({
         title: 'خطا',
         description: error.message,
@@ -111,24 +111,24 @@ export const وضعیتDropdown = ({
           className={cn(
             'w-[184px] px-3 py-2 rounded-md inline-flex justify-center items-center gap-1 cursor-pointer transition-all border',
             'hover:shadow-md hover:scale-[1.02] active:scale-[0.98]',
-            getمرحلهColorClasses(displayedمرحلهName)
+            getStageColorClasses(displayedStageName)
           )}
           aria-label="Change candidate status"
         >
-          <div className="flex-1 text-center text-base font-medium">{displayedمرحلهName}</div>
+          <div className="flex-1 text-center text-base font-medium">{displayedStageName}</div>
           <ChevronDown className="h-4 w-4" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48 bg-background z-50">
-        {availableمرحلهs.map((stage) => (
+        {availableStages.map((stage) => (
           <DropdownMenuItem
             key={stage.id}
-            onClick={() => handleمرحلهChange(stage.id)}
+            onClick={() => handleStageChange(stage.id)}
             className="cursor-pointer"
           >
             <Badge
               variant="outline"
-              className={cn('capitalize w-full justify-center border', getمرحلهColorClasses(stage.name))}
+              className={cn('capitalize w-full justify-center border', getStageColorClasses(stage.name))}
             >
               {stage.name}
             </Badge>

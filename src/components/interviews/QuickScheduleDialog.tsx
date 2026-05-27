@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, Dialogعنوان } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, Video, User, ExternalLink } from 'lucide-react';
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface QuickScheduleDialogProps {
   open: boolean;
-  onبازChange: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   interview: {
     id: string;
     title: string;
@@ -23,7 +23,7 @@ interface QuickScheduleDialogProps {
 
 export function QuickScheduleDialog({ 
   open, 
-  onبازChange, 
+  onOpenChange, 
   interview,
   مصاحبه‌کننده = []
 }: QuickScheduleDialogProps) {
@@ -31,32 +31,32 @@ export function QuickScheduleDialog({
 
   if (!interview) return null;
 
-  const getوضعیتBadge = (status: string) => {
+  const getStatusBadge = (status: string) => {
     const statusMap = {
       scheduled: <Badge>Scheduled</Badge>,
       completed: <Badge variant="secondary">انجام شده</Badge>,
       no_show: <Badge variant="outline">خیر نمایش</Badge>,
-      cancelled: <Badge variant="destructive">انصرافled</Badge>,
+      cancelled: <Badge variant="destructive">Cancelled</Badge>,
     };
     return statusMap[status as keyof typeof statusMap] || <Badge>{status}</Badge>;
   };
 
   const handleViewDetails = () => {
-    onبازChange(false);
+    onOpenChange(false);
     navigate(`/interviews/${interview.id}`);
   };
 
   return (
-    <Dialog open={open} onبازChange={onبازChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <Dialogعنوان>{interview.title}</Dialogعنوان>
+          <DialogTitle>{interview.title}</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4 pt-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">وضعیت</span>
-            {getوضعیتBadge(interview.status)}
+            {getStatusBadge(interview.status)}
           </div>
 
           <div className="flex items-start gap-3">
@@ -125,7 +125,7 @@ export function QuickScheduleDialog({
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => onبازChange(false)}
+              onClick={() => onOpenChange(false)}
             >
               بستن
             </Button>

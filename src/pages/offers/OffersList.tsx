@@ -6,10 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Loader2, DollarSign, ChevronRight } from 'lucide-react';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { format, isPast } from 'date-fns';
-import { انقضاBadge } from '@/components/offers/انقضاWarning';
-import { useUserدسترسی‌ها } from '@/hooks/useUserدسترسی‌ها';
+import { ExpirationBadge } from '@/components/offers/ExpirationWarning';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface Offer {
   id: string;
@@ -34,18 +34,18 @@ interface Offer {
 
 const OffersList = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [loading, setبارگذاری] = useState(true);
+  const [loading, setUpload] = useState(true);
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
-  const { role, canViewOffer, loading: permissionsبارگذاری } = useUserدسترسی‌ها();
+  const { toast } = useToast();
+  const { role, canViewOffer, loading: permissionsUpload } = useUserPermissions();
 
   useEffect(() => {
     // Only fetch offers once permissions are loaded
-    if (!permissionsبارگذاری) {
+    if (!permissionsUpload) {
       fetchOffers();
       checkExpiredOffers();
     }
-  }, [permissionsبارگذاری, role]);
+  }, [permissionsUpload, role]);
 
   const fetchOffers = async () => {
     try {
@@ -87,7 +87,7 @@ const OffersList = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -104,15 +104,15 @@ const OffersList = () => {
 
       // به‌روزرسانی expired offers
       const now = new تاریخ();
-      const offersگیرندهExpire = expiredOffers?.filter(
+      const offersToExpire = expiredOffers?.filter(
         offer => offer.expires_at && isPast(new تاریخ(offer.expires_at))
       ) || [];
 
-      if (offersگیرندهExpire.length > 0) {
+      if (offersToExpire.length > 0) {
         const { error: updateError } = await supabase
           .from('offers')
           .update({ state: 'expired' })
-          .in('id', offersگیرندهExpire.map(o => o.id));
+          .in('id', offersToExpire.map(o => o.id));
 
         if (updateError) throw updateError;
         
@@ -131,7 +131,7 @@ const OffersList = () => {
       case 'pending_approval':
         return <Badge variant="secondary">در انتظار تأیید</Badge>;
       case 'approved':
-        return <Badge variant="success">تأییدd</Badge>;
+        return <Badge variant="success">Confirmd</Badge>;
       case 'sent':
         return <Badge>ارسال شده</Badge>;
       case 'accepted':
@@ -154,7 +154,7 @@ const OffersList = () => {
     }).format(total);
   };
 
-  if (loading || permissionsبارگذاری) {
+  if (loading || permissionsUpload) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -191,9 +191,9 @@ const OffersList = () => {
             <TableRow className="border-b-0 hover:bg-transparent">
               <TableHead>Candidate</TableHead>
               <TableHead>Position</TableHead>
-              <TableHead>گیرندهtal Compensation</TableHead>
+              <TableHead>Total Compensation</TableHead>
               <TableHead>حقوق پایه</TableHead>
-              <TableHead>ایجادd</TableHead>
+              <TableHead>Created</TableHead>
               <TableHead>Expires</TableHead>
               <TableHead>وضعیت</TableHead>
               <TableHead className="w-12"></TableHead>
@@ -235,7 +235,7 @@ const OffersList = () => {
                 <TableCell>
                   <div className="flex gap-2">
                     {getStateBadge(offer.state)}
-                    <انقضاBadge expiresAt={offer.expires_at} state={offer.state} />
+                    <ExpirationBadge expiresAt={offer.expires_at} state={offer.state} />
                   </div>
                 </TableCell>
                 <TableCell className="rounded-r-lg">

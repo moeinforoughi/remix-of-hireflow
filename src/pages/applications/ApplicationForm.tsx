@@ -5,10 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, Formپیام } from '@/components/ui/form';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -21,8 +21,8 @@ type FormValues = z.infer<typeof formSchema>;
 const ApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
-  const [loading, setبارگذاری] = useState(false);
+  const { toast } = useToast();
+  const [loading, setUpload] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
 
@@ -78,8 +78,8 @@ const ApplicationForm = () => {
     }
   };
 
-  const onثبت = async (values: FormValues) => {
-    setبارگذاری(true);
+  const onSubmit = async (values: FormValues) => {
+    setUpload(true);
     try {
       // Get the first stage for the job
       const { data: stages, error: stagesError } = await supabase
@@ -113,7 +113,7 @@ const ApplicationForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -126,11 +126,11 @@ const ApplicationForm = () => {
 
       <Card>
         <CardHeader>
-          <Cardعنوان>Application Details</Cardعنوان>
+          <CardTitle>Application Details</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="candidate_id"
@@ -139,25 +139,25 @@ const ApplicationForm = () => {
                     <FormLabel>Candidate</FormLabel>
                     <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <انتخابTrigger>
-                          <انتخابValue placeholder="انتخاب a candidate" />
-                        </انتخابTrigger>
+                        <SelectTrigger>
+                          <SelectValue placeholder="انتخاب a candidate" />
+                        </SelectTrigger>
                       </FormControl>
-                      <انتخابContent className="bg-background z-50">
+                      <SelectContent className="bg-background z-50">
                         {candidates.length === 0 ? (
                           <div className="px-2 py-6 text-center text-sm text-muted-foreground">
                             خیر candidates found
                           </div>
                         ) : (
                           candidates.map((candidate) => (
-                            <انتخابItem key={candidate.id} value={candidate.id}>
+                            <SelectItem key={candidate.id} value={candidate.id}>
                               {candidate.full_name} ({candidate.email})
-                            </انتخابItem>
+                            </SelectItem>
                           ))
                         )}
-                      </انتخابContent>
+                      </SelectContent>
                     </انتخاب>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -170,26 +170,26 @@ const ApplicationForm = () => {
                     <FormLabel>Job</FormLabel>
                     <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <انتخابTrigger>
-                          <انتخابValue placeholder="انتخاب a job" />
-                        </انتخابTrigger>
+                        <SelectTrigger>
+                          <SelectValue placeholder="انتخاب a job" />
+                        </SelectTrigger>
                       </FormControl>
-                      <انتخابContent className="bg-background z-50">
+                      <SelectContent className="bg-background z-50">
                         {jobs.length === 0 ? (
                           <div className="px-2 py-6 text-center text-sm text-muted-foreground">
                             خیر jobs found
                           </div>
                         ) : (
                           jobs.map((job) => (
-                            <انتخابItem key={job.id} value={job.id}>
+                            <SelectItem key={job.id} value={job.id}>
                               {job.title} {job.department && `- ${job.department}`}
                               {job.status !== 'open' && ` (${job.status})`}
-                            </انتخابItem>
+                            </SelectItem>
                           ))
                         )}
-                      </انتخابContent>
+                      </SelectContent>
                     </انتخاب>
-                    <Formپیام />
+                    <FormMessage />
                   </FormItem>
                 )}
               />

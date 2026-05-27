@@ -5,17 +5,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, Cardعنوان } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, Formپیام, Formتوضیحات } from '@/components/ui/form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2, بارگذاری, CheckCircle } from 'lucide-react';
-import { sendApplicationتأییدation } from '@/lib/email-notifications';
-import { parseرزومه } from '@/lib/resume-parser';
+import { sendApplicationConfirmation } from '@/lib/email-notifications';
+import { parseResume } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -49,15 +49,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const فرصت‌های شغلیApplicationForm = () => {
+const CareersApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useگیرندهast();
-  const [loading, setبارگذاری] = useState(false);
-  const [submitted, setثبتted] = useState(false);
+  const { toast } = useToast();
+  const [loading, setUpload] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [job, setJob] = useState<any>(null);
   const [orgId, setOrgId] = useState<string>('');
-  const [customسؤالs, setCustomسؤالs] = useState<any[]>([]);
+  const [customQuestions, setCustomQuestions] = useState<any[]>([]);
   const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
 
   const form = useForm<FormValues>({
@@ -100,15 +100,15 @@ const فرصت‌های شغلیApplicationForm = () => {
         .order('order_idx');
 
       if (questionsError) throw questionsError;
-      setCustomسؤالs(questions || []);
+      setCustomQuestions(questions || []);
     } catch (error) {
       console.error('Error fetching job:', error);
       navigate('/careers');
     }
   };
 
-  const onثبت = async (values: FormValues) => {
-    setبارگذاری(true);
+  const onSubmit = async (values: FormValues) => {
+    setUpload(true);
     try {
       // Use new secure edge function for public applications
       const file = values.resume[0];
@@ -150,7 +150,7 @@ const فرصت‌های شغلیApplicationForm = () => {
         description: "We've received your application and will be in touch soon.",
       });
 
-      setثبتted(true);
+      setSubmitted(true);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -158,7 +158,7 @@ const فرصت‌های شغلیApplicationForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
@@ -178,7 +178,7 @@ const فرصت‌های شغلیApplicationForm = () => {
             <div className="flex justify-center">
               <CheckCircle className="h-16 w-16 text-green-600" />
             </div>
-            <h2 className="text-2xl">Application ثبتted!</h2>
+            <h2 className="text-2xl">Application Submitted!</h2>
             <p className="text-muted-foreground">
               Thank you for applying to the <strong>{job.title}</strong> position. 
               We've received your application and will review it shortly.
@@ -218,14 +218,14 @@ const فرصت‌های شغلیApplicationForm = () => {
 
         <Card>
           <CardHeader>
-            <Cardعنوان className="text-2xl">ثبت درخواست for {job.title}</Cardعنوان>
+            <CardTitle className="text-2xl">ثبت درخواست for {job.title}</CardTitle>
             <p className="text-muted-foreground">
               Fill out the form below to submit your application
             </p>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onثبت={form.handleثبت(onثبت)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
                   name="full_name"
@@ -235,7 +235,7 @@ const فرصت‌های شغلیApplicationForm = () => {
                       <FormControl>
                         <Input placeholder="John Doe" {...field} />
                       </FormControl>
-                      <Formپیام />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -250,7 +250,7 @@ const فرصت‌های شغلیApplicationForm = () => {
                         <FormControl>
                           <Input type="email" placeholder="john@example.com" {...field} />
                         </FormControl>
-                        <Formپیام />
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -264,7 +264,7 @@ const فرصت‌های شغلیApplicationForm = () => {
                         <FormControl>
                           <Input placeholder="+1 (555) 000-0000" {...field} />
                         </FormControl>
-                        <Formپیام />
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -280,7 +280,7 @@ const فرصت‌های شغلیApplicationForm = () => {
                         <FormControl>
                           <Input placeholder="San Francisco, CA" {...field} />
                         </FormControl>
-                        <Formپیام />
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -294,7 +294,7 @@ const فرصت‌های شغلیApplicationForm = () => {
                         <FormControl>
                           <Input placeholder="https://linkedin.com/in/..." {...field} />
                         </FormControl>
-                        <Formپیام />
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -317,10 +317,10 @@ const فرصت‌های شغلیApplicationForm = () => {
                           <بارگذاری className="h-4 w-4 text-muted-foreground" />
                         </div>
                       </FormControl>
-                      <Formتوضیحات>
+                      <FormDescription>
                         PDF or Word document (max 5MB)
-                      </Formتوضیحات>
-                      <Formپیام />
+                      </FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -338,15 +338,15 @@ const فرصت‌های شغلیApplicationForm = () => {
                           {...field}
                         />
                       </FormControl>
-                      <Formپیام />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {customسؤالs.length > 0 && (
+                {customQuestions.length > 0 && (
                   <div className="pt-4 border-t space-y-4">
-                    <h3 className="">افزودنitional سؤالs</h3>
-                    {customسؤالs.map((question) => (
+                    <h3 className="">Additional Questions</h3>
+                    {customQuestions.map((question) => (
                       <div key={question.id} className="space-y-2">
                         <Label>
                           {question.question_text}
@@ -376,13 +376,13 @@ const فرصت‌های شغلیApplicationForm = () => {
                             onValueChange={(value) => setCustomAnswers({ ...customAnswers, [question.id]: value })}
                             required={question.is_required}
                           >
-                            <انتخابTrigger>
-                              <انتخابValue placeholder="انتخاب..." />
-                            </انتخابTrigger>
-                            <انتخابContent>
-                              <انتخابItem value="yes">بله</انتخابItem>
-                              <انتخابItem value="no">خیر</انتخابItem>
-                            </انتخابContent>
+                            <SelectTrigger>
+                              <SelectValue placeholder="انتخاب..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">بله</SelectItem>
+                              <SelectItem value="no">خیر</SelectItem>
+                            </SelectContent>
                           </انتخاب>
                         )}
 
@@ -392,16 +392,16 @@ const فرصت‌های شغلیApplicationForm = () => {
                             onValueChange={(value) => setCustomAnswers({ ...customAnswers, [question.id]: value })}
                             required={question.is_required}
                           >
-                            <انتخابTrigger>
-                              <انتخابValue placeholder="انتخاب an option..." />
-                            </انتخابTrigger>
-                            <انتخابContent>
+                            <SelectTrigger>
+                              <SelectValue placeholder="انتخاب an option..." />
+                            </SelectTrigger>
+                            <SelectContent>
                               {question.options.map((option: string, index: number) => (
-                                <انتخابItem key={index} value={option}>
+                                <SelectItem key={index} value={option}>
                                   {option}
-                                </انتخابItem>
+                                </SelectItem>
                               ))}
-                            </انتخابContent>
+                            </SelectContent>
                           </انتخاب>
                         )}
                       </div>
@@ -424,10 +424,10 @@ const فرصت‌های شغلیApplicationForm = () => {
                         <FormLabel>
                           I agree to the processing of my personal data *
                         </FormLabel>
-                        <Formتوضیحات>
+                        <FormDescription>
                           We'll use your information only for recruitment purposes
-                        </Formتوضیحات>
-                        <Formپیام />
+                        </FormDescription>
+                        <FormMessage />
                       </div>
                     </FormItem>
                   )}
@@ -446,4 +446,4 @@ const فرصت‌های شغلیApplicationForm = () => {
   );
 };
 
-export default فرصت‌های شغلیApplicationForm;
+export default CareersApplicationForm;

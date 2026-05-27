@@ -4,7 +4,7 @@ import { بارگذاری, X, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
-interface FileبارگذاریProps {
+interface FileUploadProps {
   value?: File | null;
   onChange: (file: File | null) => void;
   accept?: string;
@@ -15,13 +15,13 @@ interface FileبارگذاریProps {
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_TYPES = '.pdf,.doc,.docx';
 
-export const Fileبارگذاری = ({
+export const FileUpload = ({
   value,
   onChange,
   accept = ACCEPTED_TYPES,
   maxSize = MAX_FILE_SIZE,
   disabled = false,
-}: FileبارگذاریProps) => {
+}: FileUploadProps) => {
   const [error, setError] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +41,7 @@ export const Fileبارگذاری = ({
     }
 
     // Validate file type
-    const fileExtension = '.' + file.name.split('.').pop()?.toکمerCase();
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
     const acceptedTypes = accept.split(',').map(t => t.trim());
     
     if (!acceptedTypes.includes(fileExtension)) {
@@ -53,7 +53,7 @@ export const Fileبارگذاری = ({
     onChange(file);
   };
 
-  const handleحذف = () => {
+  const handleRemove = () => {
     onChange(null);
     setError('');
   };
@@ -82,7 +82,7 @@ export const Fileبارگذاری = ({
             type="button"
             variant="ghost"
             size="sm"
-            onClick={handleحذف}
+            onClick={handleRemove}
             disabled={disabled}
           >
             <X className="h-4 w-4" />

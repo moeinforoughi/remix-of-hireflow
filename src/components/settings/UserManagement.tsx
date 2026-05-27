@@ -3,12 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { انتخاب, انتخابContent, انتخابItem, انتخابTrigger, انتخابValue } from '@/components/ui/select';
-import { useگیرندهast } from '@/hooks/use-toast';
+import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2, ChevronRight, ChevronDown } from 'lucide-react';
 import { InviteUserDialog } from './InviteUserDialog';
-import { ویرایشUserDialog } from './ویرایشUserDialog';
-import { notifyنقشChanged } from '@/lib/notifications';
+import { EditUserDialog } from './EditUserDialog';
+import { notifyRoleChanged } from '@/lib/notifications';
 
 interface User {
   id: string;
@@ -23,11 +23,11 @@ interface User {
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setبارگذاری] = useState(true);
-  const [currentUserایمیل, setCurrentUserایمیل] = useState<string>('');
-  const [editingUser, setویرایشingUser] = useState<User | null>(null);
-  const [editDialogباز, setویرایشDialogباز] = useState(false);
-  const { toast } = useگیرندهast();
+  const [loading, setUpload] = useState(true);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchUsers();
@@ -37,7 +37,7 @@ export const UserManagement = () => {
   const fetchCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user?.email) {
-      setCurrentUserایمیل(user.email);
+      setCurrentUserEmail(user.email);
     }
   };
 
@@ -46,18 +46,18 @@ export const UserManagement = () => {
       // Get current user's org_id first
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setبارگذاری(false);
+        setUpload(false);
         return;
       }
 
-      const { data: currentپروفایل } = await supabase
+      const { data: currentProfile } = await supabase
         .from('profiles')
         .select('org_id')
         .eq('id', user.id)
         .single();
 
-      if (!currentپروفایل) {
-        setبارگذاری(false);
+      if (!currentProfile) {
+        setUpload(false);
         return;
       }
 
@@ -65,12 +65,12 @@ export const UserManagement = () => {
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('org_id', currentپروفایل.org_id)
+        .eq('org_id', currentProfile.org_id)
         .order('created_at', { ascending: false });
 
       if (profilesError) throw profilesError;
 
-      const usersWithنقشs = await Promise.all(
+      const usersWithRoles = await Promise.all(
         profiles.map(async (profile) => {
           const { data: roleData } = await supabase
             .from('user_roles')
@@ -81,11 +81,11 @@ export const UserManagement = () => {
           // If user has no role, auto-fix by assigning 'basic' role
           let role = roleData?.role;
           if (!role) {
-            const { error: fixنقشError } = await supabase
+            const { error: fixRoleError } = await supabase
               .from('user_roles')
               .insert({ user_id: profile.id, role: 'basic' });
             
-            if (!fixنقشError) {
+            if (!fixRoleError) {
               role = 'basic';
               console.log(`Auto-fixed missing role for user ${profile.email}`);
             }
@@ -113,7 +113,7 @@ export const UserManagement = () => {
         })
       );
 
-      setUsers(usersWithنقشs);
+      setUsers(usersWithRoles);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -121,11 +121,11 @@ export const UserManagement = () => {
         variant: 'destructive',
       });
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
 
-  const handleنقشChange = async (userId: string, newنقش: 'basic' | 'job_admin' | 'site_admin') => {
+  const handleRoleChange = async (userId: string, newRole: 'basic' | 'job_admin' | 'site_admin') => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -144,7 +144,7 @@ export const UserManagement = () => {
       // Insert new role
       const { error: insertError } = await supabase
         .from('user_roles')
-        .insert({ user_id: userId, role: newنقش });
+        .insert({ user_id: userId, role: newRole });
 
       if (insertError) throw insertError;
 
@@ -155,7 +155,7 @@ export const UserManagement = () => {
 
       // ارسال notification about role change
       if (targetUser) {
-        notifyنقشChanged(userId, targetUser.full_name, newنقش, user.id);
+        notifyRoleChanged(userId, targetUser.full_name, newRole, user.id);
       }
 
       fetchUsers();
@@ -176,7 +176,7 @@ export const UserManagement = () => {
     );
   }
 
-  const getنقشLabel = (role: string) => {
+  const getRoleLabel = (role: string) => {
     const labels: Record<string, string> = {
       basic: 'Can View',
       job_admin: 'Can ویرایش',
@@ -216,8 +216,8 @@ export const UserManagement = () => {
                   borderRadius: '8px',
                 }}
                 onClick={() => {
-                  setویرایشingUser(user);
-                  setویرایشDialogباز(true);
+                  setEditingUser(user);
+                  setEditDialogOpen(true);
                 }}
               >
                 <TableCell className="rounded-l-lg">
@@ -244,20 +244,20 @@ export const UserManagement = () => {
                   <div className="flex items-center justify-between">
                     <انتخاب
                       value={user.role}
-                      onValueChange={(value) => handleنقشChange(user.id, value as 'basic' | 'job_admin' | 'site_admin')}
-                      disabled={user.email === 'demo@hireflow.app' && currentUserایمیل === 'demo@hireflow.app'}
+                      onValueChange={(value) => handleRoleChange(user.id, value as 'basic' | 'job_admin' | 'site_admin')}
+                      disabled={user.email === 'demo@hireflow.app' && currentUserEmail === 'demo@hireflow.app'}
                     >
-                      <انتخابTrigger 
+                      <SelectTrigger 
                         className="w-[106px] h-[30px] text-[12px] font-medium border-border"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <انتخابValue>{getنقشLabel(user.role)}</انتخابValue>
-                      </انتخابTrigger>
-                      <انتخابContent>
-                        <انتخابItem value="basic">Can View</انتخابItem>
-                        <انتخابItem value="job_admin">Can ویرایش</انتخابItem>
-                        <انتخابItem value="site_admin">مدیر کل</انتخابItem>
-                      </انتخابContent>
+                        <SelectValue>{getRoleLabel(user.role)}</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="basic">Can View</SelectItem>
+                        <SelectItem value="job_admin">Can ویرایش</SelectItem>
+                        <SelectItem value="site_admin">مدیر کل</SelectItem>
+                      </SelectContent>
                     </انتخاب>
                   </div>
                 </TableCell>
@@ -270,11 +270,11 @@ export const UserManagement = () => {
         </Table>
       </div>
 
-      <ویرایشUserDialog
-        open={editDialogباز}
-        onبازChange={setویرایشDialogباز}
+      <EditUserDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
         user={editingUser}
-        onبه‌روزرسانیSuccess={fetchUsers}
+        onRefreshSuccess={fetchUsers}
       />
     </div>
   );

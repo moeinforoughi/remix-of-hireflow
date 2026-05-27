@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { formatDistanceگیرندهخیرw } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 interface ActivityItemProps {
   avatarUrl: string | null;
@@ -54,7 +54,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 };
 const RecentActivityFeed = () => {
   const [activities, setActivities] = useState<ActivityItemProps[]>([]);
-  const [loading, setبارگذاری] = useState(true);
+  const [loading, setUpload] = useState(true);
   useEffect(() => {
     fetchActivities();
   }, []);
@@ -79,7 +79,7 @@ const RecentActivityFeed = () => {
           avatarUrl: activity.actor?.avatar_url || null,
           username: activity.actor?.full_name || 'System',
           action,
-          timeAgo: formatDistanceگیرندهخیرw(new تاریخ(activity.created_at), {
+          timeAgo: formatDistanceToNow(new تاریخ(activity.created_at), {
             addSuffix: true
           })
         };
@@ -89,7 +89,7 @@ const RecentActivityFeed = () => {
     } catch (error) {
       console.error('Error fetching activities:', error);
     } finally {
-      setبارگذاری(false);
+      setUpload(false);
     }
   };
   const formatAction = async (activity: any): Promise<string> => {
@@ -109,33 +109,33 @@ const RecentActivityFeed = () => {
     // Handle stage_moved for applications
     if (entity === 'application' && action === 'stage_moved') {
       try {
-        const oldمرحلهId = before_json?.current_stage_id;
-        const newمرحلهId = after_json?.current_stage_id;
+        const oldStageId = before_json?.current_stage_id;
+        const newStageId = after_json?.current_stage_id;
         const candidateId = after_json?.candidate_id;
         const jobId = after_json?.job_id;
         console.log('Fetching stage_moved data:', {
-          oldمرحلهId,
-          newمرحلهId,
+          oldStageId,
+          newStageId,
           candidateId,
           jobId
         });
 
         // Fetch old stage, new stage, candidate, and job details
-        const [oldمرحلهData, newمرحلهData, candidateData, jobData] = await Promise.all([oldمرحلهId ? supabase.from('job_stages').select('name').eq('id', oldمرحلهId).single() : Promise.resolve(null), newمرحلهId ? supabase.from('job_stages').select('name').eq('id', newمرحلهId).single() : Promise.resolve(null), candidateId ? supabase.from('candidates').select('full_name').eq('id', candidateId).single() : Promise.resolve(null), jobId ? supabase.from('jobs').select('title').eq('id', jobId).single() : Promise.resolve(null)]);
+        const [oldStageData, newStageData, candidateData, jobData] = await Promise.all([oldStageId ? supabase.from('job_stages').select('name').eq('id', oldStageId).single() : Promise.resolve(null), newStageId ? supabase.from('job_stages').select('name').eq('id', newStageId).single() : Promise.resolve(null), candidateId ? supabase.from('candidates').select('full_name').eq('id', candidateId).single() : Promise.resolve(null), jobId ? supabase.from('jobs').select('title').eq('id', jobId).single() : Promise.resolve(null)]);
         console.log('Fetched stage_moved details:', {
-          oldمرحله: oldمرحلهData,
-          newمرحله: newمرحلهData,
+          oldStage: oldStageData,
+          newStage: newStageData,
           candidate: candidateData,
           job: jobData
         });
-        const oldمرحلهName = oldمرحلهData?.data?.name;
-        const newمرحلهName = newمرحلهData?.data?.name || 'new stage';
+        const oldStageName = oldStageData?.data?.name;
+        const newStageName = newStageData?.data?.name || 'new stage';
         const candidateName = candidateData?.data?.full_name || 'candidate';
-        const jobعنوان = jobData?.data?.title || 'job';
-        if (oldمرحلهName) {
-          return `moved ${candidateName} from "${oldمرحلهName}" to "${newمرحلهName}" for ${jobعنوان}`;
+        const jobTitle = jobData?.data?.title || 'job';
+        if (oldStageName) {
+          return `moved ${candidateName} from "${oldStageName}" to "${newStageName}" for ${jobTitle}`;
         }
-        return `moved ${candidateName} to "${newمرحلهName}" for ${jobعنوان}`;
+        return `moved ${candidateName} to "${newStageName}" for ${jobTitle}`;
       } catch (error) {
         console.error('Error formatting stage_moved action:', error);
         return 'یک درخواست را به مرحله جدید منتقل کرد';
@@ -150,16 +150,16 @@ const RecentActivityFeed = () => {
         try {
           const [candidateData, jobData] = await Promise.all([supabase.from('candidates').select('full_name').eq('id', candidateId).single(), supabase.from('jobs').select('title').eq('id', jobId).single()]);
           const candidateName = candidateData?.data?.full_name || 'candidate';
-          const jobعنوان = jobData?.data?.title || 'job';
+          const jobTitle = jobData?.data?.title || 'job';
           if (action === 'created') {
-            return `received application from ${candidateName} for ${jobعنوان}`;
+            return `received application from ${candidateName} for ${jobTitle}`;
           }
           if (action === 'state_changed') {
             const newState = after_json?.state;
-            return `changed ${candidateName}'s application for ${jobعنوان} to ${newState}`;
+            return `changed ${candidateName}'s application for ${jobTitle} to ${newState}`;
           }
           if (action === 'updated') {
-            return `updated ${candidateName}'s application for ${jobعنوان}`;
+            return `updated ${candidateName}'s application for ${jobTitle}`;
           }
         } catch (error) {
           console.error('Error formatting application action:', error);
@@ -176,10 +176,10 @@ const RecentActivityFeed = () => {
             data: appData
           } = await supabase.from('applications').select('candidate:candidates(full_name), job:jobs(title)').eq('id', applicationId).single();
           const candidateName = appData?.candidate?.full_name || 'candidate';
-          const jobعنوان = appData?.job?.title || 'job';
-          if (action === 'created') return `scheduled interview with ${candidateName} for ${jobعنوان}`;
-          if (action === 'updated') return `updated interview with ${candidateName} for ${jobعنوان}`;
-          if (action === 'deleted') return `cancelled interview with ${candidateName} for ${jobعنوان}`;
+          const jobTitle = appData?.job?.title || 'job';
+          if (action === 'created') return `scheduled interview with ${candidateName} for ${jobTitle}`;
+          if (action === 'updated') return `updated interview with ${candidateName} for ${jobTitle}`;
+          if (action === 'deleted') return `cancelled interview with ${candidateName} for ${jobTitle}`;
         } catch (error) {
           console.error('Error formatting interview action:', error);
         }
@@ -188,13 +188,13 @@ const RecentActivityFeed = () => {
 
     // Handle job actions
     if (entity === 'job') {
-      const jobعنوان = after_json?.title;
-      if (action === 'created' && jobعنوان) {
-        return `posted "${jobعنوان}"`;
+      const jobTitle = after_json?.title;
+      if (action === 'created' && jobTitle) {
+        return `posted "${jobTitle}"`;
       }
-      if (action === 'status_changed' && jobعنوان) {
-        const newوضعیت = after_json?.status || 'updated';
-        return `changed "${jobعنوان}" status to ${newوضعیت}`;
+      if (action === 'status_changed' && jobTitle) {
+        const newStatus = after_json?.status || 'updated';
+        return `changed "${jobTitle}" status to ${newStatus}`;
       }
     }
 
@@ -207,8 +207,8 @@ const RecentActivityFeed = () => {
             data: appData
           } = await supabase.from('applications').select('candidate:candidates(full_name), job:jobs(title)').eq('id', applicationId).single();
           const candidateName = appData?.candidate?.full_name || 'candidate';
-          const jobعنوان = appData?.job?.title || 'job';
-          if (action === 'insert') return `created offer for ${candidateName} - ${jobعنوان}`;
+          const jobTitle = appData?.job?.title || 'job';
+          if (action === 'insert') return `created offer for ${candidateName} - ${jobTitle}`;
           if (action === 'update') {
             const oldState = before_json?.state;
             const newState = after_json?.state;
