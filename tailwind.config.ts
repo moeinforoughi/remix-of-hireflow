@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        'sans': ['var(--font-body, Inter)', 'system-ui', 'sans-serif'],
-        'serif': ['var(--font-heading, Inter)', 'Georgia', 'serif'],
+        'sans': ['Vazirmatn', 'var(--font-body, Inter)', 'system-ui', 'Tahoma', 'sans-serif'],
+        'serif': ['Vazirmatn', 'var(--font-heading, Inter)', 'Georgia', 'serif'],
       },
       fontSize: {
         'xs':   ['12px', { lineHeight: '16px' }],
@@ -108,5 +108,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwindcss-rtl")],
 } satisfies Config;
