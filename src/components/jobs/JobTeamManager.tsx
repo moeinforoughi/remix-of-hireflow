@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, UserPlus, Trash2, Shield, X } from 'lucide-react';
 import {
-  انتخاب,
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,

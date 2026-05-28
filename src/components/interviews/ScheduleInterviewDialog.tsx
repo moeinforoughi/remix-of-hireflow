@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {
-  انتخاب,
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { AccountInformation } from '@/components/settings/AccountInformation';
 import { NotificationSettings } from '@/components/settings/NotificationSettings';
-import { سازمانپروفایل } from '@/components/settings/OrganizationProfile';
-import { برندینگتنظیمات } from '@/components/settings/BrandingSettings';
+import { OrganizationProfile } from '@/components/settings/OrganizationProfile';
+import { BrandingSettings } from '@/components/settings/BrandingSettings';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';

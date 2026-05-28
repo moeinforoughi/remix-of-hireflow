@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { بارگذاری, Paperclip, FileText } from 'lucide-react';
+import { Upload, Paperclip, FileText } from 'lucide-react';
 import { parseResume } from '@/lib/resume-parser';
 
 // Format phone number as (XXX) XXX-XXXX
