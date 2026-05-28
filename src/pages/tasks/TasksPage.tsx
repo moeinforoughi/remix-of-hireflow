@@ -121,7 +121,7 @@ export default function TasksPage() {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Failed to load tasks");
+      toast.error("خطا در بارگذاری وظایف");
     } finally {
       setLoading(false);
     }
@@ -139,7 +139,7 @@ export default function TasksPage() {
       .eq("id", task.id);
 
     if (error) {
-      toast.error("Failed to update task status");
+      toast.error("خطا در به‌روزرسانی وضعیت");
       console.error(error);
       return;
     }
@@ -154,12 +154,12 @@ export default function TasksPage() {
     const { error } = await supabase.from("tasks").delete().eq("id", deleteTaskId);
 
     if (error) {
-      toast.error("Failed to delete task");
+      toast.error("خطا در حذف وظیفه");
       console.error(error);
       return;
     }
 
-    toast.success("Task deleted successfully");
+    toast.success("وظیفه با موفقیت حذف شد");
     setRemoveTaskId(null);
     fetchData();
   };
@@ -175,7 +175,7 @@ export default function TasksPage() {
 
   const handleAddTask = async () => {
     if (!formTitle.trim() || !formCandidateId || !orgId) {
-      toast.error("Please fill in required fields");
+      toast.error("لطفاً فیلدهای الزامی را پر کنید");
       return;
     }
 
@@ -202,13 +202,13 @@ export default function TasksPage() {
 
       if (error) throw error;
 
-      toast.success("Task created successfully");
+      toast.success("وظیفه با موفقیت ایجاد شد");
       setIsAddDialogOpen(false);
       resetForm();
       fetchData();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create task");
+      toast.error("خطا در ایجاد وظیفه");
     } finally {
       setIsSubmitting(false);
     }
@@ -216,7 +216,7 @@ export default function TasksPage() {
 
   const handleEditTask = async () => {
     if (!editTask || !formTitle.trim()) {
-      toast.error("Please fill in required fields");
+      toast.error("لطفاً فیلدهای الزامی را پر کنید");
       return;
     }
 
@@ -244,13 +244,13 @@ export default function TasksPage() {
 
       if (error) throw error;
 
-      toast.success("Task updated successfully");
+      toast.success("وظیفه با موفقیت به‌روزرسانی شد");
       setEditTask(null);
       resetForm();
       fetchData();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update task");
+      toast.error("خطا در به‌روزرسانی وظیفه");
     } finally {
       setIsSubmitting(false);
     }
@@ -320,7 +320,7 @@ export default function TasksPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search tasks..."
+            placeholder="جستجوی وظایف..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -390,7 +390,7 @@ export default function TasksPage() {
                       size="sm"
                       variant="outline"
                       onClick={() => handleToggleStatus(task)}
-                      title={task.status === "pending" ? "Mark as completed" : "Mark as pending"}
+                      title={task.status === "pending" ? "علامت‌گذاری به عنوان انجام‌شده" : "علامت‌گذاری به عنوان در انتظار"}
                     >
                       {task.status === "pending" ? (
                         <Check className="h-4 w-4" />
@@ -424,7 +424,7 @@ export default function TasksPage() {
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Task</DialogTitle>
+            <DialogTitle>افزودن وظیفه جدید</DialogTitle>
             <DialogDescription>
               ایجاد a new task linked to a candidate.
             </DialogDescription>
@@ -436,7 +436,7 @@ export default function TasksPage() {
                 id="title"
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                placeholder="Enter task title"
+                placeholder="عنوان وظیفه را وارد کنید"
               />
             </div>
             <div className="space-y-2">
@@ -455,12 +455,12 @@ export default function TasksPage() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="label">Label</Label>
+              <Label htmlFor="label">برچسب</Label>
               <Input
                 id="label"
                 value={formLabel}
                 onChange={(e) => setFormLabel(e.target.value)}
-                placeholder="e.g., Interview, Review, Follow-up"
+                placeholder="مثلاً مصاحبه، بررسی، پیگیری"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -470,7 +470,7 @@ export default function TasksPage() {
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formDueDate ? format(formDueDate, "PP") : "Pick a date"}
+                      {formDueDate ? format(formDueDate, "PP") : "تاریخ را انتخاب کنید"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -489,7 +489,7 @@ export default function TasksPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
+              <Label>وضعیت</Label>
               <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
                 <SelectTrigger>
                   <SelectValue />
@@ -528,16 +528,16 @@ export default function TasksPage() {
                 id="edit-title"
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                placeholder="Enter task title"
+                placeholder="عنوان وظیفه را وارد کنید"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-label">Label</Label>
+              <Label htmlFor="edit-label">برچسب</Label>
               <Input
                 id="edit-label"
                 value={formLabel}
                 onChange={(e) => setFormLabel(e.target.value)}
-                placeholder="e.g., Interview, Review, Follow-up"
+                placeholder="مثلاً مصاحبه، بررسی، پیگیری"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -547,7 +547,7 @@ export default function TasksPage() {
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formDueDate ? format(formDueDate, "PP") : "Pick a date"}
+                      {formDueDate ? format(formDueDate, "PP") : "تاریخ را انتخاب کنید"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -566,7 +566,7 @@ export default function TasksPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Status</Label>
+              <Label>وضعیت</Label>
               <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
                 <SelectTrigger>
                   <SelectValue />

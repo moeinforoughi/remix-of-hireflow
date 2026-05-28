@@ -211,18 +211,18 @@ const CandidatesList = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl">Candidates</h1>
+          <h1 className="text-3xl">کاندیداها</h1>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[160px]">
               <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Filter by status" />
+              <SelectValue placeholder="فیلتر بر اساس وضعیت" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Candidates</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="hired">Hired</SelectItem>
-              <SelectItem value="withdrawn">Withdrawn</SelectItem>
+              <SelectItem value="all">همه کاندیداها</SelectItem>
+              <SelectItem value="active">فعال</SelectItem>
+              <SelectItem value="rejected">رد شده</SelectItem>
+              <SelectItem value="hired">استخدام‌شده</SelectItem>
+              <SelectItem value="withdrawn">انصراف داده</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -253,11 +253,11 @@ const CandidatesList = () => {
           <Table className="border-separate border-spacing-y-2">
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b-0">
-                <TableHead className="w-[220px]">Candidate</TableHead>
+                <TableHead className="w-[220px]">کاندیدا</TableHead>
                 <TableHead className="w-[240px]">Position ثبت درخواست شده for</TableHead>
                 <TableHead className="w-[160px]">تاریخ ثبت درخواست شده</TableHead>
-                <TableHead className="w-[140px]">Status</TableHead>
-                <TableHead className="w-[180px]">Manager</TableHead>
+                <TableHead className="w-[140px]">وضعیت</TableHead>
+                <TableHead className="w-[180px]">مدیر</TableHead>
                 <TableHead className="w-[40px]"></TableHead>
               </TableRow>
             </TableHeader>
