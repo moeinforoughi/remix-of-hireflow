@@ -23,7 +23,7 @@ interface OfferTimelineProps {
 
 export function OfferTimeline({ offerId }: OfferTimelineProps) {
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -51,7 +51,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
     } catch (error: any) {
       console.error('Error fetching activities:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -170,7 +170,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
                 <div className="flex-1 pb-6">
                   {getActivityDescription(activity)}
                   <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                    <span>{format(new تاریخ(activity.created_at), 'MMM d, yyyy · h:mm a')}</span>
+                    <span>{format(new Date(activity.created_at), 'MMM d, yyyy · h:mm a')}</span>
                     {activity.profiles?.full_name && (
                       <span>by {activity.profiles.full_name}</span>
                     )}

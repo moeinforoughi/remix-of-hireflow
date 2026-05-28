@@ -71,7 +71,7 @@ const getRecommendationText = (recommendation: string) => {
 
 export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: ScorecardsDialogProps) => {
   const [scorecards, setScorecards] = useState<فرم ارزیابی[]>([]);
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
 
   const fetchScorecards = async () => {
     try {
-      setUpload(true);
+      setLoading(true);
       const { data, error } = await supabase
         .from('scorecards')
         .select(`
@@ -107,7 +107,7 @@ export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: Scorecards
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

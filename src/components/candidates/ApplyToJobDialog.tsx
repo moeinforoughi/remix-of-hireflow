@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Briefcase, Loader2 } from 'lucide-react';
 import { notifyNewApplication } from '@/lib/notifications';
@@ -40,7 +40,7 @@ export const ApplyToJobDialog = ({
 }: ApplyToJobDialogProps) => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string>('');
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -136,7 +136,7 @@ export const ApplyToJobDialog = ({
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -165,7 +165,7 @@ export const ApplyToJobDialog = ({
           current_stage_id: firstStage.id,
           state: 'active',
           owner_user_id: user.id,
-          applied_at: new تاریخ().toISOString(),
+          applied_at: new Date().toISOString(),
         })
         .select('id')
         .single();
@@ -193,7 +193,7 @@ export const ApplyToJobDialog = ({
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -224,7 +224,7 @@ export const ApplyToJobDialog = ({
             <>
               <div className="space-y-2">
                 <Label htmlFor="job">انتخاب Job Position</Label>
-                <انتخاب value={selectedJobId} onValueChange={setSelectedJobId}>
+                <Select value={selectedJobId} onValueChange={setSelectedJobId}>
                   <SelectTrigger className="h-11">
                     <SelectValue placeholder="Choose a job..." />
                   </SelectTrigger>
@@ -240,7 +240,7 @@ export const ApplyToJobDialog = ({
                       </SelectItem>
                     ))}
                   </SelectContent>
-                </انتخاب>
+                </Select>
               </div>
 
               <div className="flex justify-end gap-3 pt-4">

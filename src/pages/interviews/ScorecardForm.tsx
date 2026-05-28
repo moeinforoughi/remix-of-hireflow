@@ -63,7 +63,7 @@ const ScorecardForm = () => {
         recommendation: recommendation as 'advance' | 'hold' | 'no',
         ratings_json: ratings as any,
         notes: overallNotes,
-        submitted_at: new تاریخ().toISOString(),
+        submitted_at: new Date().toISOString(),
       }]);
 
       if (error) throw error;

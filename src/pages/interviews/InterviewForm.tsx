@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { TimePickerAMPM } from '@/components/ui/time-picker-ampm';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -57,7 +57,7 @@ const InterviewForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -113,14 +113,14 @@ const InterviewForm = () => {
   };
 
   const onSubmit = async (values: FormValues) => {
-    setUpload(true);
+    setLoading(true);
     try {
       // Combine date and time
-      const startDateTime = new تاریخ(values.start_date);
+      const startDateTime = new Date(values.start_date);
       const [startHour, startMin] = values.start_time.split(':');
       startDateTime.setHours(parseInt(startHour), parseInt(startMin));
 
-      const endDateTime = new تاریخ(values.start_date);
+      const endDateTime = new Date(values.start_date);
       const [endHour, endMin] = values.end_time.split(':');
       endDateTime.setHours(parseInt(endHour), parseInt(endMin));
 
@@ -222,7 +222,7 @@ const InterviewForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -260,7 +260,7 @@ const InterviewForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Candidate Application</FormLabel>
-                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="انتخاب an application" />
@@ -273,7 +273,7 @@ const InterviewForm = () => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -285,7 +285,7 @@ const InterviewForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>interviewers (اختیاری)</FormLabel>
-                    <انتخاب
+                    <Select
                       onValueChange={(value) => {
                         const currentValues = field.value || [];
                         if (!currentValues.includes(value)) {
@@ -305,7 +305,7 @@ const InterviewForm = () => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                     {field.value && field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((userId) => {
@@ -367,7 +367,7 @@ const InterviewForm = () => {
                             field.onChange(date);
                             setDatePickerOpen(false);
                           }}
-                          disabled={(date) => date < new تاریخ()}
+                          disabled={(date) => date < new Date()}
                           initialFocus
                           className={cn('p-3 pointer-events-auto')}
                         />
@@ -414,7 +414,7 @@ const InterviewForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>نوع مصاحبه</FormLabel>
-                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="انتخاب interview type" />
@@ -424,7 +424,7 @@ const InterviewForm = () => {
                         <SelectItem value="virtual">آنلاین Interview</SelectItem>
                         <SelectItem value="onsite">On-site Interview</SelectItem>
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

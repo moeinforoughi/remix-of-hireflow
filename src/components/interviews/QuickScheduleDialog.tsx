@@ -64,12 +64,12 @@ export function QuickScheduleDialog({
             <div className="flex-1">
               <p className="font-medium text-sm">تاریخ & زمان</p>
               <p className="text-sm text-muted-foreground">
-                {format(new تاریخ(interview.start_at), 'EEEE, MMMM d, yyyy')}
+                {format(new Date(interview.start_at), 'EEEE, MMMM d, yyyy')}
               </p>
               <div className="flex items-center gap-1 mt-1">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
-                  {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
+                  {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
                 </p>
               </div>
             </div>

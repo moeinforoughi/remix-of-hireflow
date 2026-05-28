@@ -22,7 +22,7 @@ export default function TemplatesList() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setRemoveDialogOpen] = useState(false);
   const [templateToRemove, setTemplateToRemove] = useState<string | null>(null);
   const [isSiteAdmin, setIsSiteAdmin] = useState(false);
@@ -47,7 +47,7 @@ export default function TemplatesList() {
   };
 
   const fetchTemplates = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from("message_templates")
@@ -63,7 +63,7 @@ export default function TemplatesList() {
         variant: "destructive",
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

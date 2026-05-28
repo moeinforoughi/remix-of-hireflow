@@ -245,7 +245,7 @@ export function SiteAdminDashboard() {
                   <div className="w-[243px] text-sm font-[590] text-foreground">{job.title}</div>
                   <div className="flex-1 text-sm text-muted-foreground">{job.location || 'دورکاری'}</div>
                   <div className="flex-1 text-sm text-muted-foreground">
-                    {new تاریخ(job.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
+                    {new Date(job.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
                   </div>
                   <div className="flex-1 flex items-center">
                     {job.job_acl?.slice(0, 5).map((acl: any, idx: number) => (

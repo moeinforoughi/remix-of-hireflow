@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, Clock, Plus } from "lucide-react";
@@ -39,7 +39,7 @@ export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: Confirm
   const { toast } = useToast();
   const [approvals, setConfirms] = useState<تأیید[]>([]);
   const [profiles, setProfiles] = useState<پروفایل[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [selectedConfirmr, setSelectedConfirmr] = useState("");
   const [actionComment, setActionComment] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string>("");
@@ -98,7 +98,7 @@ export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: Confirm
   };
 
   const fetchConfirms = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from("approvals")
@@ -118,7 +118,7 @@ export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: Confirm
         variant: "destructive",
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -179,7 +179,7 @@ export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: Confirm
         .update({
           state: action,
           comment: actionComment || null,
-          acted_at: new تاریخ().toISOString(),
+          acted_at: new Date().toISOString(),
         })
         .eq("id", approvalId);
 
@@ -296,7 +296,7 @@ export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: Confirm
           <div className="space-y-2">
             <Label>افزودن تأییدکننده</Label>
             <div className="flex gap-2">
-              <انتخاب value={selectedConfirmr} onValueChange={setSelectedConfirmr}>
+              <Select value={selectedConfirmr} onValueChange={setSelectedConfirmr}>
                 <SelectTrigger>
                   <SelectValue placeholder="انتخاب approver" />
                 </SelectTrigger>
@@ -309,7 +309,7 @@ export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: Confirm
                       </SelectItem>
                     ))}
                 </SelectContent>
-              </انتخاب>
+              </Select>
               <Button onClick={handleAddConfirm} size="icon">
                 <Plus className="h-4 w-4" />
               </Button>
@@ -343,8 +343,8 @@ export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: Confirm
 
                 <p className="text-xs text-muted-foreground">
                   {approval.acted_at
-                    ? `${approval.state} ${formatDistanceToNow(new تاریخ(approval.acted_at))} ago`
-                    : `Requested ${formatDistanceToNow(new تاریخ(approval.created_at))} ago`}
+                    ? `${approval.state} ${formatDistanceToNow(new Date(approval.acted_at))} ago`
+                    : `Requested ${formatDistanceToNow(new Date(approval.created_at))} ago`}
                 </p>
 
                 {approval.state === "pending" && approval.approver_user_id === currentUserId && (

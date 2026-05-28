@@ -29,7 +29,7 @@ interface ConfirmRequestedDialogProps {
 
 export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedDialogProps) {
   const [approvals, setConfirms] = useState<در انتظارتأیید[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -40,12 +40,12 @@ export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedD
   }, [open]);
 
   const fetchPendingConfirms = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       // Get current user's org_id
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setUpload(false);
+        setLoading(false);
         return;
       }
       
@@ -56,7 +56,7 @@ export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedD
         .single();
       
       if (!profile) {
-        setUpload(false);
+        setLoading(false);
         return;
       }
 
@@ -124,7 +124,7 @@ export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedD
         variant: "destructive",
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -134,7 +134,7 @@ export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedD
         .from('approvals')
         .update({ 
           state: action,
-          acted_at: new تاریخ().toISOString()
+          acted_at: new Date().toISOString()
         })
         .eq('id', approvalId);
 
@@ -174,7 +174,7 @@ export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedD
   };
 
   const formatStartDate = (createdAt: string) => {
-    const date = new تاریخ(createdAt);
+    const date = new Date(createdAt);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 

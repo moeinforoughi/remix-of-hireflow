@@ -14,7 +14,7 @@ interface EditAccountDialogProps {
 }
 
 export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccountDialogProps) => {
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const { toast } = useToast();
@@ -50,7 +50,7 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
   };
 
   const handleSave = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -84,7 +84,7 @@ export const EditAccountDialog = ({ open, onOpenChange, onSuccess }: EditAccount
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

@@ -44,7 +44,7 @@ const OfferDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [offer, setOffer] = useState<OfferDetail | null>(null);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const OfferDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -101,7 +101,7 @@ const OfferDetail = () => {
         .single();
 
       if (currentOffer && currentOffer.expires_at && currentOffer.state === 'sent') {
-        if (isPast(new تاریخ(currentOffer.expires_at))) {
+        if (isPast(new Date(currentOffer.expires_at))) {
           await supabase
             .from('offers')
             .update({ state: 'expired' })
@@ -287,7 +287,7 @@ const OfferDetail = () => {
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Expires</p>
-                      <p className="font-medium">{format(new تاریخ(offer.expires_at), 'MMMM d, yyyy')}</p>
+                      <p className="font-medium">{format(new Date(offer.expires_at), 'MMMM d, yyyy')}</p>
                     </div>
                   </div>
                 )}

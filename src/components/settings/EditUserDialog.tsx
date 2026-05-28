@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -25,7 +25,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onRefreshSuccess }: E
   const [department, setDepartment] = useState('');
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
@@ -75,7 +75,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onRefreshSuccess }: E
   const handleRefresh = async () => {
     if (!user) return;
 
-    setUpload(true);
+    setLoading(true);
     try {
       // به‌روزرسانی department
       const { error: profileError } = await supabase
@@ -125,7 +125,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onRefreshSuccess }: E
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -206,7 +206,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onRefreshSuccess }: E
                   <Label htmlFor="department" className="text-sm font-medium">
                     بخش
                   </Label>
-                  <انتخاب value={department} onValueChange={setDepartment}>
+                  <Select value={department} onValueChange={setDepartment}>
                     <SelectTrigger>
                       <SelectValue placeholder="انتخاب بخش" />
                     </SelectTrigger>
@@ -220,7 +220,7 @@ export const EditUserDialog = ({ open, onOpenChange, user, onRefreshSuccess }: E
                       <SelectItem value="Finance">Finance</SelectItem>
                       <SelectItem value="Operations">Operations</SelectItem>
                     </SelectContent>
-                  </انتخاب>
+                  </Select>
                 </div>
               </div>
 

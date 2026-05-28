@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -15,7 +15,7 @@ interface CreateJobDialogProps {
 }
 
 export function CreateJobDialog({ open, onOpenChange, onSuccess }: CreateJobDialogProps) {
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     location: '',
@@ -34,7 +34,7 @@ export function CreateJobDialog({ open, onOpenChange, onSuccess }: CreateJobDial
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUpload(true);
+    setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -109,7 +109,7 @@ export function CreateJobDialog({ open, onOpenChange, onSuccess }: CreateJobDial
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -155,7 +155,7 @@ export function CreateJobDialog({ open, onOpenChange, onSuccess }: CreateJobDial
 
             <fieldset className="border border-border rounded-lg p-4 relative">
               <legend className="text-xs text-muted-foreground px-2 -ml-2">نوع همکاری</legend>
-              <انتخاب
+              <Select
                 value={formData.employment_type}
                 onValueChange={(value) => setFormData({ ...formData, employment_type: value as 'full_time' | 'part_time' | 'contract' | 'internship' })}
               >
@@ -168,7 +168,7 @@ export function CreateJobDialog({ open, onOpenChange, onSuccess }: CreateJobDial
                   <SelectItem value="contract">قراردادی</SelectItem>
                   <SelectItem value="internship">کارآموزی</SelectItem>
                 </SelectContent>
-              </انتخاب>
+              </Select>
             </fieldset>
 
             <fieldset className="border border-border rounded-lg p-4 relative">

@@ -34,7 +34,7 @@ interface Offer {
 
 const OffersList = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { role, canViewOffer, loading: permissionsUpload } = useUserPermissions();
@@ -87,7 +87,7 @@ const OffersList = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -103,9 +103,9 @@ const OffersList = () => {
       if (error) throw error;
 
       // به‌روزرسانی expired offers
-      const now = new تاریخ();
+      const now = new Date();
       const offersToExpire = expiredOffers?.filter(
-        offer => offer.expires_at && isPast(new تاریخ(offer.expires_at))
+        offer => offer.expires_at && isPast(new Date(offer.expires_at))
       ) || [];
 
       if (offersToExpire.length > 0) {
@@ -228,9 +228,9 @@ const OffersList = () => {
                     minimumFractionDigits: 0,
                   }).format(offer.base_amount)}
                 </TableCell>
-                <TableCell>{format(new تاریخ(offer.created_at), 'MMM d, yyyy')}</TableCell>
+                <TableCell>{format(new Date(offer.created_at), 'MMM d, yyyy')}</TableCell>
                 <TableCell>
-                  {offer.expires_at ? format(new تاریخ(offer.expires_at), 'MMM d, yyyy') : '-'}
+                  {offer.expires_at ? format(new Date(offer.expires_at), 'MMM d, yyyy') : '-'}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">

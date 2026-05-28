@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
@@ -15,7 +15,7 @@ import { CustomQuestionsManager } from '@/components/jobs/CustomQuestionsManager
 const JobForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     department: '',
@@ -56,7 +56,7 @@ const JobForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUpload(true);
+    setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -127,7 +127,7 @@ const JobForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -193,7 +193,7 @@ const JobForm = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="employment_type">نوع همکاری *</Label>
-                    <انتخاب
+                    <Select
                       value={formData.employment_type}
                       onValueChange={(value: any) => setFormData({ ...formData, employment_type: value })}
                     >
@@ -206,7 +206,7 @@ const JobForm = () => {
                         <SelectItem value="contract">قراردادی</SelectItem>
                         <SelectItem value="internship">کارآموزی</SelectItem>
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                   </div>
 
                   <div className="space-y-2">
@@ -223,7 +223,7 @@ const JobForm = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="status">وضعیت *</Label>
-                    <انتخاب
+                    <Select
                       value={formData.status}
                       onValueChange={(value: any) => setFormData({ ...formData, status: value })}
                     >
@@ -237,7 +237,7 @@ const JobForm = () => {
                         <SelectItem value="paused">Paused</SelectItem>
                         <SelectItem value="closed">Closed</SelectItem>
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                   </div>
                 </div>
 

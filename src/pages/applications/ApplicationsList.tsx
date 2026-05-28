@@ -44,7 +44,7 @@ interface Application {
 
 const ApplicationsList = () => {
   const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
@@ -78,7 +78,7 @@ const ApplicationsList = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -108,7 +108,7 @@ const ApplicationsList = () => {
     })
     .sort((a, b) => {
       if (sortBy === 'date') {
-        return new تاریخ(b.applied_at).getTime() - new تاریخ(a.applied_at).getTime();
+        return new Date(b.applied_at).getTime() - new Date(a.applied_at).getTime();
       } else {
         return a.candidate?.full_name.localeCompare(b.candidate?.full_name) || 0;
       }
@@ -153,7 +153,7 @@ const ApplicationsList = () => {
           />
         </div>
 
-        <انتخاب value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-[180px] bg-card">
             <SelectValue placeholder="وضعیت" />
           </SelectTrigger>
@@ -164,9 +164,9 @@ const ApplicationsList = () => {
             <SelectItem value="rejected">Rejected</SelectItem>
             <SelectItem value="withdrawn">Withdrawn</SelectItem>
           </SelectContent>
-        </انتخاب>
+        </Select>
 
-        <انتخاب value={sortBy} onValueChange={(value: 'date' | 'name') => setSortBy(value)}>
+        <Select value={sortBy} onValueChange={(value: 'date' | 'name') => setSortBy(value)}>
           <SelectTrigger className="w-full sm:w-[180px] bg-card">
             <SelectValue placeholder="مرتب‌سازی by" />
           </SelectTrigger>
@@ -174,7 +174,7 @@ const ApplicationsList = () => {
             <SelectItem value="date">تاریخ (Newest)</SelectItem>
             <SelectItem value="name">Name (A-Z)</SelectItem>
           </SelectContent>
-        </انتخاب>
+        </Select>
 
         {hasActiveFilters && (
           <Button variant="outline" onClick={clearFilters}>
@@ -236,7 +236,7 @@ const ApplicationsList = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new تاریخ(app.applied_at).toLocaleDateString()}
+                    {new Date(app.applied_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="rounded-r-lg">
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />

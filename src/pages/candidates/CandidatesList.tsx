@@ -52,7 +52,7 @@ interface ApplicationWithDetails {
 
 const CandidatesList = () => {
   const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [jobs, setJobs] = useState<Array<{ id: string; title: string }>>([]);
   const [stages, setStages] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
@@ -125,7 +125,7 @@ const CandidatesList = () => {
       // Non-site_admin users with no job assignments see nothing
       if (role !== 'site_admin' && assignedJobIds.length === 0) {
         setApplications([]);
-        setUpload(false);
+        setLoading(false);
         return;
       }
 
@@ -202,7 +202,7 @@ const CandidatesList = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -212,7 +212,7 @@ const CandidatesList = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-3xl">Candidates</h1>
-          <انتخاب value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[160px]">
               <فیلتر className="h-4 w-4 mr-2" />
               <SelectValue placeholder="فیلتر by status" />
@@ -224,7 +224,7 @@ const CandidatesList = () => {
               <SelectItem value="hired">Hired</SelectItem>
               <SelectItem value="withdrawn">Withdrawn</SelectItem>
             </SelectContent>
-          </انتخاب>
+          </Select>
         </div>
         {userRole && userRole !== 'basic' && (
           <AddCandidateDialog 
@@ -288,7 +288,7 @@ const CandidatesList = () => {
                     {application.job?.title || 'Unknown Position'}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new تاریخ(application.applied_at).toLocaleDateString('en-US', { 
+                    {new Date(application.applied_at).toLocaleDateString('en-US', { 
                       month: '2-digit', 
                       day: '2-digit', 
                       year: 'numeric' 

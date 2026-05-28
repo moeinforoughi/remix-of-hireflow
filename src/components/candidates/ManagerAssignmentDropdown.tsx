@@ -30,7 +30,7 @@ export const ManagerAssignmentDropdown = ({
   onRefresh,
 }: ManagerAssignmentDropdownProps) => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const ManagerAssignmentDropdown = ({
   };
 
   const handleAssign = async (userId: string) => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { error } = await supabase
         .from('applications')
@@ -93,12 +93,12 @@ export const ManagerAssignmentDropdown = ({
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
   return (
-    <انتخاب
+    <Select
       value={currentManagerId || ''}
       onValueChange={handleAssign}
       onOpenChange={setIsOpen}
@@ -127,6 +127,6 @@ export const ManagerAssignmentDropdown = ({
           </SelectItem>
         ))}
       </SelectContent>
-    </انتخاب>
+    </Select>
   );
 };

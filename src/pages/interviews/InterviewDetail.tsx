@@ -55,7 +55,7 @@ const InterviewDetail = () => {
   const [interview, setInterview] = useState<InterviewDetail | null>(null);
   const [scorecards, setScorecards] = useState<فرم ارزیابی[]>([]);
   const [مصاحبه‌کننده, setinterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -128,7 +128,7 @@ const InterviewDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -342,9 +342,9 @@ const InterviewDetail = () => {
             <div className="flex items-start gap-3">
               <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium">{format(new تاریخ(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
+                <p className="font-medium">{format(new Date(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
                 <p className="text-sm text-muted-foreground">
-                  {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
+                  {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
                 </p>
               </div>
               <Button 

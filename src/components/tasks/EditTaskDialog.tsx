@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
@@ -32,10 +32,10 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskRefreshd }: Edi
   const [title, setTitle] = useState(task.title);
   const [label, setLabel] = useState(task.label || "");
   const [dueDate, setDueDate] = useState<تاریخ | undefined>(
-    task.due_date ? new تاریخ(task.due_date) : undefined
+    task.due_date ? new Date(task.due_date) : undefined
   );
   const [dueTime, setDueTime] = useState(
-    task.due_date ? format(new تاریخ(task.due_date), "HH:mm") : "12:00"
+    task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00"
   );
   const [status, setStatus] = useState<"pending" | "completed">(task.status);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,8 +43,8 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskRefreshd }: Edi
   useEffect(() => {
     setTitle(task.title);
     setLabel(task.label || "");
-    setDueDate(task.due_date ? new تاریخ(task.due_date) : undefined);
-    setDueTime(task.due_date ? format(new تاریخ(task.due_date), "HH:mm") : "12:00");
+    setDueDate(task.due_date ? new Date(task.due_date) : undefined);
+    setDueTime(task.due_date ? format(new Date(task.due_date), "HH:mm") : "12:00");
     setStatus(task.status);
   }, [task]);
 
@@ -60,7 +60,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskRefreshd }: Edi
     let dueDatetime = null;
     if (dueDate) {
       const [hours, minutes] = dueTime.split(":");
-      const datetime = new تاریخ(dueDate);
+      const datetime = new Date(dueDate);
       datetime.setHours(parseInt(hours), parseInt(minutes), 0);
       dueDatetime = datetime.toISOString();
     }
@@ -155,7 +155,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskRefreshd }: Edi
 
           <div className="space-y-2">
             <Label htmlFor="status">وضعیت</Label>
-            <انتخاب value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
+            <Select value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
@@ -163,7 +163,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskRefreshd }: Edi
                 <SelectItem value="pending">در انتظار</SelectItem>
                 <SelectItem value="completed">انجام شده</SelectItem>
               </SelectContent>
-            </انتخاب>
+            </Select>
           </div>
 
           <div className="flex justify-end gap-2">

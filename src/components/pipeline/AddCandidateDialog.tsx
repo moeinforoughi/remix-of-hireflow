@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { بارگذاری, Paperclip, Plus, جستجو, Loader2, User } from 'lucide-react';
 import { parseResume } from '@/lib/resume-parser';
@@ -63,7 +63,7 @@ interface AddCandidateDialogProps {
 export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandidateDialogProps) => {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'new' | 'existing'>('new');
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [parsing, setParsing] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -299,7 +299,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -365,7 +365,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           source: 'manual',
           org_id: profile.org_id,
           consent: true,
-          consent_at: new تاریخ().toISOString(),
+          consent_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -412,7 +412,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           current_stage_id: firstStage.id,
           state: 'active',
           owner_user_id: user.id,
-          applied_at: new تاریخ().toISOString(),
+          applied_at: new Date().toISOString(),
         })
         .select('id')
         .single();
@@ -441,7 +441,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -466,7 +466,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -499,7 +499,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
           current_stage_id: firstStage.id,
           state: 'active',
           owner_user_id: user.id,
-          applied_at: new تاریخ().toISOString(),
+          applied_at: new Date().toISOString(),
         })
         .select('id')
         .single();
@@ -527,7 +527,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -620,7 +620,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                 {!jobId && jobs && jobs.length > 0 && (
                   <div className="space-y-2">
                     <Label htmlFor="job">Job Position *</Label>
-                    <انتخاب value={selectedJobId} onValueChange={handleJobChange}>
+                    <Select value={selectedJobId} onValueChange={handleJobChange}>
                       <SelectTrigger className="h-11">
                         <SelectValue placeholder="انتخاب a job" />
                       </SelectTrigger>
@@ -631,7 +631,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                   </div>
                 )}
 
@@ -716,7 +716,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
             {!jobId && jobs && jobs.length > 0 && (
               <div className="space-y-2">
                 <Label htmlFor="job-existing">Job Position *</Label>
-                <انتخاب value={selectedJobId} onValueChange={handleJobChange}>
+                <Select value={selectedJobId} onValueChange={handleJobChange}>
                   <SelectTrigger className="h-11">
                     <SelectValue placeholder="انتخاب a job" />
                   </SelectTrigger>
@@ -727,7 +727,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
                       </SelectItem>
                     ))}
                   </SelectContent>
-                </انتخاب>
+                </Select>
               </div>
             )}
 

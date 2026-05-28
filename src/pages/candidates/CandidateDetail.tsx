@@ -80,14 +80,14 @@ const CandidateDetail = () => {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
   const [stages, setStages] = useState<any[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [showResumeDialog, setShowResumeDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
-  const [showApplyToJobDialog, setShowSubmit درخواستToJobDialog] = useState(false);
+  const [showApplyToJobDialog, setShowApplyToJobDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const CandidateDetail = () => {
 
   const fetchData = async () => {
     if (!id) return;
-    setUpload(true);
+    setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -201,7 +201,7 @@ const CandidateDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -428,7 +428,7 @@ const CandidateDetail = () => {
         <div className="flex items-center gap-2">
           <Button 
             variant="outline" 
-            onClick={() => setShowSubmit درخواستToJobDialog(true)}
+            onClick={() => setShowApplyToJobDialog(true)}
           >
             <Briefcase className="h-4 w-4 mr-2" />
             ثبت درخواست to Job
@@ -610,7 +610,7 @@ const CandidateDetail = () => {
       {/* ثبت درخواست to Job Dialog */}
       <ApplyToJobDialog
         open={showApplyToJobDialog}
-        onOpenChange={setShowSubmit درخواستToJobDialog}
+        onOpenChange={setShowApplyToJobDialog}
         candidateId={candidate.id}
         candidateName={candidate.full_name}
         existingJobIds={applications.map(app => app.job.id)}
@@ -643,7 +643,7 @@ const CandidateDetail = () => {
                 <h3 className="text-sm text-muted-foreground mb-1">تاریخ ثبت درخواست شده</h3>
                 <p className="font-medium">
                   {primaryApplication
-                    ? new تاریخ(primaryApplication.applied_at).toLocaleDateString('en-US', {
+                    ? new Date(primaryApplication.applied_at).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric',

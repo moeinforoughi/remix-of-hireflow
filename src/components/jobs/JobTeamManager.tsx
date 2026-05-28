@@ -120,7 +120,7 @@ const getRoleLabel = (role: AppRole | undefined): string => {
 export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
   const [teamMembers, setTeamMembers] = useState<JobTeamMember[]>([]);
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedPreset, setSelectedPreset] = useState('recruiter');
@@ -198,7 +198,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -449,7 +449,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">User</label>
-                    <انتخاب value={selectedUser} onValueChange={setSelectedUser}>
+                    <Select value={selectedUser} onValueChange={setSelectedUser}>
                       <SelectTrigger>
                         <SelectValue placeholder="انتخاب a user" />
                       </SelectTrigger>
@@ -465,12 +465,12 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium">نقش</label>
-                    <انتخاب value={selectedPreset} onValueChange={setSelectedPreset}>
+                    <Select value={selectedPreset} onValueChange={setSelectedPreset}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -484,7 +484,7 @@ export const JobTeamManager = ({ jobId }: JobTeamManagerProps) => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                     {selectedUser && selectedUserRole === 'basic' && (
                       <p className="text-xs text-muted-foreground">
                         پایه users can only have view permissions

@@ -15,7 +15,7 @@ interface RemoveAccountDialogProps {
 }
 
 export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogProps) => {
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogP
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -73,7 +73,7 @@ export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogP
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

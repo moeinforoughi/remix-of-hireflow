@@ -64,7 +64,7 @@ export const RejectCandidateDialog = ({
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="reason">Rejection Reason *</Label>
-            <انتخاب value={reason} onValueChange={setReason}>
+            <Select value={reason} onValueChange={setReason}>
               <SelectTrigger id="reason">
                 <SelectValue placeholder="انتخاب a reason" />
               </SelectTrigger>
@@ -75,7 +75,7 @@ export const RejectCandidateDialog = ({
                   </SelectItem>
                 ))}
               </SelectContent>
-            </انتخاب>
+            </Select>
           </div>
 
           <div className="space-y-2">

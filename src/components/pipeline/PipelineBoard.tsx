@@ -131,7 +131,7 @@ const SortableApplication = ({ application, onClick, isSelected, onToggleSelect 
         </div>
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new تاریخ(application.applied_at), { addSuffix: true })}
+            {formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}
           </p>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -242,7 +242,7 @@ const DroppableStage = ({
 const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
   const [stages, setStages] = useState<مرحله[]>([]);
   const [applications, setApplications] = useState<ApplicationCard[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -334,7 +334,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

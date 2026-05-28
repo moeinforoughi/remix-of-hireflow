@@ -28,7 +28,7 @@ type وضعیتفیلتر = 'all' | 'open' | 'paused' | 'filled' | 'closed';
 const JobsList = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [userRole, setUserRole] = useState<string | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -70,7 +70,7 @@ const JobsList = () => {
       // Get user's org_id first
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setUpload(false);
+        setLoading(false);
         return;
       }
 
@@ -81,7 +81,7 @@ const JobsList = () => {
         .single();
 
       if (!profile) {
-        setUpload(false);
+        setLoading(false);
         return;
       }
 
@@ -95,7 +95,7 @@ const JobsList = () => {
       if (role === 'basic') {
         if (assignedJobIds.length === 0) {
           setJobs([]);
-          setUpload(false);
+          setLoading(false);
           return;
         }
         query = query.in('id', assignedJobIds);
@@ -139,7 +139,7 @@ const JobsList = () => {
         variant: 'destructive'
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
   const formatStatusLabel = (status: string) => {
@@ -297,7 +297,7 @@ const JobsList = () => {
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {format(new تاریخ(job.created_at), 'MM/dd/yyyy')}
+                    {format(new Date(job.created_at), 'MM/dd/yyyy')}
                   </TableCell>
                   <TableCell className="text-primary font-bold text-center">{job.candidatesCount || 0}</TableCell>
                   <TableCell className="rounded-r-lg">

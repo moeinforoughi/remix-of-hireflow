@@ -27,7 +27,7 @@ interface CommentsSectionProps {
 export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
   const [comments, setComments] = useState<نظر[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
 
@@ -80,7 +80,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
     } catch (error: any) {
       console.error('Error fetching comments:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -155,7 +155,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
                       <p className="text-sm">{comment.content}</p>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1 px-1">
-                      {format(new تاریخ(comment.created_at), 'MMM d, h:mm a')}
+                      {format(new Date(comment.created_at), 'MMM d, h:mm a')}
                     </p>
                   </div>
                 </div>

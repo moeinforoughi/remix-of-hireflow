@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FileUpload } from '@/components/shared/FileUpload';
@@ -15,7 +15,7 @@ import { parseResume } from '@/lib/resume-parser';
 const CandidateForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     full_name: '',
@@ -60,7 +60,7 @@ const CandidateForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUpload(true);
+    setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -80,7 +80,7 @@ const CandidateForm = () => {
         phone: formData.phone || null,
         location: formData.location || null,
         linkedin_url: formData.linkedin_url || null,
-        consent_at: formData.consent ? new تاریخ().toISOString() : null,
+        consent_at: formData.consent ? new Date().toISOString() : null,
       };
 
       let candidateId = id;
@@ -150,7 +150,7 @@ const CandidateForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -232,7 +232,7 @@ const CandidateForm = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="source">منبع *</Label>
-                <انتخاب
+                <Select
                   value={formData.source}
                   onValueChange={(value: any) => setFormData({ ...formData, source: value })}
                 >
@@ -247,7 +247,7 @@ const CandidateForm = () => {
                     <SelectItem value="agency">Agency</SelectItem>
                     <SelectItem value="job_fair">Job Fair</SelectItem>
                   </SelectContent>
-                </انتخاب>
+                </Select>
               </div>
             </div>
 

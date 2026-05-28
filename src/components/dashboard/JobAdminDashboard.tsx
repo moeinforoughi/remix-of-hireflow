@@ -204,7 +204,7 @@ export function JobAdminDashboard() {
                   >
                     <p className="font-medium text-sm">{task.title}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {task.due_date ? format(new تاریخ(task.due_date), 'MMM d, yyyy') : 'امروز'} • {task.due_date ? format(new تاریخ(task.due_date), 'h:mm a') : '12:30 PM'}
+                      {task.due_date ? format(new Date(task.due_date), 'MMM d, yyyy') : 'امروز'} • {task.due_date ? format(new Date(task.due_date), 'h:mm a') : '12:30 PM'}
                     </p>
                   </div>
                 ))
@@ -241,7 +241,7 @@ export function JobAdminDashboard() {
                     <div className="font-medium">{job.title}</div>
                     <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new تاریخ(job.created_at).toLocaleDateString()}
+                      {new Date(job.created_at).toLocaleDateString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">

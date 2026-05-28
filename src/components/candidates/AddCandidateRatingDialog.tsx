@@ -46,7 +46,7 @@ export const AddCandidateRatingDialog = ({
   onSuccess,
 }: AddCandidateRatingDialogProps) => {
   const { toast } = useToast();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [ratings, setRatings] = useState<Record<RatingKey, number>>({
     soft_skills: 3,
     hard_skills: 3,
@@ -79,7 +79,7 @@ export const AddCandidateRatingDialog = ({
   }, [existingRating, open]);
 
   const handleSubmit = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -127,7 +127,7 @@ export const AddCandidateRatingDialog = ({
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -36,7 +36,7 @@ interface EditJobDialogProps {
 }
 
 export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDialogProps) {
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: job.title || '',
     location: job.location || '',
@@ -55,7 +55,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUpload(true);
+    setLoading(true);
 
     try {
       const { error } = await supabase
@@ -79,7 +79,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -125,7 +125,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
 
             <fieldset className="border border-border rounded-lg p-4 relative">
               <legend className="text-xs text-muted-foreground px-2 -ml-2">نوع همکاری</legend>
-              <انتخاب
+              <Select
                 value={formData.employment_type}
                 onValueChange={(value) => setFormData({ ...formData, employment_type: value as 'full_time' | 'part_time' | 'contract' | 'internship' })}
               >
@@ -138,7 +138,7 @@ export function EditJobDialog({ open, onOpenChange, job, onSuccess }: EditJobDia
                   <SelectItem value="contract">قراردادی</SelectItem>
                   <SelectItem value="internship">کارآموزی</SelectItem>
                 </SelectContent>
-              </انتخاب>
+              </Select>
             </fieldset>
 
             <fieldset className="border border-border rounded-lg p-4 relative">

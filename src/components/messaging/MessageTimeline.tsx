@@ -24,7 +24,7 @@ interface MessageTimelineProps {
 
 export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineProps) => {
   const [messages, setMessages] = useState<پیام[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchMessages();
@@ -76,7 +76,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
   }, [applicationId, candidateId]);
 
   const fetchMessages = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       let query = supabase
         .from("messages")
@@ -96,7 +96,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -165,8 +165,8 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
                   
                   <p className="text-xs text-muted-foreground">
                     {message.sent_at
-                      ? `ارسال شده ${formatDistanceToNow(new تاریخ(message.sent_at))} ago`
-                      : `Created ${formatDistanceToNow(new تاریخ(message.created_at))} ago`}
+                      ? `ارسال شده ${formatDistanceToNow(new Date(message.sent_at))} ago`
+                      : `Created ${formatDistanceToNow(new Date(message.created_at))} ago`}
                   </p>
                   
                   <details className="mt-2">
