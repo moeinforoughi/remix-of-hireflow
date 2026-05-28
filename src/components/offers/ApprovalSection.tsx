@@ -37,8 +37,8 @@ interface ConfirmSectionProps {
 
 export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: ConfirmSectionProps) => {
   const { toast } = useToast();
-  const [approvals, setConfirms] = useState<تأیید[]>([]);
-  const [profiles, setProfiles] = useState<پروفایل[]>([]);
+  const [approvals, setConfirms] = useState<Approval[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedConfirmr, setSelectedConfirmr] = useState("");
   const [actionComment, setActionComment] = useState("");

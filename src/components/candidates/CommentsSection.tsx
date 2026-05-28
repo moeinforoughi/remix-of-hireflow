@@ -25,7 +25,7 @@ interface CommentsSectionProps {
 }
 
 export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
-  const [comments, setComments] = useState<نظر[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
