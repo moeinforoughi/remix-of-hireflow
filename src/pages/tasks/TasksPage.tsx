@@ -102,7 +102,7 @@ export default function TasksPage() {
         const [tasksRes, CandidatesRes] = await Promise.all([
           supabase
             .from("tasks")
-            .select("*, candidate:Candidates(id, full_name)")
+            .select("*, candidate:candidates(id, full_name)")
             .eq("org_id", profile.org_id)
             .order("due_date", { ascending: true, nullsFirst: false }),
           supabase
