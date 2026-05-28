@@ -100,7 +100,7 @@ export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedD
 
       if (error) throw error;
 
-      const formattedData: در انتظارتأیید[] = (data || []).map((approval: any) => ({
+      const formattedData: PendingApproval[] = (data || []).map((approval: any) => ({
         id: approval.id,
         offer_id: approval.offers.id,
         approver_user_id: approval.approver_user_id,
