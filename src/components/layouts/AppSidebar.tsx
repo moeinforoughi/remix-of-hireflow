@@ -319,6 +319,17 @@ export function AppSidebar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {open && (
+          <div className="px-3 pt-2 pb-1 text-[10px] leading-relaxed text-muted-foreground text-center border-t border-sidebar-border/50 mt-2">
+            ساخته شده توسط
+            <div className="font-medium text-sidebar-foreground/80 mt-0.5">
+              ابوالفضل بیابانی
+            </div>
+            <div className="font-medium text-sidebar-foreground/80">
+              محمد محمدی
+            </div>
+          </div>
+        )}
       </SidebarFooter>
     </Sidebar>
   );
