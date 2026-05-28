@@ -177,11 +177,11 @@ const InterviewForm = () => {
         if (values.panel_user_ids && values.panel_user_ids.length > 0) {
           const selectedinterviewers = users.filter(u => values.panel_user_ids?.includes(u.id));
           
-          for (const مصاحبه‌کننده of selectedinterviewers) {
+          for (const interviewer of selectedinterviewers) {
             try {
               await sendInterviewInvitation(
-                مصاحبه‌کننده.email,
-                مصاحبه‌کننده.full_name,
+                interviewer.email,
+                interviewer.full_name,
                 selectedApp.job.title,
                 format(startDateTime, 'PPP'),
                 format(startDateTime, 'p'),
@@ -194,7 +194,7 @@ const InterviewForm = () => {
               // ایجاد in-app notification for مصاحبه‌کننده
               const { data: userData } = await supabase.auth.getUser();
               await supabase.from('notifications').insert({
-                user_id: مصاحبه‌کننده.id,
+                user_id: interviewer.id,
                 org_id: userData.user?.user_metadata?.org_id,
                 type: 'interview_scheduled',
                 title: 'Interview هیئت مصاحبه Assignment',
@@ -203,7 +203,7 @@ const InterviewForm = () => {
                 entity_id: interview.id,
               });
             } catch (error) {
-              console.error(`Failed to notify مصاحبه‌کننده ${مصاحبه‌کننده.full_name}:`, error);
+              console.error(`Failed to notify مصاحبه‌کننده ${interviewer.full_name}:`, error);
             }
           }
         }
@@ -295,7 +295,7 @@ const InterviewForm = () => {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="افزودن مصاحبه‌کننده..." />
+                          <SelectValue placeholder="افزودن interviewer..." />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

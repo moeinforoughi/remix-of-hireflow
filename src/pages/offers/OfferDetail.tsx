@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2, Calendar, User, Briefcase, FileText, Download, RefreshCw } from 'lucide-react';
 import { format, isPast } from 'date-fns';
-import { ConfirmSection } from '@/components/offers/ConfirmSection';
+import { ApprovalSection } from '@/components/offers/ApprovalSection';
 import { ExpirationWarning } from '@/components/offers/ExpirationWarning';
 import { OfferTimeline } from '@/components/offers/OfferTimeline';
 
@@ -484,7 +484,7 @@ const OfferDetail = () => {
         </TabsContent>
 
         <TabsContent value="approvals">
-          <ConfirmSection 
+          <ApprovalSection 
             offerId={offer.id} 
             offerState={offer.state}
             onConfirmChange={fetchOffer}

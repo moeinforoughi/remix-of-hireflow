@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface نظر {
+interface CommentItem {
   id: string;
   content: string;
   created_at: string;
@@ -25,7 +25,7 @@ interface CommentsSectionProps {
 }
 
 export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentItem[]>([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);

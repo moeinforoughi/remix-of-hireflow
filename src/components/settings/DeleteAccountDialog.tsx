@@ -9,12 +9,12 @@ import { useToast } from '@/hooks/use-toast';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-interface RemoveAccountDialogProps {
+interface DeleteAccountDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogProps) => {
+export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState('');
   const { toast } = useToast();

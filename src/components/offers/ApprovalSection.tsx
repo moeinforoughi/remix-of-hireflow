@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, Clock, Plus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
-interface تأیید {
+interface ApprovalItem {
   id: string;
   approver_user_id: string;
   state: string;
@@ -23,22 +23,22 @@ interface تأیید {
   };
 }
 
-interface پروفایل {
+interface ApproverProfile {
   id: string;
   full_name: string;
   email: string;
 }
 
-interface ConfirmSectionProps {
+interface ApprovalSectionProps {
   offerId: string;
   offerState: string;
   onConfirmChange?: () => void;
 }
 
-export const ConfirmSection = ({ offerId, offerState, onConfirmChange }: ConfirmSectionProps) => {
+export const ApprovalSection = ({ offerId, offerState, onConfirmChange }: ApprovalSectionProps) => {
   const { toast } = useToast();
-  const [approvals, setConfirms] = useState<Approval[]>([]);
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [approvals, setConfirms] = useState<ApprovalItem[]>([]);
+  const [profiles, setProfiles] = useState<ApproverProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedConfirmr, setSelectedConfirmr] = useState("");
   const [actionComment, setActionComment] = useState("");

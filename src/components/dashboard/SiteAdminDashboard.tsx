@@ -12,7 +12,7 @@ import listIcon from "@/assets/icons/list-icon.svg";
 import usersIcon from "@/assets/icons/users-icon.svg";
 import awardIcon from "@/assets/icons/award-icon.svg";
 import thumbsUpIcon from "@/assets/icons/thumbs-up-icon.svg";
-import { ConfirmRequestedDialog } from "@/components/offers/ConfirmRequestedDialog";
+import { ApprovalRequestedDialog } from "@/components/offers/ApprovalRequestedDialog";
 import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { JobListingsTableSkeleton } from "@/components/dashboard/JobListingsTableSkeleton";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
@@ -268,7 +268,7 @@ export function SiteAdminDashboard() {
         </div>
       )}
 
-      <ConfirmRequestedDialog 
+      <ApprovalRequestedDialog 
         open={approvalDialogOpen} 
         onOpenChange={setConfirmDialogOpen} 
       />

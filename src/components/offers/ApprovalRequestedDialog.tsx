@@ -22,12 +22,12 @@ interface PendingApproval {
   offer_created_at: string;
 }
 
-interface ConfirmRequestedDialogProps {
+interface ApprovalRequestedDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedDialogProps) {
+export function ApprovalRequestedDialog({ open, onOpenChange }: ApprovalRequestedDialogProps) {
   const [approvals, setConfirms] = useState<PendingApproval[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
