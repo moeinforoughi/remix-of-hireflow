@@ -23,7 +23,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
-  const [dueDate, setDueDate] = useState<تاریخ>();
+  const [dueDate, setDueDate] = useState<Date>();
   const [dueTime, setDueTime] = useState("12:00");
   const [status, setStatus] = useState<"pending" | "completed">("pending");
   const [isSubmitting, setIsSubmitting] = useState(false);

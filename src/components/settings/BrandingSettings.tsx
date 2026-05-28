@@ -13,7 +13,7 @@ interface BrandingData {
   secondary_color: string;
 }
 
-export const برندینگتنظیمات = () => {
+export const BrandingSettings = () => {
   const [branding, setBranding] = useState<BrandingData>({
     platform_name: 'HiringPlatform',
     logo_url: null,
@@ -227,7 +227,7 @@ export const برندینگتنظیمات = () => {
                 {isUploading ? (
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 ) : (
-                  <بارگذاری className="h-6 w-6 text-muted-foreground" />
+                  <Upload className="h-6 w-6 text-muted-foreground" />
                 )}
               </div>
             )}

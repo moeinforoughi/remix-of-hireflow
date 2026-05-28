@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ویرایش, Eye, Share2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
+import { ChevronLeft, Edit, Eye, Share2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import PipelineBoard from '@/components/pipeline/PipelineBoard';
@@ -454,7 +454,7 @@ const JobDetail = () => {
             className="h-12 w-12 rounded-xl border-2 border-border hover:bg-muted"
             onClick={() => setEditDialogOpen(true)}
           >
-            <ویرایش className="h-5 w-5" />
+            <Edit className="h-5 w-5" />
           </Button>
           <Button
             className="bg-[#A8E6CF] hover:bg-[#8FD9B6] text-gray-900 font-medium gap-2 h-12 px-6 rounded-xl"

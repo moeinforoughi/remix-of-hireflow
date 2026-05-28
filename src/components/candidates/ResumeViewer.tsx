@@ -54,7 +54,7 @@ export const ResumeViewer = ({
               onClick={handleDownload}
               className="gap-2"
             >
-              <دانلود className="h-4 w-4" />
+              <Download className="h-4 w-4" />
               دانلود
             </Button>
             <Button
@@ -83,7 +83,7 @@ export const ResumeViewer = ({
                   Preview not available for this file type
                 </p>
                 <Button onClick={handleDownload} className="gap-2">
-                  <دانلود className="h-4 w-4" />
+                  <Download className="h-4 w-4" />
                   دانلود رزومه
                 </Button>
               </div>

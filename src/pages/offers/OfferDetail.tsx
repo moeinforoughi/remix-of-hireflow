@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, Calendar, User, Briefcase, FileText, دانلود, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Loader2, Calendar, User, Briefcase, FileText, Download, RefreshCw } from 'lucide-react';
 import { format, isPast } from 'date-fns';
 import { ConfirmSection } from '@/components/offers/ConfirmSection';
 import { ExpirationWarning } from '@/components/offers/ExpirationWarning';
@@ -379,7 +379,7 @@ const OfferDetail = () => {
                       asChild
                     >
                       <a href={offer.pdf_url} download>
-                        <دانلود className="h-4 w-4 mr-2" />
+                        <Download className="h-4 w-4 mr-2" />
                         دانلود PDF
                       </a>
                     </Button>

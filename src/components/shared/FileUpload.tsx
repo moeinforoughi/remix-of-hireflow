@@ -69,7 +69,7 @@ export const FileUpload = ({
             disabled={disabled}
             className="cursor-pointer"
           />
-          <بارگذاری className="h-4 w-4 text-muted-foreground" />
+          <Upload className="h-4 w-4 text-muted-foreground" />
         </div>
       ) : (
         <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">

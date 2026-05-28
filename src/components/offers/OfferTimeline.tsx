@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, CheckCircle2, XCircle, Clock, ارسال, FileCheck, FileX, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle, Clock, Send, FileCheck, FileX, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Activity {
@@ -60,7 +60,7 @@ export function OfferTimeline({ offerId }: OfferTimelineProps) {
       draft: <Clock className="h-5 w-5 text-muted-foreground" />,
       pending_approval: <AlertCircle className="h-5 w-5 text-yellow-500" />,
       approved: <CheckCircle2 className="h-5 w-5 text-green-500" />,
-      sent: <ارسال className="h-5 w-5 text-blue-500" />,
+      sent: <Send className="h-5 w-5 text-blue-500" />,
       accepted: <FileCheck className="h-5 w-5 text-green-600" />,
       declined: <FileX className="h-5 w-5 text-red-500" />,
       expired: <XCircle className="h-5 w-5 text-gray-500" />,

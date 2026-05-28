@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Briefcase, جستجو, Loader2, X } from 'lucide-react';
+import { MapPin, Briefcase, Search, Loader2, X } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Job {
@@ -103,7 +103,7 @@ const CareersHome = () => {
           <div className="max-w-4xl mx-auto space-y-4">
             {/* جستجو Bar */}
             <div className="relative">
-              <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="جستجو by job title, department, or location..."

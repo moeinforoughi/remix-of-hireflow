@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Briefcase, LayoutDashboard, Users, تنظیمات, LogOut, User, RefreshCw, Shield, DollarSign, CheckSquare } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Users, Settings, LogOut, User, RefreshCw, Shield, DollarSign, CheckSquare } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 import {
@@ -42,7 +42,7 @@ const getMenuItemsForRole = (roles: string[]) => {
       { title: 'کاندیداها', url: '/candidates', icon: Users },
       { title: 'وظایف', url: '/tasks', icon: CheckSquare },
       { title: 'پیشنهادها', url: '/offers', icon: DollarSign },
-      { title: 'تنظیمات', url: '/settings', icon: تنظیمات },
+      { title: 'تنظیمات', url: '/settings', icon: Settings },
     ];
   }
   
@@ -57,7 +57,7 @@ const getMenuItemsForRole = (roles: string[]) => {
     items.push({ title: 'پیشنهادها', url: '/offers', icon: DollarSign });
   }
   
-  items.push({ title: 'تنظیمات', url: '/settings', icon: تنظیمات });
+  items.push({ title: 'تنظیمات', url: '/settings', icon: Settings });
   
   return items;
 };

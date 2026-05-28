@@ -183,7 +183,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
             disabled={!newComment.trim()}
             className="flex-shrink-0"
           >
-            <ارسال className="h-4 w-4" />
+            <Send className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

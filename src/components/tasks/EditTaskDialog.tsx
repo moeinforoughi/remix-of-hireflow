@@ -31,7 +31,7 @@ interface EditTaskDialogProps {
 export function EditTaskDialog({ task, open, onOpenChange, onTaskRefreshd }: EditTaskDialogProps) {
   const [title, setTitle] = useState(task.title);
   const [label, setLabel] = useState(task.label || "");
-  const [dueDate, setDueDate] = useState<تاریخ | undefined>(
+  const [dueDate, setDueDate] = useState<Date | undefined>(
     task.due_date ? new Date(task.due_date) : undefined
   );
   const [dueTime, setDueTime] = useState(

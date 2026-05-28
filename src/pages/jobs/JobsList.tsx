@@ -23,7 +23,7 @@ interface Job {
   shortlistedCount?: number;
   hiredCount?: number;
 }
-type وضعیتفیلتر = 'all' | 'open' | 'paused' | 'filled' | 'closed';
+type StatusFilter = 'all' | 'open' | 'paused' | 'filled' | 'closed';
 
 const JobsList = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const JobsList = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [userRole, setUserRole] = useState<string | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<وضعیتفیلتر>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const { role, assignedJobIds, loading: permissionsUpload } = useUserPermissions();
 
   const filteredJobs = statusFilter === 'all' 
@@ -185,9 +185,9 @@ const JobsList = () => {
 
       {/* وضعیت Filters */}
       <div className="flex items-center gap-2">
-        {(['all', 'open', 'paused', 'filled', 'closed'] as وضعیتفیلتر[]).map((status) => {
+        {(['all', 'open', 'paused', 'filled', 'closed'] as StatusFilter[]).map((status) => {
           const count = status === 'all' ? jobs.length : jobs.filter(j => j.status === status).length;
-          const labels: Record<وضعیتفیلتر, string> = {
+          const labels: Record<StatusFilter, string> = {
             all: 'All',
             open: 'باز',
             paused: 'Paused',

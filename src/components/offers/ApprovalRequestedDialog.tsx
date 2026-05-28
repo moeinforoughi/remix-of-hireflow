@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
-interface در انتظارتأیید {
+interface PendingApproval {
   id: string;
   offer_id: string;
   approver_user_id: string;
@@ -28,7 +28,7 @@ interface ConfirmRequestedDialogProps {
 }
 
 export function ConfirmRequestedDialog({ open, onOpenChange }: ConfirmRequestedDialogProps) {
-  const [approvals, setConfirms] = useState<در انتظارتأیید[]>([]);
+  const [approvals, setConfirms] = useState<PendingApproval[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();

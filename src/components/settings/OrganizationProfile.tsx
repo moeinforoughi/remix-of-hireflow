@@ -13,7 +13,7 @@ interface OrgSettings {
   salary_currency?: string;
 }
 
-export const سازمانپروفایل = () => {
+export const OrganizationProfile = () => {
   const [org, setOrg] = useState<any>(null);
   const [settings, setSettings] = useState<OrgSettings>({});
   const [loading, setLoading] = useState(true);

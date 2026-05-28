@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Plus, Users, ChevronRight, فیلتر } from 'lucide-react';
+import { Plus, Users, ChevronRight, Filter } from 'lucide-react';
 import {
   انتخاب,
   SelectContent,
@@ -214,7 +214,7 @@ const CandidatesList = () => {
           <h1 className="text-3xl">Candidates</h1>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[160px]">
-              <فیلتر className="h-4 w-4 mr-2" />
+              <Filter className="h-4 w-4 mr-2" />
               <SelectValue placeholder="فیلتر by status" />
             </SelectTrigger>
             <SelectContent>

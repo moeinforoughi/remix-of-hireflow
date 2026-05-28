@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Pencil, Trash2, Check, X, Plus, جستجو, Calendar, User } from "lucide-react";
+import { Pencil, Trash2, Check, X, Plus, Search, Calendar, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -78,7 +78,7 @@ export default function TasksPage() {
   // Form states
   const [formTitle, setFormTitle] = useState("");
   const [formLabel, setFormLabel] = useState("");
-  const [formDueDate, setFormDueDate] = useState<تاریخ | undefined>();
+  const [formDueDate, setFormDueDate] = useState<Date | undefined>();
   const [formDueTime, setFormDueTime] = useState<string>("09:00");
   const [formStatus, setFormStatus] = useState<"pending" | "completed">("pending");
   const [formCandidateId, setFormCandidateId] = useState<string>("");
@@ -318,7 +318,7 @@ export default function TasksPage() {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 max-w-sm">
-          <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="جستجو tasks..."
             value={searchQuery}

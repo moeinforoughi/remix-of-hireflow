@@ -11,7 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 
-interface سؤال {
+interface Question {
   id: string;
   question_text: string;
   question_type: string;
@@ -25,7 +25,7 @@ interface CustomQuestionsManagerProps {
 }
 
 export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) => {
-  const [questions, setQuestions] = useState<سؤال[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [deleteConfirm, setRemoveConfirm] = useState<string | null>(null);

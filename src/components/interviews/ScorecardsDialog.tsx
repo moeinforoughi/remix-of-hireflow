@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface فرم ارزیابی {
+interface Scorecard {
   id: string;
   user_id: string;
   recommendation: string;
@@ -70,7 +70,7 @@ const getRecommendationText = (recommendation: string) => {
 };
 
 export const ScorecardsDialog = ({ interviewId, open, onOpenChange }: ScorecardsDialogProps) => {
-  const [scorecards, setScorecards] = useState<فرم ارزیابی[]>([]);
+  const [scorecards, setScorecards] = useState<Scorecard[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 

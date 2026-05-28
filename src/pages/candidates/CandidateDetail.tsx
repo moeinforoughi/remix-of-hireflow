@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Mail, تلفن, FileText, MoreVertical, ChevronRight, Briefcase } from 'lucide-react';
+import { Mail, Phone, FileText, MoreVertical, ChevronRight, Briefcase } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
@@ -510,7 +510,7 @@ const CandidateDetail = () => {
                     href={`tel:${candidate.phone}`}
                     className="flex items-center gap-2 text-primary hover:underline"
                   >
-                    <تلفن className="h-4 w-4" />
+                    <Phone className="h-4 w-4" />
                     {candidate.phone}
                   </a>
                 )}

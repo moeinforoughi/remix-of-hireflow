@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { Mail, Clock, CheckCircle, XCircle } from "lucide-react";
 
-interface پیام {
+interface Message {
   id: string;
   subject: string;
   to_addresses: string[];
@@ -23,7 +23,7 @@ interface MessageTimelineProps {
 }
 
 export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineProps) => {
-  const [messages, setMessages] = useState<پیام[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
             : undefined,
         },
         (payload) => {
-          setMessages((current) => [payload.new as پیام, ...current]);
+          setMessages((current) => [payload.new as Message, ...current]);
         }
       )
       .on(
@@ -63,7 +63,7 @@ export const MessageTimeline = ({ applicationId, candidateId }: MessageTimelineP
         (payload) => {
           setMessages((current) =>
             current.map((msg) =>
-              msg.id === payload.new.id ? (payload.new as پیام) : msg
+              msg.id === payload.new.id ? (payload.new as Message) : msg
             )
           );
         }

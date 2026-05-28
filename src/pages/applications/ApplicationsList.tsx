@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Loader2, جستجو, X, ChevronRight, Briefcase } from 'lucide-react';
+import { Plus, Loader2, Search, X, ChevronRight, Briefcase } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   انتخاب,
@@ -144,7 +144,7 @@ const ApplicationsList = () => {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="جستجو by candidate name, email, or job title..."
             value={searchQuery}

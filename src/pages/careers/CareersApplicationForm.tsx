@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, بارگذاری, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, CheckCircle } from 'lucide-react';
 import { sendApplicationConfirmation } from '@/lib/email-notifications';
 import { parseResume } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
@@ -314,7 +314,7 @@ const CareersApplicationForm = () => {
                             onChange={(e) => onChange(e.target.files)}
                             {...field}
                           />
-                          <بارگذاری className="h-4 w-4 text-muted-foreground" />
+                          <Upload className="h-4 w-4 text-muted-foreground" />
                         </div>
                       </FormControl>
                       <FormDescription>

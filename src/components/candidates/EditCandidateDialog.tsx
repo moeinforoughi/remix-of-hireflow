@@ -336,7 +336,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
           >
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                <بارگذاری className={`h-6 w-6 text-muted-foreground ${uploading ? 'animate-pulse' : ''}`} />
+                <Upload className={`h-6 w-6 text-muted-foreground ${uploading ? 'animate-pulse' : ''}`} />
               </div>
               <div>
                 <p className="text-sm font-medium mb-1">

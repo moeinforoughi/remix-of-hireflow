@@ -128,7 +128,7 @@ export function ShareJobDialog({ open, onOpenChange, job }: ShareJobDialogProps)
                 {copied ? (
                   <Check className="h-4 w-4 text-green-600" />
                 ) : (
-                  <کپی className="h-4 w-4" />
+                  <Copy className="h-4 w-4" />
                 )}
               </Button>
             </div>

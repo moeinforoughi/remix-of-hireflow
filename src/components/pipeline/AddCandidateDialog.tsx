@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { بارگذاری, Paperclip, Plus, جستجو, Loader2, User } from 'lucide-react';
+import { بارگذاری, Paperclip, Plus, Search, Loader2, User } from 'lucide-react';
 import { parseResume } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -577,7 +577,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
               >
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                    <بارگذاری className={`h-6 w-6 text-muted-foreground ${parsing ? 'animate-pulse' : ''}`} />
+                    <Upload className={`h-6 w-6 text-muted-foreground ${parsing ? 'animate-pulse' : ''}`} />
                   </div>
                   <div>
                     <p className="text-sm font-medium mb-1">
@@ -733,7 +733,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
 
             {/* جستجو */}
             <div className="relative">
-              <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="جستجو candidates by name or email..."
                 value={searchQuery}

@@ -30,7 +30,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-interface مرحله {
+interface Stage {
   id: string;
   name: string;
   order_idx: number;
@@ -144,7 +144,7 @@ interface DroppableStageProps {
   id: string;
   children: React.ReactNode;
   isOver: boolean;
-  stage: مرحله;
+  stage: Stage;
   stageColor: string;
   candidateCount: number;
   onEditStage: () => void;
@@ -240,7 +240,7 @@ const DroppableStage = ({
 };
 
 const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
-  const [stages, setStages] = useState<مرحله[]>([]);
+  const [stages, setStages] = useState<Stage[]>([]);
   const [applications, setApplications] = useState<ApplicationCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -423,7 +423,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     setIsScrolling(false);
   };
 
-  const handleStartEditStage = (stage: مرحله) => {
+  const handleStartEditStage = (stage: Stage) => {
     setEditingStageId(stage.id);
     setEditingStageName(stage.name);
   };

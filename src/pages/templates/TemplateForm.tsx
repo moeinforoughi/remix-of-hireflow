@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ذخیره, Plus, X } from "lucide-react";
+import { ArrowLeft, Save, Plus, X } from "lucide-react";
 
 export default function TemplateForm() {
   const { id } = useParams();
@@ -224,7 +224,7 @@ export default function TemplateForm() {
           </div>
 
           <Button onClick={handleSubmit} disabled={loading} className="w-full">
-            <ذخیره className="mr-2 h-4 w-4" />
+            <Save className="mr-2 h-4 w-4" />
             {loading ? "در حال ذخیره..." : id ? "به‌روزرسانی Template" : "ایجاد Template"}
           </Button>
         </CardContent>
