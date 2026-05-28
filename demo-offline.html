@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>هایر‌فلو | دموی آفلاین</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --primary: #3B82F6;
+    --bg: #0F172A;
+    --card: #1E293B;
+    --border: #334155;
+    --muted: #94A3B8;
+    --fg: #F1F5F9;
+    --green: #22C55E;
+    --orange: #F59E0B;
+    --red: #EF4444;
+    --blue: #3B82F6;
+  }
+  * { font-family: 'Vazirmatn', sans-serif; }
+  body { background: var(--bg); color: var(--fg); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+  .badge-green { background: rgba(34,197,94,.15); color: #4ADE80; }
+  .badge-orange { background: rgba(245,158,11,.15); color: #FBBF24; }
+  .badge-red { background: rgba(239,68,68,.15); color: #F87171; }
+  .badge-blue { background: rgba(59,130,246,.15); color: #60A5FA; }
+  .badge-gray { background: rgba(148,163,184,.15); color: #CBD5E1; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; cursor: pointer; color: var(--muted); transition: all .15s; font-weight: 500; }
+  .nav-item:hover { background: rgba(255,255,255,.05); color: var(--fg); }
+  .nav-item.active { background: rgba(59,130,246,.15); color: #60A5FA; }
+  .btn-primary { background: var(--primary); color: white; padding: 10px 18px; border-radius: 8px; font-weight: 500; transition: opacity .15s; }
+  .btn-primary:hover { opacity: .9; }
+  .icon { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+  th { text-align: right; padding: 10px 16px; font-size: 12px; color: var(--muted); font-weight: 500; }
+  td { padding: 14px 16px; background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  td:first-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
+  td:last-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
+  .avatar { width: 36px; height: 36px; border-radius: 999px; background: linear-gradient(135deg,#3B82F6,#8B5CF6); display: inline-flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px; }
+  .stage-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; margin-left: 6px; }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--primary); }
+  .kanban-col { min-width: 280px; background: rgba(255,255,255,.03); border-radius: 10px; padding: 12px; }
+  .kanban-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 8px; cursor: grab; }
+  .kanban-card:hover { border-color: var(--primary); }
+  .toast { position: fixed; bottom: 24px; left: 24px; background: var(--card); border: 1px solid var(--border); padding: 12px 18px; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,.4); display: none; animation: slide .3s; }
+  @keyframes slide { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="flex min-h-screen">
+
+  <!-- سایدبار -->
+  <aside class="w-64 border-l border-[color:var(--border)] bg-[color:var(--card)] flex flex-col">
+    <div class="p-5 border-b border-[color:var(--border)]">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">ه</div>
+        <div>
+          <div class="font-bold text-base">هایر‌فلو</div>
+          <div class="text-[10px] text-[color:var(--muted)]">دموی آفلاین</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="p-3 space-y-1 flex-1">
+      <div class="nav-item active" onclick="show('dashboard', this)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zM13 21h8V11h-8v10zM3 21h8v-6H3v6zM13 3v6h8V3h-8z"/></svg>
+        داشبورد
+      </div>
+      <div class="nav-item" onclick="show('jobs', this)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20 7h-4V5l-2-2h-4L8 5v2H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM10 5h4v2h-4V5z"/></svg>
+        موقعیت‌های شغلی
+      </div>
+      <div class="nav-item" onclick="show('candidates', this)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        کاندیداها
+      </div>
+      <div class="nav-item" onclick="show('pipeline', this)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+        فرآیند استخدام
+      </div>
+      <div class="nav-item" onclick="show('tasks', this)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        وظایف
+      </div>
+      <div class="nav-item" onclick="show('offers', this)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        پیشنهادها
+      </div>
+      <div class="nav-item" onclick="show('settings', this)">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        تنظیمات
+      </div>
+    </nav>
+
+    <div class="p-3 border-t border-[color:var(--border)]">
+      <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer">
+        <div class="avatar">ا.ب</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium truncate">ابوالفضل بیابانی</div>
+          <div class="text-[11px] text-[color:var(--muted)] truncate">مدیر کل</div>
+        </div>
+      </div>
+      <div class="text-[10px] text-center text-[color:var(--muted)] mt-3 pt-3 border-t border-[color:var(--border)]">
+        ساخته شده توسط
+        <div class="text-[color:var(--fg)]/70 font-medium mt-0.5">ابوالفضل بیابانی</div>
+        <div class="text-[color:var(--fg)]/70 font-medium">محمد محمدی</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- محتوای اصلی -->
+  <main class="flex-1 overflow-auto">
+    <header class="sticky top-0 z-10 bg-[color:var(--bg)]/80 backdrop-blur border-b border-[color:var(--border)] px-8 py-4 flex items-center justify-between">
+      <div>
+        <h1 id="page-title" class="text-2xl font-bold">داشبورد</h1>
+        <p id="page-sub" class="text-sm text-[color:var(--muted)] mt-0.5">نمای کلی فعالیت‌های استخدام</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 rounded-lg hover:bg-white/5">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </button>
+        <button class="btn-primary text-sm">+ موقعیت جدید</button>
+      </div>
+    </header>
+
+    <div class="p-8 space-y-6">
+
+      <!-- داشبورد -->
+      <section id="page-dashboard" class="space-y-6">
+        <div class="grid grid-cols-4 gap-4">
+          <div class="card p-5"><div class="text-xs text-[color:var(--muted)]">موقعیت‌های فعال</div><div class="text-3xl font-bold mt-2">۱۲</div><div class="text-xs text-green-400 mt-1">↑ ۲ این هفته</div></div>
+          <div class="card p-5"><div class="text-xs text-[color:var(--muted)]">تعداد کل متقاضیان</div><div class="text-3xl font-bold mt-2">۲۴۸</div><div class="text-xs text-green-400 mt-1">↑ ۳۲ این هفته</div></div>
+          <div class="card p-5"><div class="text-xs text-[color:var(--muted)]">در حال مصاحبه</div><div class="text-3xl font-bold mt-2">۳۴</div><div class="text-xs text-orange-400 mt-1">۸ امروز</div></div>
+          <div class="card p-5"><div class="text-xs text-[color:var(--muted)]">استخدام شده</div><div class="text-3xl font-bold mt-2">۹</div><div class="text-xs text-blue-400 mt-1">این ماه</div></div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6">
+          <div class="card p-5 col-span-2">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold">وظایف امروز</h3>
+              <a class="text-xs text-blue-400 cursor-pointer">مشاهده همه</a>
+            </div>
+            <div class="space-y-3" id="dashboard-tasks"></div>
+          </div>
+          <div class="card p-5">
+            <h3 class="font-bold mb-4">فعالیت‌های اخیر</h3>
+            <div class="space-y-4" id="dashboard-activity"></div>
+          </div>
+        </div>
+
+        <div class="card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold">موقعیت‌های شغلی فعال</h3>
+            <a class="text-xs text-blue-400 cursor-pointer">مشاهده همه</a>
+          </div>
+          <table>
+            <thead><tr><th>عنوان</th><th>دپارتمان</th><th>مکان</th><th>کاندیداها</th><th>وضعیت</th></tr></thead>
+            <tbody id="dashboard-jobs"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-jobs" class="hidden">
+        <div class="card p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <button class="badge badge-blue">همه (۱۲)</button>
+            <button class="badge badge-gray">باز (۸)</button>
+            <button class="badge badge-gray">متوقف (۲)</button>
+            <button class="badge badge-gray">تکمیل شده (۲)</button>
+          </div>
+          <table>
+            <thead><tr><th>عنوان موقعیت</th><th>دپارتمان</th><th>مکان</th><th>نوع همکاری</th><th>کاندیداها</th><th>وضعیت</th></tr></thead>
+            <tbody id="jobs-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-candidates" class="hidden">
+        <div class="card p-5">
+          <div class="flex gap-3 mb-4">
+            <input class="bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm flex-1" placeholder="جستجوی کاندیدا..." />
+            <select class="bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm">
+              <option>همه کاندیداها</option><option>فعال</option><option>استخدام‌شده</option><option>رد شده</option>
+            </select>
+          </div>
+          <table>
+            <thead><tr><th>کاندیدا</th><th>موقعیت درخواست‌شده</th><th>تاریخ درخواست</th><th>مرحله</th><th>مدیر</th><th>امتیاز</th></tr></thead>
+            <tbody id="candidates-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-pipeline" class="hidden">
+        <div class="card p-5">
+          <h3 class="font-bold mb-4">فرآیند استخدام — مهندس فرانت‌اند ارشد</h3>
+          <div class="flex gap-3 overflow-x-auto" id="pipeline-board"></div>
+        </div>
+      </section>
+
+      <section id="page-tasks" class="hidden">
+        <div class="card p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <button class="badge badge-blue">همه (۸)</button>
+            <button class="badge badge-orange">در انتظار (۵)</button>
+            <button class="badge badge-green">انجام شده (۳)</button>
+          </div>
+          <div class="space-y-3" id="tasks-list"></div>
+        </div>
+      </section>
+
+      <section id="page-offers" class="hidden">
+        <div class="card p-5">
+          <table>
+            <thead><tr><th>کاندیدا</th><th>موقعیت</th><th>حقوق پیشنهادی</th><th>تاریخ ارسال</th><th>وضعیت</th></tr></thead>
+            <tbody id="offers-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-settings" class="hidden">
+        <div class="grid grid-cols-2 gap-6">
+          <div class="card p-6">
+            <h3 class="font-bold mb-4">اطلاعات حساب</h3>
+            <div class="space-y-3">
+              <div><label class="text-xs text-[color:var(--muted)]">نام و نام خانوادگی</label><input value="ابوالفضل بیابانی" class="w-full mt-1 bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm" /></div>
+              <div><label class="text-xs text-[color:var(--muted)]">ایمیل</label><input value="abolfazl@hireflow.app" class="w-full mt-1 bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm" /></div>
+              <div><label class="text-xs text-[color:var(--muted)]">شماره تماس</label><input value="۰۹۱۲۳۴۵۶۷۸۹" class="w-full mt-1 bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm" /></div>
+              <button class="btn-primary text-sm w-full mt-2" onclick="toast('تغییرات با موفقیت ذخیره شد')">ذخیره تغییرات</button>
+            </div>
+          </div>
+          <div class="card p-6">
+            <h3 class="font-bold mb-4">اطلاعیه‌ها</h3>
+            <div class="space-y-3 text-sm">
+              <label class="flex items-center justify-between"><span>کاندیدای جدید</span><input type="checkbox" checked /></label>
+              <label class="flex items-center justify-between"><span>یادآوری مصاحبه</span><input type="checkbox" checked /></label>
+              <label class="flex items-center justify-between"><span>پاسخ پیشنهاد شغلی</span><input type="checkbox" checked /></label>
+              <label class="flex items-center justify-between"><span>گزارش هفتگی</span><input type="checkbox" /></label>
+            </div>
+          </div>
+          <div class="card p-6 col-span-2">
+            <h3 class="font-bold mb-4">پروفایل سازمان</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="text-xs text-[color:var(--muted)]">نام شرکت</label><input value="شرکت نمونه فناوران" class="w-full mt-1 bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm" /></div>
+              <div><label class="text-xs text-[color:var(--muted)]">صنعت</label><input value="فناوری اطلاعات" class="w-full mt-1 bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm" /></div>
+              <div><label class="text-xs text-[color:var(--muted)]">اندازه</label><input value="۵۰ تا ۲۰۰ نفر" class="w-full mt-1 bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm" /></div>
+              <div><label class="text-xs text-[color:var(--muted)]">وب‌سایت</label><input value="hireflow.ir" class="w-full mt-1 bg-[color:var(--bg)] border border-[color:var(--border)] rounded-lg px-3 py-2 text-sm" /></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div id="toast-el" class="toast"></div>
+
+<script>
+// ============ دیتای ماک فارسی ============
+const jobs = [
+  { id:1, title:'مهندس فرانت‌اند ارشد', dept:'مهندسی نرم‌افزار', loc:'تهران (دورکاری)', type:'تمام وقت', candidates:34, status:'باز', statusClass:'green' },
+  { id:2, title:'طراح UI/UX', dept:'محصول', loc:'تهران', type:'تمام وقت', candidates:22, status:'باز', statusClass:'green' },
+  { id:3, title:'مهندس بک‌اند Node.js', dept:'مهندسی نرم‌افزار', loc:'دورکاری', type:'تمام وقت', candidates:41, status:'باز', statusClass:'green' },
+  { id:4, title:'متخصص دیتاساینس', dept:'تحلیل داده', loc:'تهران', type:'تمام وقت', candidates:18, status:'باز', statusClass:'green' },
+  { id:5, title:'مدیر محصول', dept:'محصول', loc:'تهران', type:'تمام وقت', candidates:27, status:'متوقف', statusClass:'orange' },
+  { id:6, title:'کارشناس منابع انسانی', dept:'منابع انسانی', loc:'اصفهان', type:'تمام وقت', candidates:15, status:'باز', statusClass:'green' },
+  { id:7, title:'مهندس DevOps', dept:'زیرساخت', loc:'دورکاری', type:'تمام وقت', candidates:12, status:'باز', statusClass:'green' },
+  { id:8, title:'بازاریاب دیجیتال', dept:'مارکتینگ', loc:'مشهد', type:'پاره‌وقت', candidates:31, status:'تکمیل شده', statusClass:'blue' },
+  { id:9, title:'تستر QA', dept:'مهندسی نرم‌افزار', loc:'تهران', type:'تمام وقت', candidates:19, status:'باز', statusClass:'green' },
+  { id:10, title:'مدیر فروش B2B', dept:'فروش', loc:'تهران', type:'تمام وقت', candidates:9, status:'باز', statusClass:'green' },
+];
+
+const candidates = [
+  { name:'سارا احمدی', job:'مهندس فرانت‌اند ارشد', date:'۱۴۰۳/۰۲/۱۸', stage:'مصاحبه فنی', stageClass:'blue', mgr:'محمد محمدی', rating:'۴.۸' },
+  { name:'علی رضایی', job:'مهندس بک‌اند Node.js', date:'۱۴۰۳/۰۲/۱۷', stage:'بررسی رزومه', stageClass:'gray', mgr:'ابوالفضل بیابانی', rating:'۴.۲' },
+  { name:'مریم حسینی', job:'طراح UI/UX', date:'۱۴۰۳/۰۲/۱۶', stage:'پیشنهاد ارسال شد', stageClass:'orange', mgr:'محمد محمدی', rating:'۴.۹' },
+  { name:'حسین کریمی', job:'متخصص دیتاساینس', date:'۱۴۰۳/۰۲/۱۵', stage:'مصاحبه تلفنی', stageClass:'blue', mgr:'ابوالفضل بیابانی', rating:'۴.۵' },
+  { name:'فاطمه نوری', job:'مهندس DevOps', date:'۱۴۰۳/۰۲/۱۴', stage:'استخدام‌شده', stageClass:'green', mgr:'محمد محمدی', rating:'۵.۰' },
+  { name:'رضا صالحی', job:'مهندس فرانت‌اند ارشد', date:'۱۴۰۳/۰۲/۱۳', stage:'مصاحبه نهایی', stageClass:'blue', mgr:'ابوالفضل بیابانی', rating:'۴.۷' },
+  { name:'زهرا موسوی', job:'مدیر محصول', date:'۱۴۰۳/۰۲/۱۲', stage:'رد شده', stageClass:'red', mgr:'محمد محمدی', rating:'۳.۸' },
+  { name:'امیر زمانی', job:'تستر QA', date:'۱۴۰۳/۰۲/۱۱', stage:'بررسی رزومه', stageClass:'gray', mgr:'ابوالفضل بیابانی', rating:'۴.۰' },
+  { name:'نگار شریفی', job:'بازاریاب دیجیتال', date:'۱۴۰۳/۰۲/۱۰', stage:'مصاحبه فنی', stageClass:'blue', mgr:'محمد محمدی', rating:'۴.۴' },
+  { name:'مهدی جعفری', job:'مدیر فروش B2B', date:'۱۴۰۳/۰۲/۰۹', stage:'پیشنهاد ارسال شد', stageClass:'orange', mgr:'ابوالفضل بیابانی', rating:'۴.۶' },
+];
+
+const tasks = [
+  { title:'مصاحبه فنی با سارا احمدی', due:'امروز - ۱۴:۰۰', label:'مصاحبه', status:'در انتظار', statusClass:'orange', candidate:'سارا احمدی' },
+  { title:'بررسی رزومه علی رضایی', due:'امروز - ۱۶:۳۰', label:'بررسی', status:'در انتظار', statusClass:'orange', candidate:'علی رضایی' },
+  { title:'ارسال پیشنهاد به مریم حسینی', due:'فردا - ۱۰:۰۰', label:'پیشنهاد', status:'در انتظار', statusClass:'orange', candidate:'مریم حسینی' },
+  { title:'تماس پیگیری با حسین کریمی', due:'۱۴۰۳/۰۲/۲۰', label:'پیگیری', status:'در انتظار', statusClass:'orange', candidate:'حسین کریمی' },
+  { title:'برنامه‌ریزی مصاحبه نهایی رضا صالحی', due:'۱۴۰۳/۰۲/۲۱', label:'برنامه‌ریزی', status:'در انتظار', statusClass:'orange', candidate:'رضا صالحی' },
+  { title:'تأیید قرارداد فاطمه نوری', due:'دیروز', label:'قرارداد', status:'انجام شده', statusClass:'green', candidate:'فاطمه نوری' },
+  { title:'بررسی نمونه‌کار طراح UI', due:'۱۴۰۳/۰۲/۱۵', label:'بررسی', status:'انجام شده', statusClass:'green', candidate:'مریم حسینی' },
+  { title:'هماهنگی شروع به کار', due:'۱۴۰۳/۰۲/۱۴', label:'استخدام', status:'انجام شده', statusClass:'green', candidate:'فاطمه نوری' },
+];
+
+const activity = [
+  { who:'ابوالفضل بیابانی', what:'کاندیدای جدیدی اضافه کرد', who2:'سارا احمدی', when:'۵ دقیقه پیش' },
+  { who:'محمد محمدی', what:'مرحله را تغییر داد به مصاحبه فنی برای', who2:'علی رضایی', when:'۳۲ دقیقه پیش' },
+  { who:'ابوالفضل بیابانی', what:'پیشنهاد ارسال کرد برای', who2:'مریم حسینی', when:'۱ ساعت پیش' },
+  { who:'سیستم', what:'مصاحبه برنامه‌ریزی شد با', who2:'حسین کریمی', when:'۲ ساعت پیش' },
+  { who:'محمد محمدی', what:'وظیفه جدید ایجاد کرد', who2:'تماس پیگیری', when:'۳ ساعت پیش' },
+];
+
+const pipeline = {
+  'بررسی رزومه': ['علی رضایی', 'امیر زمانی', 'محسن قاسمی'],
+  'مصاحبه تلفنی': ['حسین کریمی', 'لیلا اکبری'],
+  'مصاحبه فنی': ['سارا احمدی', 'نگار شریفی'],
+  'مصاحبه نهایی': ['رضا صالحی'],
+  'پیشنهاد': ['مریم حسینی', 'مهدی جعفری'],
+  'استخدام‌شده': ['فاطمه نوری'],
+};
+
+const offers = [
+  { name:'مریم حسینی', job:'طراح UI/UX', salary:'۴۵ میلیون تومان', date:'۱۴۰۳/۰۲/۱۶', status:'در انتظار پاسخ', class:'orange' },
+  { name:'مهدی جعفری', job:'مدیر فروش B2B', salary:'۶۰ میلیون تومان', date:'۱۴۰۳/۰۲/۰۹', status:'پذیرفته شد', class:'green' },
+  { name:'فاطمه نوری', job:'مهندس DevOps', salary:'۵۵ میلیون تومان', date:'۱۴۰۳/۰۲/۰۵', status:'پذیرفته شد', class:'green' },
+  { name:'بهزاد رستمی', job:'مهندس بک‌اند Node.js', salary:'۵۰ میلیون تومان', date:'۱۴۰۳/۰۱/۲۸', status:'رد شد', class:'red' },
+];
+
+// ============ رندر ============
+function avatar(name) {
+  const initials = name.split(' ').map(n => n[0]).join('').slice(0,2);
+  return `<div class="avatar">${initials}</div>`;
+}
+
+function renderDashboard() {
+  document.getElementById('dashboard-tasks').innerHTML = tasks.slice(0,5).map(t => `
+    <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+      <div><div class="text-sm font-medium">${t.title}</div><div class="text-xs text-[color:var(--muted)] mt-1">${t.due} • ${t.candidate}</div></div>
+      <span class="badge badge-${t.statusClass}">${t.status}</span>
+    </div>`).join('');
+  document.getElementById('dashboard-activity').innerHTML = activity.map(a => `
+    <div class="text-xs"><span class="font-medium">${a.who}</span> ${a.what} <span class="text-blue-400">${a.who2}</span><div class="text-[color:var(--muted)] mt-0.5">${a.when}</div></div>`).join('');
+  document.getElementById('dashboard-jobs').innerHTML = jobs.slice(0,5).map(j => `
+    <tr><td class="font-medium">${j.title}</td><td>${j.dept}</td><td>${j.loc}</td><td><span class="text-blue-400 font-bold">${j.candidates}</span></td><td><span class="badge badge-${j.statusClass}">${j.status}</span></td></tr>`).join('');
+}
+function renderJobs() {
+  document.getElementById('jobs-table').innerHTML = jobs.map(j => `
+    <tr><td class="font-medium">${j.title}</td><td>${j.dept}</td><td>${j.loc}</td><td>${j.type}</td><td><span class="text-blue-400 font-bold">${j.candidates}</span></td><td><span class="badge badge-${j.statusClass}">${j.status}</span></td></tr>`).join('');
+}
+function renderCandidates() {
+  document.getElementById('candidates-table').innerHTML = candidates.map(c => `
+    <tr>
+      <td><div class="flex items-center gap-3">${avatar(c.name)}<span class="font-medium">${c.name}</span></div></td>
+      <td class="text-blue-400">${c.job}</td><td>${c.date}</td>
+      <td><span class="badge badge-${c.stageClass}">${c.stage}</span></td>
+      <td>${c.mgr}</td><td>⭐ ${c.rating}</td>
+    </tr>`).join('');
+}
+function renderPipeline() {
+  document.getElementById('pipeline-board').innerHTML = Object.entries(pipeline).map(([stage, names]) => `
+    <div class="kanban-col">
+      <div class="flex items-center justify-between mb-2"><span class="font-bold text-sm">${stage}</span><span class="badge badge-gray">${names.length}</span></div>
+      ${names.map(n => `<div class="kanban-card"><div class="flex items-center gap-2">${avatar(n)}<div class="text-sm font-medium">${n}</div></div></div>`).join('')}
+    </div>`).join('');
+}
+function renderTasks() {
+  document.getElementById('tasks-list').innerHTML = tasks.map(t => `
+    <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-[color:var(--border)]">
+      <div class="flex items-start gap-3">
+        <input type="checkbox" ${t.status==='انجام شده'?'checked':''} class="mt-1" />
+        <div><div class="font-medium ${t.status==='انجام شده'?'line-through opacity-60':''}">${t.title}</div>
+        <div class="text-xs text-[color:var(--muted)] mt-1">📅 ${t.due} • 👤 ${t.candidate} • 🏷 ${t.label}</div></div>
+      </div>
+      <span class="badge badge-${t.statusClass}">${t.status}</span>
+    </div>`).join('');
+}
+function renderOffers() {
+  document.getElementById('offers-table').innerHTML = offers.map(o => `
+    <tr><td><div class="flex items-center gap-3">${avatar(o.name)}<span class="font-medium">${o.name}</span></div></td>
+    <td>${o.job}</td><td class="font-bold text-green-400">${o.salary}</td><td>${o.date}</td>
+    <td><span class="badge badge-${o.class}">${o.status}</span></td></tr>`).join('');
+}
+
+const titles = {
+  dashboard: ['داشبورد','نمای کلی فعالیت‌های استخدام'],
+  jobs: ['موقعیت‌های شغلی','مدیریت موقعیت‌های شغلی فعال'],
+  candidates: ['کاندیداها','فهرست همه متقاضیان'],
+  pipeline: ['فرآیند استخدام','نمای کانبان مراحل استخدام'],
+  tasks: ['وظایف','کارهای روزانه و یادآوری‌ها'],
+  offers: ['پیشنهادهای شغلی','پیگیری پیشنهادهای ارسال‌شده'],
+  settings: ['تنظیمات','تنظیمات حساب و سازمان'],
+};
+function show(page, el) {
+  document.querySelectorAll('section[id^=page-]').forEach(s => s.classList.add('hidden'));
+  document.getElementById('page-' + page).classList.remove('hidden');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const [t,s] = titles[page];
+  document.getElementById('page-title').textContent = t;
+  document.getElementById('page-sub').textContent = s;
+}
+function toast(msg) {
+  const el = document.getElementById('toast-el');
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2500);
+}
+
+renderDashboard(); renderJobs(); renderCandidates(); renderPipeline(); renderTasks(); renderOffers();
+</script>
+</body>
+</html>

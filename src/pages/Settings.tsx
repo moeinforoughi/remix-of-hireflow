@@ -38,7 +38,7 @@ const Settings = () => {
     if (error) {
       toast.error('Failed to log out');
     } else {
-      toast.success('خروج موفق successfully');
+      toast.success('Log out موفق successfully');
       navigate('/auth/login');
     }
   };
@@ -69,14 +69,14 @@ const Settings = () => {
         </div>
       </div>
 
-      {/* Full Width - سازمان پروفایل - Site مدیر کل Only */}
+      {/* Full Width - سازمان پروفایل - Site Manager کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
           <OrganizationProfile />
         </div>
       )}
 
-      {/* Full Width - برندینگ تنظیمات - Site مدیر کل Only */}
+      {/* Full Width - برندینگ تنظیمات - Site Manager کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
           <BrandingSettings />

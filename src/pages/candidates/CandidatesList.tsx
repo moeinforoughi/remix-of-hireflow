@@ -102,7 +102,7 @@ const CandidatesList = () => {
 
       if (!profile) return;
 
-      // Fetch only jobs from user's organization
+      // Fetch only Jobs from user's organization
       const { data, error } = await supabase
         .from('jobs')
         .select('id, title')
@@ -113,7 +113,7 @@ const CandidatesList = () => {
       if (error) throw error;
       setJobs(data || []);
     } catch (error: any) {
-      console.error('Error fetching jobs:', error);
+      console.error('Error fetching Jobs:', error);
     }
   };
 
@@ -122,7 +122,7 @@ const CandidatesList = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Non-site_admin users with no job assignments see nothing
+      // Non-site_admin users with No job assignments see nothing
       if (role !== 'site_admin' && assignedJobIds.length === 0) {
         setApplications([]);
         setLoading(false);
@@ -138,25 +138,25 @@ const CandidatesList = () => {
           job_id,
           owner_user_id,
           state,
-          candidate:candidates(id, full_name, avatar_url),
-          job:jobs(id, title),
+          candidate:Candidates(id, full_name, avatar_url),
+          job:Jobs(id, title),
           current_stage:job_stages(name, type),
           owner:profiles!applications_owner_user_id_fkey(full_name)
         `);
 
-      // پایه users (Collaborators) - only see candidates assigned to them
+      // پایه users (Collaborators) - only see Candidates assigned to them
       if (role === 'basic') {
         query = query.eq('owner_user_id', user.id);
-        // Also filter by their accessible jobs
+        // Also filter by their accessible Jobs
         if (assignedJobIds.length > 0) {
           query = query.in('job_id', assignedJobIds);
         }
       } 
-      // Job admins - see all candidates for their assigned jobs
+      // Job admins - see all Candidates for their assigned Jobs
       else if (role === 'job_admin' && assignedJobIds.length > 0) {
         query = query.in('job_id', assignedJobIds);
       }
-      // Site admins - no filter (see all)
+      // Site admins - No filter (see all)
 
       // ثبت درخواست status filter
       if (statusFilter === 'active') {
@@ -172,7 +172,7 @@ const CandidatesList = () => {
 
       if (error) throw error;
 
-      // فیلتر out null candidates/jobs and apply hired filter
+      // Filter out null Candidates/Jobs and apply hired filter
       let filteredData = (data || [])
         .filter((app: any) => app.candidate && app.job)
         .map((app: any) => ({
@@ -187,7 +187,7 @@ const CandidatesList = () => {
         );
       }
       
-      // Exclude hired candidates from "فعال" filter
+      // Exclude hired Candidates from "Active" filter
       if (statusFilter === 'active') {
         filteredData = filteredData.filter((app: any) => 
           app.current_stage?.type !== 'hired'
@@ -211,18 +211,18 @@ const CandidatesList = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl">Candidates</h1>
+          <h1 className="text-3xl">کاندیداها</h1>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[160px]">
               <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="فیلتر by status" />
+              <SelectValue placeholder="فیلتر بر اساس وضعیت" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">همه کاندیداها</SelectItem>
               <SelectItem value="active">فعال</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="hired">Hired</SelectItem>
-              <SelectItem value="withdrawn">Withdrawn</SelectItem>
+              <SelectItem value="rejected">رد شده</SelectItem>
+              <SelectItem value="hired">استخدام‌شده</SelectItem>
+              <SelectItem value="withdrawn">انصراف داده</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -239,12 +239,12 @@ const CandidatesList = () => {
       ) : applications.length === 0 ? (
         <div className="text-center py-12">
           <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg mb-2">خیر candidates found</h3>
+          <h3 className="text-lg mb-2">خیر Candidates found</h3>
           <p className="text-muted-foreground">
             {role !== 'site_admin' && assignedJobIds.length === 0
-              ? "You haven't been assigned to any jobs yet. Contact your administrator to get access."
+              ? "You haven't been assigned to any Jobs yet. Contact your administrator to get access."
               : statusFilter !== 'all' 
-                ? `خیر ${statusFilter} candidates found`
+                ? `خیر ${statusFilter} Candidates found`
                 : "Get started by adding your first candidate"}
           </p>
         </div>
@@ -253,11 +253,11 @@ const CandidatesList = () => {
           <Table className="border-separate border-spacing-y-2">
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b-0">
-                <TableHead className="w-[220px]">Candidate</TableHead>
+                <TableHead className="w-[220px]">کاندیدا</TableHead>
                 <TableHead className="w-[240px]">Position ثبت درخواست شده for</TableHead>
                 <TableHead className="w-[160px]">تاریخ ثبت درخواست شده</TableHead>
                 <TableHead className="w-[140px]">وضعیت</TableHead>
-                <TableHead className="w-[180px]">Manager</TableHead>
+                <TableHead className="w-[180px]">مدیر</TableHead>
                 <TableHead className="w-[40px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -271,7 +271,7 @@ const CandidatesList = () => {
                     borderRadius: '8px',
                     display: 'table-row'
                   }}
-                  onClick={() => window.location.href = `/candidates/${application.candidate?.id}`}
+                  onClick={() => window.location.href = `/Candidates/${application.candidate?.id}`}
                 >
                   <TableCell className="rounded-l-lg">
                     <div className="flex items-center gap-3">

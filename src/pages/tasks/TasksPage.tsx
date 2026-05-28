@@ -66,7 +66,7 @@ interface Candidate {
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [Candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "completed">("all");
@@ -99,7 +99,7 @@ export default function TasksPage() {
       if (profile?.org_id) {
         setOrgId(profile.org_id);
 
-        const [tasksRes, candidatesRes] = await Promise.all([
+        const [tasksRes, CandidatesRes] = await Promise.all([
           supabase
             .from("tasks")
             .select("*, candidate:candidates(id, full_name)")
@@ -113,15 +113,15 @@ export default function TasksPage() {
         ]);
 
         if (tasksRes.data) {
-          setTasks(tasksRes.data as Task[]);
+          setTasks(tasksRes.data as unknown as Task[]);
         }
-        if (candidatesRes.data) {
-          setCandidates(candidatesRes.data);
+        if (CandidatesRes.data) {
+          setCandidates(CandidatesRes.data);
         }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Failed to load tasks");
+      toast.error("خطا در بارگذاری وظایف");
     } finally {
       setLoading(false);
     }
@@ -139,7 +139,7 @@ export default function TasksPage() {
       .eq("id", task.id);
 
     if (error) {
-      toast.error("Failed to update task status");
+      toast.error("خطا در به‌روزرسانی وضعیت");
       console.error(error);
       return;
     }
@@ -154,12 +154,12 @@ export default function TasksPage() {
     const { error } = await supabase.from("tasks").delete().eq("id", deleteTaskId);
 
     if (error) {
-      toast.error("Failed to delete task");
+      toast.error("خطا در حذف وظیفه");
       console.error(error);
       return;
     }
 
-    toast.success("Task deleted successfully");
+    toast.success("وظیفه با موفقیت حذف شد");
     setRemoveTaskId(null);
     fetchData();
   };
@@ -175,7 +175,7 @@ export default function TasksPage() {
 
   const handleAddTask = async () => {
     if (!formTitle.trim() || !formCandidateId || !orgId) {
-      toast.error("Please fill in required fields");
+      toast.error("لطفاً فیلدهای الزامی را پر کنید");
       return;
     }
 
@@ -202,13 +202,13 @@ export default function TasksPage() {
 
       if (error) throw error;
 
-      toast.success("Task created successfully");
+      toast.success("وظیفه با موفقیت ایجاد شد");
       setIsAddDialogOpen(false);
       resetForm();
       fetchData();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create task");
+      toast.error("خطا در ایجاد وظیفه");
     } finally {
       setIsSubmitting(false);
     }
@@ -216,7 +216,7 @@ export default function TasksPage() {
 
   const handleEditTask = async () => {
     if (!editTask || !formTitle.trim()) {
-      toast.error("Please fill in required fields");
+      toast.error("لطفاً فیلدهای الزامی را پر کنید");
       return;
     }
 
@@ -244,13 +244,13 @@ export default function TasksPage() {
 
       if (error) throw error;
 
-      toast.success("Task updated successfully");
+      toast.success("وظیفه با موفقیت به‌روزرسانی شد");
       setEditTask(null);
       resetForm();
       fetchData();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update task");
+      toast.error("خطا در به‌روزرسانی وظیفه");
     } finally {
       setIsSubmitting(false);
     }
@@ -281,8 +281,8 @@ export default function TasksPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const pendingCount = tasks.filter(t => t.status === "pending").length;
-  const completedCount = tasks.filter(t => t.status === "completed").length;
+  const PendingCount = tasks.filter(t => t.status === "pending").length;
+  const CompletedCount = tasks.filter(t => t.status === "completed").length;
 
   if (loading) {
     return (
@@ -307,7 +307,7 @@ export default function TasksPage() {
         <div>
           <h1 className="text-2xl">وظایف</h1>
           <p className="text-muted-foreground">
-            {pendingCount} pending, {completedCount} completed
+            {PendingCount} Pending, {CompletedCount} Completed
           </p>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)}>
@@ -320,7 +320,7 @@ export default function TasksPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="جستجو tasks..."
+            placeholder="جستجوی وظایف..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -329,8 +329,8 @@ export default function TasksPage() {
         <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
           <TabsList>
             <TabsTrigger value="all">All ({tasks.length})</TabsTrigger>
-            <TabsTrigger value="pending">در انتظار ({pendingCount})</TabsTrigger>
-            <TabsTrigger value="completed">انجام شده ({completedCount})</TabsTrigger>
+            <TabsTrigger value="pending">Pending ({PendingCount})</TabsTrigger>
+            <TabsTrigger value="completed">Completed ({CompletedCount})</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -375,7 +375,7 @@ export default function TasksPage() {
                       )}
                       {task.candidate && (
                         <Link 
-                          to={`/candidates/${task.candidate.id}`}
+                          to={`/Candidates/${task.candidate.id}`}
                           className="flex items-center gap-1 hover:text-primary"
                         >
                           <User className="h-3 w-3" />
@@ -390,7 +390,7 @@ export default function TasksPage() {
                       size="sm"
                       variant="outline"
                       onClick={() => handleToggleStatus(task)}
-                      title={task.status === "pending" ? "Mark as completed" : "Mark as pending"}
+                      title={task.status === "pending" ? "علامت‌گذاری به عنوان انجام‌شده" : "علامت‌گذاری به عنوان در انتظار"}
                     >
                       {task.status === "pending" ? (
                         <Check className="h-4 w-4" />
@@ -431,12 +431,12 @@ export default function TasksPage() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="title">عنوان *</Label>
+              <Label htmlFor="title">Title *</Label>
               <Input
                 id="title"
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                placeholder="Enter task title"
+                placeholder="عنوان وظیفه را وارد کنید"
               />
             </div>
             <div className="space-y-2">
@@ -446,7 +446,7 @@ export default function TasksPage() {
                   <SelectValue placeholder="انتخاب a candidate" />
                 </SelectTrigger>
                 <SelectContent>
-                  {candidates.map((candidate) => (
+                  {Candidates.map((candidate) => (
                     <SelectItem key={candidate.id} value={candidate.id}>
                       {candidate.full_name}
                     </SelectItem>
@@ -455,12 +455,12 @@ export default function TasksPage() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="label">Label</Label>
+              <Label htmlFor="label">برچسب</Label>
               <Input
                 id="label"
                 value={formLabel}
                 onChange={(e) => setFormLabel(e.target.value)}
-                placeholder="e.g., Interview, Review, Follow-up"
+                placeholder="مثلاً مصاحبه، بررسی، پیگیری"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -470,7 +470,7 @@ export default function TasksPage() {
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formDueDate ? format(formDueDate, "PP") : "Pick a date"}
+                      {formDueDate ? format(formDueDate, "PP") : "تاریخ را انتخاب کنید"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -495,15 +495,15 @@ export default function TasksPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">در انتظار</SelectItem>
-                  <SelectItem value="completed">انجام شده</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setIsAddDialogOpen(false); resetForm(); }}>
-              انصراف
+              Cancel
             </Button>
             <Button onClick={handleAddTask} disabled={isSubmitting}>
               {isSubmitting ? "در حال ایجاد..." : "ایجاد Task"}
@@ -512,32 +512,32 @@ export default function TasksPage() {
         </DialogContent>
       </Dialog>
 
-      {/* ویرایش Task Dialog */}
+      {/* Edit Task Dialog */}
       <Dialog open={!!editTask} onOpenChange={(open) => { if (!open) { setEditTask(null); resetForm(); } }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>ویرایش Task</DialogTitle>
+            <DialogTitle>Edit Task</DialogTitle>
             <DialogDescription>
               به‌روزرسانی the task details.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-title">عنوان *</Label>
+              <Label htmlFor="edit-title">Title *</Label>
               <Input
                 id="edit-title"
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                placeholder="Enter task title"
+                placeholder="عنوان وظیفه را وارد کنید"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-label">Label</Label>
+              <Label htmlFor="edit-label">برچسب</Label>
               <Input
                 id="edit-label"
                 value={formLabel}
                 onChange={(e) => setFormLabel(e.target.value)}
-                placeholder="e.g., Interview, Review, Follow-up"
+                placeholder="مثلاً مصاحبه، بررسی، پیگیری"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -547,7 +547,7 @@ export default function TasksPage() {
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formDueDate ? format(formDueDate, "PP") : "Pick a date"}
+                      {formDueDate ? format(formDueDate, "PP") : "تاریخ را انتخاب کنید"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -572,15 +572,15 @@ export default function TasksPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">در انتظار</SelectItem>
-                  <SelectItem value="completed">انجام شده</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setEditTask(null); resetForm(); }}>
-              انصراف
+              Cancel
             </Button>
             <Button onClick={handleEditTask} disabled={isSubmitting}>
               {isSubmitting ? "در حال به‌روزرسانی..." : "به‌روزرسانی Task"}
@@ -589,18 +589,18 @@ export default function TasksPage() {
         </DialogContent>
       </Dialog>
 
-      {/* حذف Confirmation Dialog */}
+      {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteTaskId} onOpenChange={() => setRemoveTaskId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>حذف Task</AlertDialogTitle>
+            <AlertDialogTitle>Delete Task</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this task? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>انصراف</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRemove}>حذف</AlertDialogAction>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemove}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
