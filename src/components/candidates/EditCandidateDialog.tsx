@@ -241,7 +241,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
       if (resumeFile) {
         setLoadinging(true);
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${candidate.id}-${تاریخ.now()}.${fileExt}`;
+        const fileName = `${candidate.id}-${Date.now()}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage

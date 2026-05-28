@@ -375,7 +375,7 @@ export const AddCandidateDialog = ({ jobId, stages, jobs, onSuccess }: AddCandid
       // بارگذاری resume if provided
       if (resumeFile && candidate) {
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${candidate.id}-${تاریخ.now()}.${fileExt}`;
+        const fileName = `${candidate.id}-${Date.now()}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage

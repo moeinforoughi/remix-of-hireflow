@@ -99,7 +99,7 @@ export const BrandingSettings = () => {
         .getPublicUrl(fileName);
 
       // افزودن cache buster
-      const logoUrlWithCacheBuster = `${publicUrl}?t=${تاریخ.now()}`;
+      const logoUrlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
       setBranding(prev => ({ ...prev, logo_url: logoUrlWithCacheBuster }));
       toast.success('لوگو uploaded successfully');
     } catch (error) {

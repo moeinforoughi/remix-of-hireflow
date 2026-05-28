@@ -109,7 +109,7 @@ const CandidateForm = () => {
       // بارگذاری resume if provided
       if (resumeFile && candidateId) {
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${تاریخ.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
