@@ -22,8 +22,8 @@ import {
 } from '@/components/ui/table';
 import { AddCandidateDialog } from '@/components/pipeline/AddCandidateDialog';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
-import { CandidatesListSkeleton } from '@/components/Candidates/CandidatesListSkeleton';
-import { ManagerAssignmentDropdown } from '@/components/Candidates/ManagerAssignmentDropdown';
+import { CandidatesListSkeleton } from '@/components/candidates/CandidatesListSkeleton';
+import { ManagerAssignmentDropdown } from '@/components/candidates/ManagerAssignmentDropdown';
 import { getStageColorClasses } from '@/lib/stage-colors';
 
 interface ApplicationWithDetails {
@@ -104,7 +104,7 @@ const CandidatesList = () => {
 
       // Fetch only Jobs from user's organization
       const { data, error } = await supabase
-        .from('Jobs')
+        .from('jobs')
         .select('id, title')
         .eq('org_id', profile.org_id)
         .eq('status', 'open')
@@ -234,7 +234,7 @@ const CandidatesList = () => {
         )}
       </div>
 
-      {Loading || permissionsUpload ? (
+      {loading || permissionsUpload ? (
         <CandidatesListSkeleton />
       ) : applications.length === 0 ? (
         <div className="text-center py-12">

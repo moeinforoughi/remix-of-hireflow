@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, MapPin, Users, Briefcase, LayoutGrid, ChevronRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { CreateJobDialog } from '@/components/Jobs/CreateJobDialog';
+import { CreateJobDialog } from '@/components/jobs/CreateJobDialog';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 interface Job {
   id: string;
@@ -19,7 +19,7 @@ interface Job {
   status: string;
   openings: number;
   created_at: string;
-  CandidatesCount?: number;
+  candidatesCount?: number;
   shortlistedCount?: number;
   hiredCount?: number;
 }
@@ -36,8 +36,8 @@ const JobsList = () => {
   const { role, assignedJobIds, loading: permissionsUpload } = useUserPermissions();
 
   const filteredJobs = statusFilter === 'all' 
-    ? Jobs 
-    : Jobs.filter(job => job.status === statusFilter);
+    ? jobs 
+    : jobs.filter(job => job.status === statusFilter);
   useEffect(() => {
     fetchUserRole();
   }, []);
@@ -87,7 +87,7 @@ const JobsList = () => {
 
       // Filter by organization for ALL users
       let query = supabase
-        .from('Jobs')
+        .from('jobs')
         .select('*')
         .eq('org_id', profile.org_id);
       
@@ -105,7 +105,7 @@ const JobsList = () => {
       if (error) throw error;
 
       // Fetch application counts for each job (only active, exclude hired/withdrawn/rejected)
-      const JobsWithCounts = await Promise.all((data || []).map(async job => {
+      const jobsWithCounts = await Promise.all((data || []).map(async job => {
         const {
           count: totalCount
         } = await supabase.from('applications').select('*', {
@@ -126,12 +126,12 @@ const JobsList = () => {
         }).eq('job_id', job.id).eq('state', 'hired');
         return {
           ...job,
-          CandidatesCount: totalCount || 0,
+          candidatesCount: totalCount || 0,
           shortlistedCount: shortlistedCount || 0,
           hiredCount: hiredCount || 0
         };
       }));
-      setJobs(JobsWithCounts);
+      setJobs(jobsWithCounts);
     } catch (error: any) {
       toast({
         title: 'خطا',
@@ -186,7 +186,7 @@ const JobsList = () => {
       {/* Status Filters */}
       <div className="flex items-center gap-2">
         {(['all', 'open', 'paused', 'filled', 'closed'] as StatusFilter[]).map((status) => {
-          const count = status === 'all' ? Jobs.length : Jobs.filter(j => j.status === status).length;
+          const count = status === 'all' ? Jobs.length : jobs.filter(j => j.status === status).length;
           const labels: Record<StatusFilter, string> = {
             all: 'All',
             open: 'Open',
@@ -211,20 +211,20 @@ const JobsList = () => {
         })}
       </div>
 
-      {Loading || permissionsUpload ? <div className="text-center py-12">بارگذاری Jobs...</div> : filteredJobs.length === 0 ? <Card>
+      {loading || permissionsUpload ? <div className="text-center py-12">بارگذاری Jobs...</div> : filteredjobs.length === 0 ? <Card>
           <CardContent className="py-12 text-center">
             <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg mb-2">
-              {Jobs.length === 0 ? 'خیر Jobs found' : `خیر ${statusFilter} Jobs`}
+              {jobs.length === 0 ? 'خیر Jobs found' : `خیر ${statusFilter} Jobs`}
             </h3>
             <p className="text-muted-foreground mb-4">
-              {Jobs.length === 0 
+              {jobs.length === 0 
                 ? (role === 'basic' && assignedJobIds.length === 0
                   ? "You haven't been assigned to any Jobs yet. Contact your administrator to get access."
                   : "Get started by creating your first job")
                 : `There are No Jobs with "${statusFilter}" status.`}
             </p>
-            {Jobs.length === 0 && userRole && userRole !== 'basic' && (
+            {jobs.length === 0 && userRole && userRole !== 'basic' && (
               <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 ایجاد Job
@@ -232,7 +232,7 @@ const JobsList = () => {
             )}
           </CardContent>
         </Card> : viewMode === 'grid' ? <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredJobs.map(job => <Link key={job.id} to={`/Jobs/${job.id}`}>
+          {filteredjobs.map(job => <Link key={job.id} to={`/Jobs/${job.id}`}>
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <CardHeader className="flex-1">
                   <div className="flex items-start justify-between">
@@ -280,7 +280,7 @@ const JobsList = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="space-y-1">
-              {filteredJobs.map(job => <TableRow key={job.id} className="cursor-pointer hover:bg-accent/50 border-0 mb-1" style={{
+              {filteredjobs.map(job => <TableRow key={job.id} className="cursor-pointer hover:bg-accent/50 border-0 mb-1" style={{
             backgroundColor: 'var(--color-card)',
             borderRadius: '8px',
             display: 'table-row'
@@ -299,7 +299,7 @@ const JobsList = () => {
                   <TableCell className="text-muted-foreground">
                     {format(new Date(job.created_at), 'MM/dd/yyyy')}
                   </TableCell>
-                  <TableCell className="text-primary font-bold text-center">{job.CandidatesCount || 0}</TableCell>
+                  <TableCell className="text-primary font-bold text-center">{job.candidatesCount || 0}</TableCell>
                   <TableCell className="rounded-r-lg">
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </TableCell>

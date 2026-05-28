@@ -106,7 +106,7 @@ export default function TasksPage() {
             .eq("org_id", profile.org_id)
             .order("due_date", { ascending: true, nullsFirst: false }),
           supabase
-            .from("Candidates")
+            .from("candidates")
             .select("id, full_name")
             .eq("org_id", profile.org_id)
             .order("full_name")
