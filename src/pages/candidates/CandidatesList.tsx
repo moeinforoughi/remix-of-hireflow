@@ -228,7 +228,7 @@ const CandidatesList = () => {
         </div>
         {userRole && userRole !== 'basic' && (
           <AddCandidateDialog 
-            Jobs={Jobs}
+            jobs={jobs}
             onSuccess={fetchApplications}
           />
         )}

@@ -113,7 +113,7 @@ export default function TasksPage() {
         ]);
 
         if (tasksRes.data) {
-          setTasks(tasksRes.data as Task[]);
+          setTasks(tasksRes.data as unknown as Task[]);
         }
         if (CandidatesRes.data) {
           setCandidates(CandidatesRes.data);
