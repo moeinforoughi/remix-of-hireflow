@@ -11,7 +11,7 @@ export const AccountInformation = () => {
   const [profile, setProfile] = useState<any>(null);
   const [role, setRole] = useState<string>('');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { toast } = useToast();
 
@@ -46,7 +46,7 @@ export const AccountInformation = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

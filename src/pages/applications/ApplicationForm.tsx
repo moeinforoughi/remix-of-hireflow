@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
@@ -22,7 +22,7 @@ const ApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
 
@@ -79,7 +79,7 @@ const ApplicationForm = () => {
   };
 
   const onSubmit = async (values: FormValues) => {
-    setUpload(true);
+    setLoading(true);
     try {
       // Get the first stage for the job
       const { data: stages, error: stagesError } = await supabase
@@ -113,7 +113,7 @@ const ApplicationForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -137,7 +137,7 @@ const ApplicationForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Candidate</FormLabel>
-                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="انتخاب a candidate" />
@@ -156,7 +156,7 @@ const ApplicationForm = () => {
                           ))
                         )}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -168,7 +168,7 @@ const ApplicationForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Job</FormLabel>
-                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="انتخاب a job" />
@@ -188,7 +188,7 @@ const ApplicationForm = () => {
                           ))
                         )}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

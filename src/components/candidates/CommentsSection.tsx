@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ارسال } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface نظر {
+interface CommentItem {
   id: string;
   content: string;
   created_at: string;
@@ -25,9 +25,9 @@ interface CommentsSectionProps {
 }
 
 export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionProps) => {
-  const [comments, setComments] = useState<نظر[]>([]);
+  const [comments, setComments] = useState<CommentItem[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
 
@@ -80,7 +80,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
     } catch (error: any) {
       console.error('Error fetching comments:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -155,7 +155,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
                       <p className="text-sm">{comment.content}</p>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1 px-1">
-                      {format(new تاریخ(comment.created_at), 'MMM d, h:mm a')}
+                      {format(new Date(comment.created_at), 'MMM d, h:mm a')}
                     </p>
                   </div>
                 </div>
@@ -183,7 +183,7 @@ export const CommentsSection = ({ candidateId, applicationId }: CommentsSectionP
             disabled={!newComment.trim()}
             className="flex-shrink-0"
           >
-            <ارسال className="h-4 w-4" />
+            <Send className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

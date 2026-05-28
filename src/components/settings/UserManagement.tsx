@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ChevronRight, ChevronDown } from 'lucide-react';
 import { InviteUserDialog } from './InviteUserDialog';
@@ -23,7 +23,7 @@ interface User {
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -46,7 +46,7 @@ export const UserManagement = () => {
       // Get current user's org_id first
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setUpload(false);
+        setLoading(false);
         return;
       }
 
@@ -57,7 +57,7 @@ export const UserManagement = () => {
         .single();
 
       if (!currentProfile) {
-        setUpload(false);
+        setLoading(false);
         return;
       }
 
@@ -121,7 +121,7 @@ export const UserManagement = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -242,7 +242,7 @@ export const UserManagement = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-between">
-                    <انتخاب
+                    <Select
                       value={user.role}
                       onValueChange={(value) => handleRoleChange(user.id, value as 'basic' | 'job_admin' | 'site_admin')}
                       disabled={user.email === 'demo@hireflow.app' && currentUserEmail === 'demo@hireflow.app'}
@@ -258,7 +258,7 @@ export const UserManagement = () => {
                         <SelectItem value="job_admin">Can ویرایش</SelectItem>
                         <SelectItem value="site_admin">مدیر کل</SelectItem>
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                   </div>
                 </TableCell>
                 <TableCell className="rounded-r-lg">

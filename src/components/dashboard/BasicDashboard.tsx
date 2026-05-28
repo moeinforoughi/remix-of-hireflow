@@ -15,7 +15,7 @@ import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { CandidatesCardSkeleton } from "@/components/dashboard/CandidatesCardSkeleton";
 import { JobListingsCardSkeleton } from "@/components/dashboard/JobListingsCardSkeleton";
 
-export function پایهداشبورد() {
+export function BasicDashboard() {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
@@ -284,7 +284,7 @@ export function پایهداشبورد() {
                     <div className="font-medium">{job.title}</div>
                     <div className="text-muted-foreground">{job.location || 'دورکاری'}</div>
                     <div className="text-muted-foreground">
-                      {new تاریخ(job.created_at).toLocaleDateString()}
+                      {new Date(job.created_at).toLocaleDateString()}
                     </div>
                     <div className="text-right">
                       <Badge variant="secondary" className="text-primary font-semibold">

@@ -74,7 +74,7 @@ const getActionColor = (action: string): 'default' | 'secondary' | 'destructive'
 export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityTimelineProps) => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [candidateActivities, setCandidateActivities] = useState<any[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchActivities();
@@ -110,7 +110,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
     } catch (error: any) {
       console.error('Error fetching activities:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -181,7 +181,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
         })) || []),
       ];
 
-      combined.sort((a, b) => new تاریخ(b.created_at).getTime() - new تاریخ(a.created_at).getTime());
+      combined.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setCandidateActivities(combined);
     } catch (error: any) {
       console.error('Error fetching candidate activities:', error);
@@ -311,7 +311,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
                       {label}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {format(new تاریخ(item.created_at), 'MMM d, yyyy h:mm a')}
+                      {format(new Date(item.created_at), 'MMM d, yyyy h:mm a')}
                     </span>
                   </div>
 
@@ -321,7 +321,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
 
                   {item.type === 'interview' && item.data.start_at && (
                     <div className="text-xs text-muted-foreground mt-1">
-                      Scheduled for: {format(new تاریخ(item.data.start_at), 'MMM d, yyyy h:mm a')}
+                      Scheduled for: {format(new Date(item.data.start_at), 'MMM d, yyyy h:mm a')}
                     </div>
                   )}
                 </div>
@@ -348,7 +348,7 @@ export const ActivityTimeline = ({ entityType, entityId, limit = 20 }: ActivityT
                       {getActionLabel(activity.action)}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {format(new تاریخ(activity.created_at), 'MMM d, yyyy h:mm a')}
+                      {format(new Date(activity.created_at), 'MMM d, yyyy h:mm a')}
                     </span>
                   </div>
 

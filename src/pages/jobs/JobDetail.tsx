@@ -4,8 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ویرایش, Eye, Share2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ChevronLeft, Edit, Eye, Share2, Trash2, CheckCircle2, XCircle, Users, UserCheck } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import PipelineBoard from '@/components/pipeline/PipelineBoard';
@@ -56,7 +56,7 @@ const JobDetail = () => {
   const { role, loading: permissionsUpload } = useUserPermissions();
   const [job, setJob] = useState<Job | null>(null);
   const [stages, setStages] = useState<JobStage[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setRemoveDialogOpen] = useState(false);
   const [closeDialogOpen, setCloseDialogOpen] = useState(false);
   const [fillDialogOpen, setFillDialogOpen] = useState(false);
@@ -122,7 +122,7 @@ const JobDetail = () => {
       });
       navigate('/jobs');
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -368,7 +368,7 @@ const JobDetail = () => {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl">{job.title}</h1>
             {canAddCandidate ? (
-              <انتخاب value={job.status} onValueChange={handleStatusChange}>
+              <Select value={job.status} onValueChange={handleStatusChange}>
                 <SelectTrigger className={`w-[130px] h-8 text-sm font-medium border ${statusConfig[job.status]?.className || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${statusConfig[job.status]?.dotColor || 'bg-gray-400'}`} />
@@ -401,7 +401,7 @@ const JobDetail = () => {
                     </div>
                   </SelectItem>
                 </SelectContent>
-              </انتخاب>
+              </Select>
             ) : (
               getStatusBadge(job.status)
             )}
@@ -454,7 +454,7 @@ const JobDetail = () => {
             className="h-12 w-12 rounded-xl border-2 border-border hover:bg-muted"
             onClick={() => setEditDialogOpen(true)}
           >
-            <ویرایش className="h-5 w-5" />
+            <Edit className="h-5 w-5" />
           </Button>
           <Button
             className="bg-[#A8E6CF] hover:bg-[#8FD9B6] text-gray-900 font-medium gap-2 h-12 px-6 rounded-xl"
@@ -489,7 +489,7 @@ const JobDetail = () => {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate">{candidate.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      Hired on {format(new تاریخ(candidate.hired_at), 'MMM d, yyyy')}
+                      Hired on {format(new Date(candidate.hired_at), 'MMM d, yyyy')}
                     </p>
                   </div>
                 </Link>

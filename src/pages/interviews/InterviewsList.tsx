@@ -33,7 +33,7 @@ interface Interview {
 
 const InterviewsList = () => {
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const [showQuickView, setShowQuickView] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
@@ -75,7 +75,7 @@ const InterviewsList = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -118,17 +118,17 @@ const InterviewsList = () => {
     if (interview.status === 'no_show') {
       return <Badge variant="outline">خیر نمایش</Badge>;
     }
-    if (isPast(new تاریخ(interview.start_at))) {
+    if (isPast(new Date(interview.start_at))) {
       return <Badge variant="outline">Past</Badge>;
     }
     return <Badge>Scheduled</Badge>;
   };
 
   const upcomingInterviews = interviews.filter(i => 
-    isFuture(new تاریخ(i.start_at)) && i.status === 'scheduled'
+    isFuture(new Date(i.start_at)) && i.status === 'scheduled'
   );
   const pastInterviews = interviews.filter(i => 
-    isPast(new تاریخ(i.start_at)) || i.status !== 'scheduled'
+    isPast(new Date(i.start_at)) || i.status !== 'scheduled'
   );
 
   if (loading) {
@@ -197,10 +197,10 @@ const InterviewsList = () => {
                     <Calendar className="h-4 w-4 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground">
-                        {format(new تاریخ(interview.start_at), 'MMM d, yyyy')}
+                        {format(new Date(interview.start_at), 'MMM d, yyyy')}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
+                        {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
                       </p>
                     </div>
                   </div>
@@ -257,7 +257,7 @@ const InterviewsList = () => {
                   <div className="flex items-center gap-2 text-sm bg-muted/50 rounded-lg p-3">
                     <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div className="text-muted-foreground font-medium">
-                      {format(new تاریخ(interview.start_at), 'MMM d, yyyy · h:mm a')}
+                      {format(new Date(interview.start_at), 'MMM d, yyyy · h:mm a')}
                     </div>
                   </div>
                 </CardContent>

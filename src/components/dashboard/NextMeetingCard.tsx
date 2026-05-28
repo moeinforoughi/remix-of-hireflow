@@ -28,7 +28,7 @@ interface Interview {
 
 const NextMeetingCard = () => {
   const [nextInterview, setNextInterview] = useState<Interview | null>(null);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const NextMeetingCard = () => {
             jobs!inner(title)
           )
         `)
-        .gte('start_at', new تاریخ().toISOString())
+        .gte('start_at', new Date().toISOString())
         .order('start_at', { ascending: true })
         .limit(1)
         .maybeSingle();
@@ -62,7 +62,7 @@ const NextMeetingCard = () => {
     } catch (error) {
       console.error('Error fetching next interview:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -116,8 +116,8 @@ const NextMeetingCard = () => {
     );
   }
 
-  const interviewDate = new تاریخ(nextInterview.start_at);
-  const isToday = format(interviewDate, 'yyyy-MM-dd') === format(new تاریخ(), 'yyyy-MM-dd');
+  const interviewDate = new Date(nextInterview.start_at);
+  const isToday = format(interviewDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
   const panelCount = nextInterview.panel_user_ids?.length || 0;
 
   return (

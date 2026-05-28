@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { بارگذاری, X, Loader2 } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
 
 interface BrandingData {
   platform_name: string;
@@ -13,7 +13,7 @@ interface BrandingData {
   secondary_color: string;
 }
 
-export const برندینگتنظیمات = () => {
+export const BrandingSettings = () => {
   const [branding, setBranding] = useState<BrandingData>({
     platform_name: 'HiringPlatform',
     logo_url: null,
@@ -99,7 +99,7 @@ export const برندینگتنظیمات = () => {
         .getPublicUrl(fileName);
 
       // افزودن cache buster
-      const logoUrlWithCacheBuster = `${publicUrl}?t=${تاریخ.now()}`;
+      const logoUrlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
       setBranding(prev => ({ ...prev, logo_url: logoUrlWithCacheBuster }));
       toast.success('لوگو uploaded successfully');
     } catch (error) {
@@ -227,7 +227,7 @@ export const برندینگتنظیمات = () => {
                 {isUploading ? (
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 ) : (
-                  <بارگذاری className="h-6 w-6 text-muted-foreground" />
+                  <Upload className="h-6 w-6 text-muted-foreground" />
                 )}
               </div>
             )}

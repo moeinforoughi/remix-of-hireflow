@@ -21,7 +21,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ title, time }) => {
   );
 };
 
-const وظایفهیئت مصاحبه = () => {
+const TasksPanel = () => {
   const tasks = [
     { title: "Meeting", time: "امروز • 12:30pm" },
     { title: "Complete Evaluation", time: "فردا • 9:00am" },
@@ -53,4 +53,4 @@ const وظایفهیئت مصاحبه = () => {
   );
 };
 
-export default وظایفهیئت مصاحبه;
+export default TasksPanel;

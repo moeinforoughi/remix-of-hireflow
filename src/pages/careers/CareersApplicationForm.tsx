@@ -10,10 +10,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, بارگذاری, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, CheckCircle } from 'lucide-react';
 import { sendApplicationConfirmation } from '@/lib/email-notifications';
 import { parseResume } from '@/lib/resume-parser';
 import { notifyNewApplication } from '@/lib/notifications';
@@ -53,7 +53,7 @@ const CareersApplicationForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [job, setJob] = useState<any>(null);
   const [orgId, setOrgId] = useState<string>('');
@@ -108,7 +108,7 @@ const CareersApplicationForm = () => {
   };
 
   const onSubmit = async (values: FormValues) => {
-    setUpload(true);
+    setLoading(true);
     try {
       // Use new secure edge function for public applications
       const file = values.resume[0];
@@ -158,7 +158,7 @@ const CareersApplicationForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -314,7 +314,7 @@ const CareersApplicationForm = () => {
                             onChange={(e) => onChange(e.target.files)}
                             {...field}
                           />
-                          <بارگذاری className="h-4 w-4 text-muted-foreground" />
+                          <Upload className="h-4 w-4 text-muted-foreground" />
                         </div>
                       </FormControl>
                       <FormDescription>
@@ -371,7 +371,7 @@ const CareersApplicationForm = () => {
                         )}
 
                         {question.question_type === 'yes_no' && (
-                          <انتخاب
+                          <Select
                             value={customAnswers[question.id] || ''}
                             onValueChange={(value) => setCustomAnswers({ ...customAnswers, [question.id]: value })}
                             required={question.is_required}
@@ -383,11 +383,11 @@ const CareersApplicationForm = () => {
                               <SelectItem value="yes">بله</SelectItem>
                               <SelectItem value="no">خیر</SelectItem>
                             </SelectContent>
-                          </انتخاب>
+                          </Select>
                         )}
 
                         {question.question_type === 'multiple_choice' && question.options && (
-                          <انتخاب
+                          <Select
                             value={customAnswers[question.id] || ''}
                             onValueChange={(value) => setCustomAnswers({ ...customAnswers, [question.id]: value })}
                             required={question.is_required}
@@ -402,7 +402,7 @@ const CareersApplicationForm = () => {
                                 </SelectItem>
                               ))}
                             </SelectContent>
-                          </انتخاب>
+                          </Select>
                         )}
                       </div>
                     ))}

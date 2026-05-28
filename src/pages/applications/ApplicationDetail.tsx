@@ -66,9 +66,9 @@ const ApplicationDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [application, setApplication] = useState<ApplicationDetail | null>(null);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [loadingInterviews, setUploadInterviews] = useState(false);
+  const [loadingInterviews, setLoadingInterviews] = useState(false);
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
   const [scorecardsDialogOpen, setScorecardsDialogOpen] = useState(false);
   const [offer, setOffer] = useState<Offer | null>(null);
@@ -115,7 +115,7 @@ const ApplicationDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -123,7 +123,7 @@ const ApplicationDetail = () => {
     if (!id) return;
     
     try {
-      setUploadInterviews(true);
+      setLoadingInterviews(true);
       const { data, error } = await supabase
         .from('interviews')
         .select('*')
@@ -140,7 +140,7 @@ const ApplicationDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setUploadInterviews(false);
+      setLoadingInterviews(false);
     }
   };
 
@@ -478,7 +478,7 @@ const ApplicationDetail = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">ثبت درخواست شده تاریخ</p>
                   <p className="font-medium">
-                    {format(new تاریخ(application.applied_at), 'MMMM d, yyyy')}
+                    {format(new Date(application.applied_at), 'MMMM d, yyyy')}
                   </p>
                 </div>
               </CardContent>
@@ -604,13 +604,13 @@ const ApplicationDetail = () => {
                         <div className="flex flex-wrap items-center gap-4 text-sm">
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Calendar className="h-4 w-4 shrink-0" />
-                            <span>{format(new تاریخ(interview.start_at), 'MMM d, yyyy')}</span>
+                            <span>{format(new Date(interview.start_at), 'MMM d, yyyy')}</span>
                           </div>
                           
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Clock className="h-4 w-4 shrink-0" />
                             <span>
-                              {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
+                              {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
                               {interview.timezone && ` (${interview.timezone})`}
                             </span>
                           </div>

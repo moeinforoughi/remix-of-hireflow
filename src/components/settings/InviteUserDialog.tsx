@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,7 +28,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
   const [role, setRole] = useState<'basic' | 'job_admin' | 'site_admin'>('basic');
   const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -169,7 +169,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -183,7 +183,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -229,7 +229,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -395,7 +395,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   <Label htmlFor="department" className="text-sm font-medium">
                     بخش
                   </Label>
-                  <انتخاب value={department} onValueChange={setDepartment}>
+                  <Select value={department} onValueChange={setDepartment}>
                     <SelectTrigger>
                       <SelectValue placeholder="انتخاب..." />
                     </SelectTrigger>
@@ -409,7 +409,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                       <SelectItem value="Finance">Finance</SelectItem>
                       <SelectItem value="Operations">Operations</SelectItem>
                     </SelectContent>
-                  </انتخاب>
+                  </Select>
                 </div>
 
                 {/* نقش */}
@@ -417,7 +417,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                   <Label htmlFor="role" className="text-sm font-medium">
                     Permission Level
                   </Label>
-                  <انتخاب value={role} onValueChange={(value: any) => setRole(value)}>
+                  <Select value={role} onValueChange={(value: any) => setRole(value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="انتخاب..." />
                     </SelectTrigger>
@@ -426,7 +426,7 @@ export const InviteUserDialog = ({ onInviteSuccess }: InviteUserDialogProps) => 
                       <SelectItem value="job_admin">Job مدیر کل</SelectItem>
                       <SelectItem value="site_admin">Site مدیر کل</SelectItem>
                     </SelectContent>
-                  </انتخاب>
+                  </Select>
                 </div>
               </div>
             </div>

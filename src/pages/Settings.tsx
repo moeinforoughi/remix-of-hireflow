@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { AccountInformation } from '@/components/settings/AccountInformation';
 import { NotificationSettings } from '@/components/settings/NotificationSettings';
-import { سازمانپروفایل } from '@/components/settings/سازمانپروفایل';
-import { برندینگتنظیمات } from '@/components/settings/برندینگتنظیمات';
+import { OrganizationProfile } from '@/components/settings/OrganizationProfile';
+import { BrandingSettings } from '@/components/settings/BrandingSettings';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const تنظیمات = () => {
+const Settings = () => {
   const navigate = useNavigate();
   const [isSiteAdmin, setIsSiteAdmin] = useState(false);
 
@@ -72,18 +72,18 @@ const تنظیمات = () => {
       {/* Full Width - سازمان پروفایل - Site مدیر کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
-          <سازمانپروفایل />
+          <OrganizationProfile />
         </div>
       )}
 
       {/* Full Width - برندینگ تنظیمات - Site مدیر کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
-          <برندینگتنظیمات />
+          <BrandingSettings />
         </div>
       )}
     </div>
   );
 };
 
-export default تنظیمات;
+export default Settings;

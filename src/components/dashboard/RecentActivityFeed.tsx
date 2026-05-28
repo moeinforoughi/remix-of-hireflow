@@ -54,7 +54,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 };
 const RecentActivityFeed = () => {
   const [activities, setActivities] = useState<ActivityItemProps[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     fetchActivities();
   }, []);
@@ -79,7 +79,7 @@ const RecentActivityFeed = () => {
           avatarUrl: activity.actor?.avatar_url || null,
           username: activity.actor?.full_name || 'System',
           action,
-          timeAgo: formatDistanceToNow(new تاریخ(activity.created_at), {
+          timeAgo: formatDistanceToNow(new Date(activity.created_at), {
             addSuffix: true
           })
         };
@@ -89,7 +89,7 @@ const RecentActivityFeed = () => {
     } catch (error) {
       console.error('Error fetching activities:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
   const formatAction = async (activity: any): Promise<string> => {

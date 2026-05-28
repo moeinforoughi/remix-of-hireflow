@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Pencil } from 'lucide-react';
 import { EditOrganizationDialog } from './EditOrganizationDialog';
@@ -13,10 +13,10 @@ interface OrgSettings {
   salary_currency?: string;
 }
 
-export const سازمانپروفایل = () => {
+export const OrganizationProfile = () => {
   const [org, setOrg] = useState<any>(null);
   const [settings, setSettings] = useState<OrgSettings>({});
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ export const سازمانپروفایل = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -148,7 +148,7 @@ export const سازمانپروفایل = () => {
 
           <div className="flex justify-between items-center py-3">
             <span className="text-sm text-muted-foreground">Salary واحد پول</span>
-            <انتخاب value={settings.salary_currency || 'USD'} onValueChange={handleCurrencyChange}>
+            <Select value={settings.salary_currency || 'USD'} onValueChange={handleCurrencyChange}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue />
               </SelectTrigger>
@@ -158,7 +158,7 @@ export const سازمانپروفایل = () => {
                 <SelectItem value="GBP">£ British Pound</SelectItem>
                 <SelectItem value="JPY">¥ Japanese Yen</SelectItem>
               </SelectContent>
-            </انتخاب>
+            </Select>
           </div>
         </div>
       </div>

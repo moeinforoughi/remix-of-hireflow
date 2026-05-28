@@ -9,13 +9,13 @@ import { useToast } from '@/hooks/use-toast';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-interface RemoveAccountDialogProps {
+interface DeleteAccountDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogProps) => {
-  const [loading, setUpload] = useState(false);
+export const DeleteAccountDialog = ({ open, onOpenChange }: DeleteAccountDialogProps) => {
+  const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogP
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -73,7 +73,7 @@ export const RemoveAccountDialog = ({ open, onOpenChange }: RemoveAccountDialogP
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

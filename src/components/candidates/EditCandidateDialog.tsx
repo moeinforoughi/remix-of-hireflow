@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { بارگذاری, Paperclip, FileText } from 'lucide-react';
+import { Upload, Paperclip, FileText } from 'lucide-react';
 import { parseResume } from '@/lib/resume-parser';
 
 // Format phone number as (XXX) XXX-XXXX
@@ -49,11 +49,11 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
     phone: '',
     linkedin_url: '',
   });
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [currentResume, setCurrentResume] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setLoadinging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -196,7 +196,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
       }
     }
 
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -239,9 +239,9 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
 
       // بارگذاری new resume if provided
       if (resumeFile) {
-        setUploading(true);
+        setLoadinging(true);
         const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${candidate.id}-${تاریخ.now()}.${fileExt}`;
+        const fileName = `${candidate.id}-${Date.now()}.${fileExt}`;
         const filePath = `${profile.org_id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -271,7 +271,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
 
         // Parse resume in background
         parseResume(filePath, candidate.id).catch(console.error);
-        setUploading(false);
+        setLoadinging(false);
       }
 
       toast({
@@ -288,8 +288,8 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
-      setUploading(false);
+      setLoading(false);
+      setLoadinging(false);
     }
   };
 
@@ -336,7 +336,7 @@ export const EditCandidateDialog = ({ open, onOpenChange, candidate, onRefreshSu
           >
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                <بارگذاری className={`h-6 w-6 text-muted-foreground ${uploading ? 'animate-pulse' : ''}`} />
+                <Upload className={`h-6 w-6 text-muted-foreground ${uploading ? 'animate-pulse' : ''}`} />
               </div>
               <div>
                 <p className="text-sm font-medium mb-1">

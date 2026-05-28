@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 
-interface سؤال {
+interface Question {
   id: string;
   question_text: string;
   question_type: string;
@@ -25,8 +25,8 @@ interface CustomQuestionsManagerProps {
 }
 
 export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) => {
-  const [questions, setQuestions] = useState<سؤال[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [deleteConfirm, setRemoveConfirm] = useState<string | null>(null);
   const [newQuestion, setNewQuestion] = useState({
@@ -57,7 +57,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -182,7 +182,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
 
             <div className="space-y-2">
               <Label>سؤال Type *</Label>
-              <انتخاب
+              <Select
                 value={newQuestion.question_type}
                 onValueChange={(value: any) => setNewQuestion({ ...newQuestion, question_type: value })}
               >
@@ -195,7 +195,7 @@ export const CustomQuestionsManager = ({ jobId }: CustomQuestionsManagerProps) =
                   <SelectItem value="yes_no">بله/خیر</SelectItem>
                   <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                 </SelectContent>
-              </انتخاب>
+              </Select>
             </div>
 
             {newQuestion.question_type === 'multiple_choice' && (

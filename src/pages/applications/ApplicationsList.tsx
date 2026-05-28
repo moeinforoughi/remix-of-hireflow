@@ -4,10 +4,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Loader2, جستجو, X, ChevronRight, Briefcase } from 'lucide-react';
+import { Plus, Loader2, Search, X, ChevronRight, Briefcase } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
-  انتخاب,
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -44,7 +44,7 @@ interface Application {
 
 const ApplicationsList = () => {
   const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
@@ -78,7 +78,7 @@ const ApplicationsList = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -108,7 +108,7 @@ const ApplicationsList = () => {
     })
     .sort((a, b) => {
       if (sortBy === 'date') {
-        return new تاریخ(b.applied_at).getTime() - new تاریخ(a.applied_at).getTime();
+        return new Date(b.applied_at).getTime() - new Date(a.applied_at).getTime();
       } else {
         return a.candidate?.full_name.localeCompare(b.candidate?.full_name) || 0;
       }
@@ -144,7 +144,7 @@ const ApplicationsList = () => {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="جستجو by candidate name, email, or job title..."
             value={searchQuery}
@@ -153,7 +153,7 @@ const ApplicationsList = () => {
           />
         </div>
 
-        <انتخاب value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-[180px] bg-card">
             <SelectValue placeholder="وضعیت" />
           </SelectTrigger>
@@ -164,9 +164,9 @@ const ApplicationsList = () => {
             <SelectItem value="rejected">Rejected</SelectItem>
             <SelectItem value="withdrawn">Withdrawn</SelectItem>
           </SelectContent>
-        </انتخاب>
+        </Select>
 
-        <انتخاب value={sortBy} onValueChange={(value: 'date' | 'name') => setSortBy(value)}>
+        <Select value={sortBy} onValueChange={(value: 'date' | 'name') => setSortBy(value)}>
           <SelectTrigger className="w-full sm:w-[180px] bg-card">
             <SelectValue placeholder="مرتب‌سازی by" />
           </SelectTrigger>
@@ -174,7 +174,7 @@ const ApplicationsList = () => {
             <SelectItem value="date">تاریخ (Newest)</SelectItem>
             <SelectItem value="name">Name (A-Z)</SelectItem>
           </SelectContent>
-        </انتخاب>
+        </Select>
 
         {hasActiveFilters && (
           <Button variant="outline" onClick={clearFilters}>
@@ -236,7 +236,7 @@ const ApplicationsList = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new تاریخ(app.applied_at).toLocaleDateString()}
+                    {new Date(app.applied_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="rounded-r-lg">
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />

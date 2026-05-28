@@ -23,7 +23,7 @@ const CareersJobDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [job, setJob] = useState<Job | null>(null);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
@@ -45,7 +45,7 @@ const CareersJobDetail = () => {
     } catch (error) {
       console.error('Error fetching job:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -113,7 +113,7 @@ const CareersJobDetail = () => {
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              <span>منتشرشده {format(new تاریخ(job.created_at), 'MMM d, yyyy')}</span>
+              <span>منتشرشده {format(new Date(job.created_at), 'MMM d, yyyy')}</span>
             </div>
           </div>
 

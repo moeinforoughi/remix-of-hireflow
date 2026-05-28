@@ -19,7 +19,7 @@ interface OrgSettings {
 }
 
 export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOrganizationDialogProps) => {
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgName, setOrgName] = useState('');
   const [orgSlug, setOrgSlug] = useState('');
@@ -72,7 +72,7 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
   const handleSave = async () => {
     if (!orgId) return;
 
-    setUpload(true);
+    setLoading(true);
     try {
       const updatedSettings = { ...settings, company_email: companyEmail };
       const { error } = await supabase
@@ -100,7 +100,7 @@ export const EditOrganizationDialog = ({ open, onOpenChange, onSuccess }: EditOr
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 

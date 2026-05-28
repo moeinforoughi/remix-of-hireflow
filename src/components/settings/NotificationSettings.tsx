@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Mail, Trash2 } from 'lucide-react';
-import { RemoveAccountDialog } from './RemoveAccountDialog';
+import { DeleteAccountDialog } from './DeleteAccountDialog';
 import { supabase } from '@/integrations/supabase/client';
 
 interface NotificationPreference {
@@ -97,7 +97,7 @@ export const NotificationSettings = () => {
         )}
       </div>
 
-      <RemoveAccountDialog 
+      <DeleteAccountDialog 
         open={deleteDialogOpen}
         onOpenChange={setRemoveDialogOpen}
       />

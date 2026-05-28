@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, دانلود } from 'lucide-react';
+import { ArrowLeft, Loader2, Calendar, MapPin, Video, User, Briefcase, ExternalLink, Plus, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { ScorecardCard } from '@/components/interviews/ScorecardCard';
 import { InterviewDecision } from '@/components/interviews/InterviewDecision';
 
-interface فرم ارزیابی {
+interface Scorecard {
   id: string;
   user_id: string;
   user: {
@@ -53,9 +53,9 @@ const InterviewDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [interview, setInterview] = useState<InterviewDetail | null>(null);
-  const [scorecards, setScorecards] = useState<فرم ارزیابی[]>([]);
+  const [scorecards, setScorecards] = useState<Scorecard[]>([]);
   const [مصاحبه‌کننده, setinterviewers] = useState<Array<{ id: string; full_name: string; email: string }>>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -128,7 +128,7 @@ const InterviewDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -342,9 +342,9 @@ const InterviewDetail = () => {
             <div className="flex items-start gap-3">
               <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div className="flex-1">
-                <p className="font-medium">{format(new تاریخ(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
+                <p className="font-medium">{format(new Date(interview.start_at), 'EEEE, MMMM d, yyyy')}</p>
                 <p className="text-sm text-muted-foreground">
-                  {format(new تاریخ(interview.start_at), 'h:mm a')} - {format(new تاریخ(interview.end_at), 'h:mm a')}
+                  {format(new Date(interview.start_at), 'h:mm a')} - {format(new Date(interview.end_at), 'h:mm a')}
                 </p>
               </div>
               <Button 
@@ -352,7 +352,7 @@ const InterviewDetail = () => {
                 size="sm"
                 onClick={handleDownloadICS}
               >
-                <دانلود className="h-4 w-4 mr-2" />
+                <Download className="h-4 w-4 mr-2" />
                 افزودن to Calendar
               </Button>
             </div>

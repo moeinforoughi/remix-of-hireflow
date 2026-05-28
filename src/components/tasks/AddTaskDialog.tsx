@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, Plus } from "lucide-react";
@@ -23,7 +23,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
-  const [dueDate, setDueDate] = useState<تاریخ>();
+  const [dueDate, setDueDate] = useState<Date>();
   const [dueTime, setDueTime] = useState("12:00");
   const [status, setStatus] = useState<"pending" | "completed">("pending");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,7 +40,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
     let dueDatetime = null;
     if (dueDate) {
       const [hours, minutes] = dueTime.split(":");
-      const datetime = new تاریخ(dueDate);
+      const datetime = new Date(dueDate);
       datetime.setHours(parseInt(hours), parseInt(minutes), 0);
       dueDatetime = datetime.toISOString();
     }
@@ -145,7 +145,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
 
           <div className="space-y-2">
             <Label htmlFor="status">وضعیت</Label>
-            <انتخاب value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
+            <Select value={status} onValueChange={(value: "pending" | "completed") => setStatus(value)}>
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
@@ -153,7 +153,7 @@ export function AddTaskDialog({ candidateId, orgId, onTaskAdded }: AddTaskDialog
                 <SelectItem value="pending">در انتظار</SelectItem>
                 <SelectItem value="completed">انجام شده</SelectItem>
               </SelectContent>
-            </انتخاب>
+            </Select>
           </div>
 
           <div className="flex justify-end gap-2">

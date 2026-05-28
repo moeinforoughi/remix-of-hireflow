@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface RejectDialogProps {
   open: boolean;
@@ -49,7 +49,7 @@ export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProp
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label>Rejection Reason</Label>
-            <انتخاب value={reason} onValueChange={setReason}>
+            <Select value={reason} onValueChange={setReason}>
               <SelectTrigger>
                 <SelectValue placeholder="انتخاب a reason" />
               </SelectTrigger>
@@ -60,7 +60,7 @@ export const RejectDialog = ({ open, onOpenChange, onConfirm }: RejectDialogProp
                   </SelectItem>
                 ))}
               </SelectContent>
-            </انتخاب>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label>Additional Notes (اختیاری)</Label>

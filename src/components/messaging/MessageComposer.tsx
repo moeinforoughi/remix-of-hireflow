@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ارسال, Loader2, Lock } from "lucide-react";
+import { Send, Loader2, Lock } from "lucide-react";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -36,7 +36,7 @@ export const MessageComposer = ({
 }: MessageComposerProps) => {
   const { toast } = useToast();
   const { canMessage } = useUserPermissions();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [templates, setTemplates] = useState<MessageTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [to, setTo] = useState<string>(defaultTo.join(", "));
@@ -130,7 +130,7 @@ export const MessageComposer = ({
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
 
     try {
       // Get user profile for org_id
@@ -196,7 +196,7 @@ export const MessageComposer = ({
         variant: "destructive",
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -229,7 +229,7 @@ export const MessageComposer = ({
       <CardContent className="space-y-4">
         <div>
           <Label htmlFor="template">Template (optional)</Label>
-          <انتخاب value={selectedTemplate} onValueChange={handleTemplateSelect}>
+          <Select value={selectedTemplate} onValueChange={handleTemplateSelect}>
             <SelectTrigger id="template">
               <SelectValue placeholder="انتخاب a template" />
             </SelectTrigger>
@@ -240,7 +240,7 @@ export const MessageComposer = ({
                 </SelectItem>
               ))}
             </SelectContent>
-          </انتخاب>
+          </Select>
         </div>
 
         {selectedTemplate && templates.find((t) => t.id === selectedTemplate)?.variables.length > 0 && (
@@ -309,7 +309,7 @@ export const MessageComposer = ({
             </>
           ) : (
             <>
-              <ارسال className="mr-2 h-4 w-4" />
+              <Send className="mr-2 h-4 w-4" />
               ارسال ایمیل
             </>
           )}

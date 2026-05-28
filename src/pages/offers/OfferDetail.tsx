@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2, Calendar, User, Briefcase, FileText, دانلود, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Loader2, Calendar, User, Briefcase, FileText, Download, RefreshCw } from 'lucide-react';
 import { format, isPast } from 'date-fns';
-import { ConfirmSection } from '@/components/offers/ConfirmSection';
+import { ApprovalSection } from '@/components/offers/ApprovalSection';
 import { ExpirationWarning } from '@/components/offers/ExpirationWarning';
 import { OfferTimeline } from '@/components/offers/OfferTimeline';
 
@@ -44,7 +44,7 @@ const OfferDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [offer, setOffer] = useState<OfferDetail | null>(null);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const OfferDetail = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -101,7 +101,7 @@ const OfferDetail = () => {
         .single();
 
       if (currentOffer && currentOffer.expires_at && currentOffer.state === 'sent') {
-        if (isPast(new تاریخ(currentOffer.expires_at))) {
+        if (isPast(new Date(currentOffer.expires_at))) {
           await supabase
             .from('offers')
             .update({ state: 'expired' })
@@ -287,7 +287,7 @@ const OfferDetail = () => {
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Expires</p>
-                      <p className="font-medium">{format(new تاریخ(offer.expires_at), 'MMMM d, yyyy')}</p>
+                      <p className="font-medium">{format(new Date(offer.expires_at), 'MMMM d, yyyy')}</p>
                     </div>
                   </div>
                 )}
@@ -379,7 +379,7 @@ const OfferDetail = () => {
                       asChild
                     >
                       <a href={offer.pdf_url} download>
-                        <دانلود className="h-4 w-4 mr-2" />
+                        <Download className="h-4 w-4 mr-2" />
                         دانلود PDF
                       </a>
                     </Button>
@@ -484,7 +484,7 @@ const OfferDetail = () => {
         </TabsContent>
 
         <TabsContent value="approvals">
-          <ConfirmSection 
+          <ApprovalSection 
             offerId={offer.id} 
             offerState={offer.state}
             onConfirmChange={fetchOffer}

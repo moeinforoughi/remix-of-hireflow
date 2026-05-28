@@ -40,7 +40,7 @@ type RatingKey = typeof CATEGORIES[number]['key'];
 
 export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
   const [ratings, setRatings] = useState<CandidateRating[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [editingRating, setEditingRating] = useState<CandidateRating | null>(null);
@@ -78,7 +78,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
     } catch (error) {
       console.error('Error fetching ratings:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -167,7 +167,7 @@ export const RatingsSection = ({ candidateId }: RatingsSectionProps) => {
                       </Avatar>
                       <span className="text-sm font-medium">{rating.user.full_name}</span>
                       <span className="text-xs text-muted-foreground ml-auto">
-                        {format(new تاریخ(rating.created_at), 'MMM d, yyyy')}
+                        {format(new Date(rating.created_at), 'MMM d, yyyy')}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">

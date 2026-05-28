@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {
-  انتخاب,
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -76,7 +76,7 @@ export function ScheduleInterviewDialog({
   onOpenChange,
   onSuccess,
 }: ScheduleInterviewDialogProps) {
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -127,13 +127,13 @@ export function ScheduleInterviewDialog({
   };
 
   const onSubmit = async (values: FormValues) => {
-    setUpload(true);
+    setLoading(true);
     try {
-      const startDateTime = new تاریخ(values.date);
+      const startDateTime = new Date(values.date);
       const [startHour, startMinute] = values.start_time.split(':');
       startDateTime.setHours(parseInt(startHour), parseInt(startMinute));
 
-      const endDateTime = new تاریخ(values.date);
+      const endDateTime = new Date(values.date);
       const [endHour, endMinute] = values.end_time.split(':');
       endDateTime.setHours(parseInt(endHour), parseInt(endMinute));
 
@@ -165,7 +165,7 @@ export function ScheduleInterviewDialog({
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -184,7 +184,7 @@ export function ScheduleInterviewDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Candidate Application</FormLabel>
-                  <انتخاب onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="انتخاب application" />
@@ -199,7 +199,7 @@ export function ScheduleInterviewDialog({
                         </SelectItem>
                       ))}
                     </SelectContent>
-                  </انتخاب>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -253,7 +253,7 @@ export function ScheduleInterviewDialog({
                           setDatePickerOpen(false);
                         }}
                         disabled={(date) => {
-                          const today = new تاریخ();
+                          const today = new Date();
                           today.setHours(0, 0, 0, 0);
                           return date < today;
                         }}
@@ -303,7 +303,7 @@ export function ScheduleInterviewDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>نوع مصاحبه</FormLabel>
-                  <انتخاب onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
@@ -313,7 +313,7 @@ export function ScheduleInterviewDialog({
                       <SelectItem value="virtual">آنلاین</SelectItem>
                       <SelectItem value="onsite">Onsite</SelectItem>
                     </SelectContent>
-                  </انتخاب>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -428,7 +428,7 @@ export function ScheduleInterviewDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>وضعیت</FormLabel>
-                  <انتخاب onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
@@ -440,7 +440,7 @@ export function ScheduleInterviewDialog({
                       <SelectItem value="no_show">خیر نمایش</SelectItem>
                       <SelectItem value="cancelled">Cancelled</SelectItem>
                     </SelectContent>
-                  </انتخاب>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

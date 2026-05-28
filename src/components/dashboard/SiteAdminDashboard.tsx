@@ -12,7 +12,7 @@ import listIcon from "@/assets/icons/list-icon.svg";
 import usersIcon from "@/assets/icons/users-icon.svg";
 import awardIcon from "@/assets/icons/award-icon.svg";
 import thumbsUpIcon from "@/assets/icons/thumbs-up-icon.svg";
-import { ConfirmRequestedDialog } from "@/components/offers/ConfirmRequestedDialog";
+import { ApprovalRequestedDialog } from "@/components/offers/ApprovalRequestedDialog";
 import { MetricCardSkeleton } from "@/components/dashboard/MetricCardSkeleton";
 import { JobListingsTableSkeleton } from "@/components/dashboard/JobListingsTableSkeleton";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
@@ -245,7 +245,7 @@ export function SiteAdminDashboard() {
                   <div className="w-[243px] text-sm font-[590] text-foreground">{job.title}</div>
                   <div className="flex-1 text-sm text-muted-foreground">{job.location || 'دورکاری'}</div>
                   <div className="flex-1 text-sm text-muted-foreground">
-                    {new تاریخ(job.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
+                    {new Date(job.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
                   </div>
                   <div className="flex-1 flex items-center">
                     {job.job_acl?.slice(0, 5).map((acl: any, idx: number) => (
@@ -268,7 +268,7 @@ export function SiteAdminDashboard() {
         </div>
       )}
 
-      <ConfirmRequestedDialog 
+      <ApprovalRequestedDialog 
         open={approvalDialogOpen} 
         onOpenChange={setConfirmDialogOpen} 
       />

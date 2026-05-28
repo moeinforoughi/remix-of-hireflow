@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, ویرایش, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -22,7 +22,7 @@ export default function TemplatesList() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setRemoveDialogOpen] = useState(false);
   const [templateToRemove, setTemplateToRemove] = useState<string | null>(null);
   const [isSiteAdmin, setIsSiteAdmin] = useState(false);
@@ -47,7 +47,7 @@ export default function TemplatesList() {
   };
 
   const fetchTemplates = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from("message_templates")
@@ -63,7 +63,7 @@ export default function TemplatesList() {
         variant: "destructive",
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -140,7 +140,7 @@ export default function TemplatesList() {
                       size="icon"
                       onClick={() => navigate(`/templates/${template.id}/edit`)}
                     >
-                      <ویرایش className="h-4 w-4" />
+                      <Edit className="h-4 w-4" />
                     </Button>
                     <TooltipProvider>
                       <Tooltip>

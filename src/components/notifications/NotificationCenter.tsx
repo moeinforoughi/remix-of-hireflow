@@ -85,7 +85,7 @@ export const NotificationCenter = () => {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true, read_at: new تاریخ().toISOString() })
+        .update({ is_read: true, read_at: new Date().toISOString() })
         .eq('id', id);
 
       if (error) throw error;
@@ -103,7 +103,7 @@ export const NotificationCenter = () => {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true, read_at: new تاریخ().toISOString() })
+        .update({ is_read: true, read_at: new Date().toISOString() })
         .eq('is_read', false);
 
       if (error) throw error;
@@ -245,7 +245,7 @@ export const NotificationCenter = () => {
                       {notification.message}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {formatDistanceToNow(new تاریخ(notification.created_at), {
+                      {formatDistanceToNow(new Date(notification.created_at), {
                         addSuffix: true,
                       })}
                     </p>

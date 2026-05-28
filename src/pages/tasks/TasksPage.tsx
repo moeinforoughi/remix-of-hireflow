@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Pencil, Trash2, Check, X, Plus, جستجو, Calendar, User } from "lucide-react";
+import { Pencil, Trash2, Check, X, Plus, Search, Calendar, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
-  انتخاب,
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -67,7 +67,7 @@ interface Candidate {
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "completed">("all");
   const [deleteTaskId, setRemoveTaskId] = useState<string | null>(null);
@@ -78,14 +78,14 @@ export default function TasksPage() {
   // Form states
   const [formTitle, setFormTitle] = useState("");
   const [formLabel, setFormLabel] = useState("");
-  const [formDueDate, setFormDueDate] = useState<تاریخ | undefined>();
+  const [formDueDate, setFormDueDate] = useState<Date | undefined>();
   const [formDueTime, setFormDueTime] = useState<string>("09:00");
   const [formStatus, setFormStatus] = useState<"pending" | "completed">("pending");
   const [formCandidateId, setFormCandidateId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchData = async () => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -123,7 +123,7 @@ export default function TasksPage() {
       console.error("Error fetching data:", error);
       toast.error("Failed to load tasks");
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -183,7 +183,7 @@ export default function TasksPage() {
     try {
       let dueDateTime: string | null = null;
       if (formDueDate) {
-        const date = new تاریخ(formDueDate);
+        const date = new Date(formDueDate);
         if (formDueTime) {
           const [hours, minutes] = formDueTime.split(":").map(Number);
           date.setHours(hours, minutes);
@@ -224,7 +224,7 @@ export default function TasksPage() {
     try {
       let dueDateTime: string | null = null;
       if (formDueDate) {
-        const date = new تاریخ(formDueDate);
+        const date = new Date(formDueDate);
         if (formDueTime) {
           const [hours, minutes] = formDueTime.split(":").map(Number);
           date.setHours(hours, minutes);
@@ -262,7 +262,7 @@ export default function TasksPage() {
     setFormLabel(task.label || "");
     setFormStatus(task.status);
     if (task.due_date) {
-      const date = new تاریخ(task.due_date);
+      const date = new Date(task.due_date);
       setFormDueDate(date);
       const hours = date.getHours().toString().padStart(2, "0");
       const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -318,7 +318,7 @@ export default function TasksPage() {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 max-w-sm">
-          <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="جستجو tasks..."
             value={searchQuery}
@@ -370,7 +370,7 @@ export default function TasksPage() {
                       {task.due_date && (
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {format(new تاریخ(task.due_date), "PPp")}
+                          {format(new Date(task.due_date), "PPp")}
                         </span>
                       )}
                       {task.candidate && (
@@ -441,7 +441,7 @@ export default function TasksPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="candidate">Candidate *</Label>
-              <انتخاب value={formCandidateId} onValueChange={setFormCandidateId}>
+              <Select value={formCandidateId} onValueChange={setFormCandidateId}>
                 <SelectTrigger>
                   <SelectValue placeholder="انتخاب a candidate" />
                 </SelectTrigger>
@@ -452,7 +452,7 @@ export default function TasksPage() {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </انتخاب>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="label">Label</Label>
@@ -490,7 +490,7 @@ export default function TasksPage() {
             </div>
             <div className="space-y-2">
               <Label>وضعیت</Label>
-              <انتخاب value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
+              <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -498,7 +498,7 @@ export default function TasksPage() {
                   <SelectItem value="pending">در انتظار</SelectItem>
                   <SelectItem value="completed">انجام شده</SelectItem>
                 </SelectContent>
-              </انتخاب>
+              </Select>
             </div>
           </div>
           <DialogFooter>
@@ -567,7 +567,7 @@ export default function TasksPage() {
             </div>
             <div className="space-y-2">
               <Label>وضعیت</Label>
-              <انتخاب value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
+              <Select value={formStatus} onValueChange={(v) => setFormStatus(v as typeof formStatus)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -575,7 +575,7 @@ export default function TasksPage() {
                   <SelectItem value="pending">در انتظار</SelectItem>
                   <SelectItem value="completed">انجام شده</SelectItem>
                 </SelectContent>
-              </انتخاب>
+              </Select>
             </div>
           </div>
           <DialogFooter>

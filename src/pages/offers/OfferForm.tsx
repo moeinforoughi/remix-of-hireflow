@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
@@ -37,7 +37,7 @@ const OfferForm = () => {
   const [searchParams] = useSearchParams();
   const applicationIdFromUrl = searchParams.get('application_id');
   const { toast } = useToast();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
 
   const form = useForm<FormValues>({
@@ -102,7 +102,7 @@ const OfferForm = () => {
   };
 
   const onSubmit = async (values: FormValues) => {
-    setUpload(true);
+    setLoading(true);
     try {
       const { data: offer, error } = await supabase.from('offers').insert({
         application_id: values.application_id,
@@ -149,7 +149,7 @@ const OfferForm = () => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -173,7 +173,7 @@ const OfferForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Candidate Application</FormLabel>
-                    <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="انتخاب an application" />
@@ -186,7 +186,7 @@ const OfferForm = () => {
                           </SelectItem>
                         ))}
                       </SelectContent>
-                    </انتخاب>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -231,7 +231,7 @@ const OfferForm = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>واحد پول</FormLabel>
-                      <انتخاب onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -243,7 +243,7 @@ const OfferForm = () => {
                           <SelectItem value="GBP">GBP</SelectItem>
                           <SelectItem value="CAD">CAD</SelectItem>
                         </SelectContent>
-                      </انتخاب>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -294,7 +294,7 @@ const OfferForm = () => {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) => date < new تاریخ()}
+                          disabled={(date) => date < new Date()}
                           initialFocus
                           className={cn('p-3 pointer-events-auto')}
                         />

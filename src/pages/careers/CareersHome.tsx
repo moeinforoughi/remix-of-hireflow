@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { انتخاب, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Briefcase, جستجو, Loader2, X } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MapPin, Briefcase, Search, Loader2, X } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Job {
@@ -21,7 +21,7 @@ interface Job {
 
 const CareersHome = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
   const [locationFilter, setLocationFilter] = useState<string>('all');
@@ -45,7 +45,7 @@ const CareersHome = () => {
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -103,7 +103,7 @@ const CareersHome = () => {
           <div className="max-w-4xl mx-auto space-y-4">
             {/* جستجو Bar */}
             <div className="relative">
-              <جستجو className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="جستجو by job title, department, or location..."
@@ -115,7 +115,7 @@ const CareersHome = () => {
 
             {/* Dropdown Filters */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <انتخاب value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
                   <SelectValue placeholder="بخش" />
                 </SelectTrigger>
@@ -127,9 +127,9 @@ const CareersHome = () => {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </انتخاب>
+              </Select>
 
-              <انتخاب value={locationFilter} onValueChange={setLocationFilter}>
+              <Select value={locationFilter} onValueChange={setLocationFilter}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
                   <SelectValue placeholder="مکان" />
                 </SelectTrigger>
@@ -141,9 +141,9 @@ const CareersHome = () => {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </انتخاب>
+              </Select>
 
-              <انتخاب value={employmentTypeFilter} onValueChange={setEmploymentTypeFilter}>
+              <Select value={employmentTypeFilter} onValueChange={setEmploymentTypeFilter}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
                   <SelectValue placeholder="نوع همکاری" />
                 </SelectTrigger>
@@ -155,7 +155,7 @@ const CareersHome = () => {
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </انتخاب>
+              </Select>
 
               {hasActiveFilters && (
                 <Button variant="outline" onClick={clearFilters} className="bg-background">
@@ -235,7 +235,7 @@ const CareersHome = () => {
                 <CardContent>
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      منتشرشده {format(new تاریخ(job.created_at), 'MMM d, yyyy')}
+                      منتشرشده {format(new Date(job.created_at), 'MMM d, yyyy')}
                     </p>
                     <Button>ثبت درخواست Now</Button>
                   </div>

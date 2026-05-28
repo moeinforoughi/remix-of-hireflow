@@ -30,7 +30,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-interface مرحله {
+interface Stage {
   id: string;
   name: string;
   order_idx: number;
@@ -131,7 +131,7 @@ const SortableApplication = ({ application, onClick, isSelected, onToggleSelect 
         </div>
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new تاریخ(application.applied_at), { addSuffix: true })}
+            {formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}
           </p>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -144,7 +144,7 @@ interface DroppableStageProps {
   id: string;
   children: React.ReactNode;
   isOver: boolean;
-  stage: مرحله;
+  stage: Stage;
   stageColor: string;
   candidateCount: number;
   onEditStage: () => void;
@@ -240,9 +240,9 @@ const DroppableStage = ({
 };
 
 const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
-  const [stages, setStages] = useState<مرحله[]>([]);
+  const [stages, setStages] = useState<Stage[]>([]);
   const [applications, setApplications] = useState<ApplicationCard[]>([]);
-  const [loading, setUpload] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -334,7 +334,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
         variant: 'destructive',
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -423,7 +423,7 @@ const PipelineBoard = ({ jobId }: PipelineBoardProps) => {
     setIsScrolling(false);
   };
 
-  const handleStartEditStage = (stage: مرحله) => {
+  const handleStartEditStage = (stage: Stage) => {
     setEditingStageId(stage.id);
     setEditingStageName(stage.name);
   };

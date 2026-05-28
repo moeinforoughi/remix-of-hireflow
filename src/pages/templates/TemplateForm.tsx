@@ -8,13 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ذخیره, Plus, X } from "lucide-react";
+import { ArrowLeft, Save, Plus, X } from "lucide-react";
 
 export default function TemplateForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [bodyHtml, setBodyHtml] = useState("");
@@ -71,7 +71,7 @@ export default function TemplateForm() {
       return;
     }
 
-    setUpload(true);
+    setLoading(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -126,7 +126,7 @@ export default function TemplateForm() {
         variant: "destructive",
       });
     } finally {
-      setUpload(false);
+      setLoading(false);
     }
   };
 
@@ -224,7 +224,7 @@ export default function TemplateForm() {
           </div>
 
           <Button onClick={handleSubmit} disabled={loading} className="w-full">
-            <ذخیره className="mr-2 h-4 w-4" />
+            <Save className="mr-2 h-4 w-4" />
             {loading ? "در حال ذخیره..." : id ? "به‌روزرسانی Template" : "ایجاد Template"}
           </Button>
         </CardContent>

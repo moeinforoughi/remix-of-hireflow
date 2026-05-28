@@ -103,7 +103,7 @@ export function TasksList({ tasks, onTasksChange }: TasksListProps) {
                   </div>
                   {task.due_date && (
                     <p className="text-sm text-muted-foreground">
-                      Due: {format(new تاریخ(task.due_date), "PPp")}
+                      Due: {format(new Date(task.due_date), "PPp")}
                     </p>
                   )}
                 </div>
