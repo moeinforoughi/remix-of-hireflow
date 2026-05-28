@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Plus, Users, ChevronRight, فیلتر } from 'lucide-react';
+import { Plus, Users, ChevronRight, Filter } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -20,10 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AddکاندیداDialog } from '@/components/pipeline/AddکاندیداDialog';
+import { AddCandidateDialog } from '@/components/pipeline/AddCandidateDialog';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
-import { کاندیداهاListSkeleton } from '@/components/کاندیداها/کاندیداهاListSkeleton';
-import { مدیرAssignmentDropdown } from '@/components/کاندیداها/مدیرAssignmentDropdown';
+import { CandidatesListSkeleton } from '@/components/Candidates/CandidatesListSkeleton';
+import { ManagerAssignmentDropdown } from '@/components/Candidates/ManagerAssignmentDropdown';
 import { getStageColorClasses } from '@/lib/stage-colors';
 
 interface ApplicationWithDetails {
@@ -50,25 +50,25 @@ interface ApplicationWithDetails {
   state: string;
 }
 
-const کاندیداهاList = () => {
+const CandidatesList = () => {
   const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [موقعیت‌های شغلی, setموقعیت‌های شغلی] = useState<Array<{ id: string; title: string }>>([]);
+  const [Jobs, setJobs] = useState<Array<{ id: string; title: string }>>([]);
   const [stages, setStages] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
-  const [statusفیلتر, setوضعیتفیلتر] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const { role, assignedJobIds, loading: permissionsUpload } = useUserPermissions();
 
   useEffect(() => {
     fetchUserRole();
-    fetchموقعیت‌های شغلی();
+    fetchJobs();
   }, []);
 
   useEffect(() => {
     if (!permissionsUpload) {
       fetchApplications();
     }
-  }, [permissionsUpload, role, assignedJobIds, statusفیلتر]);
+  }, [permissionsUpload, role, assignedJobIds, statusFilter]);
 
   const fetchUserRole = async () => {
     try {
@@ -88,7 +88,7 @@ const کاندیداهاList = () => {
     }
   };
 
-  const fetchموقعیت‌های شغلی = async () => {
+  const fetchJobs = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -102,18 +102,18 @@ const کاندیداهاList = () => {
 
       if (!profile) return;
 
-      // Fetch only موقعیت‌های شغلی from user's organization
+      // Fetch only Jobs from user's organization
       const { data, error } = await supabase
-        .from('موقعیت‌های شغلی')
+        .from('Jobs')
         .select('id, title')
         .eq('org_id', profile.org_id)
         .eq('status', 'open')
         .order('title');
 
       if (error) throw error;
-      setموقعیت‌های شغلی(data || []);
+      setJobs(data || []);
     } catch (error: any) {
-      console.error('Error fetching موقعیت‌های شغلی:', error);
+      console.error('Error fetching Jobs:', error);
     }
   };
 
@@ -122,7 +122,7 @@ const کاندیداهاList = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Non-site_admin users with بدون job assignments see nothing
+      // Non-site_admin users with No job assignments see nothing
       if (role !== 'site_admin' && assignedJobIds.length === 0) {
         setApplications([]);
         setLoading(false);
@@ -138,32 +138,32 @@ const کاندیداهاList = () => {
           job_id,
           owner_user_id,
           state,
-          candidate:کاندیداها(id, full_name, avatar_url),
-          job:موقعیت‌های شغلی(id, title),
+          candidate:Candidates(id, full_name, avatar_url),
+          job:Jobs(id, title),
           current_stage:job_stages(name, type),
           owner:profiles!applications_owner_user_id_fkey(full_name)
         `);
 
-      // پایه users (Collaborators) - only see کاندیداها assigned to them
+      // پایه users (Collaborators) - only see Candidates assigned to them
       if (role === 'basic') {
         query = query.eq('owner_user_id', user.id);
-        // Also filter by their accessible موقعیت‌های شغلی
+        // Also filter by their accessible Jobs
         if (assignedJobIds.length > 0) {
           query = query.in('job_id', assignedJobIds);
         }
       } 
-      // Job admins - see all کاندیداها for their assigned موقعیت‌های شغلی
+      // Job admins - see all Candidates for their assigned Jobs
       else if (role === 'job_admin' && assignedJobIds.length > 0) {
         query = query.in('job_id', assignedJobIds);
       }
-      // Site admins - بدون filter (see all)
+      // Site admins - No filter (see all)
 
       // ثبت درخواست status filter
-      if (statusفیلتر === 'active') {
+      if (statusFilter === 'active') {
         query = query.eq('state', 'active');
-      } else if (statusفیلتر === 'rejected') {
+      } else if (statusFilter === 'rejected') {
         query = query.eq('state', 'rejected');
-      } else if (statusفیلتر === 'withdrawn') {
+      } else if (statusFilter === 'withdrawn') {
         query = query.eq('state', 'withdrawn');
       }
       // Note: 'hired' filter is handled post-query since we need to check stage type
@@ -172,7 +172,7 @@ const کاندیداهاList = () => {
 
       if (error) throw error;
 
-      // فیلتر out null کاندیداها/موقعیت‌های شغلی and apply hired filter
+      // Filter out null Candidates/Jobs and apply hired filter
       let filteredData = (data || [])
         .filter((app: any) => app.candidate && app.job)
         .map((app: any) => ({
@@ -181,14 +181,14 @@ const کاندیداهاList = () => {
         }));
 
       // Handle hired filter - check both state='hired' and stage type='hired'
-      if (statusفیلتر === 'hired') {
+      if (statusFilter === 'hired') {
         filteredData = filteredData.filter((app: any) => 
           app.state === 'hired' || app.current_stage?.type === 'hired'
         );
       }
       
-      // Exclude hired کاندیداها from "فعال" filter
-      if (statusفیلتر === 'active') {
+      // Exclude hired Candidates from "Active" filter
+      if (statusFilter === 'active') {
         filteredData = filteredData.filter((app: any) => 
           app.current_stage?.type !== 'hired'
         );
@@ -211,41 +211,41 @@ const کاندیداهاList = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl">کاندیداها</h1>
-          <Select value={statusفیلتر} onValueChange={setوضعیتفیلتر}>
+          <h1 className="text-3xl">Candidates</h1>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[160px]">
-              <فیلتر className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="فیلتر by status" />
+              <Filter className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">همه کاندیداها</SelectItem>
-              <SelectItem value="active">فعال</SelectItem>
-              <SelectItem value="rejected">رد شده</SelectItem>
-              <SelectItem value="hired">استخدام‌شده</SelectItem>
-              <SelectItem value="withdrawn">انصراف داده</SelectItem>
+              <SelectItem value="all">All Candidates</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="hired">Hired</SelectItem>
+              <SelectItem value="withdrawn">Withdrawn</SelectItem>
             </SelectContent>
           </Select>
         </div>
         {userRole && userRole !== 'basic' && (
-          <AddکاندیداDialog 
-            موقعیت‌های شغلی={موقعیت‌های شغلی}
+          <AddCandidateDialog 
+            Jobs={Jobs}
             onSuccess={fetchApplications}
           />
         )}
       </div>
 
-      {در حال بارگذاری || permissionsUpload ? (
-        <کاندیداهاListSkeleton />
+      {Loading || permissionsUpload ? (
+        <CandidatesListSkeleton />
       ) : applications.length === 0 ? (
         <div className="text-center py-12">
           <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg mb-2">خیر کاندیداها found</h3>
+          <h3 className="text-lg mb-2">خیر Candidates found</h3>
           <p className="text-muted-foreground">
             {role !== 'site_admin' && assignedJobIds.length === 0
-              ? "You haven't been assigned to any موقعیت‌های شغلی yet. Contact your administrator to get access."
-              : statusفیلتر !== 'all' 
-                ? `خیر ${statusفیلتر} کاندیداها found`
-                : "برای شروع، adding your first candidate"}
+              ? "You haven't been assigned to any Jobs yet. Contact your administrator to get access."
+              : statusFilter !== 'all' 
+                ? `خیر ${statusFilter} Candidates found`
+                : "Get started by adding your first candidate"}
           </p>
         </div>
       ) : (
@@ -253,11 +253,11 @@ const کاندیداهاList = () => {
           <Table className="border-separate border-spacing-y-2">
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b-0">
-                <TableHead className="w-[220px]">کاندیدا</TableHead>
-                <TableHead className="w-[240px]">موقعیت ثبت درخواست شده for</TableHead>
+                <TableHead className="w-[220px]">Candidate</TableHead>
+                <TableHead className="w-[240px]">Position ثبت درخواست شده for</TableHead>
                 <TableHead className="w-[160px]">تاریخ ثبت درخواست شده</TableHead>
-                <TableHead className="w-[140px]">وضعیت</TableHead>
-                <TableHead className="w-[180px]">مدیر</TableHead>
+                <TableHead className="w-[140px]">Status</TableHead>
+                <TableHead className="w-[180px]">Manager</TableHead>
                 <TableHead className="w-[40px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -271,7 +271,7 @@ const کاندیداهاList = () => {
                     borderRadius: '8px',
                     display: 'table-row'
                   }}
-                  onClick={() => window.location.href = `/کاندیداها/${application.candidate?.id}`}
+                  onClick={() => window.location.href = `/Candidates/${application.candidate?.id}`}
                 >
                   <TableCell className="rounded-l-lg">
                     <div className="flex items-center gap-3">
@@ -281,11 +281,11 @@ const کاندیداهاList = () => {
                           {application.candidate?.full_name?.split(' ').map((n: string) => n[0]).join('') || 'NA'}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{application.candidate?.full_name || 'نامشخص'}</span>
+                      <span className="font-medium">{application.candidate?.full_name || 'Unknown'}</span>
                     </div>
                   </TableCell>
                   <TableCell className="text-primary font-medium">
-                    {application.job?.title || 'موقعیت نامشخص'}
+                    {application.job?.title || 'Unknown Position'}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {new Date(application.applied_at).toLocaleDateString('en-US', { 
@@ -303,10 +303,10 @@ const کاندیداهاList = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="font-medium" onClick={(e) => e.stopPropagation()}>
-                    <مدیرAssignmentDropdown
+                    <ManagerAssignmentDropdown
                       applicationId={application.id}
-                      currentمدیرId={application.owner_user_id}
-                      currentمدیرName={application.owner?.full_name || null}
+                      currentManagerId={application.owner_user_id}
+                      currentManagerName={application.owner?.full_name || null}
                       onRefresh={fetchApplications}
                     />
                   </TableCell>
@@ -323,4 +323,4 @@ const کاندیداهاList = () => {
   );
 };
 
-export default کاندیداهاList;
+export default CandidatesList;

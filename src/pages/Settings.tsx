@@ -36,9 +36,9 @@ const Settings = () => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      toast.error('خطا در خروج از حساب');
+      toast.error('Failed to log out');
     } else {
-      toast.success('خروج موفق successfully');
+      toast.success('Log out موفق successfully');
       navigate('/auth/login');
     }
   };
@@ -53,7 +53,7 @@ const Settings = () => {
           className="flex items-center gap-2"
         >
           <LogOut className="h-4 w-4" />
-          خروج
+          Log out
         </Button>
       </div>
 
@@ -69,14 +69,14 @@ const Settings = () => {
         </div>
       </div>
 
-      {/* Full Width - سازمان پروفایل - Site مدیر کل Only */}
+      {/* Full Width - سازمان پروفایل - Site Manager کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
           <OrganizationProfile />
         </div>
       )}
 
-      {/* Full Width - برندینگ تنظیمات - Site مدیر کل Only */}
+      {/* Full Width - برندینگ تنظیمات - Site Manager کل Only */}
       {isSiteAdmin && (
         <div className="bg-card border rounded-lg p-6">
           <BrandingSettings />
