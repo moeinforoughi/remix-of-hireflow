@@ -27,7 +27,7 @@ type StatusFilter = 'all' | 'open' | 'paused' | 'filled' | 'closed';
 
 const JobsList = () => {
   const navigate = useNavigate();
-  const [Jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -186,7 +186,7 @@ const JobsList = () => {
       {/* Status Filters */}
       <div className="flex items-center gap-2">
         {(['all', 'open', 'paused', 'filled', 'closed'] as StatusFilter[]).map((status) => {
-          const count = status === 'all' ? Jobs.length : jobs.filter(j => j.status === status).length;
+          const count = status === 'all' ? jobs.length : jobs.filter(j => j.status === status).length;
           const labels: Record<StatusFilter, string> = {
             all: 'All',
             open: 'Open',
@@ -211,7 +211,7 @@ const JobsList = () => {
         })}
       </div>
 
-      {loading || permissionsUpload ? <div className="text-center py-12">بارگذاری Jobs...</div> : filteredjobs.length === 0 ? <Card>
+      {loading || permissionsUpload ? <div className="text-center py-12">بارگذاری Jobs...</div> : filteredJobs.length === 0 ? <Card>
           <CardContent className="py-12 text-center">
             <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg mb-2">
@@ -232,7 +232,7 @@ const JobsList = () => {
             )}
           </CardContent>
         </Card> : viewMode === 'grid' ? <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredjobs.map(job => <Link key={job.id} to={`/Jobs/${job.id}`}>
+          {filteredJobs.map(job => <Link key={job.id} to={`/Jobs/${job.id}`}>
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <CardHeader className="flex-1">
                   <div className="flex items-start justify-between">
@@ -280,7 +280,7 @@ const JobsList = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="space-y-1">
-              {filteredjobs.map(job => <TableRow key={job.id} className="cursor-pointer hover:bg-accent/50 border-0 mb-1" style={{
+              {filteredJobs.map(job => <TableRow key={job.id} className="cursor-pointer hover:bg-accent/50 border-0 mb-1" style={{
             backgroundColor: 'var(--color-card)',
             borderRadius: '8px',
             display: 'table-row'

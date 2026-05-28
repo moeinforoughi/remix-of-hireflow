@@ -54,7 +54,7 @@ const CandidatesList = () => {
   const [applications, setApplications] = useState<ApplicationWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [Jobs, setJobs] = useState<Array<{ id: string; title: string }>>([]);
+  const [jobs, setJobs] = useState<Array<{ id: string; title: string }>>([]);
   const [stages, setStages] = useState<Array<{ id: string; name: string; order_idx: number }>>([]);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const { role, assignedJobIds, loading: permissionsUpload } = useUserPermissions();

@@ -50,7 +50,7 @@ interface Task {
   title: string;
   label: string | null;
   due_date: string | null;
-  status: "Pending" | "Completed";
+  status: "pending" | "completed";
   created_at: string;
   candidate_id: string;
   candidate?: {
@@ -69,7 +69,7 @@ export default function TasksPage() {
   const [Candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "Pending" | "Completed">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "completed">("all");
   const [deleteTaskId, setRemoveTaskId] = useState<string | null>(null);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -80,7 +80,7 @@ export default function TasksPage() {
   const [formLabel, setFormLabel] = useState("");
   const [formDueDate, setFormDueDate] = useState<Date | undefined>();
   const [formDueTime, setFormDueTime] = useState<string>("09:00");
-  const [formStatus, setFormStatus] = useState<"Pending" | "Completed">("Pending");
+  const [formStatus, setFormStatus] = useState<"pending" | "completed">("pending");
   const [formCandidateId, setFormCandidateId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -132,7 +132,7 @@ export default function TasksPage() {
   }, []);
 
   const handleToggleStatus = async (task: Task) => {
-    const newStatus = task.status === "Pending" ? "Completed" : "Pending";
+    const newStatus = task.status === "pending" ? "completed" : "pending";
     const { error } = await supabase
       .from("tasks")
       .update({ status: newStatus })
@@ -169,7 +169,7 @@ export default function TasksPage() {
     setFormLabel("");
     setFormDueDate(undefined);
     setFormDueTime("09:00");
-    setFormStatus("Pending");
+    setFormStatus("pending");
     setFormCandidateId("");
   };
 
@@ -281,8 +281,8 @@ export default function TasksPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const PendingCount = tasks.filter(t => t.status === "Pending").length;
-  const CompletedCount = tasks.filter(t => t.status === "Completed").length;
+  const PendingCount = tasks.filter(t => t.status === "pending").length;
+  const CompletedCount = tasks.filter(t => t.status === "completed").length;
 
   if (loading) {
     return (
@@ -329,8 +329,8 @@ export default function TasksPage() {
         <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
           <TabsList>
             <TabsTrigger value="all">All ({tasks.length})</TabsTrigger>
-            <TabsTrigger value="Pending">Pending ({PendingCount})</TabsTrigger>
-            <TabsTrigger value="Completed">Completed ({CompletedCount})</TabsTrigger>
+            <TabsTrigger value="pending">Pending ({PendingCount})</TabsTrigger>
+            <TabsTrigger value="completed">Completed ({CompletedCount})</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -346,12 +346,12 @@ export default function TasksPage() {
       ) : (
         <div className="space-y-3">
           {filteredTasks.map((task) => (
-            <Card key={task.id} className={task.status === "Completed" ? "opacity-60" : ""}>
+            <Card key={task.id} className={task.status === "completed" ? "opacity-60" : ""}>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className={cn("", task.status === "Completed" && "line-through")}>
+                      <h4 className={cn("", task.status === "completed" && "line-through")}>
                         {task.title}
                       </h4>
                       {task.label && (
@@ -360,7 +360,7 @@ export default function TasksPage() {
                         </Badge>
                       )}
                       <Badge
-                        variant={task.status === "Completed" ? "default" : "secondary"}
+                        variant={task.status === "completed" ? "default" : "secondary"}
                         className="text-xs"
                       >
                         {task.status}
@@ -390,9 +390,9 @@ export default function TasksPage() {
                       size="sm"
                       variant="outline"
                       onClick={() => handleToggleStatus(task)}
-                      title={task.status === "Pending" ? "Mark as completed" : "Mark as pending"}
+                      title={task.status === "pending" ? "Mark as completed" : "Mark as pending"}
                     >
-                      {task.status === "Pending" ? (
+                      {task.status === "pending" ? (
                         <Check className="h-4 w-4" />
                       ) : (
                         <X className="h-4 w-4" />
@@ -495,8 +495,8 @@ export default function TasksPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Pending">Pending</SelectItem>
-                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -572,8 +572,8 @@ export default function TasksPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Pending">Pending</SelectItem>
-                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>
             </div>
