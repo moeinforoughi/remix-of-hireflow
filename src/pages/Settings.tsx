@@ -36,7 +36,7 @@ const Settings = () => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      toast.error('Failed to log out');
+      toast.error('خطا در خروج از حساب');
     } else {
       toast.success('خروج موفق successfully');
       navigate('/auth/login');
@@ -53,7 +53,7 @@ const Settings = () => {
           className="flex items-center gap-2"
         >
           <LogOut className="h-4 w-4" />
-          Log out
+          خروج
         </Button>
       </div>
 
